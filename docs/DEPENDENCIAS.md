@@ -15,12 +15,13 @@ Verificado em **16/11/2026** (Fase 1).
 | @fontsource/inter | 5.x | fonte do texto |
 | @fontsource/space-grotesk | 5.x | fonte dos títulos |
 | @fontsource/jetbrains-mono | 5.x | fonte de código |
+| gsap | 3.15 | GSAP Studio (Fase 2) — carregado só na rota /labs/gsap |
 
 ## Entram nas próximas fases (ainda **não** instaladas)
 
 | Biblioteca | Fase | Uso |
 |---|---|---|
-| `gsap` (3.15.x na verificação) | 2 | GSAP Studio e Scroll Lab (ScrollTrigger incluso) |
+| ScrollTrigger (vem dentro do `gsap`) | 2 | Scroll Lab |
 | `three` | 4 | Three.js Lab |
 
 Regra: só instalar uma biblioteca quando a fase que a usa começar.

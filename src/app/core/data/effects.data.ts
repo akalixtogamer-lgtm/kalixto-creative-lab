@@ -1,5 +1,6 @@
 import { Effect } from '../models/effect.model';
 import { CSS_DEMOS } from './css-demos.data';
+import { GSAP_DEMOS } from './gsap-demos.data';
 
 /**
  * Biblioteca de Efeitos — estrutura inicial (Fase 1).
@@ -22,34 +23,19 @@ export const EFFECTS: Effect[] = [
       implementado: true,
     }),
   ),
-  // ---------- 02 · GSAP Studio ----------
-  {
-    id: 'gsap-to',
-    nome: 'Primeiro tween com gsap.to()',
-    labId: 'gsap',
-    topico: 'gsap.to()',
-    nivel: 'iniciante',
-    descricao: 'Animar um elemento do estado atual até um estado final.',
-    implementado: false,
-  },
-  {
-    id: 'gsap-timeline',
-    nome: 'Sequência com Timeline',
-    labId: 'gsap',
-    topico: 'Timeline',
-    nivel: 'intermediario',
-    descricao: 'Encadear animações e controlar play, pause e reverse.',
-    implementado: false,
-  },
-  {
-    id: 'gsap-stagger',
-    nome: 'Entrada em cascata (stagger)',
-    labId: 'gsap',
-    topico: 'Stagger',
-    nivel: 'intermediario',
-    descricao: 'Animar uma lista de elementos com atraso entre cada um.',
-    implementado: false,
-  },
+  // ---------- 02 · GSAP Studio (gerado a partir de GSAP_DEMOS) ----------
+  ...GSAP_DEMOS.map(
+    (d): Effect => ({
+      id: `gsap-${d.id}`,
+      nome: d.titulo,
+      labId: 'gsap',
+      topico: d.topico,
+      nivel: d.nivel,
+      descricao: d.resumo,
+      demoId: d.id,
+      implementado: true,
+    }),
+  ),
   // ---------- 03 · Scroll Lab ----------
   {
     id: 'scroll-scrub',

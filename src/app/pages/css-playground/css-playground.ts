@@ -1,3 +1,4 @@
+import { NIVEL_ROTULO } from '../../core/models/demo.model';
 import {
   Component,
   ElementRef,
@@ -21,6 +22,7 @@ import {
 import { findLab, vizinhos } from '../../core/data/labs.data';
 import { Breadcrumb } from '../../shared/components/breadcrumb/breadcrumb';
 import { CodeViewer } from '../../shared/components/code-viewer/code-viewer';
+import { DemoControls } from '../../shared/components/demo-controls/demo-controls';
 import { Icon } from '../../shared/components/icon/icon';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 
@@ -33,11 +35,12 @@ import { StatusBadge } from '../../shared/components/status-badge/status-badge';
  */
 @Component({
   selector: 'kx-css-playground',
-  imports: [RouterLink, Breadcrumb, CodeViewer, Icon, StatusBadge],
+  imports: [RouterLink, Breadcrumb, CodeViewer, DemoControls, Icon, StatusBadge],
   templateUrl: './css-playground.html',
   styleUrl: './css-playground.css',
 })
 export class CssPlayground {
+  protected readonly nivel = NIVEL_ROTULO;
   private readonly router = inject(Router);
   private readonly seletor = viewChild<ElementRef<HTMLElement>>('seletor');
 
@@ -92,8 +95,7 @@ export class CssPlayground {
       );
   }
 
-  alterar(param: ParamDef, valor: string): void {
-    const v: Valor = param.tipo === 'range' ? Number(valor) : valor;
+  alterar(param: ParamDef, v: Valor): void {
     const id = this.atual().id;
     this.todosValores.update((todos) => ({ ...todos, [id]: { ...todos[id], [param.id]: v } }));
   }
@@ -124,14 +126,6 @@ export class CssPlayground {
   curtir(): void {
     this.ativo.update((a) => !a);
     this.rodada.update((r) => r + 1);
-  }
-
-  protected exibir(param: ParamDef): string {
-    const v = this.valores()[param.id];
-    if (param.tipo === 'select') {
-      return param.opcoes.find((o) => o.valor === v)?.rotulo ?? String(v);
-    }
-    return `${v}${param.unidade}`;
   }
 
   private aleatorio(demo: CssDemo): void {

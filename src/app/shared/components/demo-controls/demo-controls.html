@@ -1,0 +1,28 @@
+@for (p of params(); track p.id) {
+  <div class="ctrl">
+    <label class="ctrl__rotulo" [for]="prefixo() + '-' + p.id">
+      <span>{{ p.rotulo }}</span>
+      @if (p.tipo === 'range') {
+        <output [for]="prefixo() + '-' + p.id">{{ exibir(p) }}</output>
+      }
+    </label>
+    @if (p.tipo === 'range') {
+      <input
+        class="ctrl__range"
+        type="range"
+        [id]="prefixo() + '-' + p.id"
+        [min]="p.min"
+        [max]="p.max"
+        [step]="p.passo"
+        [value]="valores()[p.id]"
+        (input)="emitir(p, $any($event.target).value)"
+      />
+    } @else {
+      <select class="ctrl__select" [id]="prefixo() + '-' + p.id" (change)="emitir(p, $any($event.target).value)">
+        @for (o of p.opcoes; track o.valor) {
+          <option [value]="o.valor" [selected]="o.valor === valores()[p.id]">{{ o.rotulo }}</option>
+        }
+      </select>
+    }
+  </div>
+}

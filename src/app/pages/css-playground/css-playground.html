@@ -37,7 +37,7 @@
           <p class="kx-eyebrow">{{ atual().topico }} · {{ indice() + 1 }} de {{ demos.length }}</p>
           <h2 id="demo-titulo" class="pg__demo-titulo">{{ atual().titulo }}</h2>
         </div>
-        <span class="kx-chip">{{ atual().nivel }}</span>
+        <span class="kx-chip">{{ nivel[atual().nivel] }}</span>
       </header>
 
       <div class="palco" [style]="vars()">
@@ -127,34 +127,7 @@
     <!-- Controles -->
     <section class="pg__controles kx-glass" aria-labelledby="controles-titulo">
       <h2 id="controles-titulo" class="pg__bloco-titulo">Controles</h2>
-      @for (p of atual().params; track p.id) {
-        <div class="ctrl">
-          <label class="ctrl__rotulo" [for]="'p-' + p.id">
-            <span>{{ p.rotulo }}</span>
-            @if (p.tipo === 'range') {
-              <output [for]="'p-' + p.id">{{ exibir(p) }}</output>
-            }
-          </label>
-          @if (p.tipo === 'range') {
-            <input
-              class="ctrl__range"
-              type="range"
-              [id]="'p-' + p.id"
-              [min]="p.min"
-              [max]="p.max"
-              [step]="p.passo"
-              [value]="valores()[p.id]"
-              (input)="alterar(p, $any($event.target).value)"
-            />
-          } @else {
-            <select class="ctrl__select" [id]="'p-' + p.id" (change)="alterar(p, $any($event.target).value)">
-              @for (o of p.opcoes; track o.valor) {
-                <option [value]="o.valor" [selected]="o.valor === valores()[p.id]">{{ o.rotulo }}</option>
-              }
-            </select>
-          }
-        </div>
-      }
+      <kx-demo-controls [params]="atual().params" [valores]="valores()" (mudou)="alterar($event.param, $event.valor)" />
     </section>
 
     <!-- Código -->

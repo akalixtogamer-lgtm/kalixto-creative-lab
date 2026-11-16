@@ -13,8 +13,8 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `0.2.0` |
-| Fase atual | **Fase 2 — MVP Funcional** · CSS Playground pronto para testar |
+| Versão | `0.3.0` |
+| Fase atual | **Fase 2 — MVP Funcional** · CSS Playground e GSAP Studio prontos para testar |
 | Publicado no GitHub Pages | **Não** — só depois dos testes |
 
 Veja o andamento completo em [`docs/ROADMAP.md`](docs/ROADMAP.md).
@@ -28,13 +28,13 @@ Pré-requisito: **Node.js 22 ou mais recente** (`node -v` para conferir).
 ```bash
 npm install      # instala as dependências (só na primeira vez)
 npm start        # abre em http://localhost:4200
-npm test         # roda os testes (31)
+npm test         # roda os testes (44)
 npm run build    # gera a versão de produção em dist/
 ```
 
 ## Como usar o laboratório
 
-1. Abra o **CSS Playground** (botão principal do Dashboard ou item 01 do menu).
+1. Abra o **CSS Playground** ou o **GSAP Studio** (itens 01 e 02 do menu).
 2. Escolha uma demo na faixa de botões (Transitions, Keyframes, Hover…).
 3. Mexa nos **Controles** e clique em **Executar** — o botão muda conforme a demo (ex.: "Alternar estado", "Virar card").
 4. Veja o **Código** mudar junto com os controles e use **Copiar**.
@@ -44,6 +44,7 @@ Labs marcados como "em breve" ainda mostram só o plano do que vão ensinar.
 
 ## Roteiro de teste
 
+- Fase 2 (GSAP Studio): [`docs/CHECKLIST-FASE-2-GSAP.md`](docs/CHECKLIST-FASE-2-GSAP.md)
 - Fase 2 (CSS Playground): [`docs/CHECKLIST-FASE-2-CSS.md`](docs/CHECKLIST-FASE-2-CSS.md)
 - Fase 1 (base): [`docs/CHECKLIST-FASE-1.md`](docs/CHECKLIST-FASE-1.md)
 
@@ -56,18 +57,21 @@ src/
 ├── styles/                    Design System Kalixto
 │   ├── tokens.css             cores, fontes, espaçamentos, movimento
 │   ├── base.css               reset, foco, acessibilidade
+│   ├── lab.css                layout comum dos laboratórios
 │   └── components.css         .kx-card, .kx-btn, .kx-badge, .kx-glass…
 └── app/
     ├── core/
     │   ├── models/            tipos: Lab, Effect
-    │   └── data/              labs · effects · roadmap · css-demos (demos do CSS Playground)
+    │   ├── models/            Lab, Effect, LabDemo
+    │   └── data/              labs · effects · roadmap · css-demos · gsap-demos
     ├── layout/
     │   ├── shell/             estrutura geral (menu + conteúdo, gaveta no mobile)
     │   └── sidebar/           menu lateral gerado a partir de LABS
-    ├── shared/components/     kx-page-header · kx-status-badge · kx-code-viewer · kx-breadcrumb · kx-icon
+    ├── shared/components/     kx-page-header · kx-status-badge · kx-code-viewer · kx-breadcrumb · kx-icon · kx-logo · kx-demo-controls
     └── pages/
         ├── dashboard/         página inicial
         ├── css-playground/    Laboratório 01 (/labs/css?demo=…)
+        ├── gsap-studio/       Laboratório 02 (/labs/gsap?demo=…)
         ├── lab-page/          plano dos labs ainda sem demos (/labs/:id)
         ├── biblioteca/        biblioteca de efeitos com busca e filtro
         ├── design-system/     vitrine dos tokens e componentes
@@ -84,7 +88,8 @@ Dashboard, menu, biblioteca e roadmap se atualizam sozinhos a partir deles.
 |---|---|
 | `/` | Dashboard |
 | `/labs/css` | CSS Playground — 8 demos (`?demo=hover` abre direto) |
-| `/labs/gsap` · `/labs/scroll` | Próximos laboratórios do MVP |
+| `/labs/gsap` | GSAP Studio — 7 demos (`?demo=easing` abre direto) |
+| `/labs/scroll` | Próximo laboratório do MVP |
 | `/labs/svg` | SVG Lab (Fase 3) |
 | `/labs/three` · `/labs/webgl` | Bloqueados até validar o MVP |
 | `/biblioteca` | Biblioteca de efeitos (aceita `?lab=css`) |

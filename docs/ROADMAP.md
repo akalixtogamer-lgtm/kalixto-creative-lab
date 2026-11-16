@@ -33,11 +33,12 @@ Os dados exibidos na página `/roadmap` ficam em `src/app/core/data/roadmap.data
 
 - [x] Revisão de UI/UX da base
 - [x] Laboratório 01 — CSS Playground (8 demos) → **testar com `docs/CHECKLIST-FASE-2-CSS.md`**
-- [ ] Laboratório 02 — GSAP Studio (instalar `gsap` nesta fase)
+- [x] Logo oficial Kalixto aplicada
+- [x] Laboratório 02 — GSAP Studio (7 demos) → **testar com `docs/CHECKLIST-FASE-2-GSAP.md`**
 - [ ] Laboratório 03 — Scroll Lab
 - [x] Code Viewer
-- [x] Documentação dos efeitos (CSS)
-- [x] Controles interativos, botões de executar e reiniciar (CSS)
+- [x] Documentação dos efeitos (CSS e GSAP)
+- [x] Controles interativos, botões de executar e reiniciar (CSS e GSAP)
 - [ ] Responsividade e testes funcionais
 
 ---

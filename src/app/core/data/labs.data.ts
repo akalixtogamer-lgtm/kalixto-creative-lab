@@ -33,8 +33,8 @@ export const LABS: Lab[] = [
     titulo: 'GSAP Studio',
     resumo: 'Tweens, timelines e easing com controles de reprodução.',
     fase: 2,
-    status: 'em-construcao',
-    disponivel: false,
+    status: 'em-teste',
+    disponivel: true,
     tecnologias: ['GSAP'],
     topicos: [
       'gsap.to()',

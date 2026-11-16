@@ -23,6 +23,11 @@ export const routes: Routes = [
           import('./pages/css-playground/css-playground').then((m) => m.CssPlayground),
       },
       {
+        path: 'labs/gsap',
+        title: 'GSAP Studio · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/gsap-studio/gsap-studio').then((m) => m.GsapStudio),
+      },
+      {
         path: 'labs/:id',
         title: 'Laboratório · Kalixto Creative Lab',
         loadComponent: () => import('./pages/lab-page/lab-page').then((m) => m.LabPage),

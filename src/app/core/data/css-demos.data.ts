@@ -1,4 +1,4 @@
-import { EffectNivel } from '../models/effect.model';
+import { LabDemo, Valores } from '../models/demo.model';
 
 /**
  * Demonstrações do Laboratório 01 — CSS Playground.
@@ -12,45 +12,9 @@ import { EffectNivel } from '../models/effect.model';
  * mesmos valores como variáveis CSS (--dur, --ease…).
  */
 
-export type Valor = number | string;
-export type Valores = Record<string, Valor>;
-
-export type ParamDef =
-  | {
-      id: string;
-      rotulo: string;
-      tipo: 'range';
-      min: number;
-      max: number;
-      passo: number;
-      unidade: string;
-      padrao: number;
-    }
-  | {
-      id: string;
-      rotulo: string;
-      tipo: 'select';
-      opcoes: { valor: string; rotulo: string }[];
-      padrao: string;
-    };
-
-export interface CssDemo {
-  id: string;
-  topico: string;
-  titulo: string;
-  nivel: EffectNivel;
-  resumo: string;
-  /** Parágrafos curtos de explicação. */
-  explicacao: string[];
-  /** Dica prática para usar em projetos reais. */
-  dica: string;
-  /** Texto do botão principal (o que "Executar" faz nesta demo). */
-  acao: string;
-  /** Instrução curta que aparece no palco. */
-  instrucao: string;
-  params: ParamDef[];
-  codigo: (v: Valores) => string;
-}
+export type CssDemo = LabDemo;
+export type { ParamDef, Valor, Valores } from '../models/demo.model';
+export { valoresPadrao } from '../models/demo.model';
 
 const EASINGS = [
   { valor: 'ease', rotulo: 'ease (padrão)' },
@@ -407,8 +371,3 @@ ${regras[String(v['estilo'])]}
 }`,
   },
 ];
-
-/** Valores iniciais de uma demo. */
-export function valoresPadrao(demo: CssDemo): Valores {
-  return Object.fromEntries(demo.params.map((p) => [p.id, p.padrao]));
-}

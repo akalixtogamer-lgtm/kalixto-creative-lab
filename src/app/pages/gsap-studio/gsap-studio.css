@@ -1,0 +1,180 @@
+/* =========================================================
+   GSAP STUDIO — elementos do palco
+   O layout comum (.pg__*) fica em src/styles/lab.css.
+   Aqui só a aparência dos elementos; o movimento vem do GSAP.
+   ========================================================= */
+
+/* to / fromTo */
+.g-caixa {
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--kx-roxo), var(--kx-magenta));
+  box-shadow: 0 0 28px rgb(139 92 246 / 0.5);
+  font: 800 var(--kx-fs-sm) var(--kx-font-mono);
+  letter-spacing: 0.08em;
+}
+.g-caixa--ciano {
+  background: linear-gradient(135deg, var(--kx-azul), var(--kx-ciano));
+  color: var(--kx-bg);
+  font-size: 2rem;
+  font-family: var(--kx-font-display);
+}
+
+/* from */
+.g-texto {
+  text-align: center;
+  padding: 0 var(--kx-space-4);
+}
+.g-titulo {
+  font: 700 clamp(2rem, 7cqi, 3.25rem) / 1.1 var(--kx-font-display);
+  background: var(--kx-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.g-sub {
+  margin-top: var(--kx-space-2);
+  color: var(--kx-text-soft);
+}
+
+/* timeline */
+.g-trilhas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-4);
+}
+.g-trilha {
+  width: 224px;
+  padding: 2px;
+  border-bottom: 1px dashed var(--kx-border-strong);
+}
+.g-forma {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+.g-circulo { border-radius: 50%; background: var(--kx-magenta); }
+.g-quadrado { border-radius: 8px; background: var(--kx-roxo); }
+.g-triangulo {
+  background: var(--kx-ciano);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+/* stagger */
+.g-grade {
+  display: grid;
+  grid-template-columns: repeat(5, 36px);
+  gap: var(--kx-space-4);
+}
+.g-ponto {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff 0 8%, var(--kx-magenta) 30%, var(--kx-roxo));
+  box-shadow: 0 0 14px rgb(255 43 214 / 0.4);
+}
+
+/* easing */
+.g-easing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kx-space-3);
+  width: min(100%, 420px);
+  padding: var(--kx-space-4);
+}
+.g-curva {
+  width: 100%;
+  max-width: 300px;
+  overflow: visible;
+}
+.g-curva-guia {
+  stroke: var(--kx-border-strong);
+  stroke-dasharray: 4 4;
+}
+.g-curva-linha {
+  fill: none;
+  stroke: var(--kx-magenta);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgb(255 43 214 / 0.6));
+}
+.g-curva-ponto {
+  fill: var(--kx-ciano);
+}
+.g-ease-nome {
+  color: var(--kx-ciano);
+  font-size: var(--kx-fs-sm);
+}
+.g-trilho {
+  width: 100%;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.06);
+}
+.g-bola {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--kx-gradient);
+}
+
+/* reprodução */
+.g-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-4);
+  width: 100%;
+  padding: var(--kx-space-4);
+}
+.g-player__cena {
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+}
+.g-card {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--kx-magenta), var(--kx-azul));
+  font: 800 1.75rem var(--kx-font-display);
+}
+.g-player__barra {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-3);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md);
+  background: var(--kx-bg-blur);
+}
+.g-player__botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+}
+.g-player__botoes .kx-btn {
+  min-height: 36px;
+  padding: 0 var(--kx-space-3);
+}
+.g-player__progresso {
+  display: flex;
+  align-items: center;
+  gap: var(--kx-space-3);
+}
+.g-player__progresso input {
+  flex: 1;
+  accent-color: var(--kx-roxo);
+}
+.g-player__progresso output {
+  min-width: 3.5ch;
+  color: var(--kx-ciano);
+  font: var(--kx-fs-sm) var(--kx-font-mono);
+  text-align: right;
+}

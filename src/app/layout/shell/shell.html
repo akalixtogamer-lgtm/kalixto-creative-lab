@@ -13,7 +13,10 @@
       <kx-icon [name]="menuAberto() ? 'close' : 'menu'" />
       <span class="sr-only">{{ menuAberto() ? 'Fechar menu' : 'Abrir menu' }}</span>
     </button>
-    <span class="shell__topbar-title">KALIXTO <small>Creative Lab</small></span>
+    <a class="shell__topbar-brand" routerLink="/" (click)="fecharMenu()">
+      <kx-logo [tamanho]="32" />
+      <span class="shell__topbar-title">KALIXTO <small>Creative Lab</small></span>
+    </a>
   </header>
 
   <aside id="menu-lateral" class="shell__sidebar kx-glass">

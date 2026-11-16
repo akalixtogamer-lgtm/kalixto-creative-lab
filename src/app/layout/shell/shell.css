@@ -43,6 +43,13 @@
     background: var(--kx-bg-blur);
     backdrop-filter: blur(16px);
   }
+  .shell__topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--kx-space-3);
+    color: var(--kx-text);
+    text-decoration: none;
+  }
   .shell__topbar-title {
     font-family: var(--kx-font-display);
     font-weight: 700;

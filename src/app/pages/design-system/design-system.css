@@ -48,3 +48,29 @@
   align-items: center;
   gap: var(--kx-space-3);
 }
+
+/* Marca */
+.marca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kx-space-6);
+  padding: var(--kx-space-5);
+}
+.marca__tamanhos {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--kx-space-5);
+}
+.marca__tamanhos figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kx-space-2);
+  margin: 0;
+  font-size: var(--kx-fs-xs);
+}
+.marca__regra {
+  flex-basis: 100%;
+  font-size: var(--kx-fs-sm);
+}

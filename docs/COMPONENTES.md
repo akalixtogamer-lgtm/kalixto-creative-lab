@@ -43,6 +43,13 @@ Com `prefers-reduced-motion`, as durações viram 0.
 | `CodeViewer` | `kx-code-viewer` | `codigo`*, `linguagem`, `titulo` — botão Copiar incluso |
 | `Breadcrumb` | `kx-breadcrumb` | `itens`* (`{ rotulo, rota? }[]`) |
 | `Icon` | `kx-icon` | `name`* (home, library, palette, route, play, reset, copy, check, lock, arrow-left, arrow-right, menu, close) |
-| `CssPlayground` | página | query `?demo=` |
+| `Logo` | `kx-logo` | `tamanho` (px, padrão 44), `descritiva` (adiciona texto alternativo) |
+| `DemoControls` | `kx-demo-controls` | `params`*, `valores`*, saída `mudou` |
+| `CssPlayground` · `GsapStudio` | páginas | query `?demo=` |
+
+## Marca
+
+Selo ilustrado completo em todos os tamanhos (círculo, fundo escuro). Arquivos em `public/brand/`:
+`kalixto-logo-{64,128,256,512}.webp`, `icon-192.png`, `apple-touch-icon.png` e `public/favicon.ico`.
 
 \* obrigatório

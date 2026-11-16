@@ -17,17 +17,6 @@
   color: var(--kx-text);
   text-decoration: none;
 }
-.sidebar__logo {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-family: var(--kx-font-display);
-  font-weight: 800;
-  background: var(--kx-gradient);
-  box-shadow: var(--kx-glow-magenta);
-}
 .sidebar__brand-text {
   display: flex;
   flex-direction: column;

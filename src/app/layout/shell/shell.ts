@@ -1,7 +1,8 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { Sidebar } from '../sidebar/sidebar';
 import { Icon } from '../../shared/components/icon/icon';
+import { Logo } from '../../shared/components/logo/logo';
 
 /**
  * Estrutura geral da aplicação: menu lateral + área de conteúdo.
@@ -9,7 +10,7 @@ import { Icon } from '../../shared/components/icon/icon';
  */
 @Component({
   selector: 'kx-shell',
-  imports: [RouterOutlet, Sidebar, Icon],
+  imports: [RouterOutlet, RouterLink, Sidebar, Icon, Logo],
   templateUrl: './shell.html',
   styleUrl: './shell.css',
   host: { '(document:keydown.escape)': 'fecharMenu()' },

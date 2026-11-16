@@ -5,12 +5,13 @@ import { EFFECTS } from '../../core/data/effects.data';
 import { FASES } from '../../core/data/roadmap.data';
 import { Lab } from '../../core/models/lab.model';
 import { Icon } from '../../shared/components/icon/icon';
+import { Logo } from '../../shared/components/logo/logo';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 
 /** Página inicial: o que fazer primeiro, laboratórios e andamento. */
 @Component({
   selector: 'kx-dashboard',
-  imports: [RouterLink, Icon, StatusBadge],
+  imports: [RouterLink, Icon, Logo, StatusBadge],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

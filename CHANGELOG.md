@@ -7,6 +7,22 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [0.3.0] — 2026-11-16 · Fase 2 — GSAP Studio + logo Kalixto
+
+> Status: **pronto para testar** (ver `docs/CHECKLIST-FASE-2-GSAP.md`). Ainda não publicado no GitHub Pages.
+
+### Adicionado
+- **Laboratório 02 — GSAP Studio** com 7 demos: gsap.to(), gsap.from(), gsap.fromTo(), Timeline, Stagger, Easing (com gráfico da curva ao vivo) e Controles de reprodução (play, pause, reverse, restart, barra de progresso e timeScale).
+- Animações rodam em `gsap.context()`: Reiniciar e trocar de demo desfazem tudo, sem sobras de estilo.
+- GSAP 3.15 é carregado só quando o GSAP Studio abre (~30 kB).
+- **Logo oficial Kalixto** aplicada: menu lateral, barra do celular, Dashboard, favicon, ícone do iPhone e seção "Marca" no Design System. Componente `kx-logo`, arquivos em `public/brand/`.
+- Componente compartilhado `kx-demo-controls` e layout comum dos labs em `src/styles/lab.css`.
+- 13 testes novos do GSAP Studio (44 no total).
+
+### Alterado
+- Modelo comum de demos em `core/models/demo.model.ts` (usado por CSS e GSAP).
+- Níveis exibidos com acento (intermediário, avançado).
+
 ## [0.2.0] — 2026-11-16 · Fase 2 — CSS Playground + revisão de UI/UX
 
 > Status: **pronto para testar** (ver `docs/CHECKLIST-FASE-2-CSS.md`). Ainda não publicado no GitHub Pages.

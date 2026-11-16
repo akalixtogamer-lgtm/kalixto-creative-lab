@@ -32,6 +32,43 @@
     animation: none;
   }
 }
+.hero {
+  padding-right: clamp(var(--kx-space-5), 4vw, 300px);
+}
+.hero > :not(.hero__logo) {
+  position: relative;
+  z-index: 1;
+}
+/* Logo flutuando à direita do hero */
+.hero__logo {
+  position: absolute;
+  top: 50%;
+  right: clamp(var(--kx-space-5), 4vw, var(--kx-space-7));
+  z-index: 1;
+  translate: 0 -50%;
+  animation: logo-flutua 6s var(--kx-ease-in-out) infinite alternate;
+}
+@keyframes logo-flutua {
+  to { translate: 0 calc(-50% - 10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__logo { animation: none; }
+}
+/* Telas menores: logo vai para o topo, centralizada e menor */
+@media (max-width: 1100px) {
+  .hero {
+    padding-right: clamp(var(--kx-space-5), 4vw, var(--kx-space-7));
+  }
+  .hero__logo {
+    position: static;
+    translate: none;
+    align-self: center;
+    animation: none;
+  }
+  .hero__logo .kx-logo {
+    --logo-size: 140px !important;
+  }
+}
 .hero__actions {
   position: relative;
   z-index: 1;

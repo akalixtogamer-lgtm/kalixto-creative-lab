@@ -6,6 +6,25 @@
   />
 
   <section class="kx-section">
+    <h2 class="kx-section-title">Marca</h2>
+    <div class="marca kx-glass">
+      <kx-logo [tamanho]="160" descritiva />
+      <div class="marca__tamanhos">
+        @for (t of [96, 48, 32]; track t) {
+          <figure>
+            <kx-logo [tamanho]="t" />
+            <figcaption class="kx-muted">{{ t }}px</figcaption>
+          </figure>
+        }
+      </div>
+      <p class="kx-muted marca__regra">
+        Selo ilustrado completo em todos os tamanhos, sempre em círculo e sobre fundo escuro.
+        Componente: <code>&lt;kx-logo [tamanho]="48" /&gt;</code> · arquivos em <code>public/brand/</code>.
+      </p>
+    </div>
+  </section>
+
+  <section class="kx-section">
     <h2 class="kx-section-title">Cores</h2>
     <div class="swatches">
       @for (c of cores; track c.token) {

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Logo } from '../../shared/components/logo/logo';
 import { PageHeader } from '../../shared/components/page-header/page-header';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 
@@ -8,7 +9,7 @@ import { StatusBadge } from '../../shared/components/status-badge/status-badge';
  */
 @Component({
   selector: 'kx-design-system',
-  imports: [PageHeader, StatusBadge],
+  imports: [Logo, PageHeader, StatusBadge],
   templateUrl: './design-system.html',
   styleUrl: './design-system.css',
 })

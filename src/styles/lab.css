@@ -1,0 +1,180 @@
+/* =========================================================
+   LAYOUT DOS LABORATÓRIOS (classes .pg__*)
+   Compartilhado por CSS Playground, GSAP Studio e Scroll Lab:
+   cabeçalho, seletor de demos, palco, controles, código e explicação.
+   ========================================================= */
+
+/* ---------- Cabeçalho e "como usar" ---------- */
+.pg__passos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2) var(--kx-space-5);
+  margin: var(--kx-space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--kx-text-soft);
+  font-size: var(--kx-fs-sm);
+}
+.pg__passos li {
+  display: flex;
+  align-items: center;
+  gap: var(--kx-space-2);
+}
+.pg__passos span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--kx-gradient);
+  color: #fff;
+  font-size: var(--kx-fs-xs);
+  font-weight: 700;
+}
+
+/* ---------- Seletor de demos ---------- */
+.pg__demos {
+  /* Esmaece a borda direita no mobile para indicar que dá para rolar */
+  mask-image: linear-gradient(90deg, #000 85%, transparent);
+  display: flex;
+  gap: var(--kx-space-2);
+  overflow-x: auto;
+  padding-bottom: var(--kx-space-2);
+  scrollbar-width: thin;
+}
+.pg__demo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kx-space-2);
+  flex-shrink: 0;
+  min-height: 42px;
+  padding: 0 var(--kx-space-4);
+  border: 1px solid var(--kx-border);
+  border-radius: 999px;
+  background: var(--kx-surface);
+  color: var(--kx-text-soft);
+  font: 600 var(--kx-fs-sm) var(--kx-font-body);
+  cursor: pointer;
+  transition: background var(--kx-dur-fast), border-color var(--kx-dur-fast), color var(--kx-dur-fast);
+}
+.pg__demo-btn:hover {
+  border-color: var(--kx-border-strong);
+  color: var(--kx-text);
+}
+.pg__demo-btn.is-active {
+  border-color: var(--kx-acento, var(--kx-magenta));
+  background: color-mix(in srgb, var(--kx-acento, var(--kx-magenta)) 16%, transparent);
+  color: var(--kx-text);
+}
+.pg__demo-num {
+  font-family: var(--kx-font-mono);
+  font-size: var(--kx-fs-xs);
+  color: var(--kx-acento, var(--kx-magenta));
+}
+
+/* ---------- Grade principal ---------- */
+.pg__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  grid-template-areas:
+    'palco    controles'
+    'palco    explica'
+    'codigo   explica';
+  grid-template-rows: auto auto 1fr;
+  gap: var(--kx-space-5);
+  align-items: start;
+}
+.pg__palco-wrap { grid-area: palco; }
+.pg__controles { grid-area: controles; }
+.pg__codigo { grid-area: codigo; min-width: 0; }
+.pg__explica { grid-area: explica; }
+
+@media (min-width: 1300px) {
+  .pg__demos {
+    flex-wrap: wrap;
+    mask-image: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .pg__grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'palco' 'controles' 'codigo' 'explica';
+    grid-template-rows: none;
+  }
+}
+
+.pg__bloco-titulo {
+  font-size: var(--kx-fs-lg);
+}
+
+/* ---------- Palco ---------- */
+.pg__palco-wrap {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.pg__palco-wrap .kx-eyebrow {
+  color: var(--kx-acento, var(--kx-magenta));
+}
+.pg__controles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-4);
+  padding: var(--kx-space-5);
+}
+.pg__palco-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-4) var(--kx-space-5);
+}
+.pg__demo-titulo {
+  margin-top: var(--kx-space-1);
+  font-size: var(--kx-fs-lg);
+}
+.palco {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  margin: 0 var(--kx-space-4);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md);
+  background-color: rgb(0 0 0 / 0.3);
+  background-image:
+    linear-gradient(var(--kx-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--kx-border) 1px, transparent 1px);
+  background-size: 32px 32px;
+  overflow: hidden;
+  container-type: inline-size;
+}
+/* Todos os filhos ocupam a mesma célula (sobrepostos no centro) */
+.palco > * {
+  grid-area: 1 / 1;
+}
+.pg__instrucao {
+  padding: var(--kx-space-3) var(--kx-space-5) 0;
+  font-size: var(--kx-fs-sm);
+}
+.pg__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-4) var(--kx-space-5) var(--kx-space-5);
+}
+
+/* ---------- Explicação ---------- */
+.pg__explica {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-4);
+}
+.pg__status {
+  display: flex;
+  align-items: center;
+  gap: var(--kx-space-2);
+  font-size: var(--kx-fs-sm);
+}
+

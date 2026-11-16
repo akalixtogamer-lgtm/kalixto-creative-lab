@@ -2,6 +2,7 @@ import { Component, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LABS } from '../../core/data/labs.data';
 import { Icon, IconName } from '../../shared/components/icon/icon';
+import { Logo } from '../../shared/components/logo/logo';
 
 /**
  * Menu lateral. Lista as páginas gerais e todos os laboratórios
@@ -9,7 +10,7 @@ import { Icon, IconName } from '../../shared/components/icon/icon';
  */
 @Component({
   selector: 'kx-sidebar',
-  imports: [RouterLink, RouterLinkActive, Icon],
+  imports: [RouterLink, RouterLinkActive, Icon, Logo],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
