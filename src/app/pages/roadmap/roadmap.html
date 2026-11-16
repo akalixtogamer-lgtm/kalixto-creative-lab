@@ -1,0 +1,36 @@
+<div class="kx-page">
+  <kx-page-header
+    eyebrow="Implementação progressiva"
+    titulo="Roadmap"
+    descricao="Uma fase por vez. Nenhuma fase é considerada concluída só porque a interface foi construída."
+  />
+
+  <ol class="timeline">
+    @for (f of fases; track f.numero) {
+      <li class="timeline__item" [attr.data-situacao]="f.situacao">
+        <span class="timeline__ponto" aria-hidden="true">{{ f.numero }}</span>
+        <div class="timeline__card kx-glass">
+          <div class="timeline__topo">
+            <h2 class="kx-card__title">Fase {{ f.numero }} — {{ f.titulo }}</h2>
+            <span class="kx-badge timeline__badge">{{ rotulos[f.situacao] }}</span>
+          </div>
+          <ul class="kx-list">
+            @for (e of f.entregas; track e) {
+              <li>{{ e }}</li>
+            }
+          </ul>
+          <p class="kx-muted"><strong>Critério:</strong> {{ f.criterio }}</p>
+        </div>
+      </li>
+    }
+  </ol>
+
+  <section class="kx-section">
+    <h2 class="kx-section-title">Critérios de passagem entre fases</h2>
+    <ol class="criterios">
+      @for (c of criterios; track c) {
+        <li class="kx-glass">{{ c }}</li>
+      }
+    </ol>
+  </section>
+</div>

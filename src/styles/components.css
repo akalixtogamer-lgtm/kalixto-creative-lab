@@ -1,0 +1,237 @@
+/* =========================================================
+   COMPONENTES DO DESIGN SYSTEM (classes globais .kx-*)
+   Documentados visualmente na página /design-system.
+   ========================================================= */
+
+/* ---------- Layout de página ---------- */
+.kx-page {
+  max-width: var(--kx-content-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-6);
+}
+.kx-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-4);
+}
+.kx-section-title {
+  font-size: var(--kx-fs-lg);
+}
+.kx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--kx-space-4);
+}
+
+/* ---------- Cabeçalho de página ---------- */
+.kx-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-3);
+}
+.kx-eyebrow {
+  color: var(--kx-magenta);
+  font-family: var(--kx-font-mono);
+  font-size: var(--kx-fs-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.kx-title {
+  font-size: var(--kx-fs-2xl);
+  font-weight: 700;
+}
+.kx-gradient-text {
+  background: var(--kx-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.kx-lead {
+  max-width: 68ch;
+  color: var(--kx-text-soft);
+  font-size: var(--kx-fs-lg);
+  line-height: 1.5;
+}
+.kx-muted {
+  color: var(--kx-text-muted);
+}
+
+/* ---------- Vidro (glassmorphism) ---------- */
+.kx-glass {
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-lg);
+  background: var(--kx-surface);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+/* ---------- Card ---------- */
+.kx-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-5);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-lg);
+  background: var(--kx-surface);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: inherit;
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    transform var(--kx-dur-base) var(--kx-ease-out),
+    border-color var(--kx-dur-base),
+    box-shadow var(--kx-dur-base);
+}
+/* Linha de acento no topo do card */
+.kx-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--kx-acento, var(--kx-gradient));
+  opacity: 0.8;
+}
+a.kx-card:hover,
+a.kx-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--kx-border-strong);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35), 0 0 0 1px var(--kx-acento, var(--kx-roxo));
+}
+.kx-card__title {
+  font-size: var(--kx-fs-lg);
+}
+.kx-card__num {
+  color: var(--kx-acento, var(--kx-magenta));
+  font-family: var(--kx-font-mono);
+  font-size: var(--kx-fs-sm);
+}
+.kx-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kx-space-2);
+  margin-top: auto;
+}
+
+/* ---------- Botões ---------- */
+.kx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kx-space-2);
+  min-height: 40px;
+  padding: 0 var(--kx-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--kx-radius-sm);
+  font: 600 var(--kx-fs-sm) / 1 var(--kx-font-body);
+  color: var(--kx-text);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--kx-dur-fast), box-shadow var(--kx-dur-fast), transform var(--kx-dur-fast);
+}
+.kx-btn:active {
+  transform: scale(0.97);
+}
+.kx-btn--primary {
+  background: var(--kx-gradient);
+  box-shadow: var(--kx-glow-magenta);
+}
+.kx-btn--primary:hover {
+  box-shadow: 0 0 32px rgb(255 43 214 / 0.55);
+}
+.kx-btn--ghost {
+  border-color: var(--kx-border-strong);
+  background: var(--kx-surface);
+}
+.kx-btn--ghost:hover {
+  background: var(--kx-surface-hover);
+}
+.kx-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- Badges / chips ---------- */
+.kx-badge,
+.kx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kx-space-1);
+  padding: 2px var(--kx-space-2);
+  border: 1px solid var(--kx-border-strong);
+  border-radius: 999px;
+  font-size: var(--kx-fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.kx-chip {
+  color: var(--kx-text-soft);
+  font-family: var(--kx-font-mono);
+  font-weight: 400;
+}
+.kx-badge--em-construcao {
+  border-color: rgb(255 181 71 / 0.5);
+  color: var(--kx-warning);
+}
+.kx-badge--planejado {
+  border-color: rgb(34 227 255 / 0.45);
+  color: var(--kx-ciano);
+}
+.kx-badge--bloqueado {
+  color: var(--kx-text-muted);
+}
+.kx-badge--validado {
+  border-color: rgb(46 229 157 / 0.5);
+  color: var(--kx-success);
+}
+
+/* ---------- Listas ---------- */
+.kx-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.kx-list li {
+  position: relative;
+  padding-left: var(--kx-space-5);
+  color: var(--kx-text-soft);
+}
+.kx-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--kx-acento, var(--kx-magenta));
+}
+
+/* ---------- Callout ---------- */
+.kx-callout {
+  padding: var(--kx-space-4) var(--kx-space-5);
+  border: 1px solid var(--kx-border);
+  border-left: 3px solid var(--kx-acento, var(--kx-ciano));
+  border-radius: var(--kx-radius-md);
+  background: var(--kx-surface);
+  color: var(--kx-text-soft);
+}
+.kx-callout strong {
+  color: var(--kx-text);
+}
+
+/* ---------- Bloco de código ---------- */
+.kx-code {
+  margin: 0;
+  padding: var(--kx-space-4);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md);
+  background: rgb(0 0 0 / 0.4);
+  color: var(--kx-text-soft);
+  font-size: var(--kx-fs-sm);
+  overflow-x: auto;
+}

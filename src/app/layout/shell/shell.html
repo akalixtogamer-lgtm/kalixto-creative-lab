@@ -1,0 +1,30 @@
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+<div class="shell" [class.menu-aberto]="menuAberto()">
+  <!-- Barra superior (somente mobile) -->
+  <header class="shell__topbar">
+    <button
+      type="button"
+      class="kx-btn kx-btn--ghost shell__menu-btn"
+      [attr.aria-expanded]="menuAberto()"
+      aria-controls="menu-lateral"
+      (click)="alternarMenu()"
+    >
+      <span aria-hidden="true">{{ menuAberto() ? '✕' : '☰' }}</span>
+      <span class="sr-only">{{ menuAberto() ? 'Fechar menu' : 'Abrir menu' }}</span>
+    </button>
+    <span class="shell__topbar-title">KALIXTO <small>Creative Lab</small></span>
+  </header>
+
+  <aside id="menu-lateral" class="shell__sidebar kx-glass">
+    <kx-sidebar (navegou)="fecharMenu()" />
+  </aside>
+
+  @if (menuAberto()) {
+    <div class="shell__backdrop" (click)="fecharMenu()" aria-hidden="true"></div>
+  }
+
+  <main id="conteudo" class="shell__main" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>

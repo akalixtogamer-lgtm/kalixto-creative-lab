@@ -1,0 +1,51 @@
+# Publicação no GitHub Pages — SOMENTE MANUAL.
+# Este workflow nunca roda sozinho em push. Para publicar:
+#   GitHub → aba Actions → "Publicar no GitHub Pages" → Run workflow
+# Antes, ative: Settings → Pages → Source: GitHub Actions.
+name: Publicar no GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmacao:
+        description: 'Digite PUBLICAR para confirmar que a versão foi testada'
+        required: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: ${{ github.event.inputs.confirmacao == 'PUBLICAR' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Testes
+        run: npm test
+      - name: Build para o GitHub Pages
+        run: npm run build:pages
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/kalixto-creative-lab/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

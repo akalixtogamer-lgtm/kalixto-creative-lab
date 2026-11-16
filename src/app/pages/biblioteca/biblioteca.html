@@ -1,0 +1,51 @@
+<div class="kx-page">
+  <kx-page-header
+    eyebrow="Catálogo"
+    titulo="Biblioteca de efeitos"
+    descricao="Todos os efeitos do laboratório num só lugar. Cada efeito só é marcado como implementado depois de ter demo, código e explicação validados."
+  />
+
+  <div class="filtros kx-glass">
+    <label class="filtros__campo">
+      <span class="kx-muted">Buscar</span>
+      <input
+        type="search"
+        class="filtros__input"
+        placeholder="ex.: hover, timeline, pin…"
+        [ngModel]="busca()"
+        (ngModelChange)="busca.set($event)"
+      />
+    </label>
+    <label class="filtros__campo">
+      <span class="kx-muted">Laboratório</span>
+      <select class="filtros__input" [ngModel]="filtroLab()" (ngModelChange)="filtroManual.set($event)">
+        <option value="todos">Todos</option>
+        @for (l of labs; track l.id) {
+          <option [value]="l.id">{{ l.titulo }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <p class="kx-muted" aria-live="polite">{{ efeitos().length }} efeito(s) encontrado(s)</p>
+
+  <div class="kx-grid">
+    @for (e of efeitos(); track e.id) {
+      <article class="kx-card" [attr.data-acento]="acentoLab(e.labId)">
+        <span class="kx-card__num">{{ nomeLab(e.labId) }} · {{ e.topico }}</span>
+        <h2 class="kx-card__title">{{ e.nome }}</h2>
+        <p class="kx-muted">{{ e.descricao }}</p>
+        <div class="kx-card__meta">
+          <span class="kx-chip">{{ e.nivel }}</span>
+          @if (e.implementado) {
+            <span class="kx-badge kx-badge--validado">Implementado</span>
+          } @else {
+            <span class="kx-badge kx-badge--planejado">Planejado</span>
+          }
+        </div>
+      </article>
+    } @empty {
+      <p class="kx-muted">Nenhum efeito encontrado com esse filtro.</p>
+    }
+  </div>
+</div>

@@ -1,0 +1,92 @@
+/* ===== Linha do tempo das fases ===== */
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-4);
+  margin: 0;
+  padding: 0 0 0 52px;
+  list-style: none;
+}
+/* Trilho vertical */
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 17px;
+  width: 2px;
+  background: linear-gradient(var(--kx-magenta), var(--kx-azul), transparent);
+}
+.timeline__item {
+  position: relative;
+}
+.timeline__ponto {
+  position: absolute;
+  top: var(--kx-space-4);
+  left: -52px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--kx-border-strong);
+  border-radius: 50%;
+  background: var(--kx-bg-elev);
+  font-family: var(--kx-font-mono);
+  font-weight: 700;
+}
+.timeline__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-5);
+}
+.timeline__topo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--kx-space-2);
+}
+
+/* Destaque por situação */
+[data-situacao='em-andamento'] .timeline__ponto {
+  border-color: var(--kx-magenta);
+  background: var(--kx-gradient);
+  box-shadow: var(--kx-glow-magenta);
+}
+[data-situacao='em-andamento'] .timeline__badge {
+  border-color: rgb(255 181 71 / 0.5);
+  color: var(--kx-warning);
+}
+[data-situacao='proxima'] .timeline__badge {
+  color: var(--kx-ciano);
+}
+[data-situacao='concluida'] .timeline__badge {
+  color: var(--kx-success);
+}
+[data-situacao='futura'] .timeline__card {
+  opacity: 0.7;
+}
+
+/* Critérios */
+.criterios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: var(--kx-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: crit;
+}
+.criterios li {
+  padding: var(--kx-space-3) var(--kx-space-4);
+  border-radius: var(--kx-radius-md);
+  font-size: var(--kx-fs-sm);
+  counter-increment: crit;
+}
+.criterios li::before {
+  content: counter(crit) '. ';
+  color: var(--kx-magenta);
+  font-family: var(--kx-font-mono);
+}

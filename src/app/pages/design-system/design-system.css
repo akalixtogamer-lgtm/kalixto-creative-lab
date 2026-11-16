@@ -1,0 +1,50 @@
+/* ===== Vitrine do Design System ===== */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--kx-space-3);
+}
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-1);
+  padding: var(--kx-space-3);
+  border-radius: var(--kx-radius-md);
+  font-size: var(--kx-fs-sm);
+}
+.swatch__cor {
+  height: 56px;
+  margin-bottom: var(--kx-space-2);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-sm);
+}
+.gradiente {
+  height: 48px;
+  border-radius: var(--kx-radius-md);
+  background: var(--kx-gradient);
+}
+
+.tipos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-5);
+}
+.tipos__linha {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: baseline;
+  gap: var(--kx-space-4);
+}
+.ds-t-2xl { font: 700 var(--kx-fs-2xl) var(--kx-font-display); }
+.ds-t-xl { font: 700 var(--kx-fs-xl) var(--kx-font-display); }
+.ds-t-lg { font: 600 var(--kx-fs-lg) var(--kx-font-display); }
+.ds-t-md { font-size: var(--kx-fs-md); }
+.ds-t-sm { font-size: var(--kx-fs-sm); color: var(--kx-text-soft); }
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kx-space-3);
+}
