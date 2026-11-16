@@ -1,0 +1,89 @@
+/* =========================================================
+   DESIGN SYSTEM KALIXTO — TOKENS
+   Estética neon afro-futurista: magenta, roxo e azul elétrico
+   sobre fundo quase preto, com superfícies de vidro (glassmorphism).
+   Altere aqui para ajustar a identidade de todo o laboratório.
+   ========================================================= */
+:root {
+  /* ---------- Cores de marca ---------- */
+  --kx-magenta: #ff2bd6;
+  --kx-roxo: #8b5cf6;
+  --kx-azul: #2f7bff;
+  --kx-ciano: #22e3ff;
+
+  /* ---------- Fundo e superfícies ---------- */
+  --kx-bg: #07050f;
+  --kx-bg-elev: #0e0a1d;
+  --kx-bg-blur: rgb(7 5 15 / 0.72);
+  --kx-surface: rgb(255 255 255 / 0.045);
+  --kx-surface-hover: rgb(255 255 255 / 0.07);
+  --kx-surface-active: rgb(139 92 246 / 0.16);
+  --kx-border: rgb(255 255 255 / 0.09);
+  --kx-border-strong: rgb(255 255 255 / 0.18);
+
+  /* ---------- Texto ---------- */
+  --kx-text: #f5f3ff;
+  --kx-text-soft: #c9c3e6;
+  --kx-text-muted: #9089b3;
+
+  /* ---------- Estados ---------- */
+  --kx-success: #2ee59d;
+  --kx-warning: #ffb547;
+  --kx-danger: #ff5c7a;
+
+  /* ---------- Gradientes e brilhos ---------- */
+  --kx-gradient: linear-gradient(135deg, var(--kx-magenta), var(--kx-roxo) 50%, var(--kx-azul));
+  --kx-gradient-text: linear-gradient(90deg, var(--kx-magenta), var(--kx-ciano));
+  --kx-glow-magenta: 0 0 24px rgb(255 43 214 / 0.35);
+  --kx-glow-azul: 0 0 24px rgb(47 123 255 / 0.35);
+
+  /* ---------- Tipografia ---------- */
+  --kx-font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --kx-font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --kx-font-mono: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+
+  --kx-fs-xs: 0.75rem;
+  --kx-fs-sm: 0.875rem;
+  --kx-fs-md: 1rem;
+  --kx-fs-lg: 1.25rem;
+  --kx-fs-xl: 1.75rem;
+  --kx-fs-2xl: clamp(2rem, 4vw, 2.75rem);
+
+  /* ---------- Espaçamento (escala de 4px) ---------- */
+  --kx-space-1: 4px;
+  --kx-space-2: 8px;
+  --kx-space-3: 12px;
+  --kx-space-4: 16px;
+  --kx-space-5: 24px;
+  --kx-space-6: 32px;
+  --kx-space-7: 48px;
+
+  /* ---------- Raios, layout ---------- */
+  --kx-radius-sm: 8px;
+  --kx-radius-md: 14px;
+  --kx-radius-lg: 20px;
+  --kx-sidebar-w: 268px;
+  --kx-content-max: 1180px;
+
+  /* ---------- Movimento ---------- */
+  --kx-dur-fast: 150ms;
+  --kx-dur-base: 280ms;
+  --kx-dur-slow: 600ms;
+  --kx-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --kx-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Acento por elemento: data-acento="magenta|roxo|azul|ciano" */
+[data-acento='magenta'] { --kx-acento: var(--kx-magenta); }
+[data-acento='roxo'] { --kx-acento: var(--kx-roxo); }
+[data-acento='azul'] { --kx-acento: var(--kx-azul); }
+[data-acento='ciano'] { --kx-acento: var(--kx-ciano); }
+
+/* Respeita quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --kx-dur-fast: 0ms;
+    --kx-dur-base: 0ms;
+    --kx-dur-slow: 0ms;
+  }
+}

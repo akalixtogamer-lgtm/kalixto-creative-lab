@@ -1,0 +1,43 @@
+# Design System e componentes
+
+Visualização ao vivo: rota `/design-system`.
+
+## Tokens (`src/styles/tokens.css`)
+
+| Grupo | Tokens |
+|---|---|
+| Marca | `--kx-magenta` · `--kx-roxo` · `--kx-azul` · `--kx-ciano` |
+| Fundo/superfície | `--kx-bg` · `--kx-bg-elev` · `--kx-surface` · `--kx-surface-hover` · `--kx-border` |
+| Texto | `--kx-text` · `--kx-text-soft` · `--kx-text-muted` |
+| Gradientes | `--kx-gradient` · `--kx-gradient-text` · `--kx-glow-magenta` |
+| Fontes | `--kx-font-display` · `--kx-font-body` · `--kx-font-mono` |
+| Tamanhos | `--kx-fs-xs` … `--kx-fs-2xl` |
+| Espaço (4px) | `--kx-space-1` … `--kx-space-7` |
+| Movimento | `--kx-dur-fast/base/slow` · `--kx-ease-out` · `--kx-ease-in-out` |
+
+Com `prefers-reduced-motion`, as durações viram 0.
+
+**Acento por elemento:** `data-acento="magenta|roxo|azul|ciano"` define `--kx-acento` para o elemento e seus filhos.
+
+## Classes globais (`src/styles/components.css`)
+
+| Classe | Uso |
+|---|---|
+| `.kx-page`, `.kx-section`, `.kx-grid` | layout de página |
+| `.kx-glass` | superfície de vidro com blur |
+| `.kx-card` (+ `__num`, `__title`, `__meta`) | card com linha de acento |
+| `.kx-btn--primary` / `.kx-btn--ghost` | botões |
+| `.kx-badge--{status}` / `.kx-chip` | selos e etiquetas |
+| `.kx-list` · `.kx-callout` · `.kx-code` | conteúdo didático |
+| `.kx-eyebrow` · `.kx-title` · `.kx-lead` · `.kx-gradient-text` | tipografia |
+
+## Componentes Angular
+
+| Componente | Seletor | Entradas |
+|---|---|---|
+| `Shell` | `kx-shell` | — (layout + gaveta mobile) |
+| `Sidebar` | `kx-sidebar` | saída `navegou` |
+| `PageHeader` | `kx-page-header` | `eyebrow`, `titulo`*, `descricao` + conteúdo projetado |
+| `StatusBadge` | `kx-status-badge` | `status`* (`em-construcao`, `planejado`, `bloqueado`, `validado`) |
+
+\* obrigatório

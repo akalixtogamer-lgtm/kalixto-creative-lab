@@ -1,0 +1,52 @@
+<nav class="sidebar" aria-label="Navegação principal">
+  <a class="sidebar__brand" routerLink="/" (click)="navegou.emit()">
+    <span class="sidebar__logo" aria-hidden="true">K</span>
+    <span class="sidebar__brand-text">
+      <strong>KALIXTO</strong>
+      <small>Creative Lab</small>
+    </span>
+  </a>
+
+  <p class="sidebar__section">Geral</p>
+  <ul class="sidebar__list">
+    @for (p of paginas; track p.rota) {
+      <li>
+        <a
+          class="sidebar__link"
+          [routerLink]="p.rota"
+          routerLinkActive="is-active"
+          ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: p.exato }"
+          (click)="navegou.emit()"
+        >
+          <span class="sidebar__icon" aria-hidden="true">{{ p.icone }}</span>
+          {{ p.rotulo }}
+        </a>
+      </li>
+    }
+  </ul>
+
+  <p class="sidebar__section">Laboratórios</p>
+  <ul class="sidebar__list">
+    @for (lab of labs; track lab.id) {
+      <li>
+        <a
+          class="sidebar__link"
+          [class.is-locked]="lab.status === 'bloqueado'"
+          [routerLink]="['/labs', lab.id]"
+          routerLinkActive="is-active"
+          ariaCurrentWhenActive="page"
+          (click)="navegou.emit()"
+        >
+          <span class="sidebar__num" [attr.data-acento]="lab.acento">{{ lab.numero }}</span>
+          {{ lab.titulo }}
+          @if (lab.status === 'bloqueado') {
+            <span class="sidebar__lock" aria-label="bloqueado">🔒</span>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+
+  <p class="sidebar__footer">Aprender. Experimentar. Construir.</p>
+</nav>

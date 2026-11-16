@@ -1,0 +1,67 @@
+/* ===== Dashboard ===== */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-4);
+  padding: clamp(var(--kx-space-5), 5vw, var(--kx-space-7));
+  overflow: hidden;
+}
+/* Brilho decorativo flutuante */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: var(--kx-gradient);
+  filter: blur(90px);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: flutuar 8s var(--kx-ease-in-out) infinite alternate;
+}
+@keyframes flutuar {
+  to {
+    transform: translate(-40px, 40px) scale(1.1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero::after {
+    animation: none;
+  }
+}
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-3);
+  margin-top: var(--kx-space-2);
+}
+
+/* Números */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--kx-space-3);
+}
+.stats__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-1);
+  padding: var(--kx-space-4);
+  border-radius: var(--kx-radius-md);
+  font-size: var(--kx-fs-sm);
+}
+.stats__valor {
+  font-family: var(--kx-font-display);
+  font-size: var(--kx-fs-xl);
+}
+
+/* Cards de fases futuras ficam mais discretos */
+.is-futuro {
+  opacity: 0.75;
+}
+.is-futuro:hover {
+  opacity: 1;
+}

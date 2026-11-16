@@ -1,0 +1,5 @@
+/* Ponto de entrada global — Design System Kalixto
+   A ordem importa: tokens → base → componentes. */
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/components.css';

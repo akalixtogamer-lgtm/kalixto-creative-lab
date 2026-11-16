@@ -1,0 +1,67 @@
+<div class="kx-page">
+  <!-- Hero -->
+  <header class="hero kx-glass">
+    <p class="kx-eyebrow">Laboratório de Creative Development</p>
+    <h1 class="kx-title">
+      <span class="kx-gradient-text">KALIXTO</span> CREATIVE LAB
+    </h1>
+    <p class="kx-lead">
+      Conceitos técnicos transformados em experiências visuais para explorar, modificar e entender.
+    </p>
+    <div class="hero__actions">
+      <a class="kx-btn kx-btn--primary" routerLink="/labs/css">Começar pelo CSS Playground</a>
+      <a class="kx-btn kx-btn--ghost" routerLink="/roadmap">Ver roadmap</a>
+    </div>
+  </header>
+
+  <!-- Números -->
+  <section class="stats" aria-label="Resumo do projeto">
+    @for (s of stats; track s.rotulo) {
+      <div class="stats__item kx-glass">
+        <strong class="stats__valor">{{ s.valor }}</strong>
+        <span class="kx-muted">{{ s.rotulo }}</span>
+      </div>
+    }
+  </section>
+
+  <!-- Fase atual -->
+  <section class="kx-callout" data-acento="magenta">
+    <strong>Fase {{ faseAtual.numero }} — {{ faseAtual.titulo }}.</strong>
+    Critério de conclusão: {{ faseAtual.criterio }}
+  </section>
+
+  <!-- Laboratórios do MVP -->
+  <section class="kx-section">
+    <h2 class="kx-section-title">Laboratórios do MVP</h2>
+    <div class="kx-grid">
+      @for (lab of labsMvp(); track lab.id) {
+        <a class="kx-card" [routerLink]="['/labs', lab.id]" [attr.data-acento]="lab.acento">
+          <span class="kx-card__num">LAB {{ lab.numero }}</span>
+          <h3 class="kx-card__title">{{ lab.titulo }}</h3>
+          <p class="kx-muted">{{ lab.resumo }}</p>
+          <div class="kx-card__meta">
+            <kx-status-badge [status]="lab.status" />
+            <span class="kx-chip">{{ lab.topicos.length }} tópicos</span>
+          </div>
+        </a>
+      }
+    </div>
+  </section>
+
+  <!-- Próximas etapas -->
+  <section class="kx-section">
+    <h2 class="kx-section-title">Próximas etapas</h2>
+    <div class="kx-grid">
+      @for (lab of labsFuturos(); track lab.id) {
+        <a class="kx-card is-futuro" [routerLink]="['/labs', lab.id]" [attr.data-acento]="lab.acento">
+          <span class="kx-card__num">LAB {{ lab.numero }} · Fase {{ lab.fase }}</span>
+          <h3 class="kx-card__title">{{ lab.titulo }}</h3>
+          <p class="kx-muted">{{ lab.resumo }}</p>
+          <div class="kx-card__meta">
+            <kx-status-badge [status]="lab.status" />
+          </div>
+        </a>
+      }
+    </div>
+  </section>
+</div>
