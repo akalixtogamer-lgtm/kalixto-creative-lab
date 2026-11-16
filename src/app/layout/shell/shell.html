@@ -10,7 +10,7 @@
       aria-controls="menu-lateral"
       (click)="alternarMenu()"
     >
-      <span aria-hidden="true">{{ menuAberto() ? '✕' : '☰' }}</span>
+      <kx-icon [name]="menuAberto() ? 'close' : 'menu'" />
       <span class="sr-only">{{ menuAberto() ? 'Fechar menu' : 'Abrir menu' }}</span>
     </button>
     <span class="shell__topbar-title">KALIXTO <small>Creative Lab</small></span>

@@ -1,0 +1,49 @@
+/* ===== Code Viewer ===== */
+.cv {
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md);
+  background: rgb(4 3 10 / 0.75);
+  overflow: hidden;
+}
+.cv__topo {
+  display: flex;
+  align-items: center;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-2) var(--kx-space-2) var(--kx-space-2) var(--kx-space-4);
+  border-bottom: 1px solid var(--kx-border);
+  background: var(--kx-surface);
+}
+.cv__dots {
+  display: flex;
+  gap: 6px;
+}
+.cv__dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--kx-border-strong);
+}
+.cv__dots i:first-child { background: var(--kx-magenta); }
+.cv__dots i:nth-child(2) { background: var(--kx-roxo); }
+.cv__dots i:last-child { background: var(--kx-azul); }
+.cv__titulo {
+  font-size: var(--kx-fs-sm);
+  font-weight: 600;
+}
+.cv__copiar {
+  margin-left: auto;
+  min-height: 34px;
+}
+.cv__codigo {
+  margin: 0;
+  padding: var(--kx-space-4);
+  max-height: 340px;
+  overflow: auto;
+  color: #d9d3ff;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  tab-size: 2;
+}
+.cv__codigo:focus-visible {
+  outline-offset: -2px;
+}

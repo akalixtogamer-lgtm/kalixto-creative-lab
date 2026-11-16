@@ -5,8 +5,8 @@ Os dados exibidos na página `/roadmap` ficam em `src/app/core/data/roadmap.data
 
 | Fase | Nome | Situação | Branch / tag |
 |---|---|---|---|
-| 1 | Fundação Angular | 🟡 Aguardando validação | `fase-1` · `v0.1.0` |
-| 2 | MVP Funcional (CSS, GSAP, Scroll) | ⏳ Próxima | `fase-2` |
+| 1 | Fundação Angular | ✅ Concluída | `main` · `v0.1.0` |
+| 2 | MVP Funcional (CSS, GSAP, Scroll) | 🟡 Em andamento | `fase-2` |
 | 3 | Organização Educacional | Futura | `fase-3` |
 | 4 | Three.js e Experiências 3D | 🔒 Bloqueada | `fase-4` |
 | 5 | WebGL e GLSL | 🔒 Bloqueada | `fase-5` |
@@ -27,16 +27,17 @@ Os dados exibidos na página `/roadmap` ficam em `src/app/core/data/roadmap.data
 - [x] Dashboard
 - [x] Navegação
 - [x] Estrutura da biblioteca de efeitos
-- [ ] **Validação do Wallace** → `docs/CHECKLIST-FASE-1.md`
+- [x] Liberada pelo Wallace para seguir
 
-## Fase 2 — MVP Funcional (próxima)
+## Fase 2 — MVP Funcional (em andamento)
 
-- [ ] Laboratório 01 — CSS Playground
+- [x] Revisão de UI/UX da base
+- [x] Laboratório 01 — CSS Playground (8 demos) → **testar com `docs/CHECKLIST-FASE-2-CSS.md`**
 - [ ] Laboratório 02 — GSAP Studio (instalar `gsap` nesta fase)
 - [ ] Laboratório 03 — Scroll Lab
-- [ ] Code Viewer
-- [ ] Documentação dos efeitos
-- [ ] Controles interativos, botões de executar e reiniciar
+- [x] Code Viewer
+- [x] Documentação dos efeitos (CSS)
+- [x] Controles interativos, botões de executar e reiniciar (CSS)
 - [ ] Responsividade e testes funcionais
 
 ---

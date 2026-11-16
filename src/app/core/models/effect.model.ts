@@ -16,7 +16,9 @@ export interface Effect {
   topico: string;
   nivel: EffectNivel;
   descricao: string;
-  /** Indica se a demonstração já está implementada e validada. */
+  /** id da demonstração dentro do laboratório (?demo=), quando existir. */
+  demoId?: string;
+  /** Indica se a demonstração interativa já está implementada. */
   implementado: boolean;
   /** Trechos de código exibidos no Code Viewer (Fase 2). */
   codigo?: {

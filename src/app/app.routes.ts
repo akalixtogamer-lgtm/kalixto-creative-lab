@@ -17,6 +17,12 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
+        path: 'labs/css',
+        title: 'CSS Playground · Kalixto Creative Lab',
+        loadComponent: () =>
+          import('./pages/css-playground/css-playground').then((m) => m.CssPlayground),
+      },
+      {
         path: 'labs/:id',
         title: 'Laboratório · Kalixto Creative Lab',
         loadComponent: () => import('./pages/lab-page/lab-page').then((m) => m.LabPage),

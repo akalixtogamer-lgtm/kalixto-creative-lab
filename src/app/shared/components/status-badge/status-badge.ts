@@ -3,6 +3,7 @@ import { LabStatus } from '../../../core/models/lab.model';
 
 /** Rótulos legíveis para cada status. */
 const ROTULOS: Record<LabStatus, string> = {
+  'em-teste': 'Pronto para testar',
   'em-construcao': 'Em construção',
   planejado: 'Planejado',
   bloqueado: 'Bloqueado',

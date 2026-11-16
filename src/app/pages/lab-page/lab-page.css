@@ -1,39 +1,31 @@
-/* ===== Página de laboratório ===== */
-.stage {
+/* ===== Página de laboratório (plano / em breve) ===== */
+.aviso {
   display: flex;
-  flex-direction: column;
-  min-height: 300px;
-  overflow: hidden;
+  gap: var(--kx-space-4);
+  padding: var(--kx-space-5);
 }
-.stage__placeholder {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--kx-space-2);
-  padding: var(--kx-space-6) var(--kx-space-4);
-  text-align: center;
-  background-image:
-    linear-gradient(var(--kx-border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--kx-border) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-.stage__orb {
-  width: 64px;
-  height: 64px;
-  margin-bottom: var(--kx-space-3);
+.aviso__icone {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--kx-acento, var(--kx-magenta));
-  box-shadow: 0 0 40px var(--kx-acento, var(--kx-magenta));
-  opacity: 0.85;
+  background: rgb(255 255 255 / 0.06);
+  color: var(--kx-acento, var(--kx-magenta));
+  font-size: 1.4rem;
 }
-.stage__controls {
+.aviso__texto {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--kx-space-3);
-  padding: var(--kx-space-4);
-  border-top: 1px solid var(--kx-border);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kx-space-2);
+}
+.aviso__texto h2 {
+  font-size: var(--kx-fs-lg);
+}
+.aviso__texto .kx-btn {
+  margin-top: var(--kx-space-2);
 }
 
 .lab-cols {

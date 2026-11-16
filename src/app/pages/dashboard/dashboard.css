@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--kx-space-4);
-  padding: clamp(var(--kx-space-5), 5vw, var(--kx-space-7));
+  padding: clamp(var(--kx-space-5), 4vw, var(--kx-space-6)) clamp(var(--kx-space-5), 4vw, var(--kx-space-7));
   overflow: hidden;
 }
 /* Brilho decorativo flutuante */
@@ -33,32 +33,90 @@
   }
 }
 .hero__actions {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   gap: var(--kx-space-3);
-  margin-top: var(--kx-space-2);
+}
+.hero__cta {
+  min-height: 46px;
+  padding: 0 var(--kx-space-5);
+  font-size: var(--kx-fs-md);
+}
+.hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2) var(--kx-space-6);
+  margin: var(--kx-space-2) 0 0;
+  padding-top: var(--kx-space-4);
+  border-top: 1px solid var(--kx-border);
+}
+.hero__stats dd {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0;
+  color: var(--kx-text-muted);
+  font-size: var(--kx-fs-sm);
+}
+.hero__stats strong {
+  color: var(--kx-text);
+  font-family: var(--kx-font-display);
+  font-size: var(--kx-fs-lg);
 }
 
-/* Números */
-.stats {
+/* Como usar */
+.passos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: var(--kx-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.stats__item {
+.passos__item {
+  display: flex;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-4);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md);
+  background: var(--kx-surface);
+  font-size: var(--kx-fs-sm);
+}
+.passos__num {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--kx-gradient);
+  font-weight: 700;
+}
+
+/* Cards */
+.card-prog {
   display: flex;
   flex-direction: column;
   gap: var(--kx-space-1);
-  padding: var(--kx-space-4);
-  border-radius: var(--kx-radius-md);
+}
+.card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kx-space-1);
+  margin-left: auto;
+  color: var(--kx-text-soft);
   font-size: var(--kx-fs-sm);
+  font-weight: 600;
 }
-.stats__valor {
-  font-family: var(--kx-font-display);
-  font-size: var(--kx-fs-xl);
+.is-pronto {
+  border-color: rgb(255 43 214 / 0.35);
+  background: linear-gradient(160deg, rgb(255 43 214 / 0.1), var(--kx-surface) 55%);
 }
-
-/* Cards de fases futuras ficam mais discretos */
+.is-pronto .card-cta {
+  color: var(--kx-magenta);
+}
 .is-futuro {
   opacity: 0.75;
 }

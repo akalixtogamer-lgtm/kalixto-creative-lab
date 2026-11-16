@@ -1,0 +1,197 @@
+<div class="kx-page pg" data-acento="magenta">
+  <kx-breadcrumb [itens]="[{ rotulo: 'Dashboard', rota: '/' }, { rotulo: 'Laboratórios' }, { rotulo: lab.titulo }]" />
+
+  <!-- Cabeçalho -->
+  <header class="kx-page-header pg__header">
+    <p class="kx-eyebrow">Laboratório {{ lab.numero }} · Fase {{ lab.fase }}</p>
+    <h1 class="kx-title">{{ lab.titulo }}</h1>
+    <p class="kx-lead">{{ lab.resumo }}</p>
+    <ol class="pg__passos" aria-label="Como usar">
+      <li><span>1</span> Escolha uma demo</li>
+      <li><span>2</span> Ajuste os controles e clique em <strong>Executar</strong></li>
+      <li><span>3</span> Leia o código e copie</li>
+    </ol>
+  </header>
+
+  <!-- Seletor de demos -->
+  <nav #seletor class="pg__demos" aria-label="Demonstrações do CSS Playground">
+    @for (d of demos; track d.id; let i = $index) {
+      <button
+        type="button"
+        class="pg__demo-btn"
+        [class.is-active]="d.id === atual().id"
+        [attr.aria-current]="d.id === atual().id ? 'true' : null"
+        (click)="selecionar(d.id)"
+      >
+        <span class="pg__demo-num">{{ i + 1 < 10 ? '0' + (i + 1) : i + 1 }}</span>
+        {{ d.topico }}
+      </button>
+    }
+  </nav>
+
+  <div class="pg__grid">
+    <!-- Palco -->
+    <section class="pg__palco-wrap kx-glass" aria-labelledby="demo-titulo">
+      <header class="pg__palco-topo">
+        <div>
+          <p class="kx-eyebrow">{{ atual().topico }} · {{ indice() + 1 }} de {{ demos.length }}</p>
+          <h2 id="demo-titulo" class="pg__demo-titulo">{{ atual().titulo }}</h2>
+        </div>
+        <span class="kx-chip">{{ atual().nivel }}</span>
+      </header>
+
+      <div class="palco" [style]="vars()">
+        @for (r of [rodada()]; track r) {
+          @switch (atual().id) {
+            @case ('transitions') {
+              <div class="d-trans" [class.ativo]="ativo()"></div>
+            }
+            @case ('keyframes') {
+              <div class="d-key" [class]="ativo() ? 'd-key d-key--' + valores()['anim'] : 'd-key'"></div>
+            }
+            @case ('transform') {
+              <div class="d-tf-ghost" aria-hidden="true"></div>
+              <div class="d-tf">K</div>
+            }
+            @case ('hover') {
+              <button type="button" class="d-hover" [class]="'d-hover d-hover--' + valores()['estilo']" [class.forcar]="ativo()">
+                Passe o mouse
+              </button>
+            }
+            @case ('floating') {
+              <div class="d-float-wrap" [class.pausado]="ativo()">
+                <div class="d-float"></div>
+                <div class="d-float-sombra" aria-hidden="true"></div>
+              </div>
+            }
+            @case ('perspective') {
+              <div class="d-cena">
+                <div class="d-card3d" [class.virado]="ativo()">
+                  <div class="d-face d-face--frente"><strong>Frente</strong><small>rotateY</small></div>
+                  <div class="d-face d-face--verso"><strong>Verso</strong><small>+180deg</small></div>
+                </div>
+              </div>
+            }
+            @case ('clip-path') {
+              <div class="d-clip-base">Conteúdo escondido</div>
+              <div
+                class="d-clip"
+                [style.clip-path]="ativo() ? clipFormas[valores()['forma']].para : clipFormas[valores()['forma']].de"
+              >
+                <strong>Revelado!</strong>
+              </div>
+            }
+            @case ('microinteracoes') {
+              <div class="d-micro">
+                <button
+                  type="button"
+                  class="d-curtir"
+                  [class.ativo]="ativo()"
+                  [attr.aria-pressed]="ativo()"
+                  (click)="curtir()"
+                >
+                  <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+                    <path d="M12 21s-7.5-4.6-9.5-9.2C1 8.3 3.3 4.5 7 4.5c2 0 3.7 1.1 5 3 1.3-1.9 3-3 5-3 3.7 0 6 3.8 4.5 7.3C19.5 16.4 12 21 12 21z" />
+                  </svg>
+                  <span>{{ ativo() ? 129 : 128 }} curtidas</span>
+                </button>
+                <button
+                  type="button"
+                  class="d-switch"
+                  role="switch"
+                  [class.ligado]="ligado()"
+                  [attr.aria-checked]="ligado()"
+                  (click)="ligado.set(!ligado())"
+                >
+                  <span class="d-switch__trilho"><span class="d-switch__bolinha"></span></span>
+                  {{ ligado() ? 'Ligado' : 'Desligado' }}
+                </button>
+              </div>
+            }
+          }
+        }
+      </div>
+
+      <p class="pg__instrucao kx-muted">{{ atual().instrucao }}</p>
+
+      <div class="pg__toolbar">
+        <button type="button" class="kx-btn kx-btn--primary" (click)="executar()">
+          <kx-icon name="play" /> {{ atual().acao }}
+        </button>
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="reiniciar()">
+          <kx-icon name="reset" /> Reiniciar
+        </button>
+      </div>
+    </section>
+
+    <!-- Controles -->
+    <section class="pg__controles kx-glass" aria-labelledby="controles-titulo">
+      <h2 id="controles-titulo" class="pg__bloco-titulo">Controles</h2>
+      @for (p of atual().params; track p.id) {
+        <div class="ctrl">
+          <label class="ctrl__rotulo" [for]="'p-' + p.id">
+            <span>{{ p.rotulo }}</span>
+            @if (p.tipo === 'range') {
+              <output [for]="'p-' + p.id">{{ exibir(p) }}</output>
+            }
+          </label>
+          @if (p.tipo === 'range') {
+            <input
+              class="ctrl__range"
+              type="range"
+              [id]="'p-' + p.id"
+              [min]="p.min"
+              [max]="p.max"
+              [step]="p.passo"
+              [value]="valores()[p.id]"
+              (input)="alterar(p, $any($event.target).value)"
+            />
+          } @else {
+            <select class="ctrl__select" [id]="'p-' + p.id" (change)="alterar(p, $any($event.target).value)">
+              @for (o of p.opcoes; track o.valor) {
+                <option [value]="o.valor" [selected]="o.valor === valores()[p.id]">{{ o.rotulo }}</option>
+              }
+            </select>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Código -->
+    <kx-code-viewer class="pg__codigo" [codigo]="codigo()" linguagem="CSS" titulo="Código" />
+
+    <!-- Explicação -->
+    <section class="pg__explica" aria-labelledby="explica-titulo">
+      <h2 id="explica-titulo" class="pg__bloco-titulo">Como funciona</h2>
+      <ul class="kx-list">
+        @for (t of atual().explicacao; track t) {
+          <li>{{ t }}</li>
+        }
+      </ul>
+      <p class="kx-callout"><strong>Dica:</strong> {{ atual().dica }}</p>
+    </section>
+  </div>
+
+  <!-- Anterior / próxima demo -->
+  <nav class="kx-pager" aria-label="Navegar entre demos">
+    @if (anterior(); as a) {
+      <button type="button" class="kx-pager__link" (click)="selecionar(a.id)">
+        <small><kx-icon name="arrow-left" /> Demo anterior</small>
+        {{ a.topico }}
+      </button>
+    }
+    @if (proxima(); as p) {
+      <button type="button" class="kx-pager__link kx-pager__link--next" (click)="selecionar(p.id)">
+        <small>Próxima demo <kx-icon name="arrow-right" /></small>
+        {{ p.topico }}
+      </button>
+    } @else if (labs.proximo; as prox) {
+      <a class="kx-pager__link kx-pager__link--next" [routerLink]="['/labs', prox.id]">
+        <small>Próximo laboratório <kx-icon name="arrow-right" /></small>
+        {{ prox.titulo }}
+      </a>
+    }
+  </nav>
+
+  <p class="kx-muted pg__status">Status do laboratório: <kx-status-badge [status]="lab.status" /></p>
+</div>

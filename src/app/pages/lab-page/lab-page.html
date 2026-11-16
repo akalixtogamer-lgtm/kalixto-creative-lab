@@ -1,5 +1,7 @@
 @if (lab(); as lab) {
   <div class="kx-page" [attr.data-acento]="lab.acento">
+    <kx-breadcrumb [itens]="[{ rotulo: 'Dashboard', rota: '/' }, { rotulo: 'Laboratórios' }, { rotulo: lab.titulo }]" />
+
     <kx-page-header
       [eyebrow]="'Laboratório ' + lab.numero + ' · Fase ' + lab.fase"
       [titulo]="lab.titulo"
@@ -13,24 +15,29 @@
       </div>
     </kx-page-header>
 
-    @if (lab.status === 'bloqueado') {
-      <div class="kx-callout">
-        <strong>Laboratório bloqueado.</strong>
-        Pela regra do roadmap, as tecnologias avançadas só entram depois que o CSS Playground,
-        o GSAP Studio e o Scroll Lab estiverem funcionais e validados.
-      </div>
-    }
-
-    <!-- Área onde as demonstrações vão viver (Fase 2) -->
-    <section class="stage kx-glass" aria-label="Área de demonstração">
-      <div class="stage__placeholder">
-        <span class="stage__orb" aria-hidden="true"></span>
-        <p><strong>Área de demonstração</strong></p>
-        <p class="kx-muted">As demos interativas, o Code Viewer e os controles chegam na Fase {{ lab.fase }}.</p>
-      </div>
-      <div class="stage__controls" aria-label="Controles (em breve)">
-        <button type="button" class="kx-btn kx-btn--primary" disabled>▶ Executar</button>
-        <button type="button" class="kx-btn kx-btn--ghost" disabled>↺ Reiniciar</button>
+    <!-- Aviso claro: este laboratório ainda não tem demos -->
+    <section class="aviso kx-glass" aria-labelledby="aviso-titulo">
+      <span class="aviso__icone" aria-hidden="true">
+        <kx-icon [name]="lab.status === 'bloqueado' ? 'lock' : 'route'" />
+      </span>
+      <div class="aviso__texto">
+        @if (lab.status === 'bloqueado') {
+          <h2 id="aviso-titulo">Laboratório bloqueado</h2>
+          <p class="kx-muted">
+            Pela regra do roadmap, as tecnologias avançadas só entram depois que o CSS Playground,
+            o GSAP Studio e o Scroll Lab estiverem funcionais e validados.
+          </p>
+        } @else {
+          <h2 id="aviso-titulo">Em breve — demos na Fase {{ lab.fase }}</h2>
+          <p class="kx-muted">
+            Este laboratório ainda não tem demonstrações interativas. Abaixo está o que ele vai ensinar.
+          </p>
+        }
+        @if (labPronto; as pronto) {
+          <a class="kx-btn kx-btn--primary" [routerLink]="['/labs', pronto.id]">
+            <kx-icon name="play" /> Enquanto isso, abra o {{ pronto.titulo }}
+          </a>
+        }
       </div>
     </section>
 
@@ -63,10 +70,25 @@
         }
       </section>
     </div>
+
+    <nav class="kx-pager" aria-label="Navegar entre laboratórios">
+      @if (navegacao().anterior; as a) {
+        <a class="kx-pager__link" [routerLink]="['/labs', a.id]">
+          <small><kx-icon name="arrow-left" /> Anterior</small>
+          {{ a.titulo }}
+        </a>
+      }
+      @if (navegacao().proximo; as p) {
+        <a class="kx-pager__link kx-pager__link--next" [routerLink]="['/labs', p.id]">
+          <small>Próximo <kx-icon name="arrow-right" /></small>
+          {{ p.titulo }}
+        </a>
+      }
+    </nav>
   </div>
 } @else {
   <div class="kx-page">
     <kx-page-header eyebrow="404" titulo="Laboratório não encontrado" descricao="Esse endereço não corresponde a nenhum laboratório." />
-    <a class="kx-btn kx-btn--primary" routerLink="/">Voltar ao Dashboard</a>
+    <a class="kx-btn kx-btn--primary" routerLink="/" style="align-self: flex-start">Voltar ao Dashboard</a>
   </div>
 }

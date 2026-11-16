@@ -16,7 +16,7 @@ export const FASES: Fase[] = [
   {
     numero: 1,
     titulo: 'Fundação Angular',
-    situacao: 'em-andamento',
+    situacao: 'concluida',
     entregas: [
       'Configuração do Angular',
       'Verificação das versões e dependências',
@@ -31,9 +31,9 @@ export const FASES: Fase[] = [
   {
     numero: 2,
     titulo: 'MVP Funcional',
-    situacao: 'proxima',
+    situacao: 'em-andamento',
     entregas: [
-      'CSS Playground',
+      'CSS Playground — pronto para testar',
       'GSAP Studio',
       'Scroll Lab',
       'Code Viewer',

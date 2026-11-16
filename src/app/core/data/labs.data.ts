@@ -12,7 +12,8 @@ export const LABS: Lab[] = [
     titulo: 'CSS Playground',
     resumo: 'Animações e microinterações só com CSS: do transition ao clip-path.',
     fase: 2,
-    status: 'em-construcao',
+    status: 'em-teste',
+    disponivel: true,
     tecnologias: ['CSS'],
     topicos: [
       'Transitions',
@@ -33,6 +34,7 @@ export const LABS: Lab[] = [
     resumo: 'Tweens, timelines e easing com controles de reprodução.',
     fase: 2,
     status: 'em-construcao',
+    disponivel: false,
     tecnologias: ['GSAP'],
     topicos: [
       'gsap.to()',
@@ -52,6 +54,7 @@ export const LABS: Lab[] = [
     resumo: 'Animações guiadas pela rolagem com ScrollTrigger.',
     fase: 2,
     status: 'em-construcao',
+    disponivel: false,
     tecnologias: ['GSAP', 'ScrollTrigger'],
     topicos: [
       'ScrollTrigger',
@@ -71,6 +74,7 @@ export const LABS: Lab[] = [
     resumo: 'Traços, máscaras e morphing em gráficos vetoriais.',
     fase: 3,
     status: 'planejado',
+    disponivel: false,
     tecnologias: ['SVG', 'CSS', 'GSAP'],
     topicos: ['Stroke animation', 'Máscaras', 'Morphing', 'Filtros'],
     acento: 'ciano',
@@ -82,6 +86,7 @@ export const LABS: Lab[] = [
     resumo: 'Cenas 3D com câmeras, luzes, materiais e interação.',
     fase: 4,
     status: 'bloqueado',
+    disponivel: false,
     tecnologias: ['Three.js'],
     topicos: [
       'Objetos geométricos',
@@ -103,6 +108,7 @@ export const LABS: Lab[] = [
     resumo: 'Shaders, noise e distorções procedurais.',
     fase: 5,
     status: 'bloqueado',
+    disponivel: false,
     tecnologias: ['WebGL', 'GLSL', 'Three.js'],
     topicos: [
       'Vertex Shaders',
@@ -120,4 +126,11 @@ export const LABS: Lab[] = [
 /** Busca um laboratório pelo id da rota. */
 export function findLab(id: string | null | undefined): Lab | undefined {
   return LABS.find((lab) => lab.id === id);
+}
+
+/** Laboratórios vizinhos, para a navegação anterior/próximo. */
+export function vizinhos(id: string | null | undefined): { anterior?: Lab; proximo?: Lab } {
+  const i = LABS.findIndex((lab) => lab.id === id);
+  if (i < 0) return {};
+  return { anterior: LABS[i - 1], proximo: LABS[i + 1] };
 }

@@ -6,6 +6,7 @@
 
 /** Situação do laboratório dentro do roadmap. */
 export type LabStatus =
+  | 'em-teste' // demos prontas, aguardando validação
   | 'em-construcao' // fase atual, sendo desenvolvido
   | 'planejado' // fase futura já desbloqueada no roadmap
   | 'bloqueado' // depende da validação de fases anteriores
@@ -26,6 +27,8 @@ export interface Lab {
   tecnologias: string[];
   /** Tópicos que o laboratório vai cobrir. */
   topicos: string[];
+  /** true quando o laboratório já tem demonstrações interativas. */
+  disponivel: boolean;
   /** Cor de destaque do card (token do Design System). */
   acento: 'magenta' | 'roxo' | 'azul' | 'ciano';
 }

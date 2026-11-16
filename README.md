@@ -13,8 +13,8 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `0.1.0` |
-| Fase atual | **Fase 1 — Fundação Angular** (aguardando validação) |
+| Versão | `0.2.0` |
+| Fase atual | **Fase 2 — MVP Funcional** · CSS Playground pronto para testar |
 | Publicado no GitHub Pages | **Não** — só depois dos testes |
 
 Veja o andamento completo em [`docs/ROADMAP.md`](docs/ROADMAP.md).
@@ -28,13 +28,24 @@ Pré-requisito: **Node.js 22 ou mais recente** (`node -v` para conferir).
 ```bash
 npm install      # instala as dependências (só na primeira vez)
 npm start        # abre em http://localhost:4200
-npm test         # roda os testes da Fase 1
+npm test         # roda os testes (31)
 npm run build    # gera a versão de produção em dist/
 ```
 
-## Roteiro de teste da Fase 1
+## Como usar o laboratório
 
-Marque cada item em [`docs/CHECKLIST-FASE-1.md`](docs/CHECKLIST-FASE-1.md) antes de publicar.
+1. Abra o **CSS Playground** (botão principal do Dashboard ou item 01 do menu).
+2. Escolha uma demo na faixa de botões (Transitions, Keyframes, Hover…).
+3. Mexa nos **Controles** e clique em **Executar** — o botão muda conforme a demo (ex.: "Alternar estado", "Virar card").
+4. Veja o **Código** mudar junto com os controles e use **Copiar**.
+5. **Reiniciar** volta tudo ao padrão.
+
+Labs marcados como "em breve" ainda mostram só o plano do que vão ensinar.
+
+## Roteiro de teste
+
+- Fase 2 (CSS Playground): [`docs/CHECKLIST-FASE-2-CSS.md`](docs/CHECKLIST-FASE-2-CSS.md)
+- Fase 1 (base): [`docs/CHECKLIST-FASE-1.md`](docs/CHECKLIST-FASE-1.md)
 
 ---
 
@@ -49,14 +60,15 @@ src/
 └── app/
     ├── core/
     │   ├── models/            tipos: Lab, Effect
-    │   └── data/              labs.data.ts · effects.data.ts · roadmap.data.ts
+    │   └── data/              labs · effects · roadmap · css-demos (demos do CSS Playground)
     ├── layout/
     │   ├── shell/             estrutura geral (menu + conteúdo, gaveta no mobile)
     │   └── sidebar/           menu lateral gerado a partir de LABS
-    ├── shared/components/     kx-page-header · kx-status-badge
+    ├── shared/components/     kx-page-header · kx-status-badge · kx-code-viewer · kx-breadcrumb · kx-icon
     └── pages/
         ├── dashboard/         página inicial
-        ├── lab-page/          página de cada laboratório (/labs/:id)
+        ├── css-playground/    Laboratório 01 (/labs/css?demo=…)
+        ├── lab-page/          plano dos labs ainda sem demos (/labs/:id)
         ├── biblioteca/        biblioteca de efeitos com busca e filtro
         ├── design-system/     vitrine dos tokens e componentes
         ├── roadmap/           linha do tempo das fases
@@ -71,7 +83,8 @@ Dashboard, menu, biblioteca e roadmap se atualizam sozinhos a partir deles.
 | Rota | Página |
 |---|---|
 | `/` | Dashboard |
-| `/labs/css` · `/labs/gsap` · `/labs/scroll` | Laboratórios do MVP (Fase 2) |
+| `/labs/css` | CSS Playground — 8 demos (`?demo=hover` abre direto) |
+| `/labs/gsap` · `/labs/scroll` | Próximos laboratórios do MVP |
 | `/labs/svg` | SVG Lab (Fase 3) |
 | `/labs/three` · `/labs/webgl` | Bloqueados até validar o MVP |
 | `/biblioteca` | Biblioteca de efeitos (aceita `?lab=css`) |

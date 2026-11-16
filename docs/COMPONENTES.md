@@ -29,6 +29,7 @@ Com `prefers-reduced-motion`, as durações viram 0.
 | `.kx-btn--primary` / `.kx-btn--ghost` | botões |
 | `.kx-badge--{status}` / `.kx-chip` | selos e etiquetas |
 | `.kx-list` · `.kx-callout` · `.kx-code` | conteúdo didático |
+| `.kx-breadcrumb` · `.kx-pager` · `.kx-progress` | navegação e progresso |
 | `.kx-eyebrow` · `.kx-title` · `.kx-lead` · `.kx-gradient-text` | tipografia |
 
 ## Componentes Angular
@@ -38,6 +39,10 @@ Com `prefers-reduced-motion`, as durações viram 0.
 | `Shell` | `kx-shell` | — (layout + gaveta mobile) |
 | `Sidebar` | `kx-sidebar` | saída `navegou` |
 | `PageHeader` | `kx-page-header` | `eyebrow`, `titulo`*, `descricao` + conteúdo projetado |
-| `StatusBadge` | `kx-status-badge` | `status`* (`em-construcao`, `planejado`, `bloqueado`, `validado`) |
+| `StatusBadge` | `kx-status-badge` | `status`* (`em-teste`, `em-construcao`, `planejado`, `bloqueado`, `validado`) |
+| `CodeViewer` | `kx-code-viewer` | `codigo`*, `linguagem`, `titulo` — botão Copiar incluso |
+| `Breadcrumb` | `kx-breadcrumb` | `itens`* (`{ rotulo, rota? }[]`) |
+| `Icon` | `kx-icon` | `name`* (home, library, palette, route, play, reset, copy, check, lock, arrow-left, arrow-right, menu, close) |
+| `CssPlayground` | página | query `?demo=` |
 
 \* obrigatório

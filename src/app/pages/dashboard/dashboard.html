@@ -1,47 +1,72 @@
 <div class="kx-page">
   <!-- Hero -->
   <header class="hero kx-glass">
-    <p class="kx-eyebrow">Laboratório de Creative Development</p>
-    <h1 class="kx-title">
-      <span class="kx-gradient-text">KALIXTO</span> CREATIVE LAB
-    </h1>
+    <p class="kx-eyebrow">Fase {{ faseAtual.numero }} · {{ faseAtual.titulo }}</p>
+    <h1 class="kx-title"><span class="kx-gradient-text">KALIXTO</span> CREATIVE LAB</h1>
     <p class="kx-lead">
-      Conceitos técnicos transformados em experiências visuais para explorar, modificar e entender.
+      Um laboratório para aprender Creative Development mexendo: ajuste, execute, veja o código e entenda.
     </p>
     <div class="hero__actions">
-      <a class="kx-btn kx-btn--primary" routerLink="/labs/css">Começar pelo CSS Playground</a>
-      <a class="kx-btn kx-btn--ghost" routerLink="/roadmap">Ver roadmap</a>
+      @if (primeiroDisponivel; as lab) {
+        <a class="kx-btn kx-btn--primary hero__cta" [routerLink]="['/labs', lab.id]">
+          <kx-icon name="play" /> Abrir {{ lab.titulo }}
+        </a>
+      }
+      <a class="kx-btn kx-btn--ghost" routerLink="/biblioteca">Ver todas as demos</a>
     </div>
+    <dl class="hero__stats">
+      @for (s of stats; track s.rotulo) {
+        <div>
+          <dt class="sr-only">{{ s.rotulo }}</dt>
+          <dd><strong>{{ s.valor }}</strong> <span>{{ s.rotulo }}</span></dd>
+        </div>
+      }
+    </dl>
   </header>
 
-  <!-- Números -->
-  <section class="stats" aria-label="Resumo do projeto">
-    @for (s of stats; track s.rotulo) {
-      <div class="stats__item kx-glass">
-        <strong class="stats__valor">{{ s.valor }}</strong>
-        <span class="kx-muted">{{ s.rotulo }}</span>
-      </div>
-    }
-  </section>
-
-  <!-- Fase atual -->
-  <section class="kx-callout" data-acento="magenta">
-    <strong>Fase {{ faseAtual.numero }} — {{ faseAtual.titulo }}.</strong>
-    Critério de conclusão: {{ faseAtual.criterio }}
+  <!-- Como usar -->
+  <section class="kx-section" aria-labelledby="como-usar">
+    <h2 id="como-usar" class="kx-section-title">Como usar</h2>
+    <ol class="passos">
+      @for (p of passos; track p.titulo; let i = $index) {
+        <li class="passos__item">
+          <span class="passos__num">{{ i + 1 }}</span>
+          <div>
+            <strong>{{ p.titulo }}</strong>
+            <p class="kx-muted">{{ p.texto }}</p>
+          </div>
+        </li>
+      }
+    </ol>
   </section>
 
   <!-- Laboratórios do MVP -->
-  <section class="kx-section">
-    <h2 class="kx-section-title">Laboratórios do MVP</h2>
+  <section class="kx-section" aria-labelledby="mvp">
+    <h2 id="mvp" class="kx-section-title">Laboratórios do MVP</h2>
     <div class="kx-grid">
-      @for (lab of labsMvp(); track lab.id) {
-        <a class="kx-card" [routerLink]="['/labs', lab.id]" [attr.data-acento]="lab.acento">
+      @for (lab of labsMvp; track lab.id) {
+        @let prog = progresso(lab);
+        <a
+          class="kx-card"
+          [class.is-pronto]="lab.disponivel"
+          [routerLink]="['/labs', lab.id]"
+          [attr.data-acento]="lab.acento"
+        >
           <span class="kx-card__num">LAB {{ lab.numero }}</span>
           <h3 class="kx-card__title">{{ lab.titulo }}</h3>
           <p class="kx-muted">{{ lab.resumo }}</p>
+          <div class="card-prog">
+            <div class="kx-progress" role="progressbar" [attr.aria-valuenow]="prog.pct" aria-valuemin="0" aria-valuemax="100"
+              [attr.aria-label]="'Progresso de ' + lab.titulo">
+              <span [style.width.%]="prog.pct"></span>
+            </div>
+            <small class="kx-muted">{{ prog.feitos }} de {{ prog.total }} demos</small>
+          </div>
           <div class="kx-card__meta">
             <kx-status-badge [status]="lab.status" />
-            <span class="kx-chip">{{ lab.topicos.length }} tópicos</span>
+            <span class="card-cta">
+              {{ lab.disponivel ? 'Abrir' : 'Ver plano' }} <kx-icon name="arrow-right" />
+            </span>
           </div>
         </a>
       }
@@ -49,10 +74,10 @@
   </section>
 
   <!-- Próximas etapas -->
-  <section class="kx-section">
-    <h2 class="kx-section-title">Próximas etapas</h2>
+  <section class="kx-section" aria-labelledby="futuro">
+    <h2 id="futuro" class="kx-section-title">Próximas etapas</h2>
     <div class="kx-grid">
-      @for (lab of labsFuturos(); track lab.id) {
+      @for (lab of labsFuturos; track lab.id) {
         <a class="kx-card is-futuro" [routerLink]="['/labs', lab.id]" [attr.data-acento]="lab.acento">
           <span class="kx-card__num">LAB {{ lab.numero }} · Fase {{ lab.fase }}</span>
           <h3 class="kx-card__title">{{ lab.titulo }}</h3>

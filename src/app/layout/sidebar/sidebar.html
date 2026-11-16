@@ -19,7 +19,7 @@
           [routerLinkActiveOptions]="{ exact: p.exato }"
           (click)="navegou.emit()"
         >
-          <span class="sidebar__icon" aria-hidden="true">{{ p.icone }}</span>
+          <kx-icon class="sidebar__icon" [name]="p.icone" />
           {{ p.rotulo }}
         </a>
       </li>
@@ -39,9 +39,14 @@
           (click)="navegou.emit()"
         >
           <span class="sidebar__num" [attr.data-acento]="lab.acento">{{ lab.numero }}</span>
-          {{ lab.titulo }}
-          @if (lab.status === 'bloqueado') {
-            <span class="sidebar__lock" aria-label="bloqueado">🔒</span>
+          <span class="sidebar__label">{{ lab.titulo }}</span>
+          @if (lab.disponivel) {
+            <span class="sidebar__tag">testar</span>
+          } @else if (lab.status === 'bloqueado') {
+            <kx-icon class="sidebar__lock" name="lock" />
+            <span class="sr-only">(bloqueado)</span>
+          } @else {
+            <span class="sidebar__soon">em breve</span>
           }
         </a>
       </li>

@@ -31,21 +31,32 @@
 
   <div class="kx-grid">
     @for (e of efeitos(); track e.id) {
-      <article class="kx-card" [attr.data-acento]="acentoLab(e.labId)">
-        <span class="kx-card__num">{{ nomeLab(e.labId) }} · {{ e.topico }}</span>
-        <h2 class="kx-card__title">{{ e.nome }}</h2>
-        <p class="kx-muted">{{ e.descricao }}</p>
-        <div class="kx-card__meta">
-          <span class="kx-chip">{{ e.nivel }}</span>
-          @if (e.implementado) {
-            <span class="kx-badge kx-badge--validado">Implementado</span>
-          } @else {
-            <span class="kx-badge kx-badge--planejado">Planejado</span>
-          }
-        </div>
-      </article>
+      @if (e.implementado && e.demoId) {
+        <a class="kx-card" [routerLink]="['/labs', e.labId]" [queryParams]="{ demo: e.demoId }" [attr.data-acento]="acentoLab(e.labId)">
+          <ng-container *ngTemplateOutlet="conteudo; context: { $implicit: e }" />
+          <span class="abrir">Abrir demo <kx-icon name="arrow-right" /></span>
+        </a>
+      } @else {
+        <article class="kx-card is-planejado" [attr.data-acento]="acentoLab(e.labId)">
+          <ng-container *ngTemplateOutlet="conteudo; context: { $implicit: e }" />
+        </article>
+      }
     } @empty {
       <p class="kx-muted">Nenhum efeito encontrado com esse filtro.</p>
     }
   </div>
 </div>
+
+<ng-template #conteudo let-e>
+  <span class="kx-card__num">{{ nomeLab(e.labId) }} · {{ e.topico }}</span>
+  <h2 class="kx-card__title">{{ e.nome }}</h2>
+  <p class="kx-muted">{{ e.descricao }}</p>
+  <div class="kx-card__meta">
+    <span class="kx-chip">{{ e.nivel }}</span>
+    @if (e.implementado) {
+      <span class="kx-badge kx-badge--validado">Demo pronta</span>
+    } @else {
+      <span class="kx-badge kx-badge--planejado">Planejado</span>
+    }
+  </div>
+</ng-template>

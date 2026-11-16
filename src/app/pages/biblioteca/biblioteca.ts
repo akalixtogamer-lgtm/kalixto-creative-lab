@@ -1,5 +1,8 @@
 import { Component, computed, input, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { Icon } from '../../shared/components/icon/icon';
 import { EFFECTS } from '../../core/data/effects.data';
 import { LABS, findLab } from '../../core/data/labs.data';
 import { PageHeader } from '../../shared/components/page-header/page-header';
@@ -11,7 +14,7 @@ import { PageHeader } from '../../shared/components/page-header/page-header';
  */
 @Component({
   selector: 'kx-biblioteca',
-  imports: [FormsModule, PageHeader],
+  imports: [FormsModule, NgTemplateOutlet, RouterLink, Icon, PageHeader],
   templateUrl: './biblioteca.html',
   styleUrl: './biblioteca.css',
 })

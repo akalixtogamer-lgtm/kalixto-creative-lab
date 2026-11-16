@@ -1,0 +1,13 @@
+<section class="cv" [attr.aria-label]="titulo()">
+  <header class="cv__topo">
+    <span class="cv__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="cv__titulo">{{ titulo() }}</span>
+    <span class="kx-chip">{{ linguagem() }}</span>
+    <button type="button" class="kx-btn kx-btn--ghost cv__copiar" (click)="copiar()">
+      <kx-icon [name]="copiado() ? 'check' : 'copy'" />
+      {{ copiado() ? 'Copiado!' : 'Copiar' }}
+    </button>
+  </header>
+  <pre class="cv__codigo" tabindex="0"><code>{{ codigo() }}</code></pre>
+  <span class="sr-only" aria-live="polite">{{ copiado() ? 'Código copiado' : '' }}</span>
+</section>

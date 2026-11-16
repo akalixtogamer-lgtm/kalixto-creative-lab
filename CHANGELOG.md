@@ -7,9 +7,28 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [0.2.0] — 2026-11-16 · Fase 2 — CSS Playground + revisão de UI/UX
+
+> Status: **pronto para testar** (ver `docs/CHECKLIST-FASE-2-CSS.md`). Ainda não publicado no GitHub Pages.
+
+### Adicionado
+- **Laboratório 01 — CSS Playground** com 8 demos interativas: Transitions, Keyframes, Transform, Hover, Floating, Perspective, Clip-path e Microinterações.
+- Cada demo tem palco, controles (sliders e seletores), botões Executar e Reiniciar, Code Viewer com o código gerado a partir dos valores atuais e explicação com dica.
+- A demo escolhida fica na URL (`/labs/css?demo=hover`).
+- Componentes compartilhados: `kx-code-viewer` (com botão Copiar), `kx-breadcrumb`, `kx-icon` (ícones SVG).
+- 15 testes novos do CSS Playground (31 no total).
+
+### Alterado (revisão de UI/UX)
+- Dashboard: CTA principal leva direto ao laboratório pronto; nova seção "Como usar" em 3 passos; cards com barra de progresso e indicação "Abrir" / "Ver plano".
+- Labs sem demos: botões desabilitados (que pareciam quebrados) trocados por um aviso claro "Em breve" com atalho para o lab pronto.
+- Breadcrumb e navegação anterior/próximo em laboratórios e demos.
+- Menu: ícones SVG consistentes; etiquetas "testar", "em breve" e cadeado; item ativo com marcação lateral.
+- Biblioteca: efeitos prontos viram links que abrem a demo diretamente.
+- Novo status "Pronto para testar".
+
 ## [0.1.0] — 2026-11-16 · Fase 1 — Fundação Angular
 
-> Status: **aguardando validação** (ver `docs/CHECKLIST-FASE-1.md`). Ainda não publicado no GitHub Pages.
+> Status: concluída.
 
 ### Adicionado
 - Projeto Angular 22 (componentes standalone, signals, controle de fluxo `@if`/`@for`).

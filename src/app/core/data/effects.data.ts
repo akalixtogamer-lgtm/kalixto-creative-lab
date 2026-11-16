@@ -1,51 +1,27 @@
 import { Effect } from '../models/effect.model';
+import { CSS_DEMOS } from './css-demos.data';
 
 /**
  * Biblioteca de Efeitos — estrutura inicial (Fase 1).
  *
- * Os itens abaixo são o catálogo planejado do MVP. Todos começam com
- * `implementado: false`; cada um só muda para `true` quando a
- * demonstração, o código e a explicação estiverem prontos e testados
- * (critérios da seção 16).
+ * Catálogo do MVP. `implementado: true` significa que a demonstração
+ * interativa, o código e a explicação já existem; a validação final
+ * segue os critérios da seção 16 (docs/ROADMAP.md).
  */
 export const EFFECTS: Effect[] = [
-  // ---------- 01 · CSS Playground ----------
-  {
-    id: 'css-transition-basica',
-    nome: 'Transição de cor e escala',
-    labId: 'css',
-    topico: 'Transitions',
-    nivel: 'iniciante',
-    descricao: 'Interpolar propriedades entre dois estados com transition.',
-    implementado: false,
-  },
-  {
-    id: 'css-keyframes-pulse',
-    nome: 'Pulse com @keyframes',
-    labId: 'css',
-    topico: 'Keyframes',
-    nivel: 'iniciante',
-    descricao: 'Criar uma animação em loop definindo etapas com @keyframes.',
-    implementado: false,
-  },
-  {
-    id: 'css-card-3d',
-    nome: 'Card com perspectiva 3D',
-    labId: 'css',
-    topico: 'Perspective',
-    nivel: 'intermediario',
-    descricao: 'Girar um card no espaço 3D usando perspective e rotateY.',
-    implementado: false,
-  },
-  {
-    id: 'css-clip-reveal',
-    nome: 'Revelação com clip-path',
-    labId: 'css',
-    topico: 'Clip-path',
-    nivel: 'intermediario',
-    descricao: 'Mostrar conteúdo recortando a área visível com clip-path.',
-    implementado: false,
-  },
+  // ---------- 01 · CSS Playground (gerado a partir de CSS_DEMOS) ----------
+  ...CSS_DEMOS.map(
+    (d): Effect => ({
+      id: `css-${d.id}`,
+      nome: d.titulo,
+      labId: 'css',
+      topico: d.topico,
+      nivel: d.nivel,
+      descricao: d.resumo,
+      demoId: d.id,
+      implementado: true,
+    }),
+  ),
   // ---------- 02 · GSAP Studio ----------
   {
     id: 'gsap-to',

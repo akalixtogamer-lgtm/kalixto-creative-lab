@@ -24,3 +24,16 @@
 .filtros__input:focus-visible {
   border-color: var(--kx-ciano);
 }
+
+/* Cards */
+.abrir {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kx-space-1);
+  color: var(--kx-magenta);
+  font-size: var(--kx-fs-sm);
+  font-weight: 600;
+}
+.is-planejado {
+  opacity: 0.7;
+}
