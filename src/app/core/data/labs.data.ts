@@ -53,8 +53,8 @@ export const LABS: Lab[] = [
     titulo: 'Scroll Lab',
     resumo: 'Animações guiadas pela rolagem com ScrollTrigger.',
     fase: 2,
-    status: 'em-construcao',
-    disponivel: false,
+    status: 'em-teste',
+    disponivel: true,
     tecnologias: ['GSAP', 'ScrollTrigger'],
     topicos: [
       'ScrollTrigger',

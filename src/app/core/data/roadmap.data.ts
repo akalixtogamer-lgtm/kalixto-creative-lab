@@ -35,7 +35,7 @@ export const FASES: Fase[] = [
     entregas: [
       'CSS Playground — pronto para testar',
       'GSAP Studio — pronto para testar',
-      'Scroll Lab',
+      'Scroll Lab — pronto para testar',
       'Code Viewer',
       'Documentação dos efeitos',
       'Controles interativos',

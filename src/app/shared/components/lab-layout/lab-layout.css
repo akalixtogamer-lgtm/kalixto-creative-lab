@@ -1,0 +1,117 @@
+/* ===== Partes do layout de laboratório exclusivas deste componente ===== */
+.pg__demo-feita {
+  color: var(--kx-success);
+}
+
+/* Presets */
+.presets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-2);
+  padding-top: var(--kx-space-4);
+  border-top: 1px solid var(--kx-border);
+}
+.presets__titulo {
+  color: var(--kx-text-muted);
+  font-size: var(--kx-fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.presets__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+}
+.presets__chip {
+  min-height: 32px;
+  background: var(--kx-surface);
+  cursor: pointer;
+}
+.presets__chip:hover {
+  border-color: var(--kx-acento, var(--kx-magenta));
+  color: var(--kx-text);
+}
+.presets__chip--meu {
+  border-color: rgb(255 181 71 / 0.45);
+  color: var(--kx-warning);
+}
+.presets__meu {
+  display: inline-flex;
+  align-items: center;
+}
+.presets__x {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: none;
+  color: var(--kx-text-muted);
+  cursor: pointer;
+}
+.presets__x:hover {
+  color: var(--kx-danger);
+}
+.presets__salvar {
+  display: flex;
+  gap: var(--kx-space-2);
+}
+.presets__input {
+  flex: 1;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 var(--kx-space-3);
+  border: 1px solid var(--kx-border-strong);
+  border-radius: var(--kx-radius-sm);
+  background: rgb(0 0 0 / 0.35);
+  color: var(--kx-text);
+  font: inherit;
+  font-size: var(--kx-fs-sm);
+}
+
+/* Desafio */
+.desafio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-2);
+  padding: var(--kx-space-4) var(--kx-space-5);
+  border: 1px dashed rgb(255 181 71 / 0.5);
+  border-radius: var(--kx-radius-md);
+  background: rgb(255 181 71 / 0.06);
+}
+.desafio.is-pronto {
+  border-style: solid;
+  border-color: var(--kx-ciano);
+  background: rgb(34 227 255 / 0.08);
+}
+.desafio.is-feito {
+  border-style: solid;
+  border-color: rgb(46 229 157 / 0.55);
+  background: rgb(46 229 157 / 0.08);
+}
+.desafio__selo {
+  color: var(--kx-warning);
+  font-size: var(--kx-fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.is-feito .desafio__selo {
+  color: var(--kx-success);
+}
+.desafio__status {
+  font-size: var(--kx-fs-sm);
+}
+.desafio__toast {
+  padding: var(--kx-space-3) var(--kx-space-4);
+  border-radius: var(--kx-radius-md);
+  background: var(--kx-gradient);
+  font-weight: 600;
+  animation: toast-entra var(--kx-dur-base) var(--kx-ease-out);
+}
+@keyframes toast-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

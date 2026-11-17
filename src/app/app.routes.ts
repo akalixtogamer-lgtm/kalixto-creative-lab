@@ -28,6 +28,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/gsap-studio/gsap-studio').then((m) => m.GsapStudio),
       },
       {
+        path: 'labs/scroll',
+        title: 'Scroll Lab · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/scroll-lab/scroll-lab').then((m) => m.ScrollLab),
+      },
+      {
         path: 'labs/:id',
         title: 'Laboratório · Kalixto Creative Lab',
         loadComponent: () => import('./pages/lab-page/lab-page').then((m) => m.LabPage),

@@ -1,0 +1,89 @@
+<kx-lab-layout
+  [lab]="lab"
+  [demos]="demos"
+  [atual]="atual()"
+  [valores]="valores()"
+  [codigo]="codigo()"
+  linguagem="JavaScript"
+  (executar)="executar()"
+  (reiniciar)="reiniciar()"
+  (mudou)="alterar($event.param, $event.valor)"
+  (aplicar)="aplicar($event)"
+>
+  <div palco #palco class="palco s-palco">
+    <div #scroller class="s-rolagem" tabindex="0" aria-label="Janela de rolagem da demo">
+      @switch (atual().id) {
+        @case ('gatilho') {
+          <div class="s-espaco"><span class="s-dica">↓ Role para baixo</span></div>
+          <div class="s-card">
+            <strong>Apareci!</strong>
+            <small>start: "{{ valores()['start'] }}"</small>
+          </div>
+          <div class="s-espaco s-espaco--fim"><span class="s-dica">↑ Volte para cima e role de novo</span></div>
+        }
+        @case ('scrub') {
+          <div class="s-espaco"><span class="s-dica">↓ Role devagar</span></div>
+          <section class="s-secao"><span class="s-forma"></span></section>
+          <div class="s-espaco"></div>
+        }
+        @case ('pin') {
+          <div class="s-espaco"><span class="s-dica">↓ Role até o painel</span></div>
+          <section class="s-painel">
+            <p class="s-painel__titulo">Habilidades</p>
+            @for (h of ['HTML', 'CSS', 'GSAP', 'Angular']; track h) {
+              <div class="s-barra"><span>{{ h }}</span><i><b class="s-barra-fill"></b></i></div>
+            }
+          </section>
+          <div class="s-espaco"><span class="s-dica">Fim do pin ↑</span></div>
+        }
+        @case ('parallax') {
+          <div class="s-espaco"><span class="s-dica">↓ Role</span></div>
+          <section class="s-cena">
+            <div class="s-camada s-fundo"><span></span><span></span><span></span></div>
+            <div class="s-camada s-meio"><span></span><span></span></div>
+            <div class="s-camada s-frente"><span>K</span></div>
+          </section>
+          <div class="s-espaco"></div>
+        }
+        @case ('horizontal') {
+          <div class="s-espaco s-espaco--curto"><span class="s-dica">↓ Role para baixo</span></div>
+          <section class="s-horizontal">
+            <div class="s-faixa">
+              @for (n of paineis(); track n) {
+                <div class="s-paineltz" [attr.data-n]="n"><strong>{{ n }}</strong><small>painel</small></div>
+              }
+            </div>
+          </section>
+          <div class="s-espaco s-espaco--curto"><span class="s-dica">Fim ↑</span></div>
+        }
+        @case ('progresso') {
+          <div class="s-topo">
+            <span class="s-progresso" [style.height.px]="valores()['altura']"></span>
+            <span class="s-contador">0%</span>
+          </div>
+          <article class="s-artigo">
+            <h3>Da dança ao código</h3>
+            @for (p of paragrafos; track p) {
+              <p>
+                Ritmo, repetição e precisão: o que a dança ensina sobre movimento serve também para animar
+                interfaces. Cada parágrafo aqui é só um texto de exemplo para você ter o que rolar.
+              </p>
+            }
+          </article>
+        }
+        @case ('storytelling') {
+          <div class="s-espaco s-espaco--curto"><span class="s-dica">↓ Comece a história</span></div>
+          <section class="s-historia">
+            <span class="s-hforma"></span>
+            <div class="s-caps">
+              <p class="s-cap s-cap-1"><strong>1 · Dança</strong> Tudo começa no movimento.</p>
+              <p class="s-cap s-cap-2"><strong>2 · Código</strong> O ritmo vira lógica.</p>
+              <p class="s-cap s-cap-3"><strong>3 · Criação</strong> Movimento + código = experiências.</p>
+            </div>
+          </section>
+          <div class="s-espaco s-espaco--curto"><span class="s-dica">Fim ↑</span></div>
+        }
+      }
+    </div>
+  </div>
+</kx-lab-layout>

@@ -1,0 +1,156 @@
+<div class="kx-page" [attr.data-acento]="lab().acento">
+  <kx-breadcrumb [itens]="[{ rotulo: 'Dashboard', rota: '/' }, { rotulo: 'Laboratórios' }, { rotulo: lab().titulo }]" />
+
+  <!-- Cabeçalho -->
+  <header class="kx-page-header">
+    <p class="kx-eyebrow">Laboratório {{ lab().numero }} · Fase {{ lab().fase }}</p>
+    <h1 class="kx-title">{{ lab().titulo }}</h1>
+    <p class="kx-lead">{{ lab().resumo }}</p>
+    <ol class="pg__passos" aria-label="Como usar">
+      <li><span>1</span> Escolha uma demo</li>
+      <li><span>2</span> Ajuste os controles{{ semExecutar() ? '' : ' e clique em' }} <strong>{{ semExecutar() ? '— o resultado é ao vivo' : 'Executar' }}</strong></li>
+      <li><span>3</span> Leia o código e copie</li>
+    </ol>
+  </header>
+
+  <!-- Seletor de demos -->
+  <nav #seletor class="pg__demos" [attr.aria-label]="'Demonstrações do ' + lab().titulo">
+    @for (d of demos(); track d.id; let i = $index) {
+      <button
+        type="button"
+        class="pg__demo-btn"
+        [class.is-active]="d.id === atual().id"
+        [attr.aria-current]="d.id === atual().id ? 'true' : null"
+        (click)="selecionar(d.id)"
+      >
+        <span class="pg__demo-num">{{ numero(i) }}</span>
+        {{ d.topico }}
+        @if (feita(d.id)) {
+          <kx-icon class="pg__demo-feita" name="check" />
+          <span class="sr-only">(já executada)</span>
+        }
+      </button>
+    }
+  </nav>
+
+  <div class="pg__grid">
+    <!-- Palco -->
+    <section class="pg__palco-wrap kx-glass" aria-labelledby="demo-titulo">
+      <header class="pg__palco-topo">
+        <div>
+          <p class="kx-eyebrow">{{ atual().topico }} · {{ indice() + 1 }} de {{ demos().length }}</p>
+          <h2 id="demo-titulo" class="pg__demo-titulo">{{ atual().titulo }}</h2>
+        </div>
+        <span class="kx-chip">{{ nivel[atual().nivel] }}</span>
+      </header>
+
+      <ng-content select="[palco]" />
+
+      <p class="pg__instrucao kx-muted">{{ atual().instrucao }}</p>
+
+      <div class="pg__toolbar">
+        @if (!semExecutar()) {
+          <button type="button" class="kx-btn kx-btn--primary" (click)="rodar()">
+            <kx-icon name="play" /> {{ atual().acao }}
+          </button>
+        }
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="reiniciar.emit()">
+          <kx-icon name="reset" /> Reiniciar
+        </button>
+        <ng-content select="[toolbar]" />
+      </div>
+    </section>
+
+    <!-- Controles + presets -->
+    <section class="pg__controles kx-glass" aria-labelledby="controles-titulo">
+      <h2 id="controles-titulo" class="pg__bloco-titulo">Controles</h2>
+      <kx-demo-controls [params]="atual().params" [valores]="valores()" (mudou)="mudou.emit($event)" />
+
+      @if (atual().presets?.length || meusPresets().length) {
+        <div class="presets">
+          <p class="presets__titulo">Presets</p>
+          <div class="presets__lista">
+            @for (p of atual().presets ?? []; track p.nome) {
+              <button type="button" class="kx-chip presets__chip" (click)="usarPreset(p)">{{ p.nome }}</button>
+            }
+            @for (p of meusPresets(); track p.nome) {
+              <span class="presets__meu">
+                <button type="button" class="kx-chip presets__chip presets__chip--meu" (click)="usarPreset(p)">
+                  ★ {{ p.nome }}
+                </button>
+                <button type="button" class="presets__x" (click)="removerPreset(p)" [attr.aria-label]="'Remover preset ' + p.nome">
+                  <kx-icon name="close" />
+                </button>
+              </span>
+            }
+          </div>
+        </div>
+      }
+      <form class="presets__salvar" (submit)="$event.preventDefault(); salvarPreset()">
+        <label class="sr-only" for="nome-preset">Nome do preset</label>
+        <input id="nome-preset" class="presets__input" placeholder="Nome do meu preset" maxlength="30"
+          [value]="nomePreset()" (input)="nomePreset.set($any($event.target).value)" />
+        <button type="submit" class="kx-btn kx-btn--ghost" [disabled]="!nomePreset().trim()">Salvar</button>
+      </form>
+    </section>
+
+    <!-- Código -->
+    <kx-code-viewer class="pg__codigo" [codigo]="codigo()" [linguagem]="linguagem()" titulo="Código" />
+
+    <!-- Explicação + desafio -->
+    <section class="pg__explica" aria-labelledby="explica-titulo">
+      <h2 id="explica-titulo" class="pg__bloco-titulo">Como funciona</h2>
+      <ul class="kx-list">
+        @for (t of atual().explicacao; track t) {
+          <li>{{ t }}</li>
+        }
+      </ul>
+      <p class="kx-callout"><strong>Dica:</strong> {{ atual().dica }}</p>
+
+      @if (atual().desafio; as d) {
+        <div class="desafio" [class.is-feito]="desafioFeito()" [class.is-pronto]="metaAtingida() && !desafioFeito()">
+          <p class="desafio__topo">
+            <span class="desafio__selo">{{ desafioFeito() ? '✓ Desafio concluído' : 'Desafio' }}</span>
+          </p>
+          <p>{{ d.enunciado }}</p>
+          @if (!desafioFeito()) {
+            <p class="kx-muted desafio__status">
+              {{ metaAtingida() ? 'Valores certos! Agora clique no botão principal para concluir.' : 'Ajuste os controles até chegar no pedido.' }}
+            </p>
+          }
+        </div>
+      }
+      @if (comemorar()) {
+        <p class="desafio__toast" role="status">🎉 Desafio concluído! Seu progresso foi salvo.</p>
+      }
+    </section>
+  </div>
+
+  <!-- Anterior / próxima -->
+  <nav class="kx-pager" aria-label="Navegar entre demos">
+    @if (anterior(); as a) {
+      <button type="button" class="kx-pager__link" (click)="selecionar(a.id)">
+        <small><kx-icon name="arrow-left" /> Demo anterior</small>
+        {{ a.topico }}
+      </button>
+    } @else if (navegacao().anterior; as ant) {
+      <a class="kx-pager__link" [routerLink]="['/labs', ant.id]">
+        <small><kx-icon name="arrow-left" /> Laboratório anterior</small>
+        {{ ant.titulo }}
+      </a>
+    }
+    @if (proxima(); as p) {
+      <button type="button" class="kx-pager__link kx-pager__link--next" (click)="selecionar(p.id)">
+        <small>Próxima demo <kx-icon name="arrow-right" /></small>
+        {{ p.topico }}
+      </button>
+    } @else if (navegacao().proximo; as prox) {
+      <a class="kx-pager__link kx-pager__link--next" [routerLink]="['/labs', prox.id]">
+        <small>Próximo laboratório <kx-icon name="arrow-right" /></small>
+        {{ prox.titulo }}
+      </a>
+    }
+  </nav>
+
+  <p class="kx-muted pg__status">Status do laboratório: <kx-status-badge [status]="lab().status" /></p>
+</div>

@@ -1,4 +1,3 @@
-import { NIVEL_ROTULO } from '../../core/models/demo.model';
 import {
   Component,
   ElementRef,
@@ -13,16 +12,12 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { gsap } from 'gsap';
 import { GSAP_DEMOS, easeDoDemo } from '../../core/data/gsap-demos.data';
-import { findLab, vizinhos } from '../../core/data/labs.data';
+import { findLab } from '../../core/data/labs.data';
 import { LabDemo, ParamDef, Valor, Valores, valoresPadrao } from '../../core/models/demo.model';
-import { Breadcrumb } from '../../shared/components/breadcrumb/breadcrumb';
-import { CodeViewer } from '../../shared/components/code-viewer/code-viewer';
-import { DemoControls } from '../../shared/components/demo-controls/demo-controls';
 import { Icon } from '../../shared/components/icon/icon';
-import { StatusBadge } from '../../shared/components/status-badge/status-badge';
+import { LabLayout } from '../../shared/components/lab-layout/lab-layout';
 import { ANIMACOES, GRAFICO, caminhoDaCurva, pontoDaCurva } from './gsap-animacoes';
 
 /**
@@ -33,22 +28,18 @@ import { ANIMACOES, GRAFICO, caminhoDaCurva, pontoDaCurva } from './gsap-animaco
  */
 @Component({
   selector: 'kx-gsap-studio',
-  imports: [RouterLink, Breadcrumb, CodeViewer, DemoControls, Icon, StatusBadge],
+  imports: [Icon, LabLayout],
   templateUrl: './gsap-studio.html',
   styleUrl: './gsap-studio.css',
 })
 export class GsapStudio implements OnDestroy {
-  protected readonly nivel = NIVEL_ROTULO;
-  private readonly router = inject(Router);
   private readonly injector = inject(Injector);
   private readonly palco = viewChild<ElementRef<HTMLElement>>('palco');
-  private readonly seletor = viewChild<ElementRef<HTMLElement>>('seletor');
 
   /** Query param ?demo= */
   readonly demo = input<string>();
 
   protected readonly lab = findLab('gsap')!;
-  protected readonly labs = vizinhos('gsap');
   protected readonly demos = GSAP_DEMOS;
   protected readonly pontos = Array.from({ length: 15 }, (_, i) => i);
   protected readonly grafico = GRAFICO;
@@ -56,9 +47,6 @@ export class GsapStudio implements OnDestroy {
   protected readonly atual = computed<LabDemo>(
     () => GSAP_DEMOS.find((d) => d.id === this.demo()) ?? GSAP_DEMOS[0],
   );
-  protected readonly indice = computed(() => GSAP_DEMOS.indexOf(this.atual()));
-  protected readonly anterior = computed(() => GSAP_DEMOS[this.indice() - 1]);
-  protected readonly proxima = computed(() => GSAP_DEMOS[this.indice() + 1]);
 
   private readonly todosValores = signal<Record<string, Valores>>(
     Object.fromEntries(GSAP_DEMOS.map((d) => [d.id, valoresPadrao(d)])),
@@ -99,21 +87,17 @@ export class GsapStudio implements OnDestroy {
     this.limpar();
   }
 
-  selecionar(id: string): void {
-    this.router
-      .navigate([], { queryParams: { demo: id }, replaceUrl: true })
-      .then(() =>
-        this.seletor()
-          ?.nativeElement.querySelector('.is-active')
-          ?.scrollIntoView?.({ block: 'nearest', inline: 'center', behavior: 'smooth' }),
-      );
-  }
-
   alterar(param: ParamDef, v: Valor): void {
     const id = this.atual().id;
     this.todosValores.update((todos) => ({ ...todos, [id]: { ...todos[id], [param.id]: v } }));
     // A velocidade muda ao vivo, sem recriar a timeline
     if (id === 'reproducao' && param.id === 'vel') this.animacao?.timeScale(Number(v));
+  }
+
+  aplicar(valores: Valores): void {
+    const id = this.atual().id;
+    this.todosValores.update((todos) => ({ ...todos, [id]: valores }));
+    if (id === 'reproducao') this.animacao?.timeScale(Number(valores['vel']));
   }
 
   executar(): void {

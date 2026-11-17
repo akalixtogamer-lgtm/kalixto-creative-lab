@@ -7,6 +7,18 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [0.4.0] — 2026-11-16 · Fase 2 concluída — Scroll Lab
+
+### Adicionado
+- **Laboratório 03 — Scroll Lab** com 7 demos de ScrollTrigger: gatilho, Scrub, Pin, Parallax, Horizontal Scroll, Scroll Progress e Scroll Storytelling (Dança → Código → Criação).
+- Cada demo roda numa janela de rolagem própria; o resultado é ao vivo e "Rolar automaticamente" faz a rolagem sozinho.
+- **Layout comum dos laboratórios** (`kx-lab-layout`): CSS, GSAP e Scroll usam a mesma estrutura.
+- **Presets** em todas as demos (receitas prontas) e presets do usuário salvos no navegador.
+- **Desafios** práticos em todas as demos, com conclusão registrada.
+- **Progresso salvo** no navegador (`ProgressoService`): demos executadas ganham ✓ no seletor.
+- Teste de integridade: todo preset/desafio usa valores que os controles conseguem produzir.
+- 98 testes passando.
+
 ## [0.3.0] — 2026-11-16 · Fase 2 — GSAP Studio + logo Kalixto
 
 > Status: **pronto para testar** (ver `docs/CHECKLIST-FASE-2-GSAP.md`). Ainda não publicado no GitHub Pages.

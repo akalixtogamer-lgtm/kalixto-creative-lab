@@ -1,15 +1,4 @@
-import { NIVEL_ROTULO } from '../../core/models/demo.model';
-import {
-  Component,
-  ElementRef,
-  computed,
-  inject,
-  input,
-  linkedSignal,
-  signal,
-  viewChild,
-} from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, computed, input, linkedSignal, signal } from '@angular/core';
 import {
   CLIP_FORMAS,
   CSS_DEMOS,
@@ -19,12 +8,8 @@ import {
   Valores,
   valoresPadrao,
 } from '../../core/data/css-demos.data';
-import { findLab, vizinhos } from '../../core/data/labs.data';
-import { Breadcrumb } from '../../shared/components/breadcrumb/breadcrumb';
-import { CodeViewer } from '../../shared/components/code-viewer/code-viewer';
-import { DemoControls } from '../../shared/components/demo-controls/demo-controls';
-import { Icon } from '../../shared/components/icon/icon';
-import { StatusBadge } from '../../shared/components/status-badge/status-badge';
+import { findLab } from '../../core/data/labs.data';
+import { LabLayout } from '../../shared/components/lab-layout/lab-layout';
 
 /**
  * Laboratório 01 — CSS Playground.
@@ -35,29 +20,22 @@ import { StatusBadge } from '../../shared/components/status-badge/status-badge';
  */
 @Component({
   selector: 'kx-css-playground',
-  imports: [RouterLink, Breadcrumb, CodeViewer, DemoControls, Icon, StatusBadge],
+  imports: [LabLayout],
   templateUrl: './css-playground.html',
   styleUrl: './css-playground.css',
 })
 export class CssPlayground {
-  protected readonly nivel = NIVEL_ROTULO;
-  private readonly router = inject(Router);
-  private readonly seletor = viewChild<ElementRef<HTMLElement>>('seletor');
 
   /** Query param ?demo= (withComponentInputBinding). */
   readonly demo = input<string>();
 
   protected readonly lab = findLab('css')!;
-  protected readonly labs = vizinhos('css');
   protected readonly demos = CSS_DEMOS;
   protected readonly clipFormas = CLIP_FORMAS;
 
   protected readonly atual = computed<CssDemo>(
     () => CSS_DEMOS.find((d) => d.id === this.demo()) ?? CSS_DEMOS[0],
   );
-  protected readonly indice = computed(() => CSS_DEMOS.indexOf(this.atual()));
-  protected readonly anterior = computed(() => CSS_DEMOS[this.indice() - 1]);
-  protected readonly proxima = computed(() => CSS_DEMOS[this.indice() + 1]);
 
   /** Valores dos controles de todas as demos (cada uma guarda os seus). */
   private readonly todosValores = signal<Record<string, Valores>>(
@@ -84,20 +62,15 @@ export class CssPlayground {
     return estilo;
   });
 
-  selecionar(id: string): void {
-    this.router
-      .navigate([], { queryParams: { demo: id }, replaceUrl: true })
-      .then(() =>
-        // Mantém o botão da demo ativa visível na faixa rolável (mobile)
-        this.seletor()
-          ?.nativeElement.querySelector('.is-active')
-          ?.scrollIntoView?.({ block: 'nearest', inline: 'center', behavior: 'smooth' }),
-      );
-  }
-
   alterar(param: ParamDef, v: Valor): void {
     const id = this.atual().id;
     this.todosValores.update((todos) => ({ ...todos, [id]: { ...todos[id], [param.id]: v } }));
+  }
+
+  /** Preset escolhido: troca todos os valores da demo de uma vez. */
+  aplicar(valores: Valores): void {
+    const id = this.atual().id;
+    this.todosValores.update((todos) => ({ ...todos, [id]: valores }));
   }
 
   /** Botão principal: cada demo interpreta "Executar" do seu jeito. */
