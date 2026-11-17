@@ -43,6 +43,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/three-lab/three-lab').then((m) => m.ThreeLab),
       },
       {
+        path: 'labs/webgl',
+        title: 'WebGL & GLSL · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/glsl-lab/glsl-lab').then((m) => m.GlslLab),
+      },
+      {
         path: 'labs/:id',
         title: 'Laboratório · Kalixto Creative Lab',
         loadComponent: () => import('./pages/lab-page/lab-page').then((m) => m.LabPage),

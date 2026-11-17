@@ -35,17 +35,13 @@ describe('Fase 1 · Navegação', () => {
     }
   });
 
-  it.each(LABS.map((l) => l.id))('abre a página do laboratório "%s"', async (id) => {
+  it.each(LABS.map((l) => l.id))('abre a página do laboratório "%s" com demos', async (id) => {
     await harness.navigateByUrl(`/labs/${id}`);
     const lab = LABS.find((l) => l.id === id)!;
     const h1 = harness.routeNativeElement?.querySelector('h1');
     expect(h1?.textContent).toContain(lab.titulo);
   });
 
-  it('lab ainda sem demos mostra o plano do que vai ensinar', async () => {
-    await harness.navigateByUrl('/labs/webgl');
-    expect(harness.routeNativeElement?.textContent).toMatch(/Laboratório bloqueado|Em breve/);
-  });
 
   it('id de laboratório inválido mostra mensagem de não encontrado', async () => {
     await harness.navigateByUrl('/labs/nao-existe');

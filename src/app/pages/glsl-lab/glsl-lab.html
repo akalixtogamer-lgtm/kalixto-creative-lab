@@ -1,0 +1,26 @@
+<kx-lab-layout
+  [lab]="lab"
+  [demos]="demos"
+  [atual]="atual()"
+  [valores]="valores()"
+  [codigo]="codigo()"
+  linguagem="GLSL"
+  (executar)="executar()"
+  (reiniciar)="reiniciar()"
+  (mudou)="alterar($event.param, $event.valor)"
+  (aplicar)="aplicar($event)"
+>
+  <div palco class="palco palco3d">
+    @if (suportado) {
+      <div #container class="palco3d__area" role="img" [attr.aria-label]="'Shader: ' + atual().titulo"></div>
+    } @else {
+      <div class="palco3d__aviso">
+        <strong>Este navegador não conseguiu ativar o WebGL.</strong>
+        <p class="kx-muted">
+          Os shaders precisam da placa de vídeo. Tente outro navegador ou ative a aceleração por hardware.
+          O código GLSL e a explicação continuam disponíveis abaixo.
+        </p>
+      </div>
+    }
+  </div>
+</kx-lab-layout>

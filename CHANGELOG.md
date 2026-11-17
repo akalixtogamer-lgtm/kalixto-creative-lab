@@ -7,6 +7,13 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [0.7.0] — 2026-11-16 · Fase 5 — WebGL e GLSL
+
+### Adicionado
+- **Laboratório 06 — WebGL & GLSL** com 7 demos: fragment shader (gradiente animado), vertex shader (superfície ondulando), formas com GLSL (length, smoothstep, fract, step), noise com fbm e domain warping, distorção da logo com ondas de água no mouse, efeitos procedurais (plasma e Voronoi) e transição entre imagens com ruído animada pelo GSAP.
+- Os shaders ficam no catálogo de demos: o Code Viewer mostra exatamente o GLSL que roda, mais os uniforms com os valores atuais.
+- Teste que garante que todo uniform controlado pela tela existe no shader.
+
 ## [0.6.0] — 2026-11-16 · Fase 4 — Three.js
 
 ### Adicionado

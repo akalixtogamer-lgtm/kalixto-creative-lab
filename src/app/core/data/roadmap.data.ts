@@ -69,7 +69,7 @@ export const FASES: Fase[] = [
   {
     numero: 5,
     titulo: 'WebGL e GLSL',
-    situacao: 'futura',
+    situacao: 'concluida',
     entregas: ['Vertex e Fragment Shaders', 'Noise e Distortion', 'Transições com shaders'],
     criterio: 'Demonstrações gráficas avançadas com documentação e código funcional.',
   },

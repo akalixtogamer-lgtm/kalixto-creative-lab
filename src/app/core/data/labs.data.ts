@@ -107,8 +107,8 @@ export const LABS: Lab[] = [
     titulo: 'WebGL & GLSL',
     resumo: 'Shaders, noise e distorções procedurais.',
     fase: 5,
-    status: 'bloqueado',
-    disponivel: false,
+    status: 'em-teste',
+    disponivel: true,
     tecnologias: ['WebGL', 'GLSL', 'Three.js'],
     topicos: [
       'Vertex Shaders',
