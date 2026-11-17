@@ -56,6 +56,7 @@ export const FASES: Fase[] = [
       'Exercícios e desafios',
       'Presets',
       'Persistência local do progresso',
+      'Interface Lab (efeitos das referências)',
     ],
     criterio: 'Estudar, consultar, comparar e experimentar os efeitos já implementados.',
   },

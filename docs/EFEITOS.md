@@ -2,7 +2,7 @@
 
 Gerado a partir dos arquivos `src/app/core/data/*-demos.data.ts` (a fonte única).
 Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explicação, dica, presets e um desafio.
-**Total: 45 demos interativas em 6 laboratórios.**
+**Total: 60 demos interativas em 7 laboratórios.**
 
 
 ## CSS Playground — `/labs/css` (9 demos)
@@ -19,7 +19,7 @@ Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explic
 | 8. Curtir e interruptor | Microinterações | intermediário | `/labs/css?demo=microinteracoes` |
 | 9. Bordas entre seções | Divisores de seção | intermediário | `/labs/css?demo=divisores` |
 
-## GSAP Studio — `/labs/gsap` (7 demos)
+## GSAP Studio — `/labs/gsap` (8 demos)
 
 | Demo | Tópico | Nível | Link direto |
 |---|---|---|---|
@@ -30,8 +30,9 @@ Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explic
 | 5. Entrada em cascata | Stagger | intermediário | `/labs/gsap?demo=stagger` |
 | 6. Curvas de easing | Easing | intermediário | `/labs/gsap?demo=easing` |
 | 7. Play, pause, reverse e progresso | Controles de reprodução | intermediário | `/labs/gsap?demo=reproducao` |
+| 8. Revelar texto por letras, palavras ou linhas | SplitText | intermediário | `/labs/gsap?demo=splittext` |
 
-## Scroll Lab — `/labs/scroll` (8 demos)
+## Scroll Lab — `/labs/scroll` (9 demos)
 
 | Demo | Tópico | Nível | Link direto |
 |---|---|---|---|
@@ -43,6 +44,7 @@ Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explic
 | 6. Barra de progresso de leitura | Scroll Progress | iniciante | `/labs/scroll?demo=progresso` |
 | 7. Contar uma história com a rolagem | Scroll Storytelling | avançado | `/labs/scroll?demo=storytelling` |
 | 8. Navbar transparente que fixa com sombra | Navbar ao rolar | intermediário | `/labs/scroll?demo=navbar` |
+| 9. Página em capítulos com linha do tempo | Capítulos com linha do tempo | avançado | `/labs/scroll?demo=capitulos` |
 
 ## SVG Lab — `/labs/svg` (5 demos)
 
@@ -79,6 +81,24 @@ Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explic
 | 5. Distorcer uma imagem | Distortion | avançado | `/labs/webgl?demo=distortion` |
 | 6. Plasma e Voronoi | Efeitos procedurais | avançado | `/labs/webgl?demo=procedural` |
 | 7. Trocar de imagem com ruído | Transições com shaders | avançado | `/labs/webgl?demo=transicao` |
+
+## Interface Lab — `/labs/ui` (13 demos)
+
+| Demo | Tópico | Nível | Link direto |
+|---|---|---|---|
+| 1. Hero com título editorial e entrada em sequência | Hero editorial | intermediário | `/labs/ui?demo=hero-editorial` |
+| 2. Anel orbital e camadas que seguem o mouse | Órbita e parallax | avançado | `/labs/ui?demo=orbita` |
+| 3. Título gigante entre camadas | Texto atrás do objeto | intermediário | `/labs/ui?demo=texto-profundidade` |
+| 4. Recortar a imagem com formas | Imagem em formas | intermediário | `/labs/ui?demo=mascara-formas` |
+| 5. Biblioteca de divisores de seção | Divisores SVG | iniciante | `/labs/ui?demo=divisores-svg` |
+| 6. Cards de vidro sobre uma paisagem | Carrossel de vidro | intermediário | `/labs/ui?demo=carrossel-vidro` |
+| 7. Estatísticas com gráfico que se desenha | Números animados | iniciante | `/labs/ui?demo=numeros` |
+| 8. Texto vazado, misto e que preenche no hover | Tipografia vazada | iniciante | `/labs/ui?demo=tipografia-vazada` |
+| 9. Grade bento com blocos de destaque | Bento grid | intermediário | `/labs/ui?demo=bento` |
+| 10. Cards escuros com sombras suaves e forma de destaque | Cards com profundidade | intermediário | `/labs/ui?demo=cards-profundidade` |
+| 11. Grão de filme e vinheta cinematográfica | Grão de filme | iniciante | `/labs/ui?demo=grao-filme` |
+| 12. Botões magnéticos e cursor personalizado | Botão magnético | intermediário | `/labs/ui?demo=magnetico` |
+| 13. Marquee: faixa de texto que não para | Faixa infinita | iniciante | `/labs/ui?demo=marquee` |
 
 ## Como adicionar uma demo
 

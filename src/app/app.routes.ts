@@ -48,6 +48,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/glsl-lab/glsl-lab').then((m) => m.GlslLab),
       },
       {
+        path: 'labs/ui',
+        title: 'Interface Lab · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/ui-lab/ui-lab').then((m) => m.UiLab),
+      },
+      {
         path: 'labs/:id',
         title: 'Laboratório · Kalixto Creative Lab',
         loadComponent: () => import('./pages/lab-page/lab-page').then((m) => m.LabPage),

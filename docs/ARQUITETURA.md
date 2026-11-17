@@ -6,7 +6,7 @@ Tudo que é conteúdo vive em `src/app/core/data/`:
 
 | Arquivo | O que descreve |
 |---|---|
-| `labs.data.ts` | Os 6 laboratórios (número, título, fase, status, cor de acento) |
+| `labs.data.ts` | Os 7 laboratórios (número, título, fase, status, cor de acento) |
 | `*-demos.data.ts` | As demos de cada lab: controles, explicação, dica, código, presets e desafio |
 | `effects.data.ts` | `DEMOS_POR_LAB` — junta tudo e gera a Biblioteca |
 | `exercicios.data.ts` | Perguntas de múltipla escolha |
@@ -48,6 +48,7 @@ O laboratório só fornece:
 | SVG | GSAP + DrawSVG, MorphSVG e MotionPath | `svg-animacoes.ts` |
 | Three.js | `palco-3d.ts` (renderer, câmera, laço, limpeza) + uma cena por demo | `cenas-3d.ts` |
 | GLSL | O mesmo palco 3D + `ShaderMaterial`; os shaders ficam no arquivo de dados | `cena-shader.ts` |
+| Interface | `montar()` (eventos e animações contínuas) + `executar()` (entradas), em `gsap.context()` | `ui-cenas.ts` |
 
 ## Progresso (`core/services/progresso.service.ts`)
 

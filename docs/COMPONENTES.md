@@ -46,7 +46,7 @@ Com `prefers-reduced-motion`, as durações viram 0.
 | `Logo` | `kx-logo` | `tamanho` (px, padrão 44), `descritiva` (adiciona texto alternativo) |
 | `DemoControls` | `kx-demo-controls` | `params`*, `valores`*, saída `mudou` |
 | `LabLayout` | `kx-lab-layout` | `lab`*, `demos`*, `atual`*, `valores`*, `codigo`*, `linguagem`; saídas `executar`, `reiniciar`, `mudou`, `aplicar`; slots `[palco]` e `[toolbar]` |
-| `CssPlayground` · `GsapStudio` · `ScrollLab` · `SvgLab` · `ThreeLab` · `GlslLab` | páginas | query `?demo=` |
+| `CssPlayground` · `GsapStudio` · `ScrollLab` · `SvgLab` · `ThreeLab` · `GlslLab` · `UiLab` | páginas | query `?demo=` |
 
 ## Marca
 

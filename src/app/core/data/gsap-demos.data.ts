@@ -309,4 +309,74 @@ botaoReverse.onclick = () => tl.reverse();
 botaoRestart.onclick = () => tl.restart();
 barra.oninput        = () => tl.progress(barra.value);`,
   },
+  // ---------------------------------------------------------------- 8
+  {
+    id: 'splittext',
+    topico: 'SplitText',
+    titulo: 'Revelar texto por letras, palavras ou linhas',
+    nivel: 'intermediario',
+    resumo: 'Quebrar um título em pedaços e animar cada um em cascata.',
+    explicacao: [
+      'SplitText separa o texto em elementos: letras (chars), palavras (words) ou linhas (lines).',
+      'Com os pedaços separados, um stagger anima um depois do outro — a leitura acompanha a animação.',
+      'mask: "lines" coloca cada linha dentro de um recipiente com overflow: hidden, criando o efeito de "surgir de uma fenda".',
+    ],
+    dica: 'Para títulos use letras ou palavras; para parágrafos, linhas — animar centenas de letras cansa.',
+    acao: 'Revelar texto',
+    instrucao: 'Escolha como dividir e o efeito, e clique em “Revelar texto”.',
+    presets: [
+      { nome: 'Máquina de escrever', valores: { dividir: 'chars', efeito: 'surgir', stagger: 0.04 } },
+      { nome: 'Cinema', valores: { dividir: 'lines', efeito: 'subir', stagger: 0.15, dur: 1.2 } },
+    ],
+    desafio: { enunciado: 'Espalhe as palavras com 0,08 s entre cada uma.', meta: { dividir: 'words', efeito: 'espalhar', stagger: 0.08 } },
+    params: [
+      {
+        id: 'dividir',
+        rotulo: 'type (dividir por)',
+        tipo: 'select',
+        opcoes: [
+          { valor: 'chars', rotulo: 'chars (letras)' },
+          { valor: 'words', rotulo: 'words (palavras)' },
+          { valor: 'lines', rotulo: 'lines (linhas)' },
+        ],
+        padrao: 'chars',
+      },
+      {
+        id: 'efeito',
+        rotulo: 'Efeito',
+        tipo: 'select',
+        opcoes: [
+          { valor: 'subir', rotulo: 'subir (com máscara)' },
+          { valor: 'girar', rotulo: 'girar em 3D' },
+          { valor: 'espalhar', rotulo: 'espalhar e juntar' },
+          { valor: 'surgir', rotulo: 'surgir (opacidade)' },
+        ],
+        padrao: 'subir',
+      },
+      { id: 'stagger', rotulo: 'stagger', tipo: 'range', min: 0.01, max: 0.2, passo: 0.01, unidade: 's', padrao: 0.03 },
+      { id: 'dur', rotulo: 'duration', tipo: 'range', min: 0.3, max: 1.5, passo: 0.1, unidade: 's', padrao: 0.8 },
+    ],
+    codigo: (v) => {
+      const de: Record<string, string> = {
+        subir: 'yPercent: 110',
+        girar: 'rotationX: -90, opacity: 0, transformOrigin: "50% 50% -20px"',
+        espalhar: 'x: () => gsap.utils.random(-120, 120), y: () => gsap.utils.random(-80, 80), opacity: 0',
+        surgir: 'opacity: 0',
+      };
+      const mascara = v['efeito'] === 'subir' ? `\n  mask: "${v['dividir']}",` : '';
+      return `gsap.registerPlugin(SplitText);
+
+const split = SplitText.create(".titulo", {
+  type: "${v['dividir']}",${mascara}
+});
+
+gsap.from(split.${v['dividir']}, {
+  ${de[String(v['efeito'])]},
+  duration: ${v['dur']},
+  stagger: ${v['stagger']},
+  ease: "power3.out",
+});`;
+    },
+  },
 ];
+

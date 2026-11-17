@@ -166,6 +166,36 @@ CENAS['navbar'] = (palco, scroller, v) => {
   return () => nav.classList.remove('fixa', 'escondida');
 };
 
+/** capítulos: linha do tempo que se preenche + capítulo ativo + imagem com efeito. */
+CENAS['capitulos'] = (palco, scroller, v) => {
+  const lista = um(palco, '.s-capitulos');
+  gsap.fromTo(
+    um(palco, '.s-tempo__fill'),
+    { scaleY: 0 },
+    {
+      scaleY: 1,
+      ease: 'none',
+      transformOrigin: 'top center',
+      scrollTrigger: { trigger: lista, scroller, start: 'top center', end: 'bottom center', scrub: scrub(v) },
+    },
+  );
+  const caps = q(palco, '.s-cap-item');
+  caps.forEach((cap) => {
+    ScrollTrigger.create({
+      trigger: cap,
+      scroller,
+      start: 'top center',
+      end: 'bottom center',
+      onToggle: (self) => cap.classList.toggle('ativo', self.isActive),
+    });
+    const img = cap.querySelector('img');
+    const st = { trigger: cap, scroller, start: 'top bottom', end: 'bottom top', scrub: true };
+    if (img && v['imagem'] === 'zoom') gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: st });
+    if (img && v['imagem'] === 'parallax') gsap.fromTo(img, { yPercent: -12 }, { yPercent: 12, ease: 'none', scrollTrigger: st });
+  });
+  return () => caps.forEach((c) => c.classList.remove('ativo'));
+};
+
 /** Rola a janela até o fim (botão "Rolar automaticamente"). */
 export function rolarAteOFim(scroller: HTMLElement): gsap.core.Tween {
   const fim = scroller.scrollHeight - scroller.clientHeight;

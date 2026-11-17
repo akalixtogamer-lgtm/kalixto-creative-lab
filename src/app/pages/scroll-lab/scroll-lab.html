@@ -86,6 +86,25 @@
             }
           </article>
         }
+        @case ('capitulos') {
+          <div class="s-espaco s-espaco--curto"><span class="s-dica">↓ Role pelos capítulos</span></div>
+          <section class="s-capitulos">
+            <span class="s-tempo" aria-hidden="true"><i class="s-tempo__fill"></i></span>
+            @for (c of capitulos; track c.titulo; let i = $index) {
+              <article class="s-cap-item">
+                <img src="ilustracoes/paisagem-{{ c.img }}.svg" alt="" />
+                <span class="s-cap-item__ponto" aria-hidden="true"></span>
+                <div class="s-cap-item__texto">
+                  <small>CAPÍTULO 0{{ i + 1 }}</small>
+                  <strong>{{ c.titulo }}</strong>
+                  <p>{{ c.texto }}</p>
+                </div>
+                <span class="s-cap-item__n">0{{ i + 1 }}<i></i>0{{ capitulos.length }}</span>
+              </article>
+            }
+          </section>
+          <div class="s-espaco s-espaco--curto"><span class="s-dica">Fim ↑</span></div>
+        }
         @case ('storytelling') {
           <div class="s-espaco s-espaco--curto"><span class="s-dica">↓ Comece a história</span></div>
           <section class="s-historia">

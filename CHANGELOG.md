@@ -7,6 +7,20 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.1.0-rc.1] — 2026-11-16 · Efeitos das referências
+
+> Avaliação das 8 imagens da pasta "efeitos pra site" em `docs/REFERENCIAS.md`.
+
+### Adicionado
+- **Laboratório 07 — Interface Lab** com 13 demos: hero editorial, órbita e parallax por mouse, texto atrás do objeto, imagem recortada em formas, biblioteca de 17 divisores SVG, carrossel de cards em vidro, números animados com gráfico, tipografia vazada, bento grid, cards com profundidade, grão de filme e vinheta, botão magnético com cursor personalizado e faixa infinita (marquee).
+- **Scroll Lab → Capítulos com linha do tempo**: linha que se preenche, capítulo ativo e zoom/parallax nas imagens.
+- **GSAP Studio → SplitText**: revelar texto por letras, palavras ou linhas, com quatro efeitos.
+- 4 paisagens e uma silhueta em SVG próprias (`public/ilustracoes/`), no lugar de fotos.
+- 4 exercícios do Interface Lab (27 no total); 51 testes novos (233 no total).
+
+### Corrigido
+- Três presets novos com valores fora do passo dos sliders (pegos pelo teste de integridade).
+
 ## [1.0.0-rc.2] — 2026-11-16 · Navbar ao rolar e divisores de seção
 
 ### Adicionado

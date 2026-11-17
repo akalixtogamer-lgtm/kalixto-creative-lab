@@ -178,3 +178,12 @@
   font: var(--kx-fs-sm) var(--kx-font-mono);
   text-align: right;
 }
+
+/* SplitText */
+.g-split {
+  max-width: 16ch;
+  padding: var(--kx-space-4);
+  font: 700 clamp(1.6rem, 6cqi, 2.6rem) / 1.15 var(--kx-font-display);
+  text-align: center;
+  perspective: 600px;
+}

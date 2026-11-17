@@ -10,10 +10,11 @@ Cada fase está numa branch e numa versão do Git, para você avaliar etapa por 
 | 4 | Three.js Lab | `v0.6.0` | `fase-4` |
 | 5 | WebGL & GLSL | `v0.7.0` | `fase-5` |
 | 6 | QA, acessibilidade, performance, documentação | `v1.0.0-rc.1` | `fase-6` |
-| + | Navbar ao rolar e divisores de seção (pedido de 16/11) | `v1.0.0-rc.2` | `melhorias-navbar-divisores` (atual) |
+| + | Navbar ao rolar e divisores de seção (pedido de 16/11) | `v1.0.0-rc.2` | `melhorias-navbar-divisores` |
+| + | Efeitos das referências: Interface Lab, capítulos, SplitText | `v1.1.0-rc.1` | `efeitos-referencias` (atual) |
 
-O mais simples é avaliar tudo na versão atual (`melhorias-navbar-divisores`), que contém todas as fases.
-Para ver uma fase isolada: `git checkout v0.4.0` (por exemplo), `npm install`, `npm start`. Volte com `git checkout melhorias-navbar-divisores`.
+O mais simples é avaliar tudo na versão atual (`efeitos-referencias`), que contém todas as fases.
+Para ver uma fase isolada: `git checkout v0.4.0` (por exemplo), `npm install`, `npm start`. Volte com `git checkout efeitos-referencias`.
 
 Antes de começar: `npm install` e `npm start`, depois abra http://localhost:4200.
 
@@ -63,12 +64,27 @@ Scroll Lab, em especial:
 - [ ] **Scroll Lab → Navbar ao rolar**: transparente sobre o hero; ao rolar ganha fundo e sombra; no modo "esconde ao descer" some e volta ao subir
 - [ ] **CSS Playground → Divisores de seção**: diagonal, seta, curva, zigue-zague e ondas; altura e direção mudam ao vivo
 
+## Pedido extra — efeitos das referências (`docs/REFERENCIAS.md`)
+
+**Interface Lab** (menu → 07):
+- [ ] Hero editorial: "Tocar entrada" anima menu, título (subir ou máscara), linha e botão; o botão circular reage ao hover
+- [ ] Órbita: o planeta percorre o anel; as esferas seguem o mouse em profundidades diferentes
+- [ ] Texto atrás do objeto: a silhueta cobre a base das letras na proporção escolhida
+- [ ] Imagem em formas: pílulas, corte em X, forma orgânica e onda; "Revelar formas" anima
+- [ ] Divisores SVG: os 17 formatos, com inverter e espelhar
+- [ ] Carrossel de vidro: arrastar encaixa; card ativo cresce; paginação "0N — 05" atualiza
+- [ ] Números: o gráfico se desenha e o número conta
+- [ ] Tipografia vazada, bento grid, cards com profundidade, grão de filme, botão magnético e faixa infinita
+
+**Scroll Lab → Capítulos**: a linha à esquerda se preenche e o capítulo do centro acende.
+**GSAP Studio → SplitText**: letras, palavras e linhas com os quatro efeitos; Reiniciar devolve o texto original.
+
 ## Fase 6 — Qualidade
 
 - [ ] Celular (F12 → modo dispositivo): nenhuma página rola para o lado; menu abre e fecha
 - [ ] Teclado: Tab mostra "Pular para o conteúdo" e o foco é sempre visível
 - [ ] Logo no menu, no Dashboard, na barra do celular e na aba do navegador
-- [ ] `npm test` → **182 passed**
+- [ ] `npm test` → **233 passed**
 - [ ] `npm run build:pages` termina sem erro
 
 ---

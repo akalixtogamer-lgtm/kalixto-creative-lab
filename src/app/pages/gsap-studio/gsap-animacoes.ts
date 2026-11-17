@@ -1,4 +1,5 @@
 import { gsap } from 'gsap';
+import { SplitText } from 'gsap/SplitText';
 import { Valores } from '../../core/models/demo.model';
 import { easeDoDemo } from '../../core/data/gsap-demos.data';
 
@@ -10,6 +11,8 @@ import { easeDoDemo } from '../../core/data/gsap-demos.data';
  * Elas rodam dentro de gsap.context(), então o componente consegue
  * desfazer tudo (revert) ao reiniciar ou trocar de demo.
  */
+gsap.registerPlugin(SplitText);
+
 type Construtor = (palco: HTMLElement, v: Valores) => gsap.core.Animation;
 
 const q = (palco: HTMLElement, seletor: string) => palco.querySelectorAll<HTMLElement>(seletor);
@@ -84,6 +87,29 @@ export const ANIMACOES: Record<string, Construtor> = {
         },
         0,
       );
+  },
+
+  splittext: (palco, v) => {
+    const tipo = String(v['dividir']) as 'chars' | 'words' | 'lines';
+    const efeito = String(v['efeito']);
+    const split = SplitText.create(palco.querySelector('.g-split')!, {
+      type: tipo === 'chars' ? 'words,chars' : tipo,
+      mask: efeito === 'subir' ? tipo : undefined,
+    });
+    const de: gsap.TweenVars =
+      efeito === 'subir'
+        ? { yPercent: 110 }
+        : efeito === 'girar'
+          ? { rotationX: -90, opacity: 0, transformOrigin: '50% 50% -20px' }
+          : efeito === 'espalhar'
+            ? { x: () => gsap.utils.random(-120, 120), y: () => gsap.utils.random(-80, 80), opacity: 0 }
+            : { opacity: 0 };
+    return gsap.from(split[tipo], {
+      ...de,
+      duration: Number(v['dur']),
+      stagger: Number(v['stagger']),
+      ease: 'power3.out',
+    });
   },
 
   reproducao: (palco, v) =>

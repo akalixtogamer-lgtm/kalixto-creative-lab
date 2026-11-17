@@ -13,10 +13,10 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `1.0.0-rc.2` (candidata) |
+| Versão | `1.1.0-rc.1` (candidata) |
 | Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
-| Conteúdo | 6 laboratórios · 45 demos interativas · 23 exercícios · 45 desafios |
-| Testes | 182 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
+| Conteúdo | 7 laboratórios · 60 demos interativas · 27 exercícios · 60 desafios |
+| Testes | 233 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
 | Publicado no GitHub Pages | **Não** — só depois da sua avaliação |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
@@ -30,7 +30,7 @@ Pré-requisito: **Node.js 22 ou mais recente** (`node -v` para conferir).
 ```bash
 npm install          # instala as dependências (rode sempre que o projeto ganhar bibliotecas novas)
 npm start            # abre em http://localhost:4200
-npm test             # roda os 182 testes
+npm test             # roda os 233 testes
 npm run build        # versão de produção em dist/
 npm run build:pages  # versão para o GitHub Pages (com 404.html)
 ```
@@ -44,11 +44,12 @@ npm run build:pages  # versão para o GitHub Pages (com 404.html)
 | # | Laboratório | Demos | Rota |
 |---|---|---|---|
 | 01 | CSS Playground | 9 — transitions, keyframes, transform, hover, floating, perspective, clip-path, microinterações, divisores de seção | `/labs/css` |
-| 02 | GSAP Studio | 7 — to, from, fromTo, timeline, stagger, easing, controles de reprodução | `/labs/gsap` |
-| 03 | Scroll Lab | 8 — ScrollTrigger, scrub, pin, parallax, horizontal, progress, storytelling, navbar ao rolar | `/labs/scroll` |
+| 02 | GSAP Studio | 8 — to, from, fromTo, timeline, stagger, easing, controles de reprodução, SplitText | `/labs/gsap` |
+| 03 | Scroll Lab | 9 — ScrollTrigger, scrub, pin, parallax, horizontal, progress, storytelling, navbar ao rolar, capítulos | `/labs/scroll` |
 | 04 | SVG Lab | 5 — traço, máscara, morphing, filtros, motion path | `/labs/svg` |
 | 05 | Three.js Lab | 9 — geometria, câmera, luzes, materiais, texturas, animação, mouse, raycasting, GLTF | `/labs/three` |
 | 06 | WebGL & GLSL | 7 — fragment, vertex, GLSL, noise, distortion, procedural, transição | `/labs/webgl` |
+| 07 | Interface Lab | 13 — hero editorial, órbita, texto atrás do objeto, imagem em formas, 17 divisores SVG, carrossel de vidro, números, tipografia vazada, bento, cards com profundidade, grão de filme, botão magnético, marquee | `/labs/ui` |
 
 Todas as demos seguem o mesmo fluxo: **escolher → ajustar os controles → Executar → ler o código (e copiar) → entender**.
 Cada uma tem presets prontos, um desafio prático e fica na URL (`?demo=…`) para compartilhar.
@@ -58,7 +59,7 @@ Cada uma tem presets prontos, um desafio prático e fica na URL (`?demo=…`) pa
 | Página | O que faz | Rota |
 |---|---|---|
 | Trilha de aprendizagem | Caminho do CSS ao WebGL, com ✓ por demo, ★ por desafio e "Continuar de onde parei" | `/trilha` |
-| Exercícios | 23 perguntas com correção e explicação | `/exercicios` |
+| Exercícios | 27 perguntas com correção e explicação | `/exercicios` |
 | Comparador | Quando usar cada tecnologia + o mesmo efeito em CSS, Web Animations e GSAP | `/comparador` |
 | Biblioteca de efeitos | Todas as demos com busca e filtros (lab, nível, executados) | `/biblioteca` |
 
@@ -86,11 +87,12 @@ src/
     └── pages/
         ├── css-playground/  gsap-studio/  scroll-lab/  svg-lab/
         ├── three-lab/          inclui palco-3d.ts (reaproveitado pelo GLSL)
-        ├── glsl-lab/
+        ├── glsl-lab/  ui-lab/
         ├── trilha/  exercicios/  comparador/  biblioteca/
         └── dashboard/  design-system/  roadmap/  lab-page/  not-found/
 public/
 ├── brand/                      logo Kalixto em vários tamanhos + ícones
+├── ilustracoes/                paisagens SVG próprias (substituem fotos nas demos)
 └── models/kalixto-trofeu.glb   modelo 3D (gerado por scripts/gerar-modelo.mjs)
 ```
 
@@ -119,9 +121,10 @@ Endereço final: `https://akalixtogamer-lgtm.github.io/kalixto-creative-lab/`
 | [`docs/AVALIACAO.md`](docs/AVALIACAO.md) | Roteiro para você avaliar cada fase |
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Fases, critérios de passagem e versões |
 | [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) | Como o projeto funciona e como estender |
-| [`docs/EFEITOS.md`](docs/EFEITOS.md) | Registro das 45 demos com links diretos |
+| [`docs/EFEITOS.md`](docs/EFEITOS.md) | Registro das 60 demos com links diretos |
 | [`docs/COMPONENTES.md`](docs/COMPONENTES.md) | Design System e componentes |
 | [`docs/QA.md`](docs/QA.md) | Relatório de QA (testes, acessibilidade, performance) |
+| [`docs/REFERENCIAS.md`](docs/REFERENCIAS.md) | Avaliação das referências enviadas e efeitos extraídos |
 | [`docs/DEPENDENCIAS.md`](docs/DEPENDENCIAS.md) | Versões verificadas |
 | [`docs/PROBLEMAS-CONHECIDOS.md`](docs/PROBLEMAS-CONHECIDOS.md) | Limitações conhecidas |
 | [`CHANGELOG.md`](CHANGELOG.md) | Histórico de versões |

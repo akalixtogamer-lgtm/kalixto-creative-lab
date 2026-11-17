@@ -4,7 +4,7 @@ Data: 16/11/2026 · Versão: `1.0.0-rc.1`
 
 ## 1. Testes automáticos (`npm test`)
 
-**182 testes passando**, em 8 arquivos:
+**233 testes passando**, em 9 arquivos:
 
 | Arquivo | O que cobre |
 |---|---|
@@ -16,6 +16,7 @@ Data: 16/11/2026 · Versão: `1.0.0-rc.1`
 | `fase3.spec.ts` | SVG Lab, progresso salvo, desafios, presets do usuário, Trilha, Exercícios, Comparador |
 | `three-lab.spec.ts` | 9 demos, código, demos ao vivo, desafio automático, aviso sem WebGL |
 | `glsl-lab.spec.ts` | 7 demos; todo uniform controlado existe no shader |
+| `ui-lab.spec.ts` | 13 demos do Interface Lab; caminhos dos 17 divisores; bento; tipografia |
 
 > O ambiente de testes (jsdom) não tem WebGL nem layout real. Por isso as cenas 3D, os shaders e a rolagem
 > foram conferidos também num Chromium real (seção 2).
@@ -39,7 +40,7 @@ o botão do menu; textos do topo do Dashboard passando por baixo da logo.
 
 ## 4. Acessibilidade (axe-core 4, WCAG 2.1 A/AA + boas práticas)
 
-**0 violações** nas 14 páginas e com o menu do celular aberto.
+**0 violações** nas 19 páginas/demos auditadas, nas 13 demos do Interface Lab e com o menu do celular aberto.
 
 Corrigido nesta fase:
 - Contraste: texto branco sobre o magenta da marca dava 3,2:1. Botões e marcadores com texto branco agora usam

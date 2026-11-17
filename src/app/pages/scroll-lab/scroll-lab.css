@@ -292,3 +292,93 @@
 .s-artigo--nav {
   padding-top: var(--kx-space-6);
 }
+
+/* capítulos com linha do tempo */
+.s-capitulos {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.s-tempo {
+  position: absolute;
+  left: 26px;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 2px;
+  background: rgb(255 255 255 / 0.15);
+}
+.s-tempo__fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #f5c46b;
+  transform-origin: top center;
+}
+.s-cap-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--kx-space-4);
+  height: 220px;
+  padding: 0 var(--kx-space-5) 0 64px;
+  overflow: hidden;
+  border-bottom: 1px solid rgb(0 0 0 / 0.4);
+}
+.s-cap-item img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+  filter: saturate(0.7);
+  transition: opacity 400ms, filter 400ms;
+}
+.s-cap-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(7 5 15 / 0.9), transparent 70%);
+}
+.s-cap-item > :not(img) { position: relative; z-index: 1; }
+.s-cap-item__ponto {
+  position: absolute !important;
+  left: 19px;
+  top: 50%;
+  z-index: 3 !important;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  border: 2px solid rgb(255 255 255 / 0.4);
+  border-radius: 50%;
+  background: #07050f;
+  transition: border-color 300ms, box-shadow 300ms;
+}
+.s-cap-item__texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0.55;
+  transition: opacity 400ms;
+}
+.s-cap-item__texto small { color: #f5c46b; font: var(--kx-fs-xs) var(--kx-font-mono); letter-spacing: 0.15em; }
+.s-cap-item__texto strong { font: 700 var(--kx-fs-xl) var(--kx-font-display); text-transform: uppercase; letter-spacing: 0.04em; }
+.s-cap-item__texto p { color: var(--kx-text-soft); font-size: var(--kx-fs-sm); }
+.s-cap-item__n {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font: var(--kx-fs-sm) var(--kx-font-mono);
+  opacity: 0.5;
+}
+.s-cap-item__n i { width: 18px; height: 1px; background: currentColor; }
+.s-cap-item.ativo img { opacity: 0.85; filter: none; }
+.s-cap-item.ativo .s-cap-item__texto,
+.s-cap-item.ativo .s-cap-item__n { opacity: 1; }
+.s-cap-item.ativo .s-cap-item__ponto {
+  border-color: #f5c46b;
+  box-shadow: 0 0 0 4px rgb(245 196 107 / 0.25), inset 0 0 0 3px #f5c46b;
+}

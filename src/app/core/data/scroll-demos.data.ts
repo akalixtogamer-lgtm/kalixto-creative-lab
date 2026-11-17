@@ -464,5 +464,71 @@ ScrollTrigger.create({
 });${esconde}`;
     },
   },
+  // ---------------------------------------------------------------- 9
+  {
+    id: 'capitulos',
+    topico: 'Capítulos com linha do tempo',
+    titulo: 'Página em capítulos com linha do tempo',
+    nivel: 'avancado',
+    resumo: 'Uma linha vertical se preenche com a rolagem e cada capítulo acende ao chegar no centro da tela.',
+    explicacao: [
+      'A linha do tempo é um elemento fino com scaleY animado de 0 a 1 por um ScrollTrigger com scrub que cobre toda a lista.',
+      'Cada capítulo tem seu próprio ScrollTrigger: onToggle acende o ponto, o número "0N / 05" e o texto quando ele passa pelo centro.',
+      'A imagem de fundo de cada faixa ganha zoom ou parallax enquanto atravessa a tela — sensação de cinema.',
+    ],
+    dica: 'Capítulos curtos (uma frase de título + duas de apoio) mantêm o ritmo: a rolagem é a narrativa.',
+    acao: ROLAR,
+    instrucao: 'Role pelos 5 capítulos e acompanhe a linha à esquerda.',
+    presets: [
+      { nome: 'Cinema', valores: { imagem: 'zoom', scrub: '2' } },
+      { nome: 'Direto', valores: { imagem: 'nenhum', scrub: 'true' } },
+    ],
+    desafio: { enunciado: 'Use parallax nas imagens com suavização de 0,5 s.', meta: { imagem: 'parallax', scrub: '0.5' } },
+    params: [
+      {
+        id: 'imagem',
+        rotulo: 'Efeito nas imagens',
+        tipo: 'select',
+        opcoes: [
+          { valor: 'zoom', rotulo: 'zoom (aproxima)' },
+          { valor: 'parallax', rotulo: 'parallax' },
+          { valor: 'nenhum', rotulo: 'nenhum' },
+        ],
+        padrao: 'zoom',
+      },
+      SCRUB('true'),
+    ],
+    codigo: (v) => {
+      const efeito =
+        v['imagem'] === 'zoom'
+          ? `\n  gsap.fromTo(cap.querySelector("img"), { scale: 1.25 }, {\n    scale: 1,\n    scrollTrigger: { trigger: cap, start: "top bottom", end: "bottom top", scrub: true },\n  });`
+          : v['imagem'] === 'parallax'
+            ? `\n  gsap.fromTo(cap.querySelector("img"), { yPercent: -12 }, {\n    yPercent: 12,\n    scrollTrigger: { trigger: cap, start: "top bottom", end: "bottom top", scrub: true },\n  });`
+            : '';
+      return `// 1. A linha se preenche ao longo de todos os capítulos
+gsap.fromTo(".linha__preenchida", { scaleY: 0 }, {
+  scaleY: 1,
+  ease: "none",
+  transformOrigin: "top",
+  scrollTrigger: {
+    trigger: ".capitulos",
+    start: "top center",
+    end: "bottom center",
+    scrub: ${v['scrub']},
+  },
+});
+
+// 2. Cada capítulo acende ao passar pelo centro
+document.querySelectorAll(".capitulo").forEach((cap) => {
+  ScrollTrigger.create({
+    trigger: cap,
+    start: "top center",
+    end: "bottom center",
+    onToggle: (self) => cap.classList.toggle("ativo", self.isActive),
+  });${efeito}
+});`;
+    },
+  },
 ];
+
 

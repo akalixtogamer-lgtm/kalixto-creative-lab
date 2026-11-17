@@ -36,7 +36,8 @@ Angular 22, Design System Kalixto, Dashboard, navegação, estrutura da bibliote
 - [x] SVG Lab — 5 demos
 - [x] Comparador de tecnologias
 - [x] Trilha de aprendizagem
-- [x] Exercícios (23) e desafios (43)
+- [x] Exercícios (27) e desafios (60)
+- [x] Interface Lab (13 demos) a partir das referências do Wallace — ver [`REFERENCIAS.md`](REFERENCIAS.md)
 - [x] Presets (prontos e do usuário)
 - [x] Persistência local do progresso
 

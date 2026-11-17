@@ -40,6 +40,13 @@ export class ScrollLab implements OnDestroy {
   protected readonly lab = findLab('scroll')!;
   protected readonly demos = SCROLL_DEMOS;
   protected readonly paragrafos = Array.from({ length: 7 }, (_, i) => i);
+  protected readonly capitulos = [
+    { titulo: 'O começo', texto: 'Todo movimento começa com um passo.', img: 'por-do-sol' },
+    { titulo: 'A jornada', texto: 'Ensaios, erros e repetição.', img: 'oceano' },
+    { titulo: 'Conexão', texto: 'Gente, ritmo e comunidade.', img: 'aurora' },
+    { titulo: 'O desafio', texto: 'Aprender algo novo do zero.', img: 'noite' },
+    { titulo: 'A criação', texto: 'Movimento e código juntos.', img: 'por-do-sol' },
+  ];
 
   protected readonly atual = computed<LabDemo>(
     () => SCROLL_DEMOS.find((d) => d.id === this.demo()) ?? SCROLL_DEMOS[0],

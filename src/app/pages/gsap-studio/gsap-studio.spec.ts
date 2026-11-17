@@ -21,10 +21,10 @@ describe('GSAP Studio', () => {
     harness = await RouterTestingHarness.create();
   });
 
-  it('abre na primeira demo com 7 demos no seletor', async () => {
+  it('abre na primeira demo com todas as demos no seletor', async () => {
     await harness.navigateByUrl('/labs/gsap');
     expect(el().querySelector('h1')?.textContent).toContain('GSAP Studio');
-    expect(el().querySelectorAll('.pg__demo-btn').length).toBe(7);
+    expect(el().querySelectorAll('.pg__demo-btn').length).toBe(GSAP_DEMOS.length);
     expect(codigo()).toContain('gsap.to(".caixa"');
   });
 

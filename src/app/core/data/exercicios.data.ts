@@ -233,4 +233,52 @@ export const EXERCICIOS: Questao[] = [
     correta: 1,
     explicacao: 'O vertex shader move os vértices; o fragment shader só pinta.',
   },
+  // ---------- Interface Lab ----------
+  {
+    id: 'ui-1',
+    labId: 'ui',
+    pergunta: 'Num divisor de seção em SVG, para que serve preserveAspectRatio="none"?',
+    alternativas: [
+      'Deixar o desenho esticar para qualquer largura de tela',
+      'Esconder o SVG no celular',
+      'Animar o divisor sozinho',
+      'Trocar a cor automaticamente',
+    ],
+    correta: 0,
+    explicacao: 'Sem manter a proporção, o SVG largo e baixo ocupa a largura toda da seção, em qualquer tela.',
+  },
+  {
+    id: 'ui-2',
+    labId: 'ui',
+    pergunta: 'Como fazer o título parecer estar "atrás" da paisagem?',
+    alternativas: [
+      'Aumentar o font-size',
+      'Empilhar fundo, texto e uma imagem recortada da frente com z-index maior',
+      'Usar text-shadow',
+      'Colocar o texto dentro de um <canvas>',
+    ],
+    correta: 1,
+    explicacao: 'A camada da frente, com fundo transparente, cobre a base das letras e cria a profundidade.',
+  },
+  {
+    id: 'ui-3',
+    labId: 'ui',
+    pergunta: 'Qual propriedade faz um carrossel horizontal "encaixar" em cada card?',
+    alternativas: ['overflow: hidden', 'scroll-snap-type', 'position: sticky', 'backdrop-filter'],
+    correta: 1,
+    explicacao: 'scroll-snap-type no trilho + scroll-snap-align nos cards fazem a rolagem parar em cada um.',
+  },
+  {
+    id: 'ui-4',
+    labId: 'ui',
+    pergunta: 'Por que usar gsap.quickTo para seguir o mouse?',
+    alternativas: [
+      'Porque cria o cursor sozinho',
+      'Porque reaproveita a mesma animação em vez de criar um tween novo a cada movimento',
+      'Porque funciona sem JavaScript',
+      'Porque desliga o mouse do sistema',
+    ],
+    correta: 1,
+    explicacao: 'O mouse dispara dezenas de eventos por segundo; quickTo só atualiza o destino da animação existente.',
+  },
 ];
