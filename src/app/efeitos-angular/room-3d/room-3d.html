@@ -1,0 +1,23 @@
+<section
+  #palco
+  class="palco-sala"
+  role="img"
+  aria-label="Corredor de concreto com luzes no teto e um vídeo na parede do fundo"
+  [class.is-dentro]="dentro()"
+  [style.--px]="px()"
+  [style.--py]="py()"
+  (pointermove)="olhar($event, palco)"
+>
+  <div class="sala">
+    <div class="parede fundo">
+      <div class="tela"><span>Seu vídeo aqui</span></div>
+    </div>
+    <div class="parede esquerda"></div>
+    <div class="parede direita"></div>
+    <div class="parede teto"></div>
+    <div class="parede chao"></div>
+  </div>
+</section>
+<button class="entrar" type="button" [attr.aria-pressed]="dentro()" (click)="dentro.set(!dentro())">
+  {{ dentro() ? 'Sair da sala' : 'Entrar na sala' }}
+</button>

@@ -1,0 +1,51 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.projetos {
+  width: min(100%, 640px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.projetos a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 18px 4px;
+  border-bottom: 1px solid #2a2540;
+  color: #f4f2ff;
+  text-decoration: none;
+  font-size: clamp(1.6rem, 6vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  transition: color 300ms ease, padding 300ms ease;
+}
+.projetos a small { font-size: 14px; font-weight: 400; color: #8f88b5; }
+.projetos:hover a { color: #4a4466; }
+.projetos a:hover, .projetos a:focus-visible { color: #f4f2ff; padding-left: 16px; }
+.projetos a:focus-visible { outline: 2px solid #22e3ff; outline-offset: 2px; }
+
+/* Uma prévia só, presa à tela, que segue o ponteiro */
+.previa {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 200px;
+  aspect-ratio: 4 / 3;
+  margin: -75px 0 0 -100px;
+  border-radius: 12px;
+  background: var(--fundo);
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.45);
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.8;
+  transition: opacity 250ms ease, scale 250ms ease;
+}
+.previa.is-visivel { opacity: 1; scale: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .previa, .projetos a { transition: none; }
+}

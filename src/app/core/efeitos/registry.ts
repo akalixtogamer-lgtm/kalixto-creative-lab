@@ -26,6 +26,16 @@ import { THEME_WIPE } from './kits/theme-wipe.kit';
 import { IMAGE_RIBBON } from './kits/image-ribbon.kit';
 import { LENS_FOCUS } from './kits/lens-focus.kit';
 import { PUFFY_TEXT } from './kits/puffy-text.kit';
+import { IMAGE_SEQUENCE } from './kits/image-sequence.kit';
+import { GOOEY_INK } from './kits/gooey-ink.kit';
+import { ROOM_3D } from './kits/room-3d.kit';
+import { STICKY_STACK } from './kits/sticky-stack.kit';
+import { SCROLL_ZOOM_HERO } from './kits/scroll-zoom-hero.kit';
+import { TEXT_SCRAMBLE } from './kits/text-scramble.kit';
+import { PRELOADER_COUNTER } from './kits/preloader-counter.kit';
+import { HOVER_IMAGE_LIST } from './kits/hover-image-list.kit';
+import { SPOTLIGHT_CARDS } from './kits/spotlight-cards.kit';
+import { EXPANDING_GALLERY } from './kits/expanding-gallery.kit';
 
 /**
  * Registro central de efeitos.
@@ -61,6 +71,17 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   IMAGE_RIBBON,
   LENS_FOCUS,
   PUFFY_TEXT,
+  IMAGE_SEQUENCE,
+  GOOEY_INK,
+  ROOM_3D,
+  // Animações mais usadas em 2026 (tendências) — docs/REFERENCIAS-ANIMACAO.md
+  STICKY_STACK,
+  SCROLL_ZOOM_HERO,
+  TEXT_SCRAMBLE,
+  PRELOADER_COUNTER,
+  HOVER_IMAGE_LIST,
+  SPOTLIGHT_CARDS,
+  EXPANDING_GALLERY,
 ];
 
 export function findKit(id: string): EffectKit | undefined {

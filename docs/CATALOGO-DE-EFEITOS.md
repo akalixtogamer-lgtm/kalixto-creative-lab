@@ -2,24 +2,24 @@
 
 > Gerado por `npm run docs:efeitos` a partir do registro (`src/app/core/efeitos/registry.ts`).
 
-Total: **85** itens — **25 kits** com ficha técnica completa e **60 demos** dos laboratórios.
+Total: **95** itens — **35 kits** com ficha técnica completa e **60 demos** dos laboratórios.
 
 | # | Categoria | Kits | Demos |
 |---|---|---|---|
 | 01 | Microinterações e UI | 2 | 3 |
 | 02 | Entradas, saídas e transições | 4 | 10 |
-| 03 | Scroll e parallax | 4 | 8 |
-| 04 | Tipografia e texto | 4 | 5 |
-| 05 | Mouse e cursor | 4 | 2 |
-| 06 | Cards, imagens e galerias | 2 | 4 |
+| 03 | Scroll e parallax | 7 | 8 |
+| 04 | Tipografia e texto | 5 | 5 |
+| 05 | Mouse e cursor | 5 | 2 |
+| 06 | Cards, imagens e galerias | 3 | 4 |
 | 07 | Backgrounds | 1 | 1 |
-| 08 | Luz, sombra e profundidade | 2 | 1 |
-| 09 | SVG, geometria e máscaras | 0 | 8 |
+| 08 | Luz, sombra e profundidade | 3 | 1 |
+| 09 | SVG, geometria e máscaras | 1 | 8 |
 | 10 | Partículas e simulações | 0 | 0 |
-| 11 | 3D e WebGL | 0 | 12 |
+| 11 | 3D e WebGL | 1 | 12 |
 | 12 | Áudio e audiovisual | 0 | 0 |
 | 13 | Componentes e dados | 0 | 1 |
-| 14 | Navegação e experiência de página | 1 | 1 |
+| 14 | Navegação e experiência de página | 2 | 1 |
 | 15 | Experimental e creative coding | 1 | 4 |
 
 ## 01 · Microinterações e UI
@@ -65,6 +65,9 @@ Efeitos controlados pela rolagem da página.
 | [Barra de progresso de leitura](efeitos/scroll-progress.md) | Kit (ficha completa) | Intermediário | `/efeitos/scroll-progress` |
 | [Parallax em camadas](efeitos/layered-parallax.md) | Kit (ficha completa) | Intermediário | `/efeitos/layered-parallax` |
 | [Revelar ao rolar com GSAP](efeitos/gsap-scroll-reveal.md) | Kit (ficha completa) | Intermediário | `/efeitos/gsap-scroll-reveal` |
+| [Sequência de quadros no scroll](efeitos/image-sequence.md) | Kit (ficha completa) | Avançado | `/efeitos/image-sequence` |
+| [Cards empilhados no scroll](efeitos/sticky-stack.md) | Kit (ficha completa) | Intermediário | `/efeitos/sticky-stack` |
+| [Hero que abre no scroll](efeitos/scroll-zoom-hero.md) | Kit (ficha completa) | Intermediário | `/efeitos/scroll-zoom-hero` |
 | Disparar animação ao rolar | Demo | Iniciante | `/labs/scroll?demo=gatilho` |
 | Animação presa à barra de rolagem | Demo | Intermediário | `/labs/scroll?demo=scrub` |
 | Fixar uma seção enquanto anima | Demo | Intermediário | `/labs/scroll?demo=pin` |
@@ -84,6 +87,7 @@ Revelar, animar e estilizar texto.
 | [Legenda cinética](efeitos/kinetic-captions.md) | Kit (ficha completa) | Iniciante | `/efeitos/kinetic-captions` |
 | [Escrita neon à mão](efeitos/neon-handwriting.md) | Kit (ficha completa) | Intermediário | `/efeitos/neon-handwriting` |
 | [Tipografia inflada](efeitos/puffy-text.md) | Kit (ficha completa) | Iniciante | `/efeitos/puffy-text` |
+| [Texto embaralhado (decodificar)](efeitos/text-scramble.md) | Kit (ficha completa) | Intermediário | `/efeitos/text-scramble` |
 | Revelar texto por letras, palavras ou linhas | Demo | Intermediário | `/labs/gsap?demo=splittext` |
 | Hero com título editorial e entrada em sequência | Demo | Intermediário | `/labs/ui?demo=hero-editorial` |
 | Título gigante entre camadas | Demo | Intermediário | `/labs/ui?demo=texto-profundidade` |
@@ -100,6 +104,7 @@ Elementos que reagem à posição do ponteiro.
 | [Cursor personalizado](efeitos/custom-cursor.md) | Kit (ficha completa) | Intermediário | `/efeitos/custom-cursor` |
 | [Lanterna que revela](efeitos/spotlight-reveal.md) | Kit (ficha completa) | Intermediário | `/efeitos/spotlight-reveal` |
 | [Lente de foco](efeitos/lens-focus.md) | Kit (ficha completa) | Avançado | `/efeitos/lens-focus` |
+| [Lista com imagem que segue o cursor](efeitos/hover-image-list.md) | Kit (ficha completa) | Intermediário | `/efeitos/hover-image-list` |
 | Anel orbital e camadas que seguem o mouse | Demo | Avançado | `/labs/ui?demo=orbita` |
 | Botões magnéticos e cursor personalizado | Demo | Intermediário | `/labs/ui?demo=magnetico` |
 
@@ -111,6 +116,7 @@ Profundidade, máscaras e carrosséis de conteúdo visual.
 |---|---|---|---|
 | [Card que inclina com o mouse](efeitos/card-tilt.md) | Kit (ficha completa) | Intermediário | `/efeitos/card-tilt` |
 | [Fita 3D de imagens](efeitos/image-ribbon.md) | Kit (ficha completa) | Intermediário | `/efeitos/image-ribbon` |
+| [Galeria sanfona](efeitos/expanding-gallery.md) | Kit (ficha completa) | Iniciante | `/efeitos/expanding-gallery` |
 | Card 3D com perspectiva | Demo | Intermediário | `/labs/css?demo=perspective` |
 | Recortar a imagem com formas | Demo | Intermediário | `/labs/ui?demo=mascara-formas` |
 | Cards de vidro sobre uma paisagem | Demo | Intermediário | `/labs/ui?demo=carrossel-vidro` |
@@ -133,6 +139,7 @@ Brilho, reflexo, vidro e camadas.
 |---|---|---|---|
 | [Botão com brilho neon](efeitos/glow-button.md) | Kit (ficha completa) | Iniciante | `/efeitos/glow-button` |
 | [Interface isométrica em camadas](efeitos/isometric-layers.md) | Kit (ficha completa) | Intermediário | `/efeitos/isometric-layers` |
+| [Cards com luz que segue o mouse](efeitos/spotlight-cards.md) | Kit (ficha completa) | Intermediário | `/efeitos/spotlight-cards` |
 | Cards escuros com sombras suaves e forma de destaque | Demo | Intermediário | `/labs/ui?demo=cards-profundidade` |
 
 ## 09 · SVG, geometria e máscaras
@@ -141,6 +148,7 @@ Traços, morphing, recortes e filtros vetoriais.
 
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
+| [Mancha de tinta viva](efeitos/gooey-ink.md) | Kit (ficha completa) | Intermediário | `/efeitos/gooey-ink` |
 | Revelação com clip-path | Demo | Intermediário | `/labs/css?demo=clip-path` |
 | Bordas entre seções | Demo | Intermediário | `/labs/css?demo=divisores` |
 | Desenhar o traço | Demo | Iniciante | `/labs/svg?demo=stroke` |
@@ -162,6 +170,7 @@ Cenas 3D, câmeras, materiais e shaders.
 
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
+| [Sala 3D](efeitos/room-3d.md) | Kit (ficha completa) | Avançado | `/efeitos/room-3d` |
 | Cena, câmera, renderizador e um objeto | Demo | Iniciante | `/labs/three?demo=geometria` |
 | Campo de visão e distância | Demo | Iniciante | `/labs/three?demo=camera` |
 | Luz ambiente, direcional e pontual | Demo | Intermediário | `/labs/three?demo=iluminacao` |
@@ -196,6 +205,7 @@ Navbars, transições de página e menus.
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
 | [Rolagem suave](efeitos/smooth-scroll.md) | Kit (ficha completa) | Intermediário | `/efeitos/smooth-scroll` |
+| [Tela de carregamento com contador](efeitos/preloader-counter.md) | Kit (ficha completa) | Intermediário | `/efeitos/preloader-counter` |
 | Navbar transparente que fixa com sombra | Demo | Intermediário | `/labs/scroll?demo=navbar` |
 
 ## 15 · Experimental e creative coding

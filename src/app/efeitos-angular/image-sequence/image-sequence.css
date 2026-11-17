@@ -1,0 +1,17 @@
+:host { display: block; }
+
+/* A seção alta é a "trilha" do vídeo; o canvas fica preso no meio dela */
+.sequencia { height: 400vh; }
+.fixo {
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+.quadro {
+  width: min(92vw, 720px);
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.5);
+}

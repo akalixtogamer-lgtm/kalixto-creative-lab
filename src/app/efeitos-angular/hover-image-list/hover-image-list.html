@@ -1,0 +1,16 @@
+<ul class="projetos" (pointermove)="mirar($event.clientX, $event.clientY)" (pointerleave)="visivel.set(false)">
+  @for (p of projetos; track p.nome) {
+    <li>
+      <a
+        #link
+        href="#"
+        (pointerenter)="entrar($event, p)"
+        (focus)="focar(link, p)"
+        (blur)="visivel.set(false)"
+        (click)="$event.preventDefault()"
+        ><span>{{ p.nome }}</span><small>{{ p.ano }}</small></a
+      >
+    </li>
+  }
+</ul>
+<div #previa class="previa" aria-hidden="true" [class.is-visivel]="visivel()" [style.--fundo]="fundo()"></div>

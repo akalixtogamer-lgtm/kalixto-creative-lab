@@ -10,14 +10,22 @@ Nada ainda.
 ## [1.5.0-rc.1] — 2026-11-17 · Referências em vídeo
 
 ### Adicionado
-- **Mapa das referências** em [`docs/REFERENCIAS-ANIMACAO.md`](docs/REFERENCIAS-ANIMACAO.md): 4 Reels decupados quadro a quadro, 21 animações identificadas, cada uma ligada a um kit novo, a uma demo que já existia ou marcada como próxima a fazer — e uma lista de galerias e tutoriais para buscar mais referências.
-- **7 kits novos** (25 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
+- **Mapa das referências** em [`docs/REFERENCIAS-ANIMACAO.md`](docs/REFERENCIAS-ANIMACAO.md): 4 Reels decupados quadro a quadro, 21 animações identificadas e ligadas a um kit do lab, a seção "As animações mais usadas hoje" e uma lista de galerias e tutoriais para buscar mais referências.
+- **17 kits novos** (35 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
   - **Tipografia:** Legenda cinética (palavra por palavra, estilo Reels), Escrita neon à mão (SVG `stroke-dashoffset` + brilho), Tipografia inflada (`text-shadow` em camadas).
   - **Luz e profundidade:** Interface isométrica em camadas (vista explodida em CSS 3D).
   - **Transições:** Troca de mundo com revelação circular (`clip-path: circle()` a partir do botão).
   - **Cards e imagens:** Fita 3D de imagens (cilindro CSS girando em volta do título, com Pausar).
   - **Cursor:** Lente de foco (página desfocada, óculos com conteúdo nítido e ampliado).
-- Todos os kits novos têm a tag "referência em vídeo" para filtrar na Biblioteca.
+  - **Scroll:** Sequência de quadros no scroll (canvas + sticky), Cards empilhados no scroll, Hero que abre no scroll.
+  - **SVG:** Mancha de tinta viva (filtro gooey com `feColorMatrix`, clique pinga gotas).
+  - **3D:** Sala 3D em CSS (corredor com `perspective-origin` seguindo o mouse e botão Entrar).
+  - **Tipografia:** Texto embaralhado (decode) no título e no menu.
+  - **Navegação:** Tela de carregamento com contador 0 → 100 e 3 saídas.
+  - **Cursor:** Lista com imagem que segue o cursor (lerp + inclinação pela velocidade).
+  - **Luz:** Cards com luz que segue o mouse (borda com `mask-composite`).
+  - **Cards e imagens:** Galeria sanfona (`flex-grow`).
+- Tags "referência em vídeo" e "tendência 2026" para filtrar na Biblioteca.
 
 ## [1.4.1-rc.1] — 2026-11-17 · Correção
 

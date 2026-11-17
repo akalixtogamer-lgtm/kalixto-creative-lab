@@ -1,0 +1,8 @@
+<section class="grade-luz" (pointermove)="mover($event)">
+  @for (c of cards; track c.titulo) {
+    <article #card class="card-luz">
+      <h2>{{ c.titulo }}</h2>
+      <p>{{ c.texto }}</p>
+    </article>
+  }
+</section>

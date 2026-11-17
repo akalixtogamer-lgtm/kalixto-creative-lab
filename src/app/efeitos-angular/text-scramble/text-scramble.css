@@ -1,0 +1,32 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.titulo-codigo {
+  margin: 0;
+  font: 700 clamp(1.6rem, 6vw, 3rem) / 1.1 'JetBrains Mono', ui-monospace, monospace;
+  color: #c6ff3d;
+  text-align: center;
+}
+.menu-codigo { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+.menu-codigo a {
+  font: 500 18px 'JetBrains Mono', ui-monospace, monospace;
+  color: #f4f2ff;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.menu-codigo a:hover, .menu-codigo a:focus-visible { color: #c6ff3d; }
+.menu-codigo a:focus-visible { outline: 2px solid #22e3ff; outline-offset: 4px; }
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}

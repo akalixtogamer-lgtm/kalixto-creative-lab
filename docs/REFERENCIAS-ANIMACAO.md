@@ -27,7 +27,7 @@ Site de moda fictício: o mesmo personagem 3D em quatro "mundos" de cor.
 |---|---|---|---|
 | 2.1 | O hero troca de cenário (lima → fogo → gelo → noite) com uma explosão de cor | Camadas com `clip-path: circle()` animado a partir do clique | ✅ [`theme-wipe`](../src/app/core/efeitos/kits/theme-wipe.kit.ts) |
 | 2.2 | Título enorme cortado pelo personagem ("SWITCH THE LOOK") | Texto atrás do objeto (recorte em PNG por cima do título) | 🔁 Interface Lab → *Texto atrás do objeto* |
-| 2.3 | Faixas de tecido/fumaça atravessando a tela na transição | Vídeo ou sequência de imagens em `<canvas>` | 🧪 *Image sequence no scroll* |
+| 2.3 | Faixas de tecido/fumaça atravessando a tela na transição | Vídeo ou sequência de imagens em `<canvas>` | ✅ [`image-sequence`](../src/app/core/efeitos/kits/image-sequence.kit.ts) |
 
 ## Vídeo 3 — "Seu próximo projeto pode ir além" (@luccas2santos · 25 s)
 
@@ -37,7 +37,7 @@ Três sites gravados no notebook.
 |---|---|---|---|
 | 3.1 | Hero editorial "More Than Fashion" com foto em camadas e título serifado | Parallax em camadas + hero editorial | 🔁 Kit `layered-parallax` + Interface Lab → *Hero editorial* |
 | 3.2 | Fita curva de imagens girando em volta do título "We design / Really fast" | Cilindro CSS 3D: `rotateY(i × 360° ÷ n)` + `translateZ(raio)` | ✅ [`image-ribbon`](../src/app/core/efeitos/kits/image-ribbon.kit.ts) |
-| 3.3 | "The Pod / The Ferment": grãos de café caindo com motion blur, troca de capítulo com desfoque | Sequência de quadros no scroll (canvas) + transição com blur | 🔁 Scroll Lab → *Storytelling* e *Capítulos* · 🧪 *Image sequence no scroll* |
+| 3.3 | "The Pod / The Ferment": grãos de café caindo com motion blur, troca de capítulo com desfoque | Sequência de quadros no scroll (canvas) + transição com blur | ✅ [`image-sequence`](../src/app/core/efeitos/kits/image-sequence.kit.ts) · 🔁 Scroll Lab → *Storytelling* e *Capítulos* |
 
 ## Vídeo 4 — "Copie o prompt" (@profitize.ai · 41 s)
 
@@ -45,10 +45,10 @@ Sites gerados por IA, gravados na tela do notebook.
 
 | # | O que aparece | Técnica | No lab |
 |---|---|---|---|
-| 4.1 | "SOPRO" gigante com mancha de tinta que se espalha | SVG com filtro gooey (`feGaussianBlur` + `feColorMatrix`) | 🔁 SVG Lab → *Filtros* · 🧪 *Mancha de tinta* |
+| 4.1 | "SOPRO" gigante com mancha de tinta que se espalha | SVG com filtro gooey (`feGaussianBlur` + `feColorMatrix`) | ✅ [`gooey-ink`](../src/app/core/efeitos/kits/gooey-ink.kit.ts) · 🔁 SVG Lab → *Filtros* |
 | 4.2 | Título "TRABALHOS" inflado, com volume, letras que respiram | `text-shadow` em camadas + `scale` animado | ✅ [`puffy-text`](../src/app/core/efeitos/kits/puffy-text.kit.ts) |
 | 4.3 | Contadores (140 / 9 / 13) | Números animados | 🔁 Interface Lab → *Números* |
-| 4.4 | Corredor 3D com vídeo no fundo | Caixa CSS 3D (5 faces com `perspective`) | 🧪 *Sala 3D* |
+| 4.4 | Corredor 3D com vídeo no fundo | Caixa CSS 3D (5 faces com `perspective`) | ✅ [`room-3d`](../src/app/core/efeitos/kits/room-3d.kit.ts) |
 | 4.5 | Ícones 3D vermelhos e azuis flutuando ("Bora encher essa ideia?") | Modelos 3D (Spline/Three.js) + flutuação | 🔁 Three.js Lab → *GLTF* e *Animação* |
 | 4.6 | Óculos que seguem o mouse: tudo embaçado fora das lentes, nítido e ampliado dentro | Duas camadas: `filter: blur()` embaixo, `mask-image` + `scale()` em cima | ✅ [`lens-focus`](../src/app/core/efeitos/kits/lens-focus.kit.ts) |
 | 4.7 | Texto embaçado que entra em foco ("Agende seu exame") | Split em letras + `filter: blur()` → 0 | 🔁 Kit `text-reveal` (efeito *desfocar*) |
@@ -56,13 +56,24 @@ Sites gerados por IA, gravados na tela do notebook.
 
 ---
 
-## Próximos kits sugeridos (🧪)
+## As animações mais usadas hoje (importadas para o lab)
 
-1. **Image sequence no scroll** — quadros de um vídeo desenhados num `<canvas>` conforme a rolagem (técnica dos sites de produto; cobre 2.3 e 3.3).
-2. **Mancha de tinta (gooey)** — círculos SVG com filtro gooey que se fundem e crescem atrás de um título (4.1).
-3. **Sala 3D** — corredor em CSS 3D com um vídeo na parede do fundo e câmera que avança no scroll (4.4).
+Escolhidas cruzando as galerias abaixo (Awwwards, Recent/Godly, Landing.love, Made With GSAP, Codrops) com levantamentos de tendências de 2026: scroll storytelling, seções presas (sticky) e cards empilhados, tipografia cinética, bento grids e microinterações aparecem em todas. Todas foram reescritas do zero para o lab — nenhum código de terceiros foi copiado.
 
----
+| Animação | Por que está em alta | No lab |
+|---|---|---|
+| Cards empilhados no scroll | Organiza etapas, serviços e cases um por vez; presente em quase todo site de agência | ✅ [`sticky-stack`](../src/app/core/efeitos/kits/sticky-stack.kit.ts) |
+| Hero que abre no scroll (imagem pequena → tela cheia) | A "entrada de cena" dos sites cinematográficos | ✅ [`scroll-zoom-hero`](../src/app/core/efeitos/kits/scroll-zoom-hero.kit.ts) |
+| Sequência de quadros no scroll | O efeito "Apple" de produto girando/explodindo | ✅ [`image-sequence`](../src/app/core/efeitos/kits/image-sequence.kit.ts) |
+| Texto embaralhado (decode) | Assinatura de portfólios dev e menus de agência | ✅ [`text-scramble`](../src/app/core/efeitos/kits/text-scramble.kit.ts) |
+| Loader com contador 0 → 100 | Intro clássica dos sites premiados | ✅ [`preloader-counter`](../src/app/core/efeitos/kits/preloader-counter.kit.ts) |
+| Lista com imagem que segue o cursor | Padrão de lista de projetos em portfólios | ✅ [`hover-image-list`](../src/app/core/efeitos/kits/hover-image-list.kit.ts) |
+| Cards com luz que segue o mouse | Acabamento de bento grids e páginas de SaaS | ✅ [`spotlight-cards`](../src/app/core/efeitos/kits/spotlight-cards.kit.ts) |
+| Galeria sanfona | Muitas categorias num espaço pequeno | ✅ [`expanding-gallery`](../src/app/core/efeitos/kits/expanding-gallery.kit.ts) |
+| Mancha de tinta viva (gooey) | Heros orgânicos de estúdios criativos | ✅ [`gooey-ink`](../src/app/core/efeitos/kits/gooey-ink.kit.ts) |
+| Sala 3D em CSS | Showrooms e "case em destaque" | ✅ [`room-3d`](../src/app/core/efeitos/kits/room-3d.kit.ts) |
+
+Já existiam no lab e também estão entre as mais usadas: marquee infinito, cursor personalizado, botão magnético, revelar ao rolar, parallax, rolagem suave (Lenis), bento grid, números animados e texto revelado por letras.
 
 ## Onde encontrar mais referências de animação
 

@@ -4,7 +4,7 @@ Data: 16/11/2026 · Versão: `1.0.0-rc.1`
 
 ## 1. Testes automáticos (`npm test`)
 
-**454 testes passando**, em 11 arquivos (17/11/2026):
+**534 testes passando**, em 11 arquivos (17/11/2026):
 
 | Arquivo | O que cobre |
 |---|---|
