@@ -9,10 +9,11 @@ Cada fase está numa branch e numa versão do Git, para você avaliar etapa por 
 | 3 | Organização educacional: SVG Lab, Trilha, Exercícios, Comparador | `v0.5.0` | `fase-3` |
 | 4 | Three.js Lab | `v0.6.0` | `fase-4` |
 | 5 | WebGL & GLSL | `v0.7.0` | `fase-5` |
-| 6 | QA, acessibilidade, performance, documentação | `v1.0.0-rc.1` | `fase-6` (atual) |
+| 6 | QA, acessibilidade, performance, documentação | `v1.0.0-rc.1` | `fase-6` |
+| + | Navbar ao rolar e divisores de seção (pedido de 16/11) | `v1.0.0-rc.2` | `melhorias-navbar-divisores` (atual) |
 
-O mais simples é avaliar tudo na versão atual (`fase-6`), que contém todas as fases.
-Para ver uma fase isolada: `git checkout v0.4.0` (por exemplo), `npm install`, `npm start`. Volte com `git checkout fase-6`.
+O mais simples é avaliar tudo na versão atual (`melhorias-navbar-divisores`), que contém todas as fases.
+Para ver uma fase isolada: `git checkout v0.4.0` (por exemplo), `npm install`, `npm start`. Volte com `git checkout melhorias-navbar-divisores`.
 
 Antes de começar: `npm install` e `npm start`, depois abra http://localhost:4200.
 
@@ -57,12 +58,17 @@ Scroll Lab, em especial:
 - [ ] O código mostrado é o GLSL de verdade, com os valores dos uniforms
 - [ ] Distortion reage ao mouse; Transição troca de imagem ao clicar
 
+## Pedido extra — navbar e divisores
+
+- [ ] **Scroll Lab → Navbar ao rolar**: transparente sobre o hero; ao rolar ganha fundo e sombra; no modo "esconde ao descer" some e volta ao subir
+- [ ] **CSS Playground → Divisores de seção**: diagonal, seta, curva, zigue-zague e ondas; altura e direção mudam ao vivo
+
 ## Fase 6 — Qualidade
 
 - [ ] Celular (F12 → modo dispositivo): nenhuma página rola para o lado; menu abre e fecha
 - [ ] Teclado: Tab mostra "Pular para o conteúdo" e o foco é sempre visível
 - [ ] Logo no menu, no Dashboard, na barra do celular e na aba do navegador
-- [ ] `npm test` → **174 passed**
+- [ ] `npm test` → **182 passed**
 - [ ] `npm run build:pages` termina sem erro
 
 ---

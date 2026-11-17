@@ -2,10 +2,10 @@
 
 Gerado a partir dos arquivos `src/app/core/data/*-demos.data.ts` (a fonte única).
 Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explicação, dica, presets e um desafio.
-**Total: 43 demos interativas em 6 laboratórios.**
+**Total: 45 demos interativas em 6 laboratórios.**
 
 
-## CSS Playground — `/labs/css` (8 demos)
+## CSS Playground — `/labs/css` (9 demos)
 
 | Demo | Tópico | Nível | Link direto |
 |---|---|---|---|
@@ -17,6 +17,7 @@ Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explic
 | 6. Card 3D com perspectiva | Perspective | intermediário | `/labs/css?demo=perspective` |
 | 7. Revelação com clip-path | Clip-path | intermediário | `/labs/css?demo=clip-path` |
 | 8. Curtir e interruptor | Microinterações | intermediário | `/labs/css?demo=microinteracoes` |
+| 9. Bordas entre seções | Divisores de seção | intermediário | `/labs/css?demo=divisores` |
 
 ## GSAP Studio — `/labs/gsap` (7 demos)
 
@@ -30,7 +31,7 @@ Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explic
 | 6. Curvas de easing | Easing | intermediário | `/labs/gsap?demo=easing` |
 | 7. Play, pause, reverse e progresso | Controles de reprodução | intermediário | `/labs/gsap?demo=reproducao` |
 
-## Scroll Lab — `/labs/scroll` (7 demos)
+## Scroll Lab — `/labs/scroll` (8 demos)
 
 | Demo | Tópico | Nível | Link direto |
 |---|---|---|---|
@@ -41,6 +42,7 @@ Cada demo tem controles, Executar/Reiniciar (ou é ao vivo), Code Viewer, explic
 | 5. Rolagem vertical vira horizontal | Horizontal Scroll | avançado | `/labs/scroll?demo=horizontal` |
 | 6. Barra de progresso de leitura | Scroll Progress | iniciante | `/labs/scroll?demo=progresso` |
 | 7. Contar uma história com a rolagem | Scroll Storytelling | avançado | `/labs/scroll?demo=storytelling` |
+| 8. Navbar transparente que fixa com sombra | Navbar ao rolar | intermediário | `/labs/scroll?demo=navbar` |
 
 ## SVG Lab — `/labs/svg` (5 demos)
 

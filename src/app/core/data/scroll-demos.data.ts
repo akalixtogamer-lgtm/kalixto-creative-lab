@@ -374,4 +374,95 @@ tl.addLabel("danca")
   .addLabel("criacao");`;
     },
   },
+  // ---------------------------------------------------------------- 8
+  {
+    id: 'navbar',
+    topico: 'Navbar ao rolar',
+    titulo: 'Navbar transparente que fixa com sombra',
+    nivel: 'intermediario',
+    resumo: 'O menu começa transparente sobre o hero e ganha fundo e sombra quando a página rola.',
+    explicacao: [
+      'A navbar fica position: sticky no topo e começa transparente, deixando o hero aparecer por trás.',
+      'Um ScrollTrigger observa o fim do hero: ao passar dele, onToggle coloca a classe .fixa (fundo, blur e sombra); ao voltar, tira.',
+      'No modo "esconder", onUpdate lê self.direction: rolando para baixo a barra sobe e some; para cima, ela volta.',
+    ],
+    dica: 'Anime só transform, background e box-shadow com transition — e deixe a barra um pouco mais baixa quando fixa.',
+    acao: ROLAR,
+    instrucao: 'Role a janela: a barra muda ao sair do hero.',
+    presets: [
+      { nome: 'Vidro clássico', valores: { estilo: 'vidro', sombra: 24, comportamento: 'fixa' } },
+      { nome: 'Some e volta', valores: { comportamento: 'esconde', estilo: 'solido', sombra: 16 } },
+    ],
+    desafio: {
+      enunciado: 'Monte uma navbar sólida, sem sombra, que se esconde ao rolar para baixo.',
+      meta: { estilo: 'solido', sombra: 0, comportamento: 'esconde' },
+    },
+    params: [
+      {
+        id: 'comportamento',
+        rotulo: 'Comportamento',
+        tipo: 'select',
+        opcoes: [
+          { valor: 'fixa', rotulo: 'fica fixa' },
+          { valor: 'esconde', rotulo: 'esconde ao descer' },
+        ],
+        padrao: 'fixa',
+      },
+      {
+        id: 'estilo',
+        rotulo: 'Fundo quando fixa',
+        tipo: 'select',
+        opcoes: [
+          { valor: 'vidro', rotulo: 'vidro (blur)' },
+          { valor: 'solido', rotulo: 'sólido' },
+        ],
+        padrao: 'vidro',
+      },
+      { id: 'sombra', rotulo: 'Sombra', tipo: 'range', min: 0, max: 40, passo: 4, unidade: 'px', padrao: 24 },
+    ],
+    codigo: (v) => {
+      const fundo = v['estilo'] === 'vidro' ? 'rgb(7 5 15 / 0.85);\n  backdrop-filter: blur(12px)' : '#0e0a1d';
+      const sombra = Number(v['sombra']) > 0 ? `0 ${Number(v['sombra']) / 3}px ${v['sombra']}px rgb(0 0 0 / 0.5)` : 'none';
+      const esconde =
+        v['comportamento'] === 'esconde'
+          ? `
+
+// Esconde ao rolar para baixo, mostra ao rolar para cima
+ScrollTrigger.create({
+  start: "top top",
+  end: "max",
+  onUpdate: (self) => {
+    nav.classList.toggle("escondida", self.direction === 1 && self.scroll() > 200);
+  },
+});
+
+/* CSS */
+.navbar.escondida { transform: translateY(-100%); }`
+          : '';
+      return `/* CSS */
+.navbar {
+  position: sticky;
+  top: 0;
+  background: transparent;
+  transition: background 300ms, box-shadow 300ms, transform 300ms, height 300ms;
+}
+.hero { margin-top: -64px; } /* o hero passa por baixo da navbar */
+
+.navbar.fixa {
+  height: 52px;
+  background: ${fundo};
+  box-shadow: ${sombra};
+}
+
+// JavaScript
+const nav = document.querySelector(".navbar");
+
+ScrollTrigger.create({
+  trigger: ".hero",
+  start: "bottom top+=64", // quando o fim do hero passa pela navbar
+  onToggle: (self) => nav.classList.toggle("fixa", self.isActive),
+});${esconde}`;
+    },
+  },
 ];
+

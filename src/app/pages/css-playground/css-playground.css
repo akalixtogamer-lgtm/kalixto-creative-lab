@@ -278,3 +278,39 @@
 .d-switch.ligado .d-switch__bolinha {
   transform: translateX(24px);
 }
+
+/* 9 · Divisores de seção */
+.d-div {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  justify-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+}
+.d-div__topo,
+.d-div__baixo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: var(--kx-space-5);
+  font-family: var(--kx-font-display);
+}
+.d-div__topo {
+  flex: 1;
+  justify-content: flex-start;
+  background: linear-gradient(135deg, var(--kx-magenta-texto), #7c3aed);
+}
+.d-div__baixo {
+  flex: 1.1;
+  position: relative;
+  padding-top: calc(var(--kx-space-5) + 40px);
+  background: var(--kx-bg-elev);
+  transition: clip-path 300ms ease, border-radius 300ms ease, margin-top 300ms ease;
+}
+.d-div small {
+  color: var(--kx-text-soft);
+  font: var(--kx-fs-xs) var(--kx-font-mono);
+}

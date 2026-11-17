@@ -2,6 +2,7 @@ import { Component, computed, input, linkedSignal, signal } from '@angular/core'
 import {
   CLIP_FORMAS,
   CSS_DEMOS,
+  estiloDivisor,
   CssDemo,
   ParamDef,
   Valor,
@@ -51,6 +52,10 @@ export class CssPlayground {
   protected readonly rodada = signal(0);
 
   protected readonly codigo = computed(() => this.atual().codigo(this.valores()));
+  /** Estilo da seção de baixo na demo de divisores (mesmo CSS do Code Viewer). */
+  protected readonly divisor = computed(() =>
+    this.atual().id === 'divisores' ? estiloDivisor(this.valores()) : {},
+  );
 
   /** Valores dos controles como variáveis CSS aplicadas no palco. */
   protected readonly vars = computed(() => {

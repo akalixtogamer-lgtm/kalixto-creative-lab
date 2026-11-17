@@ -386,4 +386,113 @@ ${regras[String(v['estilo'])]}
   transform: translateX(24px);
 }`,
   },
+  // ---------------------------------------------------------------- 9
+  {
+    id: 'divisores',
+    topico: 'Divisores de seção',
+    titulo: 'Bordas entre seções',
+    nivel: 'intermediario',
+    resumo: 'Trocar a linha reta entre duas seções por diagonais, curvas, setas ou ondas.',
+    explicacao: [
+      'A seção de baixo "sobe" sobre a de cima (margin-top negativo) e recorta a própria borda superior.',
+      'Diagonal, seta e zigue-zague usam clip-path: polygon(); a curva usa border-radius elíptico; as ondas usam uma máscara (mask) com radial-gradient.',
+      'Como tudo é CSS, a borda acompanha a largura da tela sozinha — sem imagens.',
+    ],
+    dica: 'Use no máximo um ou dois estilos de divisor por página: variar demais deixa o layout confuso.',
+    acao: '',
+    aoVivo: true,
+    instrucao: 'Troque a forma e a altura — o resultado é ao vivo.',
+    presets: [
+      { nome: 'Diagonal suave', valores: { forma: 'diagonal', altura: 40, lado: 'normal' } },
+      { nome: 'Curva funda', valores: { forma: 'curva', altura: 100 } },
+      { nome: 'Rasgado', valores: { forma: 'zigzag', altura: 30 } },
+    ],
+    desafio: {
+      enunciado: 'Monte uma seta invertida (apontando para baixo) com 80px de altura.',
+      meta: { forma: 'seta', altura: 80, lado: 'invertido' },
+    },
+    params: [
+      {
+        id: 'forma',
+        rotulo: 'Forma da borda',
+        tipo: 'select',
+        opcoes: [
+          { valor: 'diagonal', rotulo: 'diagonal' },
+          { valor: 'seta', rotulo: 'seta' },
+          { valor: 'curva', rotulo: 'curva' },
+          { valor: 'zigzag', rotulo: 'zigue-zague' },
+          { valor: 'ondas', rotulo: 'ondas' },
+        ],
+        padrao: 'diagonal',
+      },
+      { id: 'altura', rotulo: 'Altura da borda', tipo: 'range', min: 20, max: 120, passo: 10, unidade: 'px', padrao: 60 },
+      {
+        id: 'lado',
+        rotulo: 'Direção',
+        tipo: 'select',
+        opcoes: [
+          { valor: 'normal', rotulo: 'normal' },
+          { valor: 'invertido', rotulo: 'invertida' },
+        ],
+        padrao: 'normal',
+      },
+    ],
+    codigo: (v) => {
+      const regras = Object.entries(estiloDivisor(v))
+        .map(([k, x]) => `  ${k}: ${x};`)
+        .join('\n');
+      return `/* A seção de baixo sobe sobre a de cima e recorta a borda */
+.secao-baixo {
+${regras}
+}`;
+    },
+  },
 ];
+
+/**
+ * CSS do divisor de seção — usado pelo palco E pelo Code Viewer
+ * (assim o código mostrado é exatamente o que está aplicado).
+ */
+export function estiloDivisor(v: Valores): Record<string, string> {
+  const h = Number(v['altura']);
+  const inv = v['lado'] === 'invertido';
+  const base = { 'margin-top': `-${h}px` };
+  switch (v['forma']) {
+    case 'diagonal':
+      return {
+        ...base,
+        'clip-path': inv
+          ? `polygon(0 0, 100% ${h}px, 100% 100%, 0 100%)`
+          : `polygon(0 ${h}px, 100% 0, 100% 100%, 0 100%)`,
+      };
+    case 'seta':
+      return {
+        ...base,
+        'clip-path': inv
+          ? `polygon(0 0, 50% ${h}px, 100% 0, 100% 100%, 0 100%)`
+          : `polygon(0 ${h}px, 50% 0, 100% ${h}px, 100% 100%, 0 100%)`,
+      };
+    case 'curva':
+      return inv
+        ? { ...base, mask: `radial-gradient(ellipse 70% ${h}px at 50% 0, transparent 98%, #000 100%)` }
+        : { ...base, 'border-radius': `50% 50% 0 0 / ${h}px ${h}px 0 0` };
+    case 'zigzag': {
+      const dentes = 12;
+      const pontos = Array.from({ length: dentes + 1 }, (_, i) => {
+        const alto = (i % 2 === 0) !== inv;
+        return `${((i / dentes) * 100).toFixed(2)}% ${alto ? 0 : h}px`;
+      });
+      return { ...base, 'clip-path': `polygon(${pontos.join(', ')}, 100% 100%, 0 100%)` };
+    }
+    default: {
+      const r = Math.round(h / 2);
+      return {
+        ...base,
+        mask: inv
+          ? `radial-gradient(circle at 50% ${r}px, #000 ${r}px, transparent ${r + 1}px) 50% 0 / ${r * 2}px ${r}px repeat-x, linear-gradient(#000 0 0) 0 ${r}px / 100% 100% no-repeat`
+          : `radial-gradient(circle at 50% 0, transparent ${r}px, #000 ${r + 1}px) 50% 0 / ${r * 2}px 100% repeat-x`,
+      };
+    }
+  }
+}
+

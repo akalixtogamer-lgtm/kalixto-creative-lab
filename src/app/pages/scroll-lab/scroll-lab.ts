@@ -105,7 +105,7 @@ export class ScrollLab implements OnDestroy {
     this.ultimaDemo = demo.id;
     this.desmontar();
     scroller.scrollTop = 0;
-    this.ctx = gsap.context(() => CENAS[demo.id](palco, scroller, this.valores()), palco);
+    this.ctx = gsap.context(() => CENAS[demo.id](palco, scroller, this.valores()) ?? undefined, palco);
     ScrollTrigger.refresh();
     scroller.scrollTop = topo;
   }

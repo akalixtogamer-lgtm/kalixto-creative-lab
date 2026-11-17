@@ -7,6 +7,13 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.0.0-rc.2] — 2026-11-16 · Navbar ao rolar e divisores de seção
+
+### Adicionado
+- **Scroll Lab → Navbar ao rolar**: navbar transparente sobre o hero que, ao rolar, fica fixa com fundo (vidro ou sólido) e sombra ajustável; opção de esconder ao descer e mostrar ao subir.
+- **CSS Playground → Divisores de seção**: bordas entre seções em diagonal, seta, curva, zigue-zague e ondas, com altura e direção ajustáveis. O palco e o Code Viewer usam a mesma função (`estiloDivisor`).
+- Presets e desafio nas duas demos; 8 testes novos (182 no total).
+
 ## [1.0.0-rc.1] — 2026-11-16 · Fase 6 — Otimização e consolidação
 
 > Candidata à versão 1.0. Aguardando a avaliação do Wallace (`docs/AVALIACAO.md`). Ainda não publicado.

@@ -15,10 +15,10 @@ describe('Scroll Lab', () => {
     harness = await RouterTestingHarness.create();
   });
 
-  it('abre com 7 demos e janela de rolagem', async () => {
+  it('abre com todas as demos e janela de rolagem', async () => {
     await harness.navigateByUrl('/labs/scroll');
     expect(el().querySelector('h1')?.textContent).toContain('Scroll Lab');
-    expect(el().querySelectorAll('.pg__demo-btn').length).toBe(7);
+    expect(el().querySelectorAll('.pg__demo-btn').length).toBe(SCROLL_DEMOS.length);
     expect(el().querySelector('.s-rolagem')).toBeTruthy();
     expect(codigo()).toContain('ScrollTrigger');
   });
@@ -49,5 +49,21 @@ describe('Scroll Lab', () => {
     harness.detectChanges();
     expect(codigo()).toContain('scrub: 2');
     expect(codigo()).toContain('rotation: 720');
+  });
+});
+
+describe('Scroll Lab · Navbar ao rolar', () => {
+  it('mostra navbar e hero, e o código muda para o modo "esconde"', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/labs/scroll?demo=navbar');
+    const el = harness.routeNativeElement as HTMLElement;
+    expect(el.querySelector('.s-nav')).toBeTruthy();
+    expect(el.querySelector('.s-hero')).toBeTruthy();
+    const sel = el.querySelector<HTMLSelectElement>('#p-comportamento')!;
+    sel.value = 'esconde';
+    sel.dispatchEvent(new Event('change'));
+    harness.detectChanges();
+    expect(el.querySelector('.cv__codigo')?.textContent).toContain('self.direction');
   });
 });

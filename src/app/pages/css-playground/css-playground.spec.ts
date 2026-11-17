@@ -25,9 +25,9 @@ describe('CSS Playground', () => {
     expect(el().querySelectorAll('.ctrl').length).toBe(CSS_DEMOS[0].params.length);
   });
 
-  it('lista as 8 demos no seletor', async () => {
+  it('lista todas as demos no seletor', async () => {
     await harness.navigateByUrl('/labs/css');
-    expect(el().querySelectorAll('.pg__demo-btn').length).toBe(8);
+    expect(el().querySelectorAll('.pg__demo-btn').length).toBe(CSS_DEMOS.length);
   });
 
   it.each(CSS_DEMOS.map((d) => d.id))('abre a demo "%s" pela URL', async (id) => {
@@ -83,5 +83,21 @@ describe('CSS Playground', () => {
     await harness.navigateByUrl('/biblioteca?lab=css');
     const link = el().querySelector<HTMLAnchorElement>('a.kx-card');
     expect(link?.getAttribute('href')).toContain('/labs/css?demo=');
+  });
+});
+
+describe('CSS Playground · Divisores de seção', () => {
+  it('aplica no palco o mesmo CSS mostrado no código', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/labs/css?demo=divisores');
+    const el = harness.routeNativeElement as HTMLElement;
+    const sel = el.querySelector<HTMLSelectElement>('#p-forma')!;
+    sel.value = 'seta';
+    sel.dispatchEvent(new Event('change'));
+    harness.detectChanges();
+    const baixo = el.querySelector<HTMLElement>('.d-div__baixo')!;
+    expect(baixo.style.marginTop).toBe('-60px');
+    expect(el.querySelector('.cv__codigo')?.textContent).toContain('polygon(0 60px, 50% 0, 100% 60px');
   });
 });

@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
  * Todas usam `scroller` (a janela de rolagem do palco) em vez da página.
  * Rodam dentro de gsap.context(): revert() remove animações, pins e markers.
  */
-type Cena = (palco: HTMLElement, scroller: HTMLElement, v: Valores) => void;
+type Cena = (palco: HTMLElement, scroller: HTMLElement, v: Valores) => void | (() => void);
 
 const q = (palco: HTMLElement, s: string) => palco.querySelectorAll<HTMLElement>(s);
 const um = (palco: HTMLElement, s: string) => palco.querySelector<HTMLElement>(s)!;
@@ -139,6 +139,31 @@ export const CENAS: Record<string, Cena> = {
       .from(q(palco, '.s-cap-3'), { opacity: 0, y: 20 })
       .addLabel('criacao');
   },
+};
+
+/** navbar: transparente sobre o hero, fixa com fundo e sombra depois dele. */
+CENAS['navbar'] = (palco, scroller, v) => {
+  const nav = um(palco, '.s-nav');
+  nav.style.setProperty('--sombra', `${v['sombra']}px`);
+  nav.classList.toggle('s-nav--solido', v['estilo'] === 'solido');
+  // O hero "começa" no topo da janela; a barra fixa quando ele termina
+  ScrollTrigger.create({
+    trigger: um(palco, '.s-hero'),
+    scroller,
+    start: 'bottom top+=64',
+    end: 'max',
+    onToggle: (self) => nav.classList.toggle('fixa', self.isActive),
+  });
+  if (v['comportamento'] === 'esconde') {
+    ScrollTrigger.create({
+      scroller,
+      start: 0,
+      end: 'max',
+      onUpdate: (self) => nav.classList.toggle('escondida', self.direction === 1 && self.scroll() > 200),
+    });
+  }
+  // gsap.context só desfaz o que o GSAP criou: limpamos as classes na saída
+  return () => nav.classList.remove('fixa', 'escondida');
 };
 
 /** Rola a janela até o fim (botão "Rolar automaticamente"). */

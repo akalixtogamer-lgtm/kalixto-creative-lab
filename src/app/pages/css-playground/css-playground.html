@@ -51,6 +51,18 @@
             <strong>Revelado!</strong>
           </div>
         }
+        @case ('divisores') {
+          <div class="d-div">
+            <section class="d-div__topo">
+              <strong>Hero</strong>
+              <small>seção de cima</small>
+            </section>
+            <section class="d-div__baixo" [style]="divisor()">
+              <strong>Conteúdo</strong>
+              <small>seção de baixo, com a borda recortada</small>
+            </section>
+          </div>
+        }
         @case ('microinteracoes') {
           <div class="d-micro">
             <button

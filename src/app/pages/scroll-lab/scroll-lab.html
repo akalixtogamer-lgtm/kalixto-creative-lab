@@ -71,6 +71,21 @@
             }
           </article>
         }
+        @case ('navbar') {
+          <nav class="s-nav" aria-label="Navbar de exemplo">
+            <span class="s-nav__marca">KALIXTO</span>
+            <span class="s-nav__links"><span>Início</span><span>Labs</span><span>Contato</span></span>
+          </nav>
+          <header class="s-hero">
+            <p class="s-hero__titulo">Hero em tela cheia</p>
+            <p class="s-hero__sub">A navbar está transparente por cima dele. ↓ Role</p>
+          </header>
+          <article class="s-artigo s-artigo--nav">
+            @for (p of paragrafos; track p) {
+              <p>Conteúdo da página. Repare na barra do topo: agora ela tem fundo e sombra para continuar legível sobre o texto.</p>
+            }
+          </article>
+        }
         @case ('storytelling') {
           <div class="s-espaco s-espaco--curto"><span class="s-dica">↓ Comece a história</span></div>
           <section class="s-historia">
