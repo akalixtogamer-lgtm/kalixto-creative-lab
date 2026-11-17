@@ -1,0 +1,71 @@
+<div class="kx-page">
+  <kx-page-header
+    eyebrow="Estudar"
+    titulo="Trilha de aprendizagem"
+    descricao="O caminho sugerido, do CSS ao WebGL. Cada demo executada ganha ✓; cada desafio concluído, ★. Tudo fica salvo neste navegador."
+  />
+
+  <!-- Resumo -->
+  <section class="resumo kx-glass" aria-label="Seu progresso">
+    <div class="resumo__anel" [style.--pct]="total().pct" role="img" [attr.aria-label]="total().pct + '% da trilha'">
+      <span>{{ total().pct }}%</span>
+    </div>
+    <div class="resumo__texto">
+      <p><strong>{{ total().feitos }}</strong> de {{ total().passos }} demos executadas</p>
+      <p><strong>{{ total().desafios }}</strong> desafios concluídos</p>
+      <div class="resumo__acoes">
+        @if (proxima(); as p) {
+          <a class="kx-btn kx-btn--primary" [routerLink]="['/labs', p.lab.id]" [queryParams]="{ demo: p.demo.id }">
+            <kx-icon name="play" /> {{ total().feitos ? 'Continuar' : 'Começar' }}: {{ p.demo.topico }}
+          </a>
+        } @else {
+          <p class="kx-badge kx-badge--validado">Trilha completa! 🎉</p>
+        }
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="zerar()" (blur)="confirmarZerar.set(false)">
+          {{ confirmarZerar() ? 'Clique de novo para apagar tudo' : 'Zerar progresso' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Módulos -->
+  <ol class="modulos">
+    @for (m of modulos(); track m.lab.id; let i = $index) {
+      <li class="modulo" [attr.data-acento]="m.lab.acento">
+        <div class="modulo__topo">
+          <span class="modulo__n">{{ i + 1 }}</span>
+          <div class="modulo__info">
+            <h2 class="kx-card__title">{{ m.lab.titulo }}</h2>
+            <p class="kx-muted modulo__meta">
+              {{ m.feitos }}/{{ m.passos.length }} demos · ★ {{ m.desafiosFeitos }} ·
+              exercícios {{ m.acertos }}/{{ m.questoes }}
+            </p>
+          </div>
+          <a class="kx-btn kx-btn--ghost" routerLink="/exercicios" [queryParams]="{ lab: m.lab.id }">Exercícios</a>
+        </div>
+        <div class="kx-progress" role="progressbar" [attr.aria-valuenow]="m.pct" aria-valuemin="0" aria-valuemax="100"
+          [attr.aria-label]="'Progresso em ' + m.lab.titulo">
+          <span [style.width.%]="m.pct"></span>
+        </div>
+        <ul class="passos">
+          @for (p of m.passos; track p.demo.id) {
+            <li>
+              <a class="passo" [class.is-feito]="p.feita" [routerLink]="['/labs', m.lab.id]" [queryParams]="{ demo: p.demo.id }">
+                <span class="passo__check" aria-hidden="true">
+                  @if (p.feita) { <kx-icon name="check" /> }
+                </span>
+                <span class="passo__nome">{{ p.demo.topico }}</span>
+                <span class="kx-muted passo__nivel">{{ nivel[p.demo.nivel] }}</span>
+                @if (p.desafio) {
+                  <span class="passo__estrela" [class.is-feito]="p.desafioFeito"
+                    [attr.title]="p.desafioFeito ? 'Desafio concluído' : 'Desafio pendente'">★</span>
+                }
+                <span class="sr-only">{{ p.feita ? '(executada)' : '(pendente)' }}{{ p.desafioFeito ? ', desafio concluído' : '' }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </li>
+    }
+  </ol>
+</div>

@@ -26,4 +26,10 @@ export class Sidebar {
     { rota: '/design-system', rotulo: 'Design System', icone: 'palette', exato: false },
     { rota: '/roadmap', rotulo: 'Roadmap', icone: 'route', exato: false },
   ];
+
+  protected readonly estudar: { rota: string; rotulo: string; icone: IconName; exato: boolean }[] = [
+    { rota: '/trilha', rotulo: 'Trilha de aprendizagem', icone: 'trail', exato: false },
+    { rota: '/exercicios', rotulo: 'Exercícios', icone: 'quiz', exato: false },
+    { rota: '/comparador', rotulo: 'Comparador', icone: 'compare', exato: false },
+  ];
 }

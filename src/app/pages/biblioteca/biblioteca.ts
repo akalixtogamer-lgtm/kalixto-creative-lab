@@ -1,12 +1,13 @@
 import { NIVEL_ROTULO } from '../../core/models/demo.model';
 import { EffectNivel } from '../../core/models/effect.model';
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../../shared/components/icon/icon';
 import { EFFECTS } from '../../core/data/effects.data';
 import { LABS, findLab } from '../../core/data/labs.data';
+import { ProgressoService } from '../../core/services/progresso.service';
 import { PageHeader } from '../../shared/components/page-header/page-header';
 
 /**
@@ -29,7 +30,10 @@ export class Biblioteca {
   readonly lab = input<string>();
 
   protected readonly labs = LABS.filter((l) => EFFECTS.some((e) => e.labId === l.id));
+  private readonly progresso = inject(ProgressoService);
   protected readonly busca = signal('');
+  protected readonly filtroNivel = signal<'todos' | EffectNivel>('todos');
+  protected readonly filtroSituacao = signal<'todos' | 'feitos' | 'pendentes'>('todos');
   protected readonly filtroManual = signal<string | null>(null);
 
   /** O filtro escolhido na tela tem prioridade sobre o da URL. */
@@ -38,12 +42,21 @@ export class Biblioteca {
   protected readonly efeitos = computed(() => {
     const termo = this.busca().trim().toLowerCase();
     const lab = this.filtroLab();
+    const nivel = this.filtroNivel();
+    const situacao = this.filtroSituacao();
+    const feitas = this.progresso.executadas();
     return EFFECTS.filter(
       (e) =>
         (lab === 'todos' || e.labId === lab) &&
+        (nivel === 'todos' || e.nivel === nivel) &&
+        (situacao === 'todos' || feitas.has(`${e.labId}:${e.demoId}`) === (situacao === 'feitos')) &&
         (!termo || `${e.nome} ${e.topico} ${e.descricao}`.toLowerCase().includes(termo)),
     );
   });
+
+  protected feito(labId: string, demoId?: string): boolean {
+    return this.progresso.executadas().has(`${labId}:${demoId}`);
+  }
 
   protected nomeLab(id: string): string {
     return findLab(id)?.titulo ?? id;

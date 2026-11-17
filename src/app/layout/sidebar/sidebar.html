@@ -26,6 +26,24 @@
     }
   </ul>
 
+  <p class="sidebar__section">Estudar</p>
+  <ul class="sidebar__list">
+    @for (p of estudar; track p.rota) {
+      <li>
+        <a
+          class="sidebar__link"
+          [routerLink]="p.rota"
+          routerLinkActive="is-active"
+          ariaCurrentWhenActive="page"
+          (click)="navegou.emit()"
+        >
+          <kx-icon class="sidebar__icon" [name]="p.icone" />
+          {{ p.rotulo }}
+        </a>
+      </li>
+    }
+  </ul>
+
   <p class="sidebar__section">Laboratórios</p>
   <ul class="sidebar__list">
     @for (lab of labs; track lab.id) {

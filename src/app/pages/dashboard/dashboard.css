@@ -160,3 +160,26 @@
 .is-futuro:hover {
   opacity: 1;
 }
+
+/* Seu progresso */
+.meu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kx-space-4);
+  padding: var(--kx-space-5);
+}
+.meu__texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--kx-space-2);
+  min-width: 240px;
+}
+.meu__barra { max-width: 420px; }
+.meu__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+}

@@ -33,6 +33,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/scroll-lab/scroll-lab').then((m) => m.ScrollLab),
       },
       {
+        path: 'labs/svg',
+        title: 'SVG Lab · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/svg-lab/svg-lab').then((m) => m.SvgLab),
+      },
+      {
         path: 'labs/:id',
         title: 'Laboratório · Kalixto Creative Lab',
         loadComponent: () => import('./pages/lab-page/lab-page').then((m) => m.LabPage),
@@ -41,6 +46,21 @@ export const routes: Routes = [
         path: 'biblioteca',
         title: 'Biblioteca de efeitos · Kalixto Creative Lab',
         loadComponent: () => import('./pages/biblioteca/biblioteca').then((m) => m.Biblioteca),
+      },
+      {
+        path: 'trilha',
+        title: 'Trilha de aprendizagem · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/trilha/trilha').then((m) => m.Trilha),
+      },
+      {
+        path: 'exercicios',
+        title: 'Exercícios · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/exercicios/exercicios').then((m) => m.Exercicios),
+      },
+      {
+        path: 'comparador',
+        title: 'Comparador de tecnologias · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/comparador/comparador').then((m) => m.Comparador),
       },
       {
         path: 'design-system',

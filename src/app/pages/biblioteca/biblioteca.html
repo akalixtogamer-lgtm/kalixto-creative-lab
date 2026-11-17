@@ -2,7 +2,7 @@
   <kx-page-header
     eyebrow="Catálogo"
     titulo="Biblioteca de efeitos"
-    descricao="Todos os efeitos do laboratório num só lugar. Cada efeito só é marcado como implementado depois de ter demo, código e explicação validados."
+    descricao="Todos os efeitos de todos os laboratórios num só lugar. Filtre por laboratório, nível ou pelo que você já executou."
   />
 
   <div class="filtros kx-glass">
@@ -23,6 +23,23 @@
         @for (l of labs; track l.id) {
           <option [value]="l.id">{{ l.titulo }}</option>
         }
+      </select>
+    </label>
+    <label class="filtros__campo">
+      <span class="kx-muted">Nível</span>
+      <select class="filtros__input" [ngModel]="filtroNivel()" (ngModelChange)="filtroNivel.set($event)">
+        <option value="todos">Todos</option>
+        <option value="iniciante">Iniciante</option>
+        <option value="intermediario">Intermediário</option>
+        <option value="avancado">Avançado</option>
+      </select>
+    </label>
+    <label class="filtros__campo">
+      <span class="kx-muted">Situação</span>
+      <select class="filtros__input" [ngModel]="filtroSituacao()" (ngModelChange)="filtroSituacao.set($event)">
+        <option value="todos">Todos</option>
+        <option value="feitos">Já executados</option>
+        <option value="pendentes">Ainda não executados</option>
       </select>
     </label>
   </div>
@@ -53,8 +70,10 @@
   <p class="kx-muted">{{ e.descricao }}</p>
   <div class="kx-card__meta">
     <span class="kx-chip">{{ rotuloNivel(e.nivel) }}</span>
-    @if (e.implementado) {
-      <span class="kx-badge kx-badge--validado">Demo pronta</span>
+    @if (feito(e.labId, e.demoId)) {
+      <span class="kx-badge kx-badge--validado">✓ Executado</span>
+    } @else if (e.implementado) {
+      <span class="kx-badge kx-badge--planejado">Demo pronta</span>
     } @else {
       <span class="kx-badge kx-badge--planejado">Planejado</span>
     }

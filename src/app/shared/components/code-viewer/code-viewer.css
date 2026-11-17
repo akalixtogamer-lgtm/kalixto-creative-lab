@@ -7,6 +7,7 @@
 }
 .cv__topo {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--kx-space-3);
   padding: var(--kx-space-2) var(--kx-space-2) var(--kx-space-2) var(--kx-space-4);
@@ -27,6 +28,10 @@
 .cv__dots i:nth-child(2) { background: var(--kx-roxo); }
 .cv__dots i:last-child { background: var(--kx-azul); }
 .cv__titulo {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: var(--kx-fs-sm);
   font-weight: 600;
 }

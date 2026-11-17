@@ -25,6 +25,29 @@
     </dl>
   </header>
 
+  <!-- Seu progresso -->
+  <section class="meu kx-glass" aria-labelledby="meu-titulo">
+    <div class="meu__texto">
+      <h2 id="meu-titulo" class="kx-section-title">Seu progresso</h2>
+      <p class="kx-muted">
+        {{ meuProgresso().feitas }} de {{ meuProgresso().total }} demos executadas · ★ {{ meuProgresso().desafios }} desafios
+      </p>
+      <div class="kx-progress meu__barra" role="progressbar" [attr.aria-valuenow]="meuProgresso().pct"
+        aria-valuemin="0" aria-valuemax="100" aria-label="Progresso geral">
+        <span [style.width.%]="meuProgresso().pct"></span>
+      </div>
+    </div>
+    <div class="meu__acoes">
+      @if (meuProgresso().proxima; as p) {
+        <a class="kx-btn kx-btn--primary" [routerLink]="['/labs', p.lab]" [queryParams]="{ demo: p.demo.id }">
+          <kx-icon name="play" /> {{ meuProgresso().feitas ? 'Continuar' : 'Começar' }}: {{ p.demo.topico }}
+        </a>
+      }
+      <a class="kx-btn kx-btn--ghost" routerLink="/trilha">Ver trilha</a>
+      <a class="kx-btn kx-btn--ghost" routerLink="/exercicios">Exercícios</a>
+    </div>
+  </section>
+
   <!-- Como usar -->
   <section class="kx-section" aria-labelledby="como-usar">
     <h2 id="como-usar" class="kx-section-title">Como usar</h2>
@@ -76,7 +99,7 @@
 
   <!-- Próximas etapas -->
   <section class="kx-section" aria-labelledby="futuro">
-    <h2 id="futuro" class="kx-section-title">Próximas etapas</h2>
+    <h2 id="futuro" class="kx-section-title">Laboratórios avançados</h2>
     <div class="kx-grid">
       @for (lab of labsFuturos; track lab.id) {
         <a class="kx-card is-futuro" [routerLink]="['/labs', lab.id]" [attr.data-acento]="lab.acento">

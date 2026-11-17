@@ -1,0 +1,100 @@
+.placar { color: var(--kx-text); }
+.abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+}
+.abas__cont { font: var(--kx-fs-xs) var(--kx-font-mono); }
+.ex-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kx-space-2) var(--kx-space-4);
+}
+.ex-topo .kx-btn { margin-left: auto; }
+.questoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.questao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-5);
+}
+.questao__pergunta {
+  display: flex;
+  gap: var(--kx-space-3);
+  font-weight: 600;
+}
+.questao__n {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--kx-acento, var(--kx-magenta));
+  color: #fff;
+  font-size: var(--kx-fs-xs);
+}
+.alternativas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--kx-space-2);
+}
+.alternativa {
+  display: flex;
+  align-items: center;
+  gap: var(--kx-space-3);
+  min-height: 48px;
+  padding: var(--kx-space-2) var(--kx-space-3);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-sm);
+  background: var(--kx-surface);
+  color: var(--kx-text-soft);
+  font: inherit;
+  font-size: var(--kx-fs-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--kx-dur-fast), background var(--kx-dur-fast);
+}
+.alternativa:not(:disabled):hover {
+  border-color: var(--kx-acento, var(--kx-magenta));
+  color: var(--kx-text);
+}
+.alternativa:disabled { cursor: default; }
+.alternativa__letra {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--kx-border-strong);
+  border-radius: 6px;
+  font: 700 var(--kx-fs-xs) var(--kx-font-mono);
+}
+.is-correta {
+  border-color: rgb(46 229 157 / 0.6);
+  background: rgb(46 229 157 / 0.1);
+  color: var(--kx-text);
+}
+.is-errada {
+  border-color: rgb(255 92 122 / 0.6);
+  background: rgb(255 92 122 / 0.1);
+}
+.is-apagada { opacity: 0.5; }
+.feedback {
+  padding: var(--kx-space-3) var(--kx-space-4);
+  border-left: 3px solid var(--kx-danger);
+  border-radius: var(--kx-radius-sm);
+  background: var(--kx-surface);
+  color: var(--kx-text-soft);
+  font-size: var(--kx-fs-sm);
+}
+.feedback.is-ok { border-left-color: var(--kx-success); }
+.feedback strong { color: var(--kx-text); }

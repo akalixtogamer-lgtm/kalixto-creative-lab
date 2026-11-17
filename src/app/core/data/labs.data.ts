@@ -73,10 +73,10 @@ export const LABS: Lab[] = [
     titulo: 'SVG Lab',
     resumo: 'Traços, máscaras e morphing em gráficos vetoriais.',
     fase: 3,
-    status: 'planejado',
-    disponivel: false,
+    status: 'em-teste',
+    disponivel: true,
     tecnologias: ['SVG', 'CSS', 'GSAP'],
-    topicos: ['Stroke animation', 'Máscaras', 'Morphing', 'Filtros'],
+    topicos: ['Stroke animation', 'Máscaras', 'Morphing', 'Filtros', 'Motion Path'],
     acento: 'ciano',
   },
   {

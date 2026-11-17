@@ -13,7 +13,10 @@ export type IconName =
   | 'arrow-left'
   | 'arrow-right'
   | 'menu'
-  | 'close';
+  | 'close'
+  | 'trail'
+  | 'quiz'
+  | 'compare';
 
 /**
  * Ícones SVG de traço único (24×24, stroke 1.8) — consistentes em
@@ -40,6 +43,9 @@ export type IconName =
         @case ('arrow-right') { <path d="M5 12h14"/><path d="M13 6l6 6-6 6"/> }
         @case ('menu') { <path d="M4 7h16M4 12h16M4 17h16"/> }
         @case ('close') { <path d="M6 6l12 12M18 6L6 18"/> }
+        @case ('trail') { <circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h4a3 3 0 0 0 3-3V8a3 3 0 0 1 3-3"/><path d="M5 5h.01M9 5h.01M19 19h.01M15 19h.01"/> }
+        @case ('quiz') { <circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/> }
+        @case ('compare') { <rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/><path d="M6.5 9v6M17.5 12v3"/> }
       }
     </svg>
   `,

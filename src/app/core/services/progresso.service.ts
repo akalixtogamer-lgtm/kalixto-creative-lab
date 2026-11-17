@@ -57,6 +57,15 @@ export class ProgressoService {
     this.atualizar((e) => ({ ...e, exercicios: { ...e.exercicios, [questao]: acertou } }));
   }
 
+  /** Apaga as respostas das questões informadas (botão "Refazer"). */
+  refazer(questoes: string[]): void {
+    this.atualizar((e) => {
+      const exercicios = { ...e.exercicios };
+      questoes.forEach((q) => delete exercicios[q]);
+      return { ...e, exercicios };
+    });
+  }
+
   presets(lab: string, demo: string): Preset[] {
     return this.estado().presets[chaveDemo(lab, demo)] ?? [];
   }

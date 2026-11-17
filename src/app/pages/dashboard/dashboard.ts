@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LABS } from '../../core/data/labs.data';
-import { EFFECTS } from '../../core/data/effects.data';
+import { DEMOS_POR_LAB, EFFECTS } from '../../core/data/effects.data';
 import { FASES } from '../../core/data/roadmap.data';
 import { Lab } from '../../core/models/lab.model';
+import { ProgressoService } from '../../core/services/progresso.service';
 import { Icon } from '../../shared/components/icon/icon';
 import { Logo } from '../../shared/components/logo/logo';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
@@ -16,6 +17,22 @@ import { StatusBadge } from '../../shared/components/status-badge/status-badge';
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
+  private readonly servicoProgresso = inject(ProgressoService);
+
+  /** Resumo do progresso salvo no navegador. */
+  protected readonly meuProgresso = computed(() => {
+    const feitas = this.servicoProgresso.executadas();
+    const todas = Object.entries(DEMOS_POR_LAB).flatMap(([lab, demos]) => demos.map((d) => ({ lab, demo: d })));
+    const proxima = todas.find((x) => !feitas.has(`${x.lab}:${x.demo.id}`));
+    return {
+      feitas: todas.filter((x) => feitas.has(`${x.lab}:${x.demo.id}`)).length,
+      total: todas.length,
+      desafios: this.servicoProgresso.desafios().size,
+      proxima,
+      pct: Math.round((todas.filter((x) => feitas.has(`${x.lab}:${x.demo.id}`)).length / todas.length) * 100),
+    };
+  });
+
   protected readonly faseAtual = FASES.find((f) => f.situacao === 'em-andamento') ?? FASES[0];
   protected readonly labsMvp = LABS.filter((l) => l.fase === 2);
   protected readonly labsFuturos = LABS.filter((l) => l.fase > 2);

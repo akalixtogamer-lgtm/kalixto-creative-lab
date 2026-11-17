@@ -3,6 +3,7 @@ import { Effect } from '../models/effect.model';
 import { CSS_DEMOS } from './css-demos.data';
 import { GSAP_DEMOS } from './gsap-demos.data';
 import { SCROLL_DEMOS } from './scroll-demos.data';
+import { SVG_DEMOS } from './svg-demos.data';
 
 /**
  * Biblioteca de Efeitos — gerada a partir das demos de cada laboratório.
@@ -12,6 +13,7 @@ export const DEMOS_POR_LAB: Record<string, LabDemo[]> = {
   css: CSS_DEMOS,
   gsap: GSAP_DEMOS,
   scroll: SCROLL_DEMOS,
+  svg: SVG_DEMOS,
 };
 
 export const EFFECTS: Effect[] = Object.entries(DEMOS_POR_LAB).flatMap(([labId, demos]) =>

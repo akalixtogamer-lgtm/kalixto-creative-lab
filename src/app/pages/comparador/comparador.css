@@ -1,0 +1,122 @@
+/* Tabela */
+.tabela-wrap {
+  overflow-x: auto;
+  border-radius: var(--kx-radius-md);
+}
+.tabela {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+  font-size: var(--kx-fs-sm);
+}
+.tabela th,
+.tabela td {
+  padding: var(--kx-space-3) var(--kx-space-4);
+  border-bottom: 1px solid var(--kx-border);
+  text-align: left;
+  vertical-align: top;
+}
+.tabela thead th {
+  color: var(--kx-text-muted);
+  font-size: var(--kx-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tabela tbody th a {
+  color: var(--kx-text);
+  font: 700 var(--kx-fs-md) var(--kx-font-display);
+  text-decoration: none;
+}
+.tabela tbody th a:hover { color: var(--kx-ciano); }
+.tabela tbody tr:last-child > * { border-bottom: 0; }
+.nota { display: inline-flex; gap: 3px; }
+.nota i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--kx-border-strong);
+}
+.nota i.on { background: var(--kx-magenta); }
+.nota--ciano i.on { background: var(--kx-ciano); }
+
+/* Lado a lado */
+.cmp-barra {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--kx-space-3);
+}
+.cmp-efeitos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+}
+.cmp-colunas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: var(--kx-space-4);
+}
+.cmp-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-4);
+  min-width: 0;
+}
+.cmp-col__topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--kx-space-2);
+}
+.cmp-col__topo h3 {
+  color: var(--kx-acento);
+  font-size: var(--kx-fs-lg);
+}
+.cmp-palco {
+  display: grid;
+  place-items: center;
+  height: 170px;
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md);
+  background: rgb(0 0 0 / 0.3);
+}
+.cmp-cena {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.cmp-caixa {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: var(--kx-acento);
+  box-shadow: 0 0 24px var(--kx-acento);
+}
+.cmp-cena--sequencia { width: 150px; }
+.cmp-bola {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--kx-acento);
+}
+
+/* Versões em CSS puro (só rodam com .rodando) */
+.rodando.cmp-cena--entrada .cmp-caixa { animation: cmp-entrar 0.8s ease-out; }
+.rodando.cmp-cena--pulso .cmp-caixa { animation: cmp-pulsar 0.5s ease-in-out 3; }
+.rodando.cmp-cena--sequencia .cmp-bola { animation: cmp-andar 0.5s ease-in-out forwards; }
+.rodando.cmp-cena--sequencia .cmp-bola-2 { animation-delay: 0.5s; }
+.rodando.cmp-cena--sequencia .cmp-bola-3 { animation-delay: 1s; }
+@keyframes cmp-entrar {
+  from { opacity: 0; transform: translateY(40px); }
+}
+@keyframes cmp-pulsar {
+  50% { transform: scale(1.2); }
+}
+@keyframes cmp-andar {
+  to { transform: translateX(120px); }
+}

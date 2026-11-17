@@ -7,6 +7,17 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [0.5.0] — 2026-11-16 · Fase 3 — Organização educacional
+
+### Adicionado
+- **Laboratório 04 — SVG Lab** com 5 demos: traço que se desenha (DrawSVG), máscara revelando a logo, morphing de formas (MorphSVG), distorção com filtros e motion path.
+- **Trilha de aprendizagem** (`/trilha`): todos os labs em ordem, ✓ por demo executada, ★ por desafio, anel de progresso, "Continuar de onde parei" e "Zerar progresso" com confirmação.
+- **Exercícios** (`/exercicios`): 23 questões de múltipla escolha (CSS, GSAP, Scroll, SVG, Three.js, WebGL) com correção, explicação e "Refazer".
+- **Comparador de tecnologias** (`/comparador`): tabela de quando usar cada ferramenta e o mesmo efeito em CSS, Web Animations API e GSAP rodando lado a lado.
+- Dashboard com "Seu progresso"; menu com a seção **Estudar**.
+- Biblioteca com filtros de nível e de situação (executados / pendentes).
+- 121 testes passando.
+
 ## [0.4.0] — 2026-11-16 · Fase 2 concluída — Scroll Lab
 
 ### Adicionado

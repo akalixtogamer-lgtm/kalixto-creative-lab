@@ -1,0 +1,117 @@
+<div class="kx-page">
+  <kx-page-header
+    eyebrow="Estudar"
+    titulo="Comparador de tecnologias"
+    descricao="Quando usar cada ferramenta — e o mesmo efeito feito de três jeitos, rodando lado a lado."
+  />
+
+  <!-- Tabela -->
+  <section class="kx-section" aria-labelledby="tabela-titulo">
+    <h2 id="tabela-titulo" class="kx-section-title">Quando usar cada uma</h2>
+    <div class="tabela-wrap kx-glass" tabindex="0" role="region" aria-label="Tabela comparativa (role para o lado no celular)">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th scope="col">Tecnologia</th>
+            <th scope="col">Melhor para</th>
+            <th scope="col">Dificuldade</th>
+            <th scope="col">Controle</th>
+            <th scope="col">Peso</th>
+            <th scope="col">Evite quando</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of tecnologias; track t.nome) {
+            <tr>
+              <th scope="row"><a [routerLink]="['/labs', t.labId]">{{ t.nome }}</a></th>
+              <td>{{ t.melhorPara }}</td>
+              <td>
+                <span class="nota" [attr.aria-label]="t.curva + ' de 5'">
+                  @for (n of escala; track n) { <i [class.on]="n <= t.curva"></i> }
+                </span>
+              </td>
+              <td>
+                <span class="nota nota--ciano" [attr.aria-label]="t.controle + ' de 5'">
+                  @for (n of escala; track n) { <i [class.on]="n <= t.controle"></i> }
+                </span>
+              </td>
+              <td class="kx-muted">{{ t.peso }}</td>
+              <td class="kx-muted">{{ t.quandoEvitar }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Mesmo efeito, três jeitos -->
+  <section class="kx-section" aria-labelledby="lado-titulo">
+    <h2 id="lado-titulo" class="kx-section-title">Mesmo efeito, três jeitos</h2>
+    <div class="cmp-barra">
+      <div class="cmp-efeitos" role="group" aria-label="Escolha o efeito">
+        @for (e of efeitos; track e.id) {
+          <button type="button" class="pg__demo-btn" [class.is-active]="e.id === efeito()"
+            [attr.aria-pressed]="e.id === efeito()" (click)="escolher(e.id)">{{ e.nome }}</button>
+        }
+      </div>
+      <button type="button" class="kx-btn kx-btn--primary" (click)="executar()">
+        <kx-icon name="play" /> Executar nos três
+      </button>
+    </div>
+
+    <div class="cmp-colunas">
+      <!-- CSS -->
+      <article class="cmp-col kx-glass" data-acento="magenta">
+        <header class="cmp-col__topo"><h3>CSS</h3><span class="kx-chip">nativo</span></header>
+        <div class="cmp-palco">
+          @for (r of [rodada()]; track r) {
+            <div class="cmp-cena" [class]="'cmp-cena cmp-cena--' + efeito()" [class.rodando]="rodando()">
+              @if (efeito() === 'sequencia') {
+                <span class="cmp-bola cmp-bola-1"></span><span class="cmp-bola cmp-bola-2"></span><span class="cmp-bola cmp-bola-3"></span>
+              } @else {
+                <span class="cmp-caixa"></span>
+              }
+            </div>
+          }
+        </div>
+        <kx-code-viewer [codigo]="codigos().css" linguagem="CSS" titulo="CSS" />
+      </article>
+
+      <!-- Web Animations API -->
+      <article class="cmp-col kx-glass" data-acento="azul">
+        <header class="cmp-col__topo"><h3>Web Animations API</h3><span class="kx-chip">nativo (JS)</span></header>
+        <div #waapi class="cmp-palco">
+          <div class="cmp-cena" [class]="'cmp-cena cmp-cena--' + efeito()">
+            @if (efeito() === 'sequencia') {
+              <span class="cmp-bola cmp-bola-1"></span><span class="cmp-bola cmp-bola-2"></span><span class="cmp-bola cmp-bola-3"></span>
+            } @else {
+              <span class="cmp-caixa"></span>
+            }
+          </div>
+        </div>
+        <kx-code-viewer [codigo]="codigos().waapi" linguagem="JS" titulo="animate()" />
+      </article>
+
+      <!-- GSAP -->
+      <article class="cmp-col kx-glass" data-acento="roxo">
+        <header class="cmp-col__topo"><h3>GSAP</h3><span class="kx-chip">biblioteca</span></header>
+        <div #gsap class="cmp-palco">
+          <div class="cmp-cena" [class]="'cmp-cena cmp-cena--' + efeito()">
+            @if (efeito() === 'sequencia') {
+              <span class="cmp-bola cmp-bola-1"></span><span class="cmp-bola cmp-bola-2"></span><span class="cmp-bola cmp-bola-3"></span>
+            } @else {
+              <span class="cmp-caixa"></span>
+            }
+          </div>
+        </div>
+        <kx-code-viewer [codigo]="codigos().gsap" linguagem="JS" titulo="GSAP" />
+      </article>
+    </div>
+
+    <p class="kx-callout">
+      <strong>Repare:</strong> os três chegam no mesmo resultado. A diferença aparece quando o efeito cresce —
+      na sequência, o CSS precisa de delays calculados à mão, a Web Animations API precisa esperar cada passo,
+      e a timeline do GSAP encadeia sozinha.
+    </p>
+  </section>
+</div>

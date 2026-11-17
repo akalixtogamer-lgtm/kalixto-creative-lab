@@ -1,0 +1,52 @@
+/* ===== SVG LAB — elementos do palco ===== */
+.v-svg {
+  width: min(92%, 460px);
+  height: auto;
+  max-height: 260px;
+  overflow: visible;
+}
+.v-svg--quadrado {
+  width: min(70%, 240px);
+}
+/* stroke */
+.v-guia {
+  fill: none;
+  stroke: var(--kx-border-strong);
+  stroke-width: 2;
+  stroke-dasharray: 4 6;
+}
+.v-assinatura {
+  fill: none;
+  stroke: url(#v-grad);
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgb(255 43 214 / 0.6));
+}
+/* máscara */
+.v-moldura {
+  fill: none;
+  stroke: var(--kx-border-strong);
+  stroke-dasharray: 6 6;
+}
+/* morph */
+.v-forma {
+  fill: url(#v-grad2);
+  filter: drop-shadow(0 0 14px rgb(255 43 214 / 0.5));
+}
+/* filtros */
+.v-texto {
+  fill: var(--kx-ciano);
+  font: 800 56px var(--kx-font-display);
+  letter-spacing: 4px;
+}
+/* motion path */
+.v-trilha {
+  fill: none;
+  stroke: var(--kx-border-strong);
+  stroke-width: 2;
+  stroke-dasharray: 6 6;
+}
+.v-foguete path {
+  fill: var(--kx-magenta);
+  filter: drop-shadow(0 0 6px var(--kx-magenta));
+}

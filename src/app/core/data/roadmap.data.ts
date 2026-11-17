@@ -31,7 +31,7 @@ export const FASES: Fase[] = [
   {
     numero: 2,
     titulo: 'MVP Funcional',
-    situacao: 'em-andamento',
+    situacao: 'concluida',
     entregas: [
       'CSS Playground — pronto para testar',
       'GSAP Studio — pronto para testar',
@@ -47,7 +47,7 @@ export const FASES: Fase[] = [
   {
     numero: 3,
     titulo: 'Organização Educacional',
-    situacao: 'futura',
+    situacao: 'concluida',
     entregas: [
       'Biblioteca de efeitos',
       'SVG Lab',
