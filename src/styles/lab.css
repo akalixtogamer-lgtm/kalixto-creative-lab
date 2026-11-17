@@ -34,6 +34,9 @@
 
 /* ---------- Seletor de demos ---------- */
 .pg__demos {
+  /* position: relative prende os textos .sr-only dos botões dentro da faixa
+     (sem isso eles alargam a página no celular) */
+  position: relative;
   /* Esmaece a borda direita no mobile para indicar que dá para rolar */
   mask-image: linear-gradient(90deg, #000 85%, transparent);
   display: flex;

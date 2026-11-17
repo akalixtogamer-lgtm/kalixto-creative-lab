@@ -46,6 +46,12 @@ export interface LabDemo {
   presets?: Preset[];
   /** Desafio prático: chegar nos valores da meta e clicar em Executar. */
   desafio?: Desafio;
+  /**
+   * Demo "ao vivo": o resultado muda direto nos controles ou no mouse,
+   * sem botão Executar. Mexer num controle já conta como executada, e o
+   * desafio conclui assim que os valores batem.
+   */
+  aoVivo?: boolean;
 }
 
 export interface Preset {

@@ -38,6 +38,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/svg-lab/svg-lab').then((m) => m.SvgLab),
       },
       {
+        path: 'labs/three',
+        title: 'Three.js Lab · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/three-lab/three-lab').then((m) => m.ThreeLab),
+      },
+      {
         path: 'labs/:id',
         title: 'Laboratório · Kalixto Creative Lab',
         loadComponent: () => import('./pages/lab-page/lab-page').then((m) => m.LabPage),

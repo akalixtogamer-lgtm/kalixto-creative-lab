@@ -1,0 +1,38 @@
+<kx-lab-layout
+  [lab]="lab"
+  [demos]="demos"
+  [atual]="atual()"
+  [valores]="valores()"
+  [codigo]="codigo()"
+  linguagem="JavaScript"
+  (executar)="executar()"
+  (reiniciar)="reiniciar()"
+  (mudou)="alterar($event.param, $event.valor)"
+  (aplicar)="aplicar($event)"
+>
+  <div palco class="palco palco3d">
+    @if (suportado) {
+      <div #container class="palco3d__area" role="img" [attr.aria-label]="'Cena 3D: ' + atual().titulo"></div>
+    } @else {
+      <div class="palco3d__aviso">
+        <strong>Este navegador não conseguiu ativar o WebGL.</strong>
+        <p class="kx-muted">
+          Tente outro navegador ou ative a aceleração por hardware nas configurações. O código e a explicação
+          continuam disponíveis abaixo.
+        </p>
+      </div>
+    }
+  </div>
+
+  @if (atual().id === 'gltf' && suportado) {
+    <ng-container ngProjectAs="[toolbar]">
+    <label class="kx-btn kx-btn--ghost palco3d__arquivo">
+      Carregar meu .glb
+      <input type="file" accept=".glb,.gltf" class="sr-only" (change)="carregarArquivo($event)" />
+    </label>
+    @if (nomeArquivo()) {
+      <span class="kx-chip">{{ nomeArquivo() }}</span>
+    }
+    </ng-container>
+  }
+</kx-lab-layout>

@@ -42,9 +42,9 @@ describe('Fase 1 · Navegação', () => {
     expect(h1?.textContent).toContain(lab.titulo);
   });
 
-  it('labs de Three.js e WebGL aparecem como bloqueados', async () => {
-    await harness.navigateByUrl('/labs/three');
-    expect(harness.routeNativeElement?.textContent).toContain('Laboratório bloqueado');
+  it('lab ainda sem demos mostra o plano do que vai ensinar', async () => {
+    await harness.navigateByUrl('/labs/webgl');
+    expect(harness.routeNativeElement?.textContent).toMatch(/Laboratório bloqueado|Em breve/);
   });
 
   it('id de laboratório inválido mostra mensagem de não encontrado', async () => {
@@ -85,11 +85,8 @@ describe('Fase 1 · Dados', () => {
     }
   });
 
-  it('Three.js e WebGL não estão no MVP (regra do roadmap)', () => {
-    for (const id of ['three', 'webgl']) {
-      const lab = LABS.find((l) => l.id === id)!;
-      expect(lab.fase).toBeGreaterThan(3);
-      expect(lab.status).toBe('bloqueado');
-    }
+  it('Three.js e WebGL ficam fora do MVP (fases 4 e 5 do roadmap)', () => {
+    expect(LABS.find((l) => l.id === 'three')!.fase).toBe(4);
+    expect(LABS.find((l) => l.id === 'webgl')!.fase).toBe(5);
   });
 });

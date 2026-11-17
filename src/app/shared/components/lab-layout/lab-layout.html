@@ -8,7 +8,7 @@
     <p class="kx-lead">{{ lab().resumo }}</p>
     <ol class="pg__passos" aria-label="Como usar">
       <li><span>1</span> Escolha uma demo</li>
-      <li><span>2</span> Ajuste os controles{{ semExecutar() ? '' : ' e clique em' }} <strong>{{ semExecutar() ? '— o resultado é ao vivo' : 'Executar' }}</strong></li>
+      <li><span>2</span> Ajuste os controles e clique em <strong>Executar</strong> (ou só mexa, nas demos ao vivo)</li>
       <li><span>3</span> Leia o código e copie</li>
     </ol>
   </header>
@@ -49,7 +49,7 @@
       <p class="pg__instrucao kx-muted">{{ atual().instrucao }}</p>
 
       <div class="pg__toolbar">
-        @if (!semExecutar()) {
+        @if (!aoVivo()) {
           <button type="button" class="kx-btn kx-btn--primary" (click)="rodar()">
             <kx-icon name="play" /> {{ atual().acao }}
           </button>
@@ -64,7 +64,7 @@
     <!-- Controles + presets -->
     <section class="pg__controles kx-glass" aria-labelledby="controles-titulo">
       <h2 id="controles-titulo" class="pg__bloco-titulo">Controles</h2>
-      <kx-demo-controls [params]="atual().params" [valores]="valores()" (mudou)="mudou.emit($event)" />
+      <kx-demo-controls [params]="atual().params" [valores]="valores()" (mudou)="onMudou($event)" />
 
       @if (atual().presets?.length || meusPresets().length) {
         <div class="presets">
@@ -115,7 +115,7 @@
           <p>{{ d.enunciado }}</p>
           @if (!desafioFeito()) {
             <p class="kx-muted desafio__status">
-              {{ metaAtingida() ? 'Valores certos! Agora clique no botão principal para concluir.' : 'Ajuste os controles até chegar no pedido.' }}
+              {{ metaAtingida() ? 'Valores certos! Agora clique no botão principal para concluir.' : aoVivo() ? 'Ajuste os controles: o desafio conclui sozinho quando chegar no pedido.' : 'Ajuste os controles até chegar no pedido e execute.' }}
             </p>
           }
         </div>

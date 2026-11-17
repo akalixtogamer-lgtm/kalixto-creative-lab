@@ -7,6 +7,19 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [0.6.0] — 2026-11-16 · Fase 4 — Three.js
+
+### Adicionado
+- **Laboratório 05 — Three.js Lab** com 9 demos: objetos geométricos, câmeras (fov, distância, voo com GSAP), iluminação (ambiente, direcional, pontual), materiais (Basic, Lambert, Phong, Standard, Normal), texturas (logo e padrões feitos em canvas), animação 3D com squash and stretch, interação por mouse (lerp), raycasting (hover e clique) e importação GLTF/GLB.
+- Modelo próprio `public/models/kalixto-trofeu.glb`, gerado por código (`scripts/gerar-modelo.mjs`); dá para carregar um .glb seu, lido só no seu computador.
+- Palco 3D reutilizável (`palco-3d.ts`): ajusta o tamanho sozinho, pausa quando a aba ou o palco saem da tela, limita a densidade de pixels e libera a memória da placa de vídeo ao sair.
+- Demos "ao vivo" (sem botão Executar): contam como feitas ao mexer, e o desafio conclui sozinho.
+- Mensagem alternativa quando o navegador não tem WebGL.
+- Three.js carregado só na rota do lab (~140 kB comprimido).
+
+### Corrigido
+- Textos para leitores de tela dentro da faixa de demos alargavam a página no celular.
+
 ## [0.5.0] — 2026-11-16 · Fase 3 — Organização educacional
 
 ### Adicionado

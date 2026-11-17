@@ -1,4 +1,4 @@
-import { Component, ElementRef, computed, inject, input, output, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, effect, inject, input, output, signal, untracked, viewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { vizinhos } from '../../../core/data/labs.data';
 import {
@@ -67,11 +67,7 @@ export class LabLayout {
   protected readonly anterior = computed(() => this.demos()[this.indice() - 1]);
   protected readonly proxima = computed(() => this.demos()[this.indice() + 1]);
 
-  protected readonly meusPresets = computed(() => {
-    // Lê o estado para recalcular quando um preset é salvo/removido
-    this.progresso.executadas();
-    return this.progresso.presets(this.lab().id, this.atual().id);
-  });
+  protected readonly meusPresets = computed(() => this.progresso.presets(this.lab().id, this.atual().id));
   protected readonly desafioFeito = computed(() =>
     this.progresso.desafios().has(`${this.lab().id}:${this.atual().id}`),
   );
@@ -79,6 +75,23 @@ export class LabLayout {
     const d = this.atual().desafio;
     return !!d && cumpreMeta(this.valores(), d.meta);
   });
+
+  /** Sem botão Executar: o lab inteiro é ao vivo ou só esta demo. */
+  protected readonly aoVivo = computed(() => this.semExecutar() || !!this.atual().aoVivo);
+
+  constructor() {
+    // Demos ao vivo: o desafio conclui assim que os valores batem
+    effect(() => {
+      if (this.atual().aoVivo && this.metaAtingida() && !this.desafioFeito()) {
+        untracked(() => this.concluirDesafio());
+      }
+    });
+  }
+
+  protected onMudou(evento: { param: ParamDef; valor: Valor }): void {
+    this.mudou.emit(evento);
+    if (this.aoVivo()) this.progresso.marcarExecutada(this.lab().id, this.atual().id);
+  }
 
   selecionar(id: string): void {
     this.router
@@ -94,11 +107,14 @@ export class LabLayout {
     this.executar.emit();
     const { id } = this.atual();
     this.progresso.marcarExecutada(this.lab().id, id);
-    if (this.metaAtingida() && !this.desafioFeito()) {
-      this.progresso.concluirDesafio(this.lab().id, id);
-      this.comemorar.set(true);
-      setTimeout(() => this.comemorar.set(false), 2600);
-    }
+    if (this.metaAtingida() && !this.desafioFeito()) this.concluirDesafio();
+  }
+
+  private concluirDesafio(): void {
+    this.progresso.marcarExecutada(this.lab().id, this.atual().id);
+    this.progresso.concluirDesafio(this.lab().id, this.atual().id);
+    this.comemorar.set(true);
+    setTimeout(() => this.comemorar.set(false), 2600);
   }
 
   protected usarPreset(p: Preset): void {

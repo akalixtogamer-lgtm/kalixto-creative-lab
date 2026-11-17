@@ -85,8 +85,8 @@ export const LABS: Lab[] = [
     titulo: 'Three.js Lab',
     resumo: 'Cenas 3D com câmeras, luzes, materiais e interação.',
     fase: 4,
-    status: 'bloqueado',
-    disponivel: false,
+    status: 'em-teste',
+    disponivel: true,
     tecnologias: ['Three.js'],
     topicos: [
       'Objetos geométricos',

@@ -62,7 +62,7 @@ export const FASES: Fase[] = [
   {
     numero: 4,
     titulo: 'Three.js e Experiências 3D',
-    situacao: 'futura',
+    situacao: 'concluida',
     entregas: ['Cenas, câmeras, luzes, materiais', 'Raycasting', 'Modelos GLTF/GLB'],
     criterio: 'Laboratório 3D funcional, com controles e demonstrações documentadas.',
   },
