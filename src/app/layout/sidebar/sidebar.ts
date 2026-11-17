@@ -23,6 +23,7 @@ export class Sidebar {
   protected readonly paginas: { rota: string; rotulo: string; icone: IconName; exato: boolean }[] = [
     { rota: '/', rotulo: 'Dashboard', icone: 'home', exato: true },
     { rota: '/biblioteca', rotulo: 'Biblioteca de efeitos', icone: 'library', exato: false },
+    { rota: '/glossario', rotulo: 'Glossário A–Z', icone: 'book', exato: false },
     { rota: '/design-system', rotulo: 'Design System', icone: 'palette', exato: false },
     { rota: '/roadmap', rotulo: 'Roadmap', icone: 'route', exato: false },
   ];

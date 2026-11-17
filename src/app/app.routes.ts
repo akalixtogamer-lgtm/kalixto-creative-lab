@@ -73,6 +73,11 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'glossario',
+        title: 'Glossário A–Z · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/glossario/glossario').then((m) => m.Glossario),
+      },
+      {
         path: 'trilha',
         title: 'Trilha de aprendizagem · Kalixto Creative Lab',
         loadComponent: () => import('./pages/trilha/trilha').then((m) => m.Trilha),

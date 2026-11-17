@@ -1,0 +1,90 @@
+<div class="kx-page">
+  <kx-page-header
+    eyebrow="Consulta rápida"
+    titulo="Glossário A–Z"
+    [descricao]="
+      'Tudo o que existe no lab em ordem alfabética: ' +
+      totais.efeito +
+      ' efeitos, ' +
+      totais.demo +
+      ' demos dos laboratórios e ' +
+      totais.termo +
+      ' termos de código. Clique para testar e copiar o código.'
+    "
+  />
+
+  <form class="gl__busca kx-glass" role="search" aria-label="Buscar no glossário" (submit)="$event.preventDefault()">
+    <label class="gl__campo">
+      <span class="kx-muted">Buscar</span>
+      <input
+        type="search"
+        class="gl__input"
+        name="busca"
+        placeholder="ex.: parallax, clip-path, cursor, texto…"
+        [ngModel]="busca()"
+        (ngModelChange)="busca.set($event)"
+      />
+    </label>
+    <div class="gl__tipos" role="group" aria-label="Tipo de item">
+      @for (f of filtros; track f.id) {
+        <button
+          type="button"
+          class="kx-chip gl__tipo"
+          [attr.aria-pressed]="tipo() === f.id"
+          (click)="tipo.set(f.id)"
+        >
+          {{ f.rotulo }} <span>{{ totais[f.id] }}</span>
+        </button>
+      }
+    </div>
+  </form>
+
+  <nav class="gl__letras" aria-label="Índice de letras">
+    @for (l of letras(); track l.letra) {
+      <button type="button" class="gl__letra" [disabled]="!l.ativa" (click)="irPara(l.letra)">{{ l.letra }}</button>
+    }
+  </nav>
+
+  <div class="gl__resultado">
+    <p class="kx-muted" aria-live="polite">{{ encontrados().length }} item(ns) encontrado(s)</p>
+    @if (busca() || tipo() !== 'todos') {
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="limpar()"><kx-icon name="reset" /> Limpar</button>
+    }
+  </div>
+
+  @for (g of grupos(); track g.letra) {
+    <section class="gl__grupo" [attr.aria-labelledby]="idLetra(g.letra) + '-t'">
+      <h2 class="gl__titulo-letra" [id]="idLetra(g.letra)" tabindex="-1">
+        <span [id]="idLetra(g.letra) + '-t'">{{ g.letra }}</span>
+      </h2>
+      <dl class="gl__lista">
+        @for (e of g.itens; track e.chave) {
+          <div class="gl__item" [attr.data-tipo]="e.tipo">
+            <dt>
+              <span class="gl__nome" [class.gl__nome--codigo]="e.tipo === 'termo'">{{ e.nome }}</span>
+              <span class="gl__selo">{{ tipoRotulo[e.tipo] }}</span>
+            </dt>
+            <dd>
+              @if (e.apelido) {
+                <p class="gl__apelido">{{ e.apelido }}</p>
+              }
+              <p>{{ e.detalhe }}</p>
+              <p class="gl__origem kx-muted">{{ e.origem }}</p>
+              <ul class="gl__links" [attr.aria-label]="'Abrir ' + e.nome">
+                @for (l of e.links; track $index) {
+                  <li>
+                    <a [routerLink]="l.rota" [queryParams]="l.query" [fragment]="l.fragmento">
+                      {{ e.tipo === 'termo' ? 'Ver em ' + l.rotulo : l.rotulo }} <kx-icon name="arrow-right" />
+                    </a>
+                  </li>
+                }
+              </ul>
+            </dd>
+          </div>
+        }
+      </dl>
+    </section>
+  } @empty {
+    <p class="kx-muted">Nada encontrado. Tente outra palavra ou limpe o filtro.</p>
+  }
+</div>

@@ -27,6 +27,8 @@ Nada ainda.
   - **Cards e imagens:** Galeria sanfona (`flex-grow`).
   - **Lote 2 das referências:** Título que se monta em pixels (canvas `getImageData`), Campo de partículas com constelação (primeiro kit da categoria Partículas), Mosaico de células que acendem.
 - Tags "referência em vídeo" e "tendência 2026" para filtrar na Biblioteca.
+- **Glossário A–Z** (`/glossario`, no menu Geral e na Biblioteca): os 38 efeitos, as 60 demos e os 150 termos de código em ordem alfabética, com busca (também pela URL, `?q=`), filtro por tipo e índice de letras fixo no topo. Efeitos têm "Testar" e "Ver e copiar o código"; demos abrem o laboratório já na demo; termos levam a cada efeito que os usa.
+- **Code Lab abre na aba certa:** `/efeitos/:id?arquivo=css|js|html` abre direto no arquivo, e links com `#ef-codigo` rolam até o Code Lab.
 
 ## [1.4.1-rc.1] — 2026-11-17 · Correção
 
