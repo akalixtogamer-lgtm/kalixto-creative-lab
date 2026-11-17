@@ -24,14 +24,17 @@ Dentro do preview de cada um dos 10 kits:
 O teste unitário `efeitos.spec.ts` garante que o CSP está no documento, que o
 escape de `</script>` funciona e que o iframe não tem `allow-same-origin`.
 
-## O que ainda não existe (e por quê)
+## Edição de código (Code Lab, Fase 2)
 
-- **Edição livre de código:** na Fase 1 o código só muda pelos controles, com
-  valores que vêm de listas e faixas fixas. A edição livre entra na Fase 2,
-  dentro do mesmo sandbox. Mesmo o código digitado pelo usuário continua sem
-  acesso à aplicação.
-- **Importação de arquivos:** ainda não existe. Quando existir, os arquivos serão
-  validados (tipo, tamanho, JSON com esquema) antes de qualquer uso.
+- **Onde roda:** o código editado vai para o **mesmo iframe isolado**, com o mesmo sandbox e o mesmo CSP. Ele nunca é executado no contexto do Angular.
+- **CSP não pode ser afrouxado:** um `<meta http-equiv="Content-Security-Policy">` escrito no HTML editado fica no `<body>` e é ignorado pelo navegador. Além disso, uma política extra só consegue *restringir* mais, nunca liberar.
+- **Limite de tamanho:** 50.000 caracteres por arquivo (`LIMITE_EDICAO`), para não travar o navegador.
+- **Nada é salvo:** a edição fica só na memória da página e some ao recarregar, então nenhum código é reexecutado automaticamente em outra visita. A persistência de experimentos (Fase 4) vai guardar o código como texto e não vai executar nada sozinha.
+- **Sem `innerHTML`:** o realce de sintaxe renderiza trechos como texto, então o código exibido não é interpretado como HTML na página.
+
+## O que ainda não existe
+
+- **Importação de arquivos:** quando existir, os arquivos serão validados (tipo, tamanho, JSON com esquema) antes de qualquer uso.
 
 ## Demos dos laboratórios
 

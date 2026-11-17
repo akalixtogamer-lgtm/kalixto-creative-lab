@@ -27,10 +27,37 @@ Dar sensação de objeto físico e profundidade a um card.
 
 ## Como funciona
 
-1. perspective no contêiner define a distância do "olho" até o card: valores menores deixam o 3D mais exagerado.
-2. No pointermove, a posição do ponteiro dentro do card vira um número de -0,5 a 0,5 em cada eixo.
-3. Esse número multiplicado pela inclinação máxima vira rotateX e rotateY.
-4. As mesmas coordenadas vão para as variáveis --x e --y, usadas no radial-gradient do reflexo.
+### Nível 1 — Iniciante
+
+- O card gira um pouco para o lado onde o mouse está, como se fosse um cartão de verdade na sua mão.
+- Quanto mais perto da borda, mais ele inclina, até o limite que você escolhe.
+- Um brilho segue o mouse, imitando a luz refletindo no cartão.
+
+### Nível 2 — Intermediário
+
+- perspective no contêiner define a distância do "olho" até o card: valores menores deixam o 3D mais exagerado.
+- No pointermove, a posição do ponteiro dentro do card vira um número de -0,5 a 0,5 em cada eixo.
+- Esse número multiplicado pela inclinação máxima vira rotateX e rotateY.
+- As mesmas coordenadas vão para as variáveis --x e --y, usadas no radial-gradient do reflexo.
+
+### Nível 3 — Avançado
+
+- perspective fica no contêiner (.cena), e não no card: assim o ponto de fuga é fixo e a rotação parece física.
+- As rotações vão para variáveis CSS (--rx, --ry); o transform do CSS as combina, e a mesma lógica serve no JS puro e no Angular.
+- pointermove só no card (não na janela) reduz trabalho; requestAnimationFrame agrupa as escritas.
+- Rotações em X e Y com transform 3D criam uma camada de composição; textos pequenos podem perder nitidez enquanto inclinados.
+- No Angular, [style.--rx] liga a variável direto do signal, sem tocar no DOM.
+
+### Glossário do código
+
+| Termo | O que faz |
+|---|---|
+| `perspective` | Distância do "olho" até o objeto: menor = 3D mais exagerado. |
+| `rotateX` | Gira o card em volta do eixo horizontal (inclina para cima/baixo). |
+| `rotateY` | Gira o card em volta do eixo vertical (inclina para os lados). |
+| `radial-gradient` | Brilho circular usado como reflexo, centrado em --x e --y. |
+| `pointerleave` | O mouse saiu do card: as rotações são zeradas e ele volta. |
+| `tabindex="0"` | Permite focar o card pelo teclado. |
 
 ## Parâmetros
 
@@ -184,4 +211,134 @@ card.addEventListener('pointerleave', () => {
 </script>
 </body>
 </html>
+```
+
+## Versão Angular (valores padrão)
+
+Também em `src/app/efeitos-angular/card-tilt/` (compilada e testada com o app).
+
+`card-tilt.ts`
+
+```ts
+import { Component, ElementRef, signal, viewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-card-tilt',
+  templateUrl: './card-tilt.html',
+  styleUrl: './card-tilt.css',
+})
+export class CardTilt {
+  private readonly inclinacao = 12; // graus
+  protected readonly escala = 1.03;
+  private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)');
+  private readonly card = viewChild.required<ElementRef<HTMLElement>>('card');
+  private quadro = 0;
+
+  protected readonly ativo = signal(false);
+  protected readonly rx = signal<string | null>(null);
+  protected readonly ry = signal<string | null>(null);
+  protected readonly x = signal('50%');
+  protected readonly y = signal('50%');
+
+  protected mover(e: PointerEvent): void {
+    if (this.reduzir.matches || e.pointerType !== 'mouse') return;
+    cancelAnimationFrame(this.quadro);
+    this.quadro = requestAnimationFrame(() => {
+      const r = this.card().nativeElement.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5; // -0,5 … 0,5
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      this.ativo.set(true);
+      this.ry.set(px * this.inclinacao * 2 + 'deg');
+      this.rx.set(-py * this.inclinacao * 2 + 'deg');
+      this.x.set((px + 0.5) * 100 + '%');
+      this.y.set((py + 0.5) * 100 + '%');
+    });
+  }
+
+  protected sair(): void {
+    cancelAnimationFrame(this.quadro);
+    this.ativo.set(false);
+    this.rx.set(null);
+    this.ry.set(null);
+  }
+}
+```
+
+`card-tilt.html`
+
+```html
+<div class="cena">
+  <article
+    #card
+    class="card"
+    tabindex="0"
+    [class.is-ativo]="ativo()"
+    [style.--rx]="rx()"
+    [style.--ry]="ry()"
+    [style.--s]="ativo() ? escala : null"
+    [style.--x]="x()"
+    [style.--y]="y()"
+    (pointermove)="mover($event)"
+    (pointerleave)="sair()"
+  >
+    <h2>Card 3D</h2>
+    <p>Passe o mouse sobre o card.</p>
+  </article>
+</div>
+```
+
+`card-tilt.css`
+
+```css
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.cena { perspective: 800px; }
+
+/* O efeito */
+.card {
+  position: relative;
+  width: min(80vw, 300px);
+  aspect-ratio: 3 / 4;
+  display: grid;
+  align-content: end;
+  padding: 24px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #2a1f4d, #120f22);
+  border: 1px solid #3a3456;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--s, 1));
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.card h2 { margin: 0 0 4px; }
+.card p { margin: 0; color: #c9c3ea; }
+
+/* enquanto o mouse está em cima, acompanha sem atraso */
+.card.is-ativo { transition-duration: 80ms; }
+
+.card:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 6px;
+  --s: 1.03;
+}
+
+/* reflexo: um brilho circular na posição do ponteiro */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgb(255 255 255 / 0.22), transparent 55%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+.card.is-ativo::after { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transform: none; }
+}
 ```

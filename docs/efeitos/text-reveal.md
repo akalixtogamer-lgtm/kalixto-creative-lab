@@ -27,10 +27,37 @@ Dar ritmo à leitura de um título e criar uma entrada marcante.
 
 ## Como funciona
 
-1. O JavaScript quebra o texto em <span>, um por letra ou por palavra, e grava o índice de cada um na variável CSS --i. As letras de uma palavra ficam dentro de um bloco .palavra, para a linha nunca quebrar no meio da palavra.
-2. Todas as partes usam a mesma animação; o atraso de cada uma é calc(var(--i) * stagger). Isso cria a cascata.
-3. O título recebe aria-label com o texto completo e os spans ficam com aria-hidden, para o leitor de tela ler a frase inteira e não letra por letra.
-4. Os espaços entre as palavras ficam como texto normal, então a quebra de linha continua natural em qualquer largura.
+### Nível 1 — Iniciante
+
+- O título é cortado em pedacinhos (letras ou palavras), e cada pedaço aparece um pouco depois do anterior.
+- Cada pedaço sabe sua posição na fila (0, 1, 2…) e espera esse número vezes o intervalo.
+- Quem usa leitor de tela ouve a frase inteira, e não letra por letra.
+
+### Nível 2 — Intermediário
+
+- O JavaScript quebra o texto em <span>, um por letra ou por palavra, e grava o índice de cada um na variável CSS --i. As letras de uma palavra ficam dentro de um bloco .palavra, para a linha nunca quebrar no meio da palavra.
+- Todas as partes usam a mesma animação; o atraso de cada uma é calc(var(--i) * stagger). Isso cria a cascata.
+- O título recebe aria-label com o texto completo e os spans ficam com aria-hidden, para o leitor de tela ler a frase inteira e não letra por letra.
+- Os espaços entre as palavras ficam como texto normal, então a quebra de linha continua natural em qualquer largura.
+
+### Nível 3 — Avançado
+
+- O atraso é calculado no CSS com calc(var(--i) * intervalo): o JavaScript só grava o índice, não controla tempo.
+- Letras agrupadas em .palavra com white-space: nowrap impedem quebra de linha no meio da palavra.
+- Dividir em spans quebra kerning e ligaduras; em fontes com muitas ligaduras prefira o modo palavras.
+- Divisão por linhas exige medir a quebra real após o layout (e refazer no resize) — é o que SplitText faz.
+- No Angular, [style.--i] liga a custom property direto no template, sem manipular o DOM.
+
+### Glossário do código
+
+| Termo | O que faz |
+|---|---|
+| `--i` | Variável CSS com a posição de cada parte na sequência. |
+| `calc(var(--i)` | Multiplica a posição pelo intervalo para calcular o atraso de cada parte. |
+| `aria-label` | Texto que o leitor de tela lê no lugar das partes. |
+| `aria-hidden` | Esconde as partes do leitor de tela (evita leitura letra por letra). |
+| `white-space: nowrap` | Impede a palavra de quebrar no meio. |
+| `inline-block` | Permite usar transform em cada parte, que é um elemento de texto. |
 
 ## Parâmetros
 
@@ -182,4 +209,117 @@ document.querySelector('.repetir').addEventListener('click', dividir);
 </script>
 </body>
 </html>
+```
+
+## Versão Angular (valores padrão)
+
+Também em `src/app/efeitos-angular/text-reveal/` (compilada e testada com o app).
+
+`text-reveal.ts`
+
+```ts
+import { Component, signal } from '@angular/core';
+
+/** Uma parte do texto (letra ou palavra) e sua posição na sequência. */
+interface Parte {
+  texto: string;
+  i: number;
+}
+
+@Component({
+  selector: 'app-text-reveal',
+  templateUrl: './text-reveal.html',
+  styleUrl: './text-reveal.css',
+})
+export class TextReveal {
+  protected readonly texto = 'Experimente. Entenda. Codifique.';
+  private readonly modo: 'letras' | 'palavras' = 'letras';
+
+  /** Muda a cada clique em Repetir; o @for recria as partes e a animação recomeça. */
+  protected readonly ciclo = signal(0);
+
+  /** Palavras, cada uma com suas partes (letras ou a palavra inteira). */
+  protected readonly palavras: Parte[][] = this.dividir();
+
+  protected repetir(): void {
+    this.ciclo.update((n) => n + 1);
+  }
+
+  private dividir(): Parte[][] {
+    let i = 0;
+    return this.texto.split(' ').map((palavra) =>
+      this.modo === 'letras'
+        ? [...palavra].map((letra) => ({ texto: letra, i: i++ }))
+        : [{ texto: palavra, i: i++ }],
+    );
+  }
+}
+```
+
+`text-reveal.html`
+
+```html
+<!-- o leitor de tela lê o aria-label; as partes ficam escondidas dele -->
+<h1 class="titulo" [attr.aria-label]="texto">
+  @for (c of [ciclo()]; track c) {
+    @for (palavra of palavras; track $index; let ultima = $last) {
+      <span class="palavra" aria-hidden="true">@for (p of palavra; track p.i) {<span class="parte" [style.--i]="p.i">{{ p.texto }}</span>}</span>
+      <!-- espaço entre palavras: é onde a linha pode quebrar -->
+      @if (!ultima) {
+        {{ ' ' }}
+      }
+    }
+  }
+</h1>
+<button class="repetir" type="button" (click)="repetir()">Repetir</button>
+```
+
+`text-reveal.css`
+
+```css
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.titulo {
+  max-width: 14ch;
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  line-height: 1.1;
+  text-align: center;
+  perspective: 600px;
+}
+
+/* cada palavra é um bloco que não quebra no meio */
+.palavra { display: inline-block; white-space: nowrap; }
+
+/* O efeito: cada parte espera --i vezes o intervalo */
+.parte {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.6em);
+  animation: revelar 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--i) * 35ms);
+}
+
+@keyframes revelar {
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parte { transform: none; filter: none; animation-duration: 200ms; }
+}
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
 ```

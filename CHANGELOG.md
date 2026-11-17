@@ -7,6 +7,29 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.3.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 2
+
+### Adicionado
+- **Code Lab** na página de cada efeito:
+  - abas HTML, CSS e JavaScript, mais os três arquivos da versão Angular;
+  - edição dos arquivos HTML/CSS/JS, executada no mesmo preview isolado (sandbox + CSP);
+  - **Comparar com o original** (diferença por linha) e **Restaurar original**;
+  - limite de 50.000 caracteres por arquivo.
+- **Versão Angular dos 10 kits:** componentes standalone com os valores dos controles.
+  - Os arquivos com valores padrão ficam em `src/app/efeitos-angular/`, são compilados com o app, renderizados nos testes e mostrados no preview (botão **Angular**).
+  - Novos scripts: `npm run gerar:angular` e `npm run verificar:angular`.
+- **Exportação em pacote `.zip`**, sem biblioteca: `README.md`, `index.html`, `styles.css`, `script.js` e `angular/`. O README é gerado da ficha, com os valores usados e um aviso quando o código foi editado.
+- **Code Explainer:** explicação em 3 níveis (iniciante, intermediário, avançado) e **glossário do código**. Um teste garante que cada termo existe no código exibido.
+- **Code Viewer** com numeração de linhas e realce de sintaxe (HTML, CSS, JS/TS, GLSL). Vale também para os laboratórios e o Comparador.
+- Os docs por efeito (`npm run docs:efeitos`) agora incluem os 3 níveis, o glossário e a versão Angular.
+- 39 testes novos (334 no total).
+
+### Corrigido durante a verificação
+- O realce com `[innerHTML]` trazia o sanitizador do Angular para o pacote inicial (+5,5 kB). Agora o realce é renderizado como texto.
+
+### Alterado
+- "Restaurar valores" passou para o painel de controles. Na barra do preview ficaram Reiniciar, Baixar pacote .zip e Baixar .html único.
+
 ## [1.2.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 1
 
 > Master Prompt "Auditoria, expansão, implementação e documentação de efeitos web". Diagnóstico em `docs/AUDITORIA.md`.

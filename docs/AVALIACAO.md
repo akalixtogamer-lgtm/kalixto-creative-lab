@@ -12,10 +12,11 @@ Cada fase está numa branch e numa versão do Git, para você avaliar etapa por 
 | 6 | QA, acessibilidade, performance, documentação | `v1.0.0-rc.1` | `fase-6` |
 | + | Navbar ao rolar e divisores de seção (pedido de 16/11) | `v1.0.0-rc.2` | `melhorias-navbar-divisores` |
 | + | Efeitos das referências: Interface Lab, capítulos, SplitText | `v1.1.0-rc.1` | `efeitos-referencias` |
-| B1 | Biblioteca técnica, Fase 1: fichas, 15 categorias, 10 kits, `/efeitos/:id` | `v1.2.0-rc.1` | `efeitos-fase1` (atual) |
+| B1 | Biblioteca técnica, Fase 1: fichas, 15 categorias, 10 kits, `/efeitos/:id` | `v1.2.0-rc.1` | `efeitos-fase1` ✅ aprovada |
+| B2 | Biblioteca técnica, Fase 2: Code Lab, versão Angular, .zip, Code Explainer | `v1.3.0-rc.1` | `efeitos-fase2` (atual) |
 
-O mais simples é avaliar tudo na versão atual (`efeitos-fase1`), que contém todas as fases.
-Para ver uma fase isolada: `git checkout v0.4.0` (por exemplo), `npm install`, `npm start`. Volte com `git checkout efeitos-fase1`.
+O mais simples é avaliar tudo na versão atual (`efeitos-fase2`), que contém todas as fases.
+Para ver uma fase isolada: `git checkout v0.4.0` (por exemplo), `npm install`, `npm start`. Volte com `git checkout efeitos-fase2`.
 
 Antes de começar: `npm install` e `npm start`, depois abra http://localhost:4200.
 
@@ -94,6 +95,17 @@ Scroll Lab, em especial:
 - [ ] Magnético e Card tilt reagem ao mouse; com Tab, o botão e o card mostram o foco
 - [ ] A ficha técnica aparece completa embaixo; as setas levam ao kit anterior e ao próximo
 - [ ] Recarregar a página (F5) num `/efeitos/...` continua funcionando
+
+## Biblioteca técnica · Fase 2
+
+Em qualquer `/efeitos/...`:
+- [ ] Botões **HTML/CSS/JS | Angular** no preview: o modo Angular mostra o componente compilado funcionando (magnético e tilt reagem ao mouse)
+- [ ] O código tem números de linha e cores; Copiar copia o texto sem os números
+- [ ] Abas "Angular · TS/HTML/CSS" mostram o componente com os **seus** valores atuais
+- [ ] **Editar código** → mude algo no CSS → **Executar no preview**: o preview muda, aparece o aviso laranja e os controles ficam bloqueados
+- [ ] **Comparar com o original** mostra só as linhas alteradas; **Restaurar original** volta tudo
+- [ ] **Baixar pacote .zip**: o zip abre; `index.html` funciona sozinho; o README mostra os valores usados
+- [ ] **Como funciona**: troque entre Iniciante, Intermediário e Avançado; o glossário aparece embaixo
 
 ## Fase 6 — Qualidade
 

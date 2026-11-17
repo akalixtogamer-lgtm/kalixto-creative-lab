@@ -1,6 +1,6 @@
 {
   "name": "kalixto-creative-lab",
-  "version": "1.2.0-rc.1",
+  "version": "1.3.0-rc.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +9,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
-    "docs:efeitos": "esbuild scripts/exportar-efeitos.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/exportar-efeitos.mjs && node .angular/exportar-efeitos.mjs | python3 scripts/gerar-docs-efeitos.py"
+    "docs:efeitos": "esbuild scripts/exportar-efeitos.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/exportar-efeitos.mjs && node .angular/exportar-efeitos.mjs | python3 scripts/gerar-docs-efeitos.py",
+    "gerar:angular": "esbuild scripts/gerar-angular.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/gerar-angular.mjs && node .angular/gerar-angular.mjs",
+    "verificar:angular": "npm run gerar:angular && git diff --exit-code -- src/app/efeitos-angular"
   },
   "private": true,
   "packageManager": "npm@10.9.9",

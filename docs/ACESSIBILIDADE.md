@@ -36,3 +36,14 @@ O axe não substitui teste manual com leitor de tela, que ainda está pendente
 - As animações GSAP e Three.js dos laboratórios antigos ainda não checam
   `prefers-reduced-motion` (P4 da auditoria). A correção está planejada para a Fase 7.
 - Teste manual com NVDA e VoiceOver.
+
+## Fase 2 (17/11/2026)
+
+- **Code Lab:**
+  - As abas usam `role="tablist"`, as setas ← → e tabindex itinerante.
+  - O editor é um `<textarea>` com rótulo. **Tab** insere dois espaços e **Esc** tira o foco do editor, para quem navega pelo teclado não ficar preso.
+  - Os avisos ("rodando o seu código editado" e erros) são anunciados (`role="status"` / `role="alert"`).
+  - No diff, cada linha alterada traz o texto "adicionada:"/"removida:" para leitores de tela, além da cor.
+- **Code Explainer:** os níveis são um grupo de rádio nativo (`fieldset` + `legend`), e a lista é atualizada com `aria-live`.
+- **Controles:** ficam num `fieldset` que é desabilitado enquanto o código editado está em uso, com a explicação visível.
+- **Verificação com axe:** 0 violações em `/efeitos/*` (modo isolado, modo Angular, editando, comparando), em `/labs/css`, `/labs/gsap`, `/comparador` e em `/biblioteca`.

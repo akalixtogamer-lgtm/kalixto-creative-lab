@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { MDN, VALIDADO_EM, cssPalco } from './_base';
+import { MDN, VALIDADO_EM, cssAngular, cssPalco, nomeClasse } from './_base';
 
 export const MAGNETIC_BUTTON: EffectKit = {
   ficha: {
@@ -88,4 +88,89 @@ window.addEventListener('pointermove', (e) => {
 
 document.documentElement.addEventListener('pointerleave', soltar);`,
   }),
+  angular: (v) => ({
+    ts: `import { Component, ElementRef, signal, viewChild } from '@angular/core';
+
+@Component({
+  selector: 'app-magnetic-button',
+  templateUrl: './magnetic-button.html',
+  styleUrl: './magnetic-button.css',
+  host: {
+    '(window:pointermove)': 'mover($event)',
+    '(document:pointerout)': 'sairDaJanela($event)',
+  },
+})
+export class ${nomeClasse('magnetic-button')} {
+  private readonly forca = ${v['forca']};    // fração da distância que o botão anda
+  private readonly alcance = ${v['alcance']};   // px além da borda do botão
+  private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)');
+  private readonly botao = viewChild.required<ElementRef<HTMLButtonElement>>('botao');
+  private quadro = 0;
+
+  protected readonly atraindo = signal(false);
+  protected readonly deslocamento = signal('');
+
+  protected mover(e: PointerEvent): void {
+    if (this.reduzir.matches || e.pointerType !== 'mouse') return;
+    cancelAnimationFrame(this.quadro);
+    this.quadro = requestAnimationFrame(() => {
+      const r = this.botao().nativeElement.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2);
+      const dy = e.clientY - (r.top + r.height / 2);
+      const limite = this.alcance + Math.max(r.width, r.height) / 2;
+
+      if (Math.hypot(dx, dy) < limite) {
+        this.atraindo.set(true);
+        this.deslocamento.set(\`translate(\${dx * this.forca}px, \${dy * this.forca}px)\`);
+      } else {
+        this.soltar();
+      }
+    });
+  }
+
+  /** O ponteiro saiu da janela (relatedTarget nulo): o botão volta ao lugar. */
+  protected sairDaJanela(e: PointerEvent): void {
+    if (!e.relatedTarget) this.soltar();
+  }
+
+  private soltar(): void {
+    this.atraindo.set(false);
+    this.deslocamento.set('');
+  }
+}
+`,
+    html: `<button
+  #botao
+  class="magnetico"
+  type="button"
+  [class.is-atraindo]="atraindo()"
+  [style.transform]="deslocamento()"
+>
+  Aproxime o mouse
+</button>
+`,
+    css: cssAngular(MAGNETIC_BUTTON.gerar(v).css),
+  }),
+  niveis: {
+    iniciante: [
+      'O código mede a distância entre o mouse e o centro do botão.',
+      'Se o mouse está perto, o botão anda um pedaço dessa distância na direção dele; se está longe, volta ao lugar.',
+      'A força decide quanto ele anda: 0,4 significa 40% da distância.',
+    ],
+    avancado: [
+      'getBoundingClientRect dá a posição na tela; com clientX/clientY do evento o cálculo continua certo mesmo com a página rolada.',
+      'requestAnimationFrame + cancelAnimationFrame limitam o trabalho a uma leitura e uma escrita por quadro, mesmo com dezenas de pointermove por quadro.',
+      'Duas durações de transition: curta enquanto atrai (segue o mouse) e longa ao soltar (volta macia) — controladas pela classe is-atraindo.',
+      'No Angular, os listeners globais ficam em host (window:pointermove) e são removidos automaticamente quando o componente é destruído.',
+      'GSAP quickTo faz a mesma suavização com uma função reutilizável, sem depender de transition.',
+    ],
+  },
+  glossario: [
+    { termo: 'pointermove', explicacao: 'Evento disparado quando o ponteiro se move.' },
+    { termo: 'pointerType', explicacao: 'Tipo de ponteiro (mouse, touch, pen) — o efeito só roda com mouse.' },
+    { termo: 'getBoundingClientRect', explicacao: 'Posição e tamanho do botão na tela.' },
+    { termo: 'Math.hypot', explicacao: 'Distância em linha reta entre o mouse e o centro do botão.' },
+    { termo: 'requestAnimationFrame', explicacao: 'Agenda a atualização para o próximo quadro de desenho.' },
+    { termo: 'is-atraindo', explicacao: 'Classe que deixa a transition rápida enquanto o botão segue o mouse.' },
+  ],
 };

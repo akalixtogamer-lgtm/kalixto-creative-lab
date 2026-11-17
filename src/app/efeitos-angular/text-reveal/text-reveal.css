@@ -1,0 +1,45 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.titulo {
+  max-width: 14ch;
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  line-height: 1.1;
+  text-align: center;
+  perspective: 600px;
+}
+
+/* cada palavra é um bloco que não quebra no meio */
+.palavra { display: inline-block; white-space: nowrap; }
+
+/* O efeito: cada parte espera --i vezes o intervalo */
+.parte {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.6em);
+  animation: revelar 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--i) * 35ms);
+}
+
+@keyframes revelar {
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parte { transform: none; filter: none; animation-duration: 200ms; }
+}
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }

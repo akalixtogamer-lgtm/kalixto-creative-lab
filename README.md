@@ -13,11 +13,11 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `1.2.0-rc.1` (candidata — Fase 1 da biblioteca técnica) |
+| Versão | `1.3.0-rc.1` (candidata — Fase 2 da biblioteca técnica) |
 | Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
 | Conteúdo | 7 laboratórios · 60 demos interativas · 10 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
-| Testes | 295 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
-| Publicado no GitHub Pages | Sim, a `v1.1.0-rc.1`. A `v1.2.0-rc.1` só vai depois da sua avaliação |
+| Testes | 334 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
+| Publicado no GitHub Pages | Sim, a `v1.2.0-rc.1`. A `v1.3.0-rc.1` só vai depois da sua avaliação |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
 
@@ -62,7 +62,7 @@ Cada uma tem presets prontos, um desafio prático e fica na URL (`?demo=…`) pa
 | Exercícios | 27 perguntas com correção e explicação | `/exercicios` |
 | Comparador | Quando usar cada tecnologia + o mesmo efeito em CSS, Web Animations e GSAP | `/comparador` |
 | Biblioteca de efeitos | 10 kits + 60 demos nas 15 categorias, com busca (nome, tecnologia, aplicação, tags) e filtros (categoria, tipo, lab, nível, interação, dependências, situação) | `/biblioteca` |
-| Ficha do efeito | Preview isolado, controles, código HTML/CSS/JS sincronizado, download e ficha técnica | `/efeitos/:id` |
+| Ficha do efeito | Preview isolado ou componente Angular, controles, Code Lab (editar, executar, comparar), versão Angular, explicação em 3 níveis, download .zip/.html e ficha técnica | `/efeitos/:id` |
 
 O progresso (demos executadas, desafios, exercícios e presets) fica salvo **no navegador** — nada é enviado para a internet.
 

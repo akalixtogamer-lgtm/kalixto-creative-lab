@@ -52,3 +52,39 @@
 .cv__codigo:focus-visible {
   outline-offset: -2px;
 }
+
+/* Numeração de linhas: contador CSS (os números não entram na seleção nem na cópia) */
+.cv__codigo code {
+  display: block;
+  counter-reset: linha;
+}
+.cv__linha {
+  display: block;
+  padding-left: 3.2em;
+  text-indent: -3.2em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.cv__linha::before {
+  counter-increment: linha;
+  content: counter(linha);
+  display: inline-block;
+  width: 2.4em;
+  margin-right: 0.8em;
+  color: #5d5680;
+  text-align: right;
+  text-indent: 0;
+  user-select: none;
+}
+
+/* Realce de sintaxe (contraste AA sobre o fundo do viewer) */
+.cv__codigo .tk-comentario { color: #8f88b8; font-style: italic; }
+.cv__codigo .tk-texto { color: #7ee7c1; }
+.cv__codigo .tk-palavra,
+.cv__codigo .tk-regra,
+.cv__codigo .tk-bloco { color: #ff8be6; }
+.cv__codigo .tk-numero,
+.cv__codigo .tk-cor { color: #ffc177; }
+.cv__codigo .tk-propriedade,
+.cv__codigo .tk-atributo { color: #7fd8ff; }
+.cv__codigo .tk-tag { color: #b9a4ff; }

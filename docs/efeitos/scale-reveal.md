@@ -27,10 +27,34 @@ Dar ênfase e sensação de "abrir" — bom para destaques e modais.
 
 ## Como funciona
 
-1. transform: scale muda o tamanho visual sem alterar o espaço que o elemento ocupa no layout.
-2. transform-origin define o ponto fixo do crescimento: centro, topo ou um canto.
-3. A curva "elástico (back out)" passa um pouco do tamanho final e volta, dando o efeito de "pop".
-4. Com redução de movimento, a escala é removida e fica só o fade.
+### Nível 1 — Iniciante
+
+- O cartão começa menor e transparente e cresce até o tamanho normal.
+- O ponto de origem é o lugar que fica parado enquanto o resto cresce — como abrir a partir do centro ou de um canto.
+- A curva "elástico" faz o cartão passar um pouquinho do tamanho e voltar, como um "pop".
+
+### Nível 2 — Intermediário
+
+- transform: scale muda o tamanho visual sem alterar o espaço que o elemento ocupa no layout.
+- transform-origin define o ponto fixo do crescimento: centro, topo ou um canto.
+- A curva "elástico (back out)" passa um pouco do tamanho final e volta, dando o efeito de "pop".
+- Com redução de movimento, a escala é removida e fica só o fade.
+
+### Nível 3 — Avançado
+
+- scale não muda o box no layout: vizinhos não se mexem e o hit-test usa o tamanho transformado.
+- Curvas com y > 1 (back out) geram overshoot; com escala inicial muito baixa o exagero aumenta — mantenha entre 0,6 e 0,9.
+- Durante a escala o texto pode ser rasterizado como textura e parecer borrado; o navegador redesenha nítido ao fim.
+- Para modais, combine com o <dialog> nativo e anime ::backdrop separadamente.
+
+### Glossário do código
+
+| Termo | O que faz |
+|---|---|
+| `scale(` | Multiplica o tamanho visual: 1 é o tamanho normal, 0,6 é 60%. |
+| `transform-origin` | Ponto fixo da transformação (centro, topo, canto…). |
+| `cubic-bezier(0.34, 1.56, 0.64, 1)` | Curva com valor acima de 1, que passa do alvo e volta (efeito elástico). |
+| `@keyframes` | Estados de início e fim da animação. |
 
 ## Parâmetros
 
@@ -147,4 +171,82 @@ document.querySelector('.repetir').addEventListener('click', () => {
 </script>
 </body>
 </html>
+```
+
+## Versão Angular (valores padrão)
+
+Também em `src/app/efeitos-angular/scale-reveal/` (compilada e testada com o app).
+
+`scale-reveal.ts`
+
+```ts
+import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-scale-reveal',
+  templateUrl: './scale-reveal.html',
+  styleUrl: './scale-reveal.css',
+})
+export class ScaleReveal {
+  /** Muda a cada clique em Repetir; o @for recria o elemento animado. */
+  protected readonly ciclo = signal(0);
+
+  protected repetir(): void {
+    this.ciclo.update((n) => n + 1);
+  }
+}
+```
+
+`scale-reveal.html`
+
+```html
+@for (c of [ciclo()]; track c) {
+  <div class="cartao scale-reveal">Scale reveal</div>
+}
+<button class="repetir" type="button" (click)="repetir()">Repetir</button>
+```
+
+`scale-reveal.css`
+
+```css
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.cartao {
+  padding: 32px 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2563eb, #0891b2);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* O efeito */
+.scale-reveal {
+  transform-origin: center;
+  animation: scale-reveal 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes scale-reveal {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scale-reveal { animation-name: aparecer; }
+  @keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+}
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
 ```

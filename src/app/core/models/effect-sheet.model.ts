@@ -85,12 +85,40 @@ export interface EffectSheet {
   status: StatusEfeito;
 }
 
+/** Arquivos de um componente Angular standalone gerado por um kit. */
+export interface CodigoAngular {
+  ts: string;
+  html: string;
+  css: string;
+}
+
+/** Termo do código explicado no glossário (o teste confirma que ele aparece no código). */
+export interface TermoGlossario {
+  termo: string;
+  explicacao: string;
+}
+
+/** Explicação em três níveis (Code Explainer). */
+export interface ExplicacaoNiveis {
+  /** Nível 1: conceitos fundamentais, sem jargão. */
+  iniciante: string[];
+  /** Nível 2: lógica, propriedades e comportamento (é a explicação da ficha). */
+  intermediario: string[];
+  /** Nível 3: arquitetura, otimização, performance e alternativas. */
+  avancado: string[];
+}
+
 /** Efeito completo: ficha + parâmetros + gerador de código. */
 export interface EffectKit {
   ficha: EffectSheet;
   params: ParamDef[];
   /** Gera o código a partir dos valores atuais dos controles. */
   gerar: (v: Valores) => CodigoKit;
+  /** Gera a versão Angular (componente standalone) com os mesmos valores. */
+  angular: (v: Valores) => CodigoAngular;
+  /** Explicações de nível 1 e 3 (o nível 2 é ficha.explicacao). */
+  niveis: { iniciante: string[]; avancado: string[] };
+  glossario: TermoGlossario[];
 }
 
 export const NIVEL_FICHA_ROTULO: Record<NivelFicha, string> = {

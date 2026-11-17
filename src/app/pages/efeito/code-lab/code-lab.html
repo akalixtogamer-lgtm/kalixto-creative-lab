@@ -1,0 +1,68 @@
+<div class="cl">
+  <div class="cl__topo">
+    <div class="cl__abas" role="tablist" aria-label="Arquivos do efeito">
+      @for (a of abas; track a.id; let i = $index) {
+        <button
+          type="button"
+          role="tab"
+          class="cl__aba"
+          [class.cl__aba--ng]="!a.editavel"
+          [id]="'cl-aba-' + a.id"
+          [attr.aria-selected]="aba() === a.id"
+          aria-controls="cl-painel"
+          [attr.tabindex]="aba() === a.id ? 0 : -1"
+          (click)="escolher(a.id)"
+          (keydown)="teclaAba($event, i)"
+        >
+          {{ a.rotulo }}
+        </button>
+      }
+    </div>
+
+    <div class="cl__acoes">
+      @if (editando()) {
+        <button type="button" class="kx-btn kx-btn--primary" (click)="aplicar()"><kx-icon name="play" /> Executar no preview</button>
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="cancelar()">Cancelar</button>
+      } @else {
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="comecarEdicao()">Editar código</button>
+      }
+      @if (editado()) {
+        <button type="button" class="kx-btn kx-btn--ghost" [attr.aria-pressed]="verDiff()" (click)="verDiff.set(!verDiff())">
+          Comparar com o original
+        </button>
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="voltarAoOriginal()"><kx-icon name="reset" /> Restaurar original</button>
+      }
+    </div>
+  </div>
+
+  @if (editado() && !editando()) {
+    <p class="cl__aviso" role="status">
+      O preview está rodando o <strong>seu código editado</strong>. Os controles voltam a valer quando você clicar em Restaurar original.
+    </p>
+  }
+  @if (erro()) {
+    <p class="cl__erro" role="alert">{{ erro() }}</p>
+  }
+
+  <div id="cl-painel" role="tabpanel" [attr.aria-labelledby]="'cl-aba-' + aba()">
+    @if (editando() && abaAtual().editavel) {
+      <label class="sr-only" [for]="'cl-editor-' + aba()">Editar {{ abaAtual().rotulo }}</label>
+      <textarea
+        class="cl__editor"
+        [id]="'cl-editor-' + aba()"
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="off"
+        [value]="textoRascunho()"
+        (input)="digitar($any($event.target).value)"
+        (keydown)="teclaEditor($event)"
+      ></textarea>
+      <p class="kx-muted cl__dica">Tab insere dois espaços · Esc sai do editor · o código roda isolado, sem acesso a esta página nem à internet.</p>
+    } @else if (verDiff() && editado() && abaAtual().editavel) {
+      <p class="kx-muted cl__dica">{{ totalAlteracoes() }} linha(s) diferente(s) em {{ nomeArquivo() }}.</p>
+      <pre class="cl__diff" tabindex="0" aria-label="Diferenças em relação ao código original"><code>@for (l of diff(); track $index) {<span class="cl__dl" [class.is-add]="l.tipo === 'adicionada'" [class.is-del]="l.tipo === 'removida'"><span class="cl__sinal" aria-hidden="true">{{ l.tipo === 'adicionada' ? '+' : l.tipo === 'removida' ? '−' : ' ' }}</span><span class="sr-only">{{ l.tipo === 'adicionada' ? 'adicionada: ' : l.tipo === 'removida' ? 'removida: ' : '' }}</span>{{ l.texto || ' ' }}</span>}</code></pre>
+    } @else {
+      <kx-code-viewer [codigo]="texto()" [linguagem]="abaAtual().linguagem" [titulo]="nomeArquivo()" />
+    }
+  </div>
+</div>

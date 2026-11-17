@@ -94,3 +94,72 @@ export const MDN = {
 };
 
 export const VALIDADO_EM = '2026-11-17';
+
+/* ===================== Versão Angular ===================== */
+
+/** "card-tilt" → "CardTilt" (nome da classe do componente). */
+export function nomeClasse(id: string): string {
+  return id.replace(/(^|-)([a-z0-9])/g, (_, __, c: string) => c.toUpperCase());
+}
+
+/**
+ * CSS do componente Angular: o mesmo CSS do kit, sem o bloco do palco
+ * (html/body), que no Angular é responsabilidade da página. :host centraliza.
+ */
+export function cssAngular(cssDoKit: string): string {
+  const semPalco = cssDoKit.replace(/\/\* Palco da demonstração \*\/[\s\S]*?\n}\n*/, '');
+  return `:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+${semPalco.trim()}
+`;
+}
+
+/** Componente sem lógica (efeitos só de CSS). */
+export function tsSimples(id: string): string {
+  return `import { Component } from '@angular/core';
+
+/** ${id}: efeito só de CSS — o componente não precisa de lógica. */
+@Component({
+  selector: 'app-${id}',
+  templateUrl: './${id}.html',
+  styleUrl: './${id}.css',
+})
+export class ${nomeClasse(id)} {}
+`;
+}
+
+/**
+ * Componente com botão Repetir: o @for com uma chave que muda
+ * recria o elemento, e a animação CSS recomeça do zero.
+ */
+export function tsRepetir(id: string): string {
+  return `import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-${id}',
+  templateUrl: './${id}.html',
+  styleUrl: './${id}.css',
+})
+export class ${nomeClasse(id)} {
+  /** Muda a cada clique em Repetir; o @for recria o elemento animado. */
+  protected readonly ciclo = signal(0);
+
+  protected repetir(): void {
+    this.ciclo.update((n) => n + 1);
+  }
+}
+`;
+}
+
+/** Template com o elemento animado recriado a cada ciclo. */
+export function htmlRepetir(elemento: string): string {
+  return `@for (c of [ciclo()]; track c) {
+  ${elemento}
+}
+<button class="repetir" type="button" (click)="repetir()">Repetir</button>
+`;
+}

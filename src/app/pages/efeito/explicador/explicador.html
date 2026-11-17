@@ -1,0 +1,28 @@
+<fieldset class="ex__niveis">
+  <legend class="sr-only">Nível da explicação</legend>
+  @for (n of niveis; track n.id) {
+    <label class="ex__nivel" [class.is-ativo]="nivel() === n.id">
+      <input type="radio" name="nivel-explicacao" [value]="n.id" [checked]="nivel() === n.id" (change)="nivel.set(n.id)" />
+      <span class="ex__rotulo">{{ n.rotulo }}</span>
+      <span class="ex__desc">{{ n.descricao }}</span>
+    </label>
+  }
+</fieldset>
+
+<ol class="kx-list ex__lista" aria-live="polite">
+  @for (p of paragrafos(); track $index) {
+    <li>{{ p }}</li>
+  }
+</ol>
+
+<p class="kx-callout"><strong>Outra forma de fazer:</strong> {{ kit().ficha.alternativa }}</p>
+
+<h3 class="ex__titulo">Glossário do código</h3>
+<dl class="ex__glossario">
+  @for (g of kit().glossario; track g.termo) {
+    <div>
+      <dt><code>{{ g.termo }}</code></dt>
+      <dd>{{ g.explicacao }}</dd>
+    </div>
+  }
+</dl>

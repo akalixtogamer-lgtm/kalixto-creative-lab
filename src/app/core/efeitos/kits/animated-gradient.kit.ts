@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { CORES, MDN, VALIDADO_EM, cssPalco } from './_base';
+import { CORES, MDN, VALIDADO_EM, cssAngular, cssPalco, tsSimples } from './_base';
 
 export const ANIMATED_GRADIENT: EffectKit = {
   ficha: {
@@ -74,4 +74,29 @@ export const ANIMATED_GRADIENT: EffectKit = {
 }`,
     js: `// Este efeito não precisa de JavaScript.`,
   }),
+  angular: (v) => ({
+    ts: tsSimples('animated-gradient'),
+    html: `<section class="gradiente">\n  <h1>Gradiente animado</h1>\n</section>\n`,
+    css: cssAngular(ANIMATED_GRADIENT.gerar(v).css),
+  }),
+  niveis: {
+    iniciante: [
+      'O fundo é um degradê muito maior do que a caixa; só um pedaço aparece por vez.',
+      'A animação arrasta o degradê de um lado para o outro, então as cores parecem se mover.',
+      'A primeira cor se repete no fim para não aparecer emenda.',
+    ],
+    avancado: [
+      'background-size acima de 100% cria a "folga" para mover; background-position em % é relativo à diferença entre o fundo e a caixa.',
+      'Animar background-position repinta a área inteira a cada quadro. Em heros de tela cheia, uma camada com transform: translate sobre um gradiente fixo é mais barata.',
+      'Com @property dá para registrar cores e ângulos e animá-los diretamente (ex.: girar o ângulo do gradiente).',
+      'text-shadow no título garante leitura quando a cor mais clara passa por trás do texto.',
+    ],
+  },
+  glossario: [
+    { termo: 'linear-gradient', explicacao: 'Cria o degradê em linha reta, no ângulo indicado.' },
+    { termo: 'background-size', explicacao: 'Tamanho do fundo; maior que 100% deixa parte dele escondida.' },
+    { termo: 'background-position', explicacao: 'Qual parte do fundo aparece — é o que a animação move.' },
+    { termo: 'text-shadow', explicacao: 'Sombra no texto para manter a leitura sobre cores claras.' },
+    { termo: 'alternate', explicacao: 'O movimento vai e volta, sem salto.' },
+  ],
 };

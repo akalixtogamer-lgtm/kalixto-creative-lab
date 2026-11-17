@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { CORES, MDN, VALIDADO_EM, cssPalco } from './_base';
+import { CORES, MDN, VALIDADO_EM, cssAngular, cssPalco, tsSimples } from './_base';
 
 export const ANIMATED_BORDER: EffectKit = {
   ficha: {
@@ -77,4 +77,29 @@ export const ANIMATED_BORDER: EffectKit = {
 }`,
     js: `// Este efeito não precisa de JavaScript.`,
   }),
+  angular: (v) => ({
+    ts: tsSimples('animated-border'),
+    html: `<article class="borda">\n  <h2>Plano Pro</h2>\n  <p>O card em destaque.</p>\n</article>\n`,
+    css: cssAngular(ANIMATED_BORDER.gerar(v).css),
+  }),
+  niveis: {
+    iniciante: [
+      'A borda é transparente e, por trás dela, existe um degradê circular colorido.',
+      'O miolo do card tem um fundo escuro por cima, então o degradê só aparece na faixa da borda.',
+      'O degradê gira o tempo todo, e a cor parece correr em volta do card.',
+    ],
+    avancado: [
+      'Dois fundos com caixas diferentes: padding-box (miolo sólido) e border-box (gradiente) — a borda transparente revela o segundo.',
+      '@property registra --angulo como <angle>; sem isso a variável é texto e a animação só "pula" no fim.',
+      'Animar custom property invalida o estilo e repinta o elemento a cada quadro — use em poucos elementos.',
+      'Fallback: sem suporte a @property, o gradiente aparece parado, então a borda continua bonita.',
+    ],
+  },
+  glossario: [
+    { termo: '@property', explicacao: 'Registra a variável com tipo (<angle>) para ela poder ser animada.' },
+    { termo: 'conic-gradient', explicacao: 'Degradê que gira em volta de um centro, como um relógio.' },
+    { termo: 'padding-box', explicacao: 'Faz o fundo ocupar só o miolo, sem passar por baixo da borda.' },
+    { termo: 'border-box', explicacao: 'Faz o fundo ocupar até a borda — é o que aparece na faixa transparente.' },
+    { termo: 'linear infinite', explicacao: 'Velocidade constante, girando para sempre.' },
+  ],
 };

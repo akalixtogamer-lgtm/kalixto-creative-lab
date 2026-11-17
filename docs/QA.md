@@ -4,7 +4,7 @@ Data: 16/11/2026 · Versão: `1.0.0-rc.1`
 
 ## 1. Testes automáticos (`npm test`)
 
-**295 testes passando**, em 10 arquivos (17/11/2026):
+**334 testes passando**, em 11 arquivos (17/11/2026):
 
 | Arquivo | O que cobre |
 |---|---|
@@ -17,6 +17,7 @@ Data: 16/11/2026 · Versão: `1.0.0-rc.1`
 | `three-lab.spec.ts` | 9 demos, código, demos ao vivo, desafio automático, aviso sem WebGL |
 | `glsl-lab.spec.ts` | 7 demos; todo uniform controlado existe no shader |
 | `efeitos.spec.ts` | 15 categorias; 10 kits: ficha completa, padrões válidos, código sem `undefined`/`NaN`, **cada controle altera o código**, `prefers-reduced-motion`; todas as demos classificadas; sandbox/CSP; páginas `/efeitos/:id` e Biblioteca |
+| `fase2.spec.ts` | Os 10 componentes Angular compilam e renderizam; CSS Angular igual ao do kit; 3 níveis + glossário presente no código; CRC-32 de referência; ZIP; diff; realce; pacote; fluxo editar → executar → comparar → restaurar; modo Angular |
 | `ui-lab.spec.ts` | 13 demos do Interface Lab; caminhos dos 17 divisores; bento; tipografia |
 
 > O ambiente de testes (jsdom) não tem WebGL nem layout real. Por isso as cenas 3D, os shaders e a rolagem
@@ -85,3 +86,21 @@ Verificado no Chromium (Playwright), sobre o build de produção:
 | axe na página e dentro dos 10 previews | ✅ 0 violações |
 | Overflow horizontal em 390, 820 e 1440 px (`/biblioteca`, `/efeitos/text-reveal`, `/efeitos/card-tilt`) | ✅ 0 px |
 | `ng build` | ✅ sem avisos |
+
+## 8. Biblioteca técnica · Fase 2 (17/11/2026)
+
+| Verificação (Chromium, build de produção) | Resultado |
+|---|---|
+| Modo Angular dos 10 kits renderiza | ✅ 10/10 |
+| Magnético Angular: `translate(...)` ao aproximar | ✅ `translate(11.6px, 4.8px)` |
+| Tilt Angular: `--ry` ao mover | ✅ `8.25deg` |
+| Borda Angular: `@property` anima com encapsulamento do Angular | ✅ 78° → 123° |
+| Keyframes renomeados pelo Angular continuam funcionando | ✅ (`_ngcontent-…_fade-in`, `_pulsar`, `_revelar`) |
+| Editar CSS e executar: cor do botão no preview | ✅ `rgb(0, 128, 0)` |
+| Diff mostra só a linha trocada | ✅ 1 removida, 1 adicionada |
+| ZIP: `testzip()` do Python e 7 arquivos | ✅ |
+| `index.html` do pacote aberto direto do disco | ✅ aplica `styles.css` |
+| Erros no console durante tudo isso | ✅ nenhum |
+| axe: modo Angular, editando, comparando, `/labs/css`, `/labs/gsap`, `/comparador`, `/biblioteca` | ✅ 0 violações |
+| Overflow horizontal em 390 e 820 px | ✅ 0 px |
+| Pacote inicial | ✅ 294,34 kB (igual à Fase 1) |

@@ -27,10 +27,35 @@ Mostrar de onde o conteúdo vem e dar sensação de fluxo.
 
 ## Como funciona
 
-1. transform: translate move o elemento sem mexer no layout: os vizinhos não saem do lugar.
-2. A animação começa deslocada (translateX ou translateY) e transparente, e termina na posição original e visível.
-3. Distâncias curtas (16 a 40 px) parecem mais elegantes; distâncias longas chamam mais atenção.
-4. Com redução de movimento, o deslocamento é removido e fica só o fade.
+### Nível 1 — Iniciante
+
+- O cartão começa um pouco fora do lugar e invisível, e desliza até a posição certa enquanto aparece.
+- Você escolhe de onde ele vem (baixo, cima, esquerda ou direita) e a distância percorrida.
+- Mover com transform não empurra os outros elementos da página.
+
+### Nível 2 — Intermediário
+
+- transform: translate move o elemento sem mexer no layout: os vizinhos não saem do lugar.
+- A animação começa deslocada (translateX ou translateY) e transparente, e termina na posição original e visível.
+- Distâncias curtas (16 a 40 px) parecem mais elegantes; distâncias longas chamam mais atenção.
+- Com redução de movimento, o deslocamento é removido e fica só o fade.
+
+### Nível 3 — Avançado
+
+- translate é aplicado depois do layout: o elemento ocupa o espaço final desde o início, então não há "pulo" no fim.
+- Entradas laterais podem criar overflow horizontal durante a animação; o palco usa overflow: hidden — em páginas reais, prefira overflow-x: clip no contêiner.
+- A curva expo out (cubic-bezier(0.22, 1, 0.36, 1)) começa rápida e freia devagar, o que soa natural para entradas.
+- No modo de movimento reduzido, a animação troca de nome (aparecer) em vez de só zerar a duração: o conteúdo continua aparecendo, mas sem deslocamento.
+
+### Glossário do código
+
+| Termo | O que faz |
+|---|---|
+| `translate` | Desloca o elemento no eixo X (horizontal) ou Y (vertical) sem mexer no layout. |
+| `transform` | Propriedade que move, gira ou escala o elemento visualmente. |
+| `cubic-bezier` | Curva personalizada de aceleração da animação. |
+| `overflow: hidden` | Esconde o que passar da borda do palco, evitando barra de rolagem lateral. |
+| `animation-name` | Troca qual @keyframes a animação usa (aqui, só o fade). |
 
 ## Parâmetros
 
@@ -148,4 +173,82 @@ document.querySelector('.repetir').addEventListener('click', () => {
 </script>
 </body>
 </html>
+```
+
+## Versão Angular (valores padrão)
+
+Também em `src/app/efeitos-angular/slide-in/` (compilada e testada com o app).
+
+`slide-in.ts`
+
+```ts
+import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-slide-in',
+  templateUrl: './slide-in.html',
+  styleUrl: './slide-in.css',
+})
+export class SlideIn {
+  /** Muda a cada clique em Repetir; o @for recria o elemento animado. */
+  protected readonly ciclo = signal(0);
+
+  protected repetir(): void {
+    this.ciclo.update((n) => n + 1);
+  }
+}
+```
+
+`slide-in.html`
+
+```html
+@for (c of [ciclo()]; track c) {
+  <div class="cartao slide-in">Slide in</div>
+}
+<button class="repetir" type="button" (click)="repetir()">Repetir</button>
+```
+
+`slide-in.css`
+
+```css
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.cartao {
+  padding: 32px 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* O efeito */
+.slide-in {
+  animation: slide-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Sem deslocamento para quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .slide-in { animation-name: aparecer; }
+  @keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+}
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
 ```

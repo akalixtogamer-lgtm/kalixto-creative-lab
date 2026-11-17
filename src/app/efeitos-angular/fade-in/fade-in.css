@@ -1,0 +1,39 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.cartao {
+  padding: 32px 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #d4119f, #7c3aed);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* O efeito */
+.fade-in {
+  animation: fade-in 700ms ease 0ms both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Opacidade não é movimento: mantemos o efeito, só mais curto */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in { animation-duration: 200ms; animation-delay: 0ms; }
+}
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }

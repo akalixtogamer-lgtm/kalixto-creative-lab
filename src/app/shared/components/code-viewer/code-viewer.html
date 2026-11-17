@@ -8,6 +8,6 @@
       {{ copiado() ? 'Copiado!' : 'Copiar' }}
     </button>
   </header>
-  <pre class="cv__codigo" tabindex="0"><code>{{ codigo() }}</code></pre>
+  <pre class="cv__codigo" tabindex="0"><code>@for (l of linhas(); track $index) {<span class="cv__linha">@for (tr of l; track $index) {<span [class]="tr.c">{{ tr.t }}</span>} @empty {{{ ' ' }}}</span>}</code></pre>
   <span class="sr-only" aria-live="polite">{{ copiado() ? 'Código copiado' : '' }}</span>
 </section>

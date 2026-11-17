@@ -1,0 +1,32 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+/* O efeito */
+.gradiente {
+  display: grid;
+  place-items: center;
+  width: min(100%, 720px);
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  background: linear-gradient(120deg, #ff2bd6, #8b5cf6, #22e3ff, #ff2bd6);
+  background-size: 300% 300%;
+  animation: deslizar 10s ease-in-out infinite alternate;
+}
+
+.gradiente h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 5vw, 2.6rem);
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.45);
+}
+
+@keyframes deslizar {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradiente { animation: none; }
+}

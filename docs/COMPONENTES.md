@@ -40,14 +40,16 @@ Com `prefers-reduced-motion`, as durações viram 0.
 | `Sidebar` | `kx-sidebar` | saída `navegou` |
 | `PageHeader` | `kx-page-header` | `eyebrow`, `titulo`*, `descricao` + conteúdo projetado |
 | `StatusBadge` | `kx-status-badge` | `status`* (`em-teste`, `em-construcao`, `planejado`, `bloqueado`, `validado`) |
-| `CodeViewer` | `kx-code-viewer` | `codigo`*, `linguagem`, `titulo` — botão Copiar incluso |
+| `CodeViewer` | `kx-code-viewer` | `codigo`*, `linguagem`, `titulo` — numeração de linhas, realce de sintaxe (HTML, CSS, JS/TS, GLSL) e botão Copiar |
 | `Breadcrumb` | `kx-breadcrumb` | `itens`* (`{ rotulo, rota? }[]`) |
 | `Icon` | `kx-icon` | `name`* (home, library, palette, route, play, reset, copy, check, lock, arrow-left, arrow-right, menu, close, download…) |
 | `Logo` | `kx-logo` | `tamanho` (px, padrão 44), `descritiva` (adiciona texto alternativo) |
 | `DemoControls` | `kx-demo-controls` | `params`*, `valores`*, saída `mudou` |
 | `LabLayout` | `kx-lab-layout` | `lab`*, `demos`*, `atual`*, `valores`*, `codigo`*, `linguagem`; saídas `executar`, `reiniciar`, `mudou`, `aplicar`; slots `[palco]` e `[toolbar]` |
 | `CssPlayground` · `GsapStudio` · `ScrollLab` · `SvgLab` · `ThreeLab` · `GlslLab` · `UiLab` | páginas | query `?demo=` |
-| `Efeito` | página `/efeitos/:id` | `id`* (rota) — preview em iframe sandbox, controles, abas HTML/CSS/JS, download, ficha técnica |
+| `Efeito` | página `/efeitos/:id` | `id`* (rota) — preview isolado ou componente Angular, controles, Code Lab, Code Explainer, downloads (.zip e .html), ficha técnica |
+| `CodeLab` | `kx-code-lab` | `id`*, `gerado`*, `editado`, `angular`*; saídas `executar`, `restaurar` |
+| `Explicador` | `kx-explicador` | `kit`* |
 | `Biblioteca` | página `/biblioteca` | query `?lab=` e `?categoria=`; busca e 8 filtros sobre kits + demos |
 
 ## Marca

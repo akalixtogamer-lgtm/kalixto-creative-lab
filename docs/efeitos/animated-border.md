@@ -27,10 +27,35 @@ Chamar atenção para um card ou plano em destaque.
 
 ## Como funciona
 
-1. A borda é transparente e o elemento tem dois fundos: um sólido limitado ao padding-box (o miolo) e um conic-gradient no border-box (aparece só na faixa da borda).
-2. @property registra --angulo como <angle>. Só assim o navegador consegue interpolar a variável numa animação.
-3. A animação gira --angulo de 0 a 360°, e o conic-gradient usa esse valor como ponto de partida, então a cor percorre a borda.
-4. Este efeito não usa JavaScript.
+### Nível 1 — Iniciante
+
+- A borda é transparente e, por trás dela, existe um degradê circular colorido.
+- O miolo do card tem um fundo escuro por cima, então o degradê só aparece na faixa da borda.
+- O degradê gira o tempo todo, e a cor parece correr em volta do card.
+
+### Nível 2 — Intermediário
+
+- A borda é transparente e o elemento tem dois fundos: um sólido limitado ao padding-box (o miolo) e um conic-gradient no border-box (aparece só na faixa da borda).
+- @property registra --angulo como <angle>. Só assim o navegador consegue interpolar a variável numa animação.
+- A animação gira --angulo de 0 a 360°, e o conic-gradient usa esse valor como ponto de partida, então a cor percorre a borda.
+- Este efeito não usa JavaScript.
+
+### Nível 3 — Avançado
+
+- Dois fundos com caixas diferentes: padding-box (miolo sólido) e border-box (gradiente) — a borda transparente revela o segundo.
+- @property registra --angulo como <angle>; sem isso a variável é texto e a animação só "pula" no fim.
+- Animar custom property invalida o estilo e repinta o elemento a cada quadro — use em poucos elementos.
+- Fallback: sem suporte a @property, o gradiente aparece parado, então a borda continua bonita.
+
+### Glossário do código
+
+| Termo | O que faz |
+|---|---|
+| `@property` | Registra a variável com tipo (<angle>) para ela poder ser animada. |
+| `conic-gradient` | Degradê que gira em volta de um centro, como um relógio. |
+| `padding-box` | Faz o fundo ocupar só o miolo, sem passar por baixo da borda. |
+| `border-box` | Faz o fundo ocupar até a borda — é o que aparece na faixa transparente. |
+| `linear infinite` | Velocidade constante, girando para sempre. |
 
 ## Parâmetros
 
@@ -139,4 +164,71 @@ body {
 </script>
 </body>
 </html>
+```
+
+## Versão Angular (valores padrão)
+
+Também em `src/app/efeitos-angular/animated-border/` (compilada e testada com o app).
+
+`animated-border.ts`
+
+```ts
+import { Component } from '@angular/core';
+
+/** animated-border: efeito só de CSS — o componente não precisa de lógica. */
+@Component({
+  selector: 'app-animated-border',
+  templateUrl: './animated-border.html',
+  styleUrl: './animated-border.css',
+})
+export class AnimatedBorder {}
+```
+
+`animated-border.html`
+
+```html
+<article class="borda">
+  <h2>Plano Pro</h2>
+  <p>O card em destaque.</p>
+</article>
+```
+
+`animated-border.css`
+
+```css
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+/* Registra a variável como ângulo para ela poder ser animada */
+@property --angulo {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* O efeito */
+.borda {
+  width: min(80vw, 320px);
+  padding: 32px;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  background:
+    linear-gradient(#0f0d1a, #0f0d1a) padding-box,
+    conic-gradient(from var(--angulo), #ff2bd6, #22e3ff, #ff2bd6) border-box;
+  animation: girar 4s linear infinite;
+}
+
+.borda h2 { margin: 0 0 6px; }
+.borda p { margin: 0; color: #c9c3ea; }
+
+@keyframes girar {
+  to { --angulo: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .borda { animation: none; }
+}
 ```

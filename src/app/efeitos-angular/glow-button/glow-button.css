@@ -1,0 +1,37 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+/* O efeito */
+.neon {
+  padding: 14px 32px;
+  border: 2px solid #22e3ff;
+  border-radius: 12px;
+  background: #0f0d1a;
+  color: #fff;
+  font: 600 1rem system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 16px #22e3ff, inset 0 0 8px #22e3ff66;
+  transition: box-shadow 200ms ease;
+  animation: pulsar 2s ease-in-out infinite alternate;
+}
+
+.neon:hover,
+.neon:focus-visible {
+  box-shadow: 0 0 32px #22e3ff, inset 0 0 16px #22e3ff99;
+}
+
+.neon:focus-visible { outline: 2px solid #fff; outline-offset: 6px; }
+
+@keyframes pulsar {
+  from { box-shadow: 0 0 8px #22e3ff, inset 0 0 4px #22e3ff66; }
+  to   { box-shadow: 0 0 32px #22e3ff, inset 0 0 16px #22e3ff99; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon { animation: none; }
+}

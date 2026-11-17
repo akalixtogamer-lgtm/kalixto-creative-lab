@@ -1,0 +1,22 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.magnetico {
+  padding: 18px 34px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d4119f, #7c3aed);
+  color: #fff;
+  font: 600 1rem system-ui, sans-serif;
+  cursor: pointer;
+  /* volta ao lugar com suavidade */
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* enquanto está sendo atraído, segue o ponteiro mais rápido */
+.magnetico.is-atraindo { transition-duration: 120ms; }
+
+.magnetico:focus-visible { outline: 2px solid #22e3ff; outline-offset: 4px; }

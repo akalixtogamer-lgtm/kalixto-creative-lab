@@ -99,3 +99,28 @@ não podem divergir.
    `prefers-reduced-motion`.
 4. Rode `npm run docs:efeitos` para gerar `docs/efeitos/<id>.md` e atualizar
    `docs/CATALOGO-DE-EFEITOS.md`.
+
+## Fase 2 da biblioteca: Code Lab, versão Angular, exportação e Code Explainer
+
+| Arquivo | Papel |
+|---|---|
+| `pages/efeito/code-lab/` | Abas HTML/CSS/JS + Angular (TS/HTML/CSS); edição dos três arquivos; Executar no preview; Comparar com o original (diff por linha); Restaurar original |
+| `pages/efeito/explicador/` | Explicação em 3 níveis (iniciante, intermediário, avançado) + glossário |
+| `core/efeitos/exportar.ts` | Monta o pacote `.zip` (`index.html` + `styles.css` + `script.js` + `README.md` + `angular/`) |
+| `shared/utils/zip.ts` | Gerador de ZIP sem dependência (método store + CRC-32) |
+| `shared/utils/diff.ts` | Diferença por linha (LCS) |
+| `shared/utils/realce.ts` | Realce de sintaxe leve; devolve trechos de texto, **sem `innerHTML`** |
+| `efeitos-angular/<id>/` | Versão Angular de cada kit com valores padrão, **gerada** por `npm run gerar:angular` |
+| `efeitos-angular/index.ts` | Carregamento sob demanda dos componentes (modo de preview "Angular") |
+
+Cada kit agora tem, além da ficha e de `gerar()`:
+
+- `angular(valores)`: os três arquivos de um componente standalone;
+- `niveis`: as explicações iniciante e avançada (a intermediária continua em `ficha.explicacao`);
+- `glossario`: termos do código com explicação.
+
+**Garantias:**
+
+- **Componentes Angular:** o teste compila e renderiza cada um.
+- **Arquivos gerados:** `npm run verificar:angular` regenera e falha se o arquivo commitado divergir do gerador.
+- **Glossário:** todo termo precisa aparecer literalmente no código.

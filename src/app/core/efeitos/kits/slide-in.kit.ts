@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { CSS_REPETIR, EASINGS, MDN, VALIDADO_EM, cssPalco, jsRepetir } from './_base';
+import { CSS_REPETIR, EASINGS, MDN, VALIDADO_EM, cssAngular, cssPalco, htmlRepetir, jsRepetir, tsRepetir } from './_base';
 
 const ORIGEM: Record<string, (d: number) => string> = {
   baixo: (d) => `translateY(${d}px)`,
@@ -87,4 +87,29 @@ export const SLIDE_IN: EffectKit = {
 ${CSS_REPETIR}`,
     js: jsRepetir('.cartao', 'slide-in'),
   }),
+  angular: (v) => ({
+    ts: tsRepetir('slide-in'),
+    html: htmlRepetir('<div class="cartao slide-in">Slide in</div>'),
+    css: cssAngular(SLIDE_IN.gerar(v).css),
+  }),
+  niveis: {
+    iniciante: [
+      'O cartão começa um pouco fora do lugar e invisível, e desliza até a posição certa enquanto aparece.',
+      'Você escolhe de onde ele vem (baixo, cima, esquerda ou direita) e a distância percorrida.',
+      'Mover com transform não empurra os outros elementos da página.',
+    ],
+    avancado: [
+      'translate é aplicado depois do layout: o elemento ocupa o espaço final desde o início, então não há "pulo" no fim.',
+      'Entradas laterais podem criar overflow horizontal durante a animação; o palco usa overflow: hidden — em páginas reais, prefira overflow-x: clip no contêiner.',
+      'A curva expo out (cubic-bezier(0.22, 1, 0.36, 1)) começa rápida e freia devagar, o que soa natural para entradas.',
+      'No modo de movimento reduzido, a animação troca de nome (aparecer) em vez de só zerar a duração: o conteúdo continua aparecendo, mas sem deslocamento.',
+    ],
+  },
+  glossario: [
+    { termo: 'translate', explicacao: 'Desloca o elemento no eixo X (horizontal) ou Y (vertical) sem mexer no layout.' },
+    { termo: 'transform', explicacao: 'Propriedade que move, gira ou escala o elemento visualmente.' },
+    { termo: 'cubic-bezier', explicacao: 'Curva personalizada de aceleração da animação.' },
+    { termo: 'overflow: hidden', explicacao: 'Esconde o que passar da borda do palco, evitando barra de rolagem lateral.' },
+    { termo: 'animation-name', explicacao: 'Troca qual @keyframes a animação usa (aqui, só o fade).' },
+  ],
 };

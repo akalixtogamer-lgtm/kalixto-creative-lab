@@ -1,0 +1,35 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+/* O efeito */
+.botao {
+  padding: 14px 28px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d4119f, #7c3aed);
+  color: #fff;
+  font: 600 1rem system-ui, sans-serif;
+  cursor: pointer;
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.botao:hover,
+.botao:focus-visible {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 8px 24px #ff2bd680;
+}
+
+.botao:focus-visible { outline: 2px solid #22e3ff; outline-offset: 4px; }
+
+.botao:active { transform: translateY(0) scale(0.98); }
+
+/* Sem deslocamento para quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .botao:hover,
+  .botao:focus-visible { transform: none; }
+}

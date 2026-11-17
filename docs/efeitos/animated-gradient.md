@@ -27,10 +27,35 @@ Dar vida a um hero ou seção sem usar vídeo nem imagem.
 
 ## Como funciona
 
-1. linear-gradient cria o degradê. A primeira cor se repete no fim para o movimento não ter emenda.
-2. background-size maior que 100% deixa o gradiente maior que a caixa; só uma parte aparece por vez.
-3. A animação move background-position de um lado para o outro, então a parte visível do gradiente muda.
-4. Este efeito não usa JavaScript.
+### Nível 1 — Iniciante
+
+- O fundo é um degradê muito maior do que a caixa; só um pedaço aparece por vez.
+- A animação arrasta o degradê de um lado para o outro, então as cores parecem se mover.
+- A primeira cor se repete no fim para não aparecer emenda.
+
+### Nível 2 — Intermediário
+
+- linear-gradient cria o degradê. A primeira cor se repete no fim para o movimento não ter emenda.
+- background-size maior que 100% deixa o gradiente maior que a caixa; só uma parte aparece por vez.
+- A animação move background-position de um lado para o outro, então a parte visível do gradiente muda.
+- Este efeito não usa JavaScript.
+
+### Nível 3 — Avançado
+
+- background-size acima de 100% cria a "folga" para mover; background-position em % é relativo à diferença entre o fundo e a caixa.
+- Animar background-position repinta a área inteira a cada quadro. Em heros de tela cheia, uma camada com transform: translate sobre um gradiente fixo é mais barata.
+- Com @property dá para registrar cores e ângulos e animá-los diretamente (ex.: girar o ângulo do gradiente).
+- text-shadow no título garante leitura quando a cor mais clara passa por trás do texto.
+
+### Glossário do código
+
+| Termo | O que faz |
+|---|---|
+| `linear-gradient` | Cria o degradê em linha reta, no ângulo indicado. |
+| `background-size` | Tamanho do fundo; maior que 100% deixa parte dele escondida. |
+| `background-position` | Qual parte do fundo aparece — é o que a animação move. |
+| `text-shadow` | Sombra no texto para manter a leitura sobre cores claras. |
+| `alternate` | O movimento vai e volta, sem salto. |
 
 ## Parâmetros
 
@@ -136,4 +161,67 @@ body {
 </script>
 </body>
 </html>
+```
+
+## Versão Angular (valores padrão)
+
+Também em `src/app/efeitos-angular/animated-gradient/` (compilada e testada com o app).
+
+`animated-gradient.ts`
+
+```ts
+import { Component } from '@angular/core';
+
+/** animated-gradient: efeito só de CSS — o componente não precisa de lógica. */
+@Component({
+  selector: 'app-animated-gradient',
+  templateUrl: './animated-gradient.html',
+  styleUrl: './animated-gradient.css',
+})
+export class AnimatedGradient {}
+```
+
+`animated-gradient.html`
+
+```html
+<section class="gradiente">
+  <h1>Gradiente animado</h1>
+</section>
+```
+
+`animated-gradient.css`
+
+```css
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+/* O efeito */
+.gradiente {
+  display: grid;
+  place-items: center;
+  width: min(100%, 720px);
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  background: linear-gradient(120deg, #ff2bd6, #8b5cf6, #22e3ff, #ff2bd6);
+  background-size: 300% 300%;
+  animation: deslizar 10s ease-in-out infinite alternate;
+}
+
+.gradiente h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 5vw, 2.6rem);
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.45);
+}
+
+@keyframes deslizar {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradiente { animation: none; }
+}
 ```

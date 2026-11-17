@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { CSS_REPETIR, EASINGS, MDN, VALIDADO_EM, cssPalco, jsRepetir } from './_base';
+import { CSS_REPETIR, EASINGS, MDN, VALIDADO_EM, cssAngular, cssPalco, htmlRepetir, jsRepetir, tsRepetir } from './_base';
 
 export const FADE_IN: EffectKit = {
   ficha: {
@@ -67,4 +67,30 @@ export const FADE_IN: EffectKit = {
 ${CSS_REPETIR}`,
     js: jsRepetir('.cartao', 'fade-in'),
   }),
+  angular: (v) => ({
+    ts: tsRepetir('fade-in'),
+    html: htmlRepetir('<div class="cartao fade-in">Fade in</div>'),
+    css: cssAngular(FADE_IN.gerar(v).css),
+  }),
+  niveis: {
+    iniciante: [
+      'Opacidade é o quanto um elemento é transparente: 0 é invisível e 1 é totalmente visível.',
+      'A animação diz ao navegador: comece invisível e, aos poucos, fique visível.',
+      'Duração é quanto tempo leva; atraso é quanto tempo espera antes de começar.',
+    ],
+    avancado: [
+      'opacity é uma das poucas propriedades que o navegador anima só no compositor (GPU), sem layout nem pintura — por isso é a base mais barata para entradas.',
+      'animation-fill-mode: both evita o "flash" do estado final antes do atraso e mantém o estado final depois do fim.',
+      'Para muitas entradas ao rolar, combine com IntersectionObserver e adicione a classe só quando o elemento entra na tela, em vez de animar tudo no carregamento.',
+      'Reiniciar uma animação CSS exige remover a classe, forçar um reflow (offsetWidth) e recolocar. No Angular, recriar o elemento com @for e uma chave nova é a forma idiomática.',
+    ],
+  },
+  glossario: [
+    { termo: '@keyframes', explicacao: 'Define os estados da animação (from = início, to = fim).' },
+    { termo: 'opacity', explicacao: 'Transparência do elemento, de 0 a 1.' },
+    { termo: 'animation:', explicacao: 'Atalho que junta nome, duração, curva, atraso e preenchimento da animação.' },
+    { termo: 'both', explicacao: 'animation-fill-mode: aplica o estado inicial durante o atraso e mantém o final depois.' },
+    { termo: 'prefers-reduced-motion', explicacao: 'Preferência do sistema de quem pede menos movimento na tela.' },
+    { termo: 'offsetWidth', explicacao: 'Ler essa medida força o navegador a recalcular o layout — é o truque para reiniciar a animação.' },
+  ],
 };

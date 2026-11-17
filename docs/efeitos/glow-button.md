@@ -27,10 +27,35 @@ Destacar uma ação em interfaces escuras com estética neon.
 
 ## Como funciona
 
-1. O brilho é feito com box-shadow sem deslocamento: só desfoque e cor, em duas camadas (uma interna, uma externa).
-2. O pulso é uma animação que alterna o tamanho do desfoque, repetida para sempre (infinite) e indo e voltando (alternate).
-3. No hover e no foco o desfoque aumenta com transition.
-4. Este efeito não usa JavaScript.
+### Nível 1 — Iniciante
+
+- O brilho é uma sombra sem deslocamento: ela se espalha igual para todos os lados, parecendo luz.
+- Uma sombra fica por fora e outra por dentro do botão, como um tubo de neon.
+- O pulso faz o brilho crescer e diminuir sem parar.
+
+### Nível 2 — Intermediário
+
+- O brilho é feito com box-shadow sem deslocamento: só desfoque e cor, em duas camadas (uma interna, uma externa).
+- O pulso é uma animação que alterna o tamanho do desfoque, repetida para sempre (infinite) e indo e voltando (alternate).
+- No hover e no foco o desfoque aumenta com transition.
+- Este efeito não usa JavaScript.
+
+### Nível 3 — Avançado
+
+- Várias sombras separadas por vírgula se somam; inset desenha a sombra para dentro da borda.
+- animation-direction: alternate evita o salto do fim para o início: o pulso vai e volta.
+- Animar box-shadow causa repintura a cada quadro. Uma alternativa mais barata é um pseudo-elemento com a sombra máxima e animar só opacity.
+- filter: drop-shadow acompanha o contorno real (bom para SVG e PNG com transparência), mas é mais caro.
+
+### Glossário do código
+
+| Termo | O que faz |
+|---|---|
+| `box-shadow` | Sombra; com deslocamento 0 vira um halo de luz. |
+| `inset` | Desenha a sombra para dentro do elemento. |
+| `infinite` | Repete a animação para sempre. |
+| `alternate` | Cada repetição inverte o sentido (vai e volta). |
+| `:focus-visible` | Foco pelo teclado com o mesmo destaque do hover. |
 
 ## Parâmetros
 
@@ -137,4 +162,70 @@ body {
 </script>
 </body>
 </html>
+```
+
+## Versão Angular (valores padrão)
+
+Também em `src/app/efeitos-angular/glow-button/` (compilada e testada com o app).
+
+`glow-button.ts`
+
+```ts
+import { Component } from '@angular/core';
+
+/** glow-button: efeito só de CSS — o componente não precisa de lógica. */
+@Component({
+  selector: 'app-glow-button',
+  templateUrl: './glow-button.html',
+  styleUrl: './glow-button.css',
+})
+export class GlowButton {}
+```
+
+`glow-button.html`
+
+```html
+<button class="neon" type="button">Ao vivo</button>
+```
+
+`glow-button.css`
+
+```css
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+/* O efeito */
+.neon {
+  padding: 14px 32px;
+  border: 2px solid #22e3ff;
+  border-radius: 12px;
+  background: #0f0d1a;
+  color: #fff;
+  font: 600 1rem system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 16px #22e3ff, inset 0 0 8px #22e3ff66;
+  transition: box-shadow 200ms ease;
+  animation: pulsar 2s ease-in-out infinite alternate;
+}
+
+.neon:hover,
+.neon:focus-visible {
+  box-shadow: 0 0 32px #22e3ff, inset 0 0 16px #22e3ff99;
+}
+
+.neon:focus-visible { outline: 2px solid #fff; outline-offset: 6px; }
+
+@keyframes pulsar {
+  from { box-shadow: 0 0 8px #22e3ff, inset 0 0 4px #22e3ff66; }
+  to   { box-shadow: 0 0 32px #22e3ff, inset 0 0 16px #22e3ff99; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon { animation: none; }
+}
 ```

@@ -1,6 +1,8 @@
 import {
   Component,
   ElementRef,
+  Type,
+  ViewContainerRef,
   inject,
   computed,
   effect,
@@ -14,19 +16,22 @@ import { Title } from '@angular/platform-browser';
 import { findCategoria } from '../../core/efeitos/categorias';
 import { EFFECT_REGISTRY, findKit } from '../../core/efeitos/registry';
 import { montarDocumento } from '../../core/efeitos/sandbox';
+import { montarPacote } from '../../core/efeitos/exportar';
+import { COMPONENTES_ANGULAR } from '../../efeitos-angular';
+import { criarZip } from '../../shared/utils/zip';
+import { CodeLab } from './code-lab/code-lab';
+import { Explicador } from './explicador/explicador';
 import { ParamDef, Valor, Valores } from '../../core/models/demo.model';
 import {
+  CodigoAngular,
   CodigoKit,
   EffectKit,
   INTERACAO_ROTULO,
   NIVEL_FICHA_ROTULO,
 } from '../../core/models/effect-sheet.model';
 import { Breadcrumb, Migalha } from '../../shared/components/breadcrumb/breadcrumb';
-import { CodeViewer } from '../../shared/components/code-viewer/code-viewer';
 import { DemoControls } from '../../shared/components/demo-controls/demo-controls';
 import { Icon } from '../../shared/components/icon/icon';
-
-type Aba = keyof CodigoKit;
 
 function padrao(kit: EffectKit): Valores {
   return Object.fromEntries(kit.params.map((p) => [p.id, p.padrao]));
@@ -42,7 +47,7 @@ function padrao(kit: EffectKit): Valores {
  */
 @Component({
   selector: 'kx-efeito',
-  imports: [RouterLink, Breadcrumb, CodeViewer, DemoControls, Icon],
+  imports: [RouterLink, Breadcrumb, CodeLab, DemoControls, Explicador, Icon],
   templateUrl: './efeito.html',
   styleUrl: './efeito.css',
 })
@@ -60,9 +65,37 @@ export class Efeito {
     return k ? padrao(k) : {};
   });
 
-  protected readonly codigo = computed<CodigoKit | null>(() => {
+  /** Código gerado pelos controles. */
+  protected readonly gerado = computed<CodigoKit | null>(() => {
     const k = this.kit();
     return k ? k.gerar(this.valores()) : null;
+  });
+
+  /** Código editado no Code Lab (null = usando o gerado). Some ao trocar de efeito. */
+  protected readonly editado = linkedSignal<CodigoKit | null>(() => {
+    this.kit();
+    return null;
+  });
+
+  /** Código em execução no preview. */
+  protected readonly codigo = computed(() => this.editado() ?? this.gerado());
+
+  protected readonly angular = computed<CodigoAngular | null>(() => {
+    const k = this.kit();
+    return k ? k.angular(this.valores()) : null;
+  });
+
+  /** Preview: código isolado (iframe) ou o componente Angular compilado no app. */
+  protected readonly modoPreview = linkedSignal<'isolado' | 'angular'>(() => {
+    this.kit();
+    return 'isolado';
+  });
+  protected readonly componenteAngular = signal<Type<unknown> | null>(null);
+  protected readonly valoresAlterados = computed(() => {
+    const k = this.kit();
+    if (!k) return false;
+    const p = padrao(k);
+    return Object.keys(p).some((key) => String(p[key]) !== String(this.valores()[key]));
   });
 
   protected readonly documento = computed(() => {
@@ -70,13 +103,6 @@ export class Efeito {
     const f = this.ficha();
     return c && f ? montarDocumento(f.nomeAmigavel, c) : '';
   });
-
-  protected readonly aba = signal<Aba>('html');
-  protected readonly abas: { id: Aba; rotulo: string; linguagem: string }[] = [
-    { id: 'html', rotulo: 'HTML', linguagem: 'HTML' },
-    { id: 'css', rotulo: 'CSS', linguagem: 'CSS' },
-    { id: 'js', rotulo: 'JavaScript', linguagem: 'JS' },
-  ];
 
   protected readonly nivelRotulo = NIVEL_FICHA_ROTULO;
   protected readonly interacoesTexto = computed(() =>
@@ -98,11 +124,32 @@ export class Efeito {
   ]);
 
   private readonly frame = viewChild<ElementRef<HTMLIFrameElement>>('frame');
+  /** Onde o componente Angular do efeito é criado (sem NgComponentOutlet, para não pesar o pacote inicial). */
+  private readonly ngHost = viewChild('ngHost', { read: ViewContainerRef });
   private timer?: ReturnType<typeof setTimeout>;
 
   private readonly title = inject(Title);
 
   constructor() {
+    // Carrega o componente Angular do efeito só quando o modo Angular é escolhido.
+    effect(() => {
+      const id = this.id();
+      if (this.modoPreview() !== 'angular') return;
+      this.componenteAngular.set(null);
+      COMPONENTES_ANGULAR[id]?.().then((c) => {
+        if (this.id() === id) this.componenteAngular.set(c);
+      });
+    });
+
+    // Cria o componente carregado dentro do palco Angular.
+    effect(() => {
+      const host = this.ngHost();
+      const c = this.componenteAngular();
+      if (!host) return;
+      host.clear();
+      if (c) host.createComponent(c);
+    });
+
     effect(() => {
       const f = this.ficha();
       this.title.setTitle(`${f ? f.nomeAmigavel : 'Efeito não encontrado'} · Kalixto Creative Lab`);
@@ -141,21 +188,33 @@ export class Efeito {
   protected baixar(): void {
     const f = this.ficha();
     if (!f) return;
-    const blob = new Blob([this.documento()], { type: 'text/html;charset=utf-8' });
+    this.salvar(new Blob([this.documento()], { type: 'text/html;charset=utf-8' }), `${f.id}.html`);
+  }
+
+  private salvar(blob: Blob, nome: string): void {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${f.id}.html`;
+    a.download = nome;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  protected teclaAba(ev: KeyboardEvent, i: number): void {
-    const n = this.abas.length;
-    const alvo = ev.key === 'ArrowRight' ? (i + 1) % n : ev.key === 'ArrowLeft' ? (i - 1 + n) % n : -1;
-    if (alvo < 0) return;
-    ev.preventDefault();
-    this.aba.set(this.abas[alvo].id);
-    (document.getElementById(`aba-${this.abas[alvo].id}`) as HTMLElement | null)?.focus();
+  protected baixarPacote(): void {
+    const k = this.kit();
+    const c = this.codigo();
+    const ng = this.angular();
+    if (!k || !c || !ng) return;
+    const arquivos = montarPacote(k, this.valores(), c, ng, !!this.editado());
+    this.salvar(new Blob([criarZip(arquivos) as BlobPart], { type: 'application/zip' }), `${k.ficha.id}.zip`);
+  }
+
+  protected executarEditado(c: CodigoKit): void {
+    this.modoPreview.set('isolado');
+    this.editado.set(c);
+  }
+
+  protected restaurarOriginal(): void {
+    this.editado.set(null);
   }
 }

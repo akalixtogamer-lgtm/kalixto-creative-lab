@@ -24,7 +24,10 @@ for k in d['kits']:
               f"| Tags | {', '.join(f['tags'])} |", '',
               '## Objetivo visual', '', f['objetivoVisual'], '',
               '## Aplicações', ''] + [f'- {a}' for a in f['aplicacoes']] + ['',
-              '## Como funciona', ''] + [f'{n}. {p}' for n, p in enumerate(f['explicacao'], 1)] + ['',
+              '## Como funciona', '', '### Nível 1 — Iniciante', ''] + [f'- {p}' for p in k['niveis']['iniciante']] + ['',
+              '### Nível 2 — Intermediário', ''] + [f'- {p}' for p in f['explicacao']] + ['',
+              '### Nível 3 — Avançado', ''] + [f'- {p}' for p in k['niveis']['avancado']] + ['',
+              '### Glossário do código', '', '| Termo | O que faz |', '|---|---|'] + [f"| `{g['termo'].replace('|','\\|')}` | {g['explicacao']} |" for g in k['glossario']] + ['',
               '## Parâmetros', '', '| Controle | Tipo | Padrão | Faixa / opções |', '|---|---|---|---|']
     for p in k['params']:
         if p['tipo'] == 'range':
@@ -39,7 +42,12 @@ for k in d['kits']:
                '## Limitações', ''] + [f'- {l}' for l in f['limitacoes']] + ['',
                '## Referências', ''] + [f"- [{r['titulo']}]({r['url']})" for r in f['referencias']] + ['',
                '## Código (valores padrão)', '', 'Arquivo único, igual ao baixado pelo botão “Baixar” na página do efeito:', '',
-               '```html', k['documento'].rstrip(), '```', '']
+               '```html', k['documento'].rstrip(), '```', '',
+               '## Versão Angular (valores padrão)', '',
+               f"Também em `src/app/efeitos-angular/{f['id']}/` (compilada e testada com o app).", '',
+               f"`{f['id']}.ts`", '', '```ts', k['angular']['ts'].rstrip(), '```', '',
+               f"`{f['id']}.html`", '', '```html', k['angular']['html'].rstrip(), '```', '',
+               f"`{f['id']}.css`", '', '```css', k['angular']['css'].rstrip(), '```', '']
     open(f"docs/efeitos/{f['id']}.md", 'w').write('\n'.join(linhas))
 
 # índice

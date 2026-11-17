@@ -149,7 +149,7 @@ describe('Efeitos · páginas', () => {
     expect(el.textContent).toContain('Ficha técnica');
     const frame = el.querySelector('iframe')!;
     expect(frame.getAttribute('sandbox')).toBe(SANDBOX_PREVIEW);
-    expect(el.querySelectorAll('[role="tab"]').length).toBe(3);
+    expect(el.querySelectorAll('[role="tab"]').length).toBe(6);
   });
 
   it('mostra aviso quando o efeito não existe', async () => {

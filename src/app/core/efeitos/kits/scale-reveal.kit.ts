@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { CSS_REPETIR, EASINGS, MDN, VALIDADO_EM, cssPalco, jsRepetir } from './_base';
+import { CSS_REPETIR, EASINGS, MDN, VALIDADO_EM, cssAngular, cssPalco, htmlRepetir, jsRepetir, tsRepetir } from './_base';
 
 export const SCALE_REVEAL: EffectKit = {
   ficha: {
@@ -80,4 +80,28 @@ export const SCALE_REVEAL: EffectKit = {
 ${CSS_REPETIR}`,
     js: jsRepetir('.cartao', 'scale-reveal'),
   }),
+  angular: (v) => ({
+    ts: tsRepetir('scale-reveal'),
+    html: htmlRepetir('<div class="cartao scale-reveal">Scale reveal</div>'),
+    css: cssAngular(SCALE_REVEAL.gerar(v).css),
+  }),
+  niveis: {
+    iniciante: [
+      'O cartão começa menor e transparente e cresce até o tamanho normal.',
+      'O ponto de origem é o lugar que fica parado enquanto o resto cresce — como abrir a partir do centro ou de um canto.',
+      'A curva "elástico" faz o cartão passar um pouquinho do tamanho e voltar, como um "pop".',
+    ],
+    avancado: [
+      'scale não muda o box no layout: vizinhos não se mexem e o hit-test usa o tamanho transformado.',
+      'Curvas com y > 1 (back out) geram overshoot; com escala inicial muito baixa o exagero aumenta — mantenha entre 0,6 e 0,9.',
+      'Durante a escala o texto pode ser rasterizado como textura e parecer borrado; o navegador redesenha nítido ao fim.',
+      'Para modais, combine com o <dialog> nativo e anime ::backdrop separadamente.',
+    ],
+  },
+  glossario: [
+    { termo: 'scale(', explicacao: 'Multiplica o tamanho visual: 1 é o tamanho normal, 0,6 é 60%.' },
+    { termo: 'transform-origin', explicacao: 'Ponto fixo da transformação (centro, topo, canto…).' },
+    { termo: 'cubic-bezier(0.34, 1.56, 0.64, 1)', explicacao: 'Curva com valor acima de 1, que passa do alvo e volta (efeito elástico).' },
+    { termo: '@keyframes', explicacao: 'Estados de início e fim da animação.' },
+  ],
 };

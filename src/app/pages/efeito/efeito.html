@@ -20,71 +20,82 @@
       <section class="pg__palco-wrap kx-glass" aria-labelledby="ef-preview">
         <header class="pg__palco-topo">
           <div>
-            <p class="kx-eyebrow">Preview isolado</p>
-            <h2 id="ef-preview" class="pg__demo-titulo">Roda o código abaixo, sem alterações</h2>
+            <p class="kx-eyebrow">Preview</p>
+            <h2 id="ef-preview" class="pg__demo-titulo">
+              {{ modoPreview() === 'isolado' ? (editado() ? 'Rodando o seu código editado' : 'Roda o código abaixo, sem alterações') : 'Componente Angular compilado no app' }}
+            </h2>
+          </div>
+          <div class="ef__modo" role="group" aria-label="Tipo de preview">
+            <button type="button" class="ef__modo-btn" [attr.aria-pressed]="modoPreview() === 'isolado'" (click)="modoPreview.set('isolado')">HTML/CSS/JS</button>
+            <button type="button" class="ef__modo-btn" [attr.aria-pressed]="modoPreview() === 'angular'" (click)="modoPreview.set('angular')">Angular</button>
           </div>
         </header>
-        <iframe
-          #frame
-          class="ef__frame"
-          sandbox="allow-scripts"
-          [title]="'Preview do efeito ' + f.nomeAmigavel"
-        ></iframe>
+        @if (modoPreview() === 'isolado') {
+          <iframe
+            #frame
+            class="ef__frame"
+            sandbox="allow-scripts"
+            [title]="'Preview do efeito ' + f.nomeAmigavel"
+          ></iframe>
+        } @else {
+          <div class="ef__ng" role="region" [attr.aria-label]="'Componente Angular do efeito ' + f.nomeAmigavel">
+            <ng-container #ngHost />
+            @if (!componenteAngular()) {
+              <p class="kx-muted">Carregando o componente…</p>
+            }
+          </div>
+          <p class="kx-muted ef__nota">
+            Este é o arquivo <code>efeitos-angular/{{ f.id }}</code>, compilado com os <strong>valores padrão</strong>.
+            @if (valoresAlterados()) {
+              Os seus valores atuais estão nas abas “Angular” do código, prontos para copiar.
+            }
+          </p>
+        }
         <div class="pg__toolbar">
-          <button type="button" class="kx-btn kx-btn--primary" (click)="reiniciar()">
-            <kx-icon name="play" /> Reiniciar preview
-          </button>
-          <button type="button" class="kx-btn kx-btn--ghost" (click)="restaurar()">
-            <kx-icon name="reset" /> Restaurar valores
+          @if (modoPreview() === 'isolado') {
+            <button type="button" class="kx-btn kx-btn--primary" (click)="reiniciar()">
+              <kx-icon name="play" /> Reiniciar preview
+            </button>
+          }
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarPacote()">
+            <kx-icon name="download" /> Baixar pacote .zip
           </button>
           <button type="button" class="kx-btn kx-btn--ghost" (click)="baixar()">
-            <kx-icon name="download" /> Baixar {{ f.id }}.html
+            <kx-icon name="download" /> Baixar .html único
           </button>
         </div>
       </section>
 
       <section class="pg__controles kx-glass" aria-labelledby="ef-controles">
         <h2 id="ef-controles" class="pg__bloco-titulo">Controles</h2>
-        <kx-demo-controls [params]="kit()!.params" [valores]="valores()" prefixo="ef" (mudou)="alterar($event)" />
+        @if (editado()) {
+          <p class="ef__bloqueio" role="status">Você editou o código. Restaure o original no Code Lab para voltar a usar os controles.</p>
+        }
+        <fieldset class="ef__ctrls" [disabled]="!!editado()">
+          <legend class="sr-only">Parâmetros do efeito</legend>
+          <kx-demo-controls [params]="kit()!.params" [valores]="valores()" prefixo="ef" (mudou)="alterar($event)" />
+        </fieldset>
+        <button type="button" class="kx-btn kx-btn--ghost ef__restaurar" [disabled]="!!editado()" (click)="restaurar()">
+          <kx-icon name="reset" /> Restaurar valores
+        </button>
         <p class="kx-muted ef__nota">Cada controle muda o código e o preview ao mesmo tempo.</p>
       </section>
 
       <section class="pg__codigo" aria-labelledby="ef-codigo">
-        <h2 id="ef-codigo" class="sr-only">Código</h2>
-        <div class="ef__abas" role="tablist" aria-label="Arquivos do efeito">
-          @for (a of abas; track a.id; let i = $index) {
-            <button
-              type="button"
-              role="tab"
-              class="ef__aba"
-              [id]="'aba-' + a.id"
-              [attr.aria-selected]="aba() === a.id"
-              [attr.aria-controls]="'painel-codigo'"
-              [attr.tabindex]="aba() === a.id ? 0 : -1"
-              (click)="aba.set(a.id)"
-              (keydown)="teclaAba($event, i)"
-            >
-              {{ a.rotulo }}
-            </button>
-          }
-        </div>
-        @for (a of abas; track a.id) {
-          @if (aba() === a.id) {
-            <div id="painel-codigo" role="tabpanel" [attr.aria-labelledby]="'aba-' + a.id">
-              <kx-code-viewer [codigo]="codigo()![a.id]" [linguagem]="a.linguagem" [titulo]="f.id + '.' + (a.id === 'js' ? 'js' : a.id)" />
-            </div>
-          }
-        }
+        <h2 id="ef-codigo" class="pg__bloco-titulo ef__h-codigo">Code Lab</h2>
+        <kx-code-lab
+          [id]="f.id"
+          [gerado]="gerado()!"
+          [editado]="editado()"
+          [angular]="angular()!"
+          (executar)="executarEditado($event)"
+          (restaurar)="restaurarOriginal()"
+        />
       </section>
 
       <section class="pg__explica" aria-labelledby="ef-explica">
         <h2 id="ef-explica" class="pg__bloco-titulo">Como funciona</h2>
-        <ol class="kx-list ef__passos">
-          @for (p of f.explicacao; track $index) {
-            <li>{{ p }}</li>
-          }
-        </ol>
-        <p class="kx-callout"><strong>Outra forma de fazer:</strong> {{ f.alternativa }}</p>
+        <kx-explicador [kit]="kit()!" />
       </section>
     </div>
 

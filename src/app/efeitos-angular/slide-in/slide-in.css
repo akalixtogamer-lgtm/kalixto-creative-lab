@@ -1,0 +1,40 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.cartao {
+  padding: 32px 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* O efeito */
+.slide-in {
+  animation: slide-in 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Sem deslocamento para quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .slide-in { animation-name: aparecer; }
+  @keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+}
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }

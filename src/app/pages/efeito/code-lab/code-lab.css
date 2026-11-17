@@ -1,0 +1,85 @@
+:host { display: block; min-width: 0; }
+
+.cl__topo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kx-space-2);
+  margin-bottom: var(--kx-space-2);
+}
+.cl__abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-1);
+}
+.cl__aba {
+  min-height: 36px;
+  padding: 0 var(--kx-space-3);
+  border: 1px solid var(--kx-border);
+  border-radius: 999px;
+  background: var(--kx-surface);
+  color: var(--kx-text-soft);
+  font: inherit;
+  font-size: var(--kx-fs-sm);
+  cursor: pointer;
+}
+.cl__aba--ng { border-style: dashed; }
+.cl__aba:hover { color: var(--kx-text); border-color: var(--kx-border-strong); }
+.cl__aba[aria-selected='true'] {
+  background: var(--kx-surface-active);
+  border-color: var(--kx-roxo);
+  border-style: solid;
+  color: var(--kx-text);
+}
+.cl__aba:focus-visible { outline: 2px solid var(--kx-ciano); outline-offset: 2px; }
+
+.cl__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+}
+
+.cl__aviso,
+.cl__erro {
+  margin: 0 0 var(--kx-space-2);
+  padding: var(--kx-space-2) var(--kx-space-3);
+  border-radius: var(--kx-radius-sm);
+  font-size: var(--kx-fs-sm);
+}
+.cl__aviso { border: 1px solid rgb(255 181 71 / 0.45); color: var(--kx-warning); }
+.cl__erro { border: 1px solid rgb(255 92 122 / 0.5); color: var(--kx-danger); }
+
+.cl__editor {
+  display: block;
+  width: 100%;
+  min-height: 320px;
+  padding: var(--kx-space-4);
+  border: 1px solid var(--kx-roxo);
+  border-radius: var(--kx-radius-md);
+  background: rgb(4 3 10 / 0.85);
+  color: #e9e5ff;
+  font-family: var(--kx-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  tab-size: 2;
+  resize: vertical;
+}
+.cl__editor:focus-visible { outline: 2px solid var(--kx-ciano); outline-offset: 2px; }
+
+.cl__dica { margin: var(--kx-space-2) 0 0; font-size: var(--kx-fs-xs); }
+
+.cl__diff {
+  margin: 0;
+  padding: var(--kx-space-3) 0;
+  max-height: 340px;
+  overflow: auto;
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md);
+  background: rgb(4 3 10 / 0.75);
+  color: #d9d3ff;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+}
+.cl__dl { display: block; padding: 0 var(--kx-space-3); white-space: pre-wrap; overflow-wrap: anywhere; }
+.cl__dl.is-add { background: rgb(46 229 157 / 0.12); color: #b8f5dc; }
+.cl__dl.is-del { background: rgb(255 92 122 / 0.12); color: #ffc2cd; text-decoration: line-through; }
+.cl__sinal { display: inline-block; width: 1.5em; color: var(--kx-text-muted); user-select: none; }

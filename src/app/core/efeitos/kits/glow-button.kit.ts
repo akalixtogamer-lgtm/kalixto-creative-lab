@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { CORES, MDN, VALIDADO_EM, cssPalco } from './_base';
+import { CORES, MDN, VALIDADO_EM, cssAngular, cssPalco, tsSimples } from './_base';
 
 export const GLOW_BUTTON: EffectKit = {
   ficha: {
@@ -92,4 +92,29 @@ ${
       js: `// Este efeito não precisa de JavaScript.`,
     };
   },
+  angular: (v) => ({
+    ts: tsSimples('glow-button'),
+    html: `<button class="neon" type="button">Ao vivo</button>\n`,
+    css: cssAngular(GLOW_BUTTON.gerar(v).css),
+  }),
+  niveis: {
+    iniciante: [
+      'O brilho é uma sombra sem deslocamento: ela se espalha igual para todos os lados, parecendo luz.',
+      'Uma sombra fica por fora e outra por dentro do botão, como um tubo de neon.',
+      'O pulso faz o brilho crescer e diminuir sem parar.',
+    ],
+    avancado: [
+      'Várias sombras separadas por vírgula se somam; inset desenha a sombra para dentro da borda.',
+      'animation-direction: alternate evita o salto do fim para o início: o pulso vai e volta.',
+      'Animar box-shadow causa repintura a cada quadro. Uma alternativa mais barata é um pseudo-elemento com a sombra máxima e animar só opacity.',
+      'filter: drop-shadow acompanha o contorno real (bom para SVG e PNG com transparência), mas é mais caro.',
+    ],
+  },
+  glossario: [
+    { termo: 'box-shadow', explicacao: 'Sombra; com deslocamento 0 vira um halo de luz.' },
+    { termo: 'inset', explicacao: 'Desenha a sombra para dentro do elemento.' },
+    { termo: 'infinite', explicacao: 'Repete a animação para sempre.' },
+    { termo: 'alternate', explicacao: 'Cada repetição inverte o sentido (vai e volta).' },
+    { termo: ':focus-visible', explicacao: 'Foco pelo teclado com o mesmo destaque do hover.' },
+  ],
 };

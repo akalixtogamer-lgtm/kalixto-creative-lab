@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { CORES, MDN, VALIDADO_EM, cssPalco } from './_base';
+import { CORES, MDN, VALIDADO_EM, cssAngular, cssPalco, tsSimples } from './_base';
 
 export const BUTTON_HOVER: EffectKit = {
   ficha: {
@@ -74,4 +74,29 @@ export const BUTTON_HOVER: EffectKit = {
 }`,
     js: `// Este efeito não precisa de JavaScript.`,
   }),
+  angular: (v) => ({
+    ts: tsSimples('button-hover'),
+    html: `<button class="botao" type="button">Passe o mouse ou use Tab</button>\n`,
+    css: cssAngular(BUTTON_HOVER.gerar(v).css),
+  }),
+  niveis: {
+    iniciante: [
+      'Quando o mouse passa por cima, o botão sobe um pouco, cresce e ganha uma sombra colorida.',
+      'Quem usa o teclado (tecla Tab) vê a mesma coisa quando o botão recebe foco.',
+      'Ao clicar, o botão "afunda" de volta, como se fosse apertado.',
+    ],
+    avancado: [
+      'transition em vez de animation: o navegador interpola automaticamente entre os dois estados, inclusive revertendo no meio se o mouse sair cedo.',
+      ':focus-visible mostra o foco só quando faz sentido (teclado), sem aparecer no clique do mouse.',
+      'box-shadow repinta a cada quadro; para listas grandes, anime a opacidade de um pseudo-elemento com a sombra já pronta.',
+      'A cor da sombra usa hexadecimal com alfa (#RRGGBB80 = 50% de opacidade).',
+    ],
+  },
+  glossario: [
+    { termo: ':hover', explicacao: 'Estado em que o ponteiro está sobre o elemento.' },
+    { termo: ':focus-visible', explicacao: 'Estado de foco vindo do teclado — mesmo efeito para quem não usa mouse.' },
+    { termo: ':active', explicacao: 'Estado enquanto o botão está sendo pressionado.' },
+    { termo: 'transition', explicacao: 'Anima a mudança entre estados (normal ↔ hover).' },
+    { termo: 'box-shadow', explicacao: 'Sombra: deslocamento, desfoque e cor.' },
+  ],
 };

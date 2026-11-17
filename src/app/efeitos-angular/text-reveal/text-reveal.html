@@ -1,0 +1,13 @@
+<!-- o leitor de tela lê o aria-label; as partes ficam escondidas dele -->
+<h1 class="titulo" [attr.aria-label]="texto">
+  @for (c of [ciclo()]; track c) {
+    @for (palavra of palavras; track $index; let ultima = $last) {
+      <span class="palavra" aria-hidden="true">@for (p of palavra; track p.i) {<span class="parte" [style.--i]="p.i">{{ p.texto }}</span>}</span>
+      <!-- espaço entre palavras: é onde a linha pode quebrar -->
+      @if (!ultima) {
+        {{ ' ' }}
+      }
+    }
+  }
+</h1>
+<button class="repetir" type="button" (click)="repetir()">Repetir</button>
