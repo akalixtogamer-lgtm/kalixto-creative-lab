@@ -62,7 +62,7 @@
   height: 34px;
   border-radius: 50%;
   background: var(--kx-acento);
-  color: #fff;
+  color: var(--kx-bg);
   font-weight: 700;
 }
 .modulo__info { flex: 1; min-width: 180px; }

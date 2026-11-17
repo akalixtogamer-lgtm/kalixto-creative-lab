@@ -9,7 +9,7 @@ Visualização ao vivo: rota `/design-system`.
 | Marca | `--kx-magenta` · `--kx-roxo` · `--kx-azul` · `--kx-ciano` |
 | Fundo/superfície | `--kx-bg` · `--kx-bg-elev` · `--kx-surface` · `--kx-surface-hover` · `--kx-border` |
 | Texto | `--kx-text` · `--kx-text-soft` · `--kx-text-muted` |
-| Gradientes | `--kx-gradient` · `--kx-gradient-text` · `--kx-glow-magenta` |
+| Gradientes | `--kx-gradient` · `--kx-gradient-text` · `--kx-glow-magenta` · `--kx-gradient-btn` (fundos com texto branco, contraste AA) · `--kx-magenta-texto` |
 | Fontes | `--kx-font-display` · `--kx-font-body` · `--kx-font-mono` |
 | Tamanhos | `--kx-fs-xs` … `--kx-fs-2xl` |
 | Espaço (4px) | `--kx-space-1` … `--kx-space-7` |
@@ -45,7 +45,8 @@ Com `prefers-reduced-motion`, as durações viram 0.
 | `Icon` | `kx-icon` | `name`* (home, library, palette, route, play, reset, copy, check, lock, arrow-left, arrow-right, menu, close) |
 | `Logo` | `kx-logo` | `tamanho` (px, padrão 44), `descritiva` (adiciona texto alternativo) |
 | `DemoControls` | `kx-demo-controls` | `params`*, `valores`*, saída `mudou` |
-| `CssPlayground` · `GsapStudio` | páginas | query `?demo=` |
+| `LabLayout` | `kx-lab-layout` | `lab`*, `demos`*, `atual`*, `valores`*, `codigo`*, `linguagem`; saídas `executar`, `reiniciar`, `mudou`, `aplicar`; slots `[palco]` e `[toolbar]` |
+| `CssPlayground` · `GsapStudio` · `ScrollLab` · `SvgLab` · `ThreeLab` · `GlslLab` | páginas | query `?demo=` |
 
 ## Marca
 
@@ -53,3 +54,14 @@ Selo ilustrado completo em todos os tamanhos (círculo, fundo escuro). Arquivos 
 `kalixto-logo-{64,128,256,512}.webp`, `icon-192.png`, `apple-touch-icon.png` e `public/favicon.ico`.
 
 \* obrigatório
+
+## Serviço
+
+| Serviço | Uso |
+|---|---|
+| `ProgressoService` | demos executadas, desafios, exercícios, presets do usuário (localStorage) |
+
+## Regra de contraste
+
+Texto branco nunca vai direto sobre `--kx-magenta` (#ff2bd6, contraste 3,2:1). Para fundos com texto branco use
+`--kx-gradient-btn` ou `--kx-magenta-texto`; sobre a cor de acento de um laboratório, use texto `--kx-bg`.

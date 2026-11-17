@@ -76,8 +76,15 @@ export const FASES: Fase[] = [
   {
     numero: 6,
     titulo: 'Otimização e Consolidação',
-    situacao: 'futura',
-    entregas: ['QA completo', 'Acessibilidade e performance', 'Documentação final', 'Deploy'],
-    criterio: 'Projeto pronto para publicação.',
+    situacao: 'concluida',
+    entregas: [
+      'QA completo (testes automáticos + navegador)',
+      'Acessibilidade WCAG 2.1 AA (axe-core: 0 violações)',
+      'Responsividade em 390, 820 e 1440 px',
+      'Performance: bibliotecas pesadas só nas rotas que usam',
+      'Documentação final',
+      'Preparação para deploy no GitHub Pages',
+    ],
+    criterio: 'Projeto pronto para publicação, aguardando a validação do Wallace.',
   },
 ];

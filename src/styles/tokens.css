@@ -34,6 +34,9 @@
   /* ---------- Gradientes e brilhos ---------- */
   --kx-gradient: linear-gradient(135deg, var(--kx-magenta), var(--kx-roxo) 50%, var(--kx-azul));
   --kx-gradient-text: linear-gradient(90deg, var(--kx-magenta), var(--kx-ciano));
+  /* Versão mais escura para fundos com texto branco (contraste AA ≥ 4,5:1) */
+  --kx-magenta-texto: #d4119f;
+  --kx-gradient-btn: linear-gradient(135deg, #d4119f, #7c3aed 50%, #2563eb);
   --kx-glow-magenta: 0 0 24px rgb(255 43 214 / 0.35);
   --kx-glow-azul: 0 0 24px rgb(47 123 255 / 0.35);
 

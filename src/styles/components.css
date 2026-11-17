@@ -138,7 +138,7 @@ a.kx-card:focus-visible {
   transform: scale(0.97);
 }
 .kx-btn--primary {
-  background: var(--kx-gradient);
+  background: var(--kx-gradient-btn);
   box-shadow: var(--kx-glow-magenta);
 }
 .kx-btn--primary:hover {
@@ -243,6 +243,7 @@ a.kx-card:focus-visible {
 /* ---------- Breadcrumb ---------- */
 .kx-breadcrumb ol {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: var(--kx-space-2);
   margin: 0;
@@ -257,6 +258,9 @@ a.kx-card:focus-visible {
   opacity: 0.5;
 }
 .kx-breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
   color: var(--kx-text-soft);
   text-decoration: none;
 }

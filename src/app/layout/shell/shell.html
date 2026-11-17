@@ -27,7 +27,8 @@
     <div class="shell__backdrop" (click)="fecharMenu()" aria-hidden="true"></div>
   }
 
-  <main id="conteudo" class="shell__main" tabindex="-1">
+  <!-- Com o menu do celular aberto, o conteúdo de trás fica inativo (inert) -->
+  <main id="conteudo" class="shell__main" tabindex="-1" [attr.inert]="menuAberto() ? '' : null">
     <router-outlet />
   </main>
 </div>

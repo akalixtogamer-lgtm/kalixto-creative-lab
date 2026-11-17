@@ -26,12 +26,12 @@
               <th scope="row"><a [routerLink]="['/labs', t.labId]">{{ t.nome }}</a></th>
               <td>{{ t.melhorPara }}</td>
               <td>
-                <span class="nota" [attr.aria-label]="t.curva + ' de 5'">
+                <span class="nota" role="img" [attr.aria-label]="t.curva + ' de 5'">
                   @for (n of escala; track n) { <i [class.on]="n <= t.curva"></i> }
                 </span>
               </td>
               <td>
-                <span class="nota nota--ciano" [attr.aria-label]="t.controle + ' de 5'">
+                <span class="nota nota--ciano" role="img" [attr.aria-label]="t.controle + ' de 5'">
                   @for (n of escala; track n) { <i [class.on]="n <= t.controle"></i> }
                 </span>
               </td>

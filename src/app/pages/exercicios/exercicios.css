@@ -39,7 +39,8 @@
   height: 26px;
   border-radius: 50%;
   background: var(--kx-acento, var(--kx-magenta));
-  color: #fff;
+  color: var(--kx-bg);
+  font-weight: 700;
   font-size: var(--kx-fs-xs);
 }
 .alternativas {

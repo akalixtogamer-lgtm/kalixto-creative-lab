@@ -105,7 +105,7 @@
 .desafio__toast {
   padding: var(--kx-space-3) var(--kx-space-4);
   border-radius: var(--kx-radius-md);
-  background: var(--kx-gradient);
+  background: var(--kx-gradient-btn);
   font-weight: 600;
   animation: toast-entra var(--kx-dur-base) var(--kx-ease-out);
 }

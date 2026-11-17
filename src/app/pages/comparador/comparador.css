@@ -24,6 +24,9 @@
   text-transform: uppercase;
 }
 .tabela tbody th a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
   color: var(--kx-text);
   font: 700 var(--kx-fs-md) var(--kx-font-display);
   text-decoration: none;

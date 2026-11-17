@@ -33,7 +33,8 @@
   }
 }
 .hero {
-  padding-right: clamp(var(--kx-space-5), 4vw, 300px);
+  /* Reserva o espaço da logo (220px) à direita no desktop */
+  padding-right: calc(220px + var(--kx-space-7) * 2);
 }
 .hero > :not(.hero__logo) {
   position: relative;
@@ -128,7 +129,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--kx-gradient);
+  background: var(--kx-gradient-btn);
   font-weight: 700;
 }
 

@@ -77,19 +77,22 @@ canvas {
   border: 0;
 }
 
-/* Link "pular para o conteúdo" */
+/* Link "pular para o conteúdo" — centralizado para não cobrir o botão do menu */
 .skip-link {
   position: absolute;
-  top: -48px;
-  left: var(--kx-space-4);
+  top: 0;
+  left: 50%;
+  /* Escondido acima da tela; aparece só ao receber foco pelo teclado */
+  translate: -50% -120%;
+  white-space: nowrap;
   z-index: 100;
   padding: var(--kx-space-2) var(--kx-space-4);
   border-radius: var(--kx-radius-sm);
-  background: var(--kx-magenta);
+  background: var(--kx-magenta-texto);
   color: #fff;
   font-weight: 600;
   text-decoration: none;
 }
 .skip-link:focus {
-  top: var(--kx-space-2);
+  translate: -50% var(--kx-space-2);
 }

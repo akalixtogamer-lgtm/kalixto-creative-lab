@@ -21,12 +21,13 @@
   gap: var(--kx-space-2);
 }
 .pg__passos span {
+  flex-shrink: 0;
   display: grid;
   place-items: center;
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--kx-gradient);
+  background: var(--kx-gradient-btn);
   color: #fff;
   font-size: var(--kx-fs-xs);
   font-weight: 700;

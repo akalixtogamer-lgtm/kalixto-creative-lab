@@ -33,7 +33,9 @@ export class Dashboard {
     };
   });
 
-  protected readonly faseAtual = FASES.find((f) => f.situacao === 'em-andamento') ?? FASES[0];
+  /** Fase em andamento; quando todas estão prontas, mostra a última. */
+  protected readonly faseAtual = FASES.find((f) => f.situacao === 'em-andamento') ?? FASES[FASES.length - 1];
+  protected readonly roadmapCompleto = FASES.every((f) => f.situacao === 'concluida');
   protected readonly labsMvp = LABS.filter((l) => l.fase === 2);
   protected readonly labsFuturos = LABS.filter((l) => l.fase > 2);
   protected readonly primeiroDisponivel = LABS.find((l) => l.disponivel);

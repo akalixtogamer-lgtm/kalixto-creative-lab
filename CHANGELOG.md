@@ -7,6 +7,25 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.0.0-rc.1] — 2026-11-16 · Fase 6 — Otimização e consolidação
+
+> Candidata à versão 1.0. Aguardando a avaliação do Wallace (`docs/AVALIACAO.md`). Ainda não publicado.
+
+### Adicionado
+- Relatório de QA (`docs/QA.md`), arquitetura (`docs/ARQUITETURA.md`) e roteiro de avaliação (`docs/AVALIACAO.md`).
+- Registro das 43 demos gerado a partir dos dados (`docs/EFEITOS.md`).
+- Dashboard indica "Roadmap completo".
+
+### Corrigido
+- Acessibilidade (axe-core, WCAG 2.1 AA): 0 violações em 14 páginas.
+  - Contraste de texto branco sobre magenta: botões e marcadores usam o novo `--kx-gradient-btn`.
+  - `aria-label` em elementos sem papel → `role="img"`.
+  - Conteúdo de trás fica inativo (`inert`) com o menu do celular aberto.
+- Link "Pular para o conteúdo" cobria o botão do menu no celular e aparecia cortado no topo.
+- Alvos de toque com pelo menos 32 px (breadcrumb, sliders, tabela do Comparador).
+- Textos do topo do Dashboard passavam por baixo da logo no desktop.
+- "Como usar" desalinhado no celular.
+
 ## [0.7.0] — 2026-11-16 · Fase 5 — WebGL e GLSL
 
 ### Adicionado

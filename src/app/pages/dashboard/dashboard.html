@@ -2,7 +2,9 @@
   <!-- Hero -->
   <header class="hero kx-glass">
     <div class="hero__logo"><kx-logo [tamanho]="220" descritiva /></div>
-    <p class="kx-eyebrow">Fase {{ faseAtual.numero }} · {{ faseAtual.titulo }}</p>
+    <p class="kx-eyebrow">
+      {{ roadmapCompleto ? 'Roadmap completo · 6 fases prontas para avaliação' : 'Fase ' + faseAtual.numero + ' · ' + faseAtual.titulo }}
+    </p>
     <h1 class="kx-title"><span class="kx-gradient-text">KALIXTO</span> CREATIVE LAB</h1>
     <p class="kx-lead">
       Um laboratório para aprender Creative Development mexendo: ajuste, execute, veja o código e entenda.
@@ -66,7 +68,7 @@
 
   <!-- Laboratórios do MVP -->
   <section class="kx-section" aria-labelledby="mvp">
-    <h2 id="mvp" class="kx-section-title">Laboratórios do MVP</h2>
+    <h2 id="mvp" class="kx-section-title">Laboratórios do MVP · Fase 2</h2>
     <div class="kx-grid">
       @for (lab of labsMvp; track lab.id) {
         @let prog = progresso(lab);
@@ -99,7 +101,7 @@
 
   <!-- Próximas etapas -->
   <section class="kx-section" aria-labelledby="futuro">
-    <h2 id="futuro" class="kx-section-title">Laboratórios avançados</h2>
+    <h2 id="futuro" class="kx-section-title">Laboratórios avançados · Fases 3 a 5</h2>
     <div class="kx-grid">
       @for (lab of labsFuturos; track lab.id) {
         <a class="kx-card is-futuro" [routerLink]="['/labs', lab.id]" [attr.data-acento]="lab.acento">
