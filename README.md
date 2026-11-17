@@ -13,11 +13,11 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `1.4.0-rc.1` (candidata — Fase 3 da biblioteca técnica) |
+| Versão | `1.4.1-rc.1` (Fase 3 da biblioteca técnica + correção do histórico) |
 | Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
 | Conteúdo | 7 laboratórios · 60 demos interativas · 18 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
 | Testes | 334 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
-| Publicado no GitHub Pages | Sim, a `v1.3.0-rc.1`. A `v1.4.0-rc.1` só vai depois da sua avaliação |
+| Publicado no GitHub Pages | Sim, a `v1.4.1-rc.1` |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
 

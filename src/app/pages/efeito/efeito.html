@@ -34,12 +34,13 @@
           @if (!bibliotecasProntas()) {
             <p class="kx-muted ef__nota" role="status">{{ erroBibliotecas() || 'Carregando ' + nomesBibliotecas() + '…' }}</p>
           }
-          <iframe
-            #frame
-            class="ef__frame"
-            sandbox="allow-scripts"
-            [title]="'Preview do efeito ' + f.nomeAmigavel"
-          ></iframe>
+          <div #frameHost class="ef__frame-host">
+            <iframe
+              class="ef__frame"
+              sandbox="allow-scripts"
+              [title]="'Preview do efeito ' + f.nomeAmigavel"
+            ></iframe>
+          </div>
         } @else {
           <div class="ef__ng" role="region" [attr.aria-label]="'Componente Angular do efeito ' + f.nomeAmigavel">
             <ng-container #ngHost />

@@ -11,6 +11,7 @@
   list-style: none;
 }
 
+.ef__frame-host { display: block; }
 .ef__frame {
   display: block;
   width: 100%;

@@ -7,6 +7,14 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.4.1-rc.1] — 2026-11-17 · Correção
+
+### Corrigido
+- **Página do efeito "abrindo mais de uma vez" (celular e computador).**
+  - Cada atualização do preview (abrir o próximo efeito, mexer num controle, Reiniciar, executar código editado) trocava o `srcdoc` do iframe, e o navegador registrava isso como uma página nova no histórico. Era preciso tocar em "Voltar" várias vezes para sair do efeito.
+  - Agora o preview troca o iframe por um novo já com o código. Só a navegação real entra no histórico.
+  - Verificado no Chromium: abrir, mexer 5 vezes no controle, Reiniciar, alternar Angular e executar código editado não criam entradas; "Voltar" leva direto à página anterior.
+
 ## [1.4.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 3
 
 ### Adicionado

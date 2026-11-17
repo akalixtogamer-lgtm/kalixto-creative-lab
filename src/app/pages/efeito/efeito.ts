@@ -140,7 +140,7 @@ export class Efeito {
     { rotulo: this.ficha()?.nomeAmigavel ?? 'Efeito não encontrado' },
   ]);
 
-  private readonly frame = viewChild<ElementRef<HTMLIFrameElement>>('frame');
+  private readonly frameHost = viewChild<ElementRef<HTMLElement>>('frameHost');
   /** Onde o componente Angular do efeito é criado (sem NgComponentOutlet, para não pesar o pacote inicial). */
   private readonly ngHost = viewChild('ngHost', { read: ViewContainerRef });
   private timer?: ReturnType<typeof setTimeout>;
@@ -189,14 +189,14 @@ export class Efeito {
     });
     // Atualiza o preview quando o código muda. O pequeno atraso evita
     // recarregar o iframe a cada pixel enquanto o slider é arrastado.
-    // srcdoc é atribuído direto no elemento: o conteúdo é o código do próprio
-    // kit e roda isolado pelo sandbox, sem acesso a esta página.
+    // O conteúdo é o código do próprio kit e roda isolado pelo sandbox,
+    // sem acesso a esta página.
     effect((onCleanup) => {
       const doc = this.documento();
-      const el = this.frame()?.nativeElement;
-      if (!el || !doc) return;
+      const host = this.frameHost()?.nativeElement;
+      if (!host || !doc) return;
       clearTimeout(this.timer);
-      this.timer = setTimeout(() => (el.srcdoc = doc), 120);
+      this.timer = setTimeout(() => this.mostrar(host, doc), 120);
       onCleanup(() => clearTimeout(this.timer));
     });
   }
@@ -212,10 +212,28 @@ export class Efeito {
 
   /** Recarrega o preview com o mesmo código (reinicia animações). */
   protected reiniciar(): void {
-    const el = this.frame()?.nativeElement;
-    if (!el) return;
-    el.srcdoc = '';
-    el.srcdoc = this.documento();
+    const host = this.frameHost()?.nativeElement;
+    const doc = this.documento();
+    if (host && doc) this.mostrar(host, doc);
+  }
+
+  /**
+   * Troca o iframe por um novo já com o documento.
+   *
+   * Mudar o srcdoc de um iframe que já está na página cria uma entrada no
+   * histórico do navegador: cada ajuste no controle virava um "Voltar" a mais,
+   * e parecia que a página tinha aberto várias vezes. Um iframe novo carrega
+   * o primeiro documento sem criar entrada. O clone mantém o sandbox, a classe
+   * e o título do iframe do template.
+   */
+  private mostrar(host: HTMLElement, doc: string): void {
+    const atual = host.querySelector('iframe');
+    if (!atual) return;
+    const novo = atual.cloneNode(false) as HTMLIFrameElement;
+    const f = this.ficha();
+    if (f) novo.title = `Preview do efeito ${f.nomeAmigavel}`;
+    novo.srcdoc = doc;
+    host.replaceChildren(novo);
   }
 
   protected baixar(): void {
