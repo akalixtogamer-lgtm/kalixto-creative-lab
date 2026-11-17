@@ -63,6 +63,16 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/biblioteca/biblioteca').then((m) => m.Biblioteca),
       },
       {
+        path: 'efeitos/:id',
+        title: 'Efeito · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/efeito/efeito').then((m) => m.Efeito),
+      },
+      {
+        path: 'efeitos',
+        redirectTo: 'biblioteca',
+        pathMatch: 'full',
+      },
+      {
         path: 'trilha',
         title: 'Trilha de aprendizagem · Kalixto Creative Lab',
         loadComponent: () => import('./pages/trilha/trilha').then((m) => m.Trilha),

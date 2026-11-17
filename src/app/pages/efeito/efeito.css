@@ -1,0 +1,103 @@
+:host {
+  display: block;
+}
+
+.ef__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+  margin: var(--kx-space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ef__frame {
+  display: block;
+  width: 100%;
+  height: clamp(320px, 52vh, 480px);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md);
+  background: #0b0a14;
+}
+
+.ef__nota {
+  margin: var(--kx-space-3) 0 0;
+  font-size: var(--kx-fs-sm);
+}
+
+/* Abas de código */
+.ef__abas {
+  display: flex;
+  gap: var(--kx-space-1);
+  margin-bottom: var(--kx-space-2);
+}
+.ef__aba {
+  min-height: 36px;
+  padding: 0 var(--kx-space-4);
+  border: 1px solid var(--kx-border);
+  border-radius: 999px;
+  background: var(--kx-surface);
+  color: var(--kx-text-soft);
+  font: inherit;
+  font-size: var(--kx-fs-sm);
+  cursor: pointer;
+}
+.ef__aba:hover {
+  color: var(--kx-text);
+  border-color: var(--kx-border-strong);
+}
+.ef__aba[aria-selected='true'] {
+  background: var(--kx-surface-active);
+  border-color: var(--kx-roxo);
+  color: var(--kx-text);
+}
+.ef__aba:focus-visible {
+  outline: 2px solid var(--kx-ciano);
+  outline-offset: 2px;
+}
+
+.ef__passos li + li {
+  margin-top: var(--kx-space-2);
+}
+
+/* Ficha técnica */
+.ef__ficha {
+  margin-top: var(--kx-space-6, 32px);
+  padding: var(--kx-space-5);
+}
+.ef__dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: var(--kx-space-4) var(--kx-space-5);
+  margin: var(--kx-space-4) 0 0;
+}
+.ef__dl > div {
+  min-width: 0;
+}
+.ef__dl dt {
+  margin-bottom: var(--kx-space-1);
+  color: var(--kx-text-muted);
+  font-size: var(--kx-fs-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ef__dl dd {
+  margin: 0;
+  color: var(--kx-text-soft);
+  overflow-wrap: anywhere;
+}
+.ef__dl ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+.ef__dl a {
+  color: var(--kx-ciano);
+}
+
+.ef__vizinhos {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--kx-space-3);
+  flex-wrap: wrap;
+  margin-top: var(--kx-space-5);
+}

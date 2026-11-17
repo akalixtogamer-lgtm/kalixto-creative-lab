@@ -1,7 +1,7 @@
 /* ===== Biblioteca: filtros ===== */
 .filtros {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
   gap: var(--kx-space-4);
   padding: var(--kx-space-4);
   border-radius: var(--kx-radius-md);
@@ -36,4 +36,28 @@
 }
 .is-planejado {
   opacity: 0.7;
+}
+
+.filtros__campo--busca {
+  grid-column: 1 / -1;
+}
+
+.resultado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kx-space-3);
+  flex-wrap: wrap;
+  margin: var(--kx-space-4) 0;
+}
+.resultado p {
+  margin: 0;
+}
+
+/* Kits com ficha completa ganham uma borda de destaque */
+.is-kit {
+  border-color: rgb(34 227 255 / 0.35);
+}
+.is-kit .abrir {
+  color: var(--kx-ciano);
 }

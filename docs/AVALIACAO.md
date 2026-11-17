@@ -11,10 +11,11 @@ Cada fase está numa branch e numa versão do Git, para você avaliar etapa por 
 | 5 | WebGL & GLSL | `v0.7.0` | `fase-5` |
 | 6 | QA, acessibilidade, performance, documentação | `v1.0.0-rc.1` | `fase-6` |
 | + | Navbar ao rolar e divisores de seção (pedido de 16/11) | `v1.0.0-rc.2` | `melhorias-navbar-divisores` |
-| + | Efeitos das referências: Interface Lab, capítulos, SplitText | `v1.1.0-rc.1` | `efeitos-referencias` (atual) |
+| + | Efeitos das referências: Interface Lab, capítulos, SplitText | `v1.1.0-rc.1` | `efeitos-referencias` |
+| B1 | Biblioteca técnica, Fase 1: fichas, 15 categorias, 10 kits, `/efeitos/:id` | `v1.2.0-rc.1` | `efeitos-fase1` (atual) |
 
-O mais simples é avaliar tudo na versão atual (`efeitos-referencias`), que contém todas as fases.
-Para ver uma fase isolada: `git checkout v0.4.0` (por exemplo), `npm install`, `npm start`. Volte com `git checkout efeitos-referencias`.
+O mais simples é avaliar tudo na versão atual (`efeitos-fase1`), que contém todas as fases.
+Para ver uma fase isolada: `git checkout v0.4.0` (por exemplo), `npm install`, `npm start`. Volte com `git checkout efeitos-fase1`.
 
 Antes de começar: `npm install` e `npm start`, depois abra http://localhost:4200.
 
@@ -78,6 +79,21 @@ Scroll Lab, em especial:
 
 **Scroll Lab → Capítulos**: a linha à esquerda se preenche e o capítulo do centro acende.
 **GSAP Studio → SplitText**: letras, palavras e linhas com os quatro efeitos; Reiniciar devolve o texto original.
+
+## Biblioteca técnica · Fase 1 (`docs/AUDITORIA.md`)
+
+**Biblioteca** (menu → Biblioteca de efeitos):
+- [ ] O texto do topo diz "10 kits … e 60 demos"; os kits aparecem primeiro, com borda ciano e o selo "Ficha completa"
+- [ ] A busca encontra por tecnologia e aplicação, ignorando acentos: "botao", "hero", "conic"
+- [ ] Os filtros Categoria, Tipo, Nível, Interação e Dependências funcionam; "Limpar filtros" volta tudo
+- [ ] `/biblioteca?categoria=cursor` abre já filtrada
+
+**Página de cada kit** (`/efeitos/fade-in` e os outros nove):
+- [ ] O preview funciona; mexer em qualquer controle muda o preview **e** a aba de código
+- [ ] Reiniciar, Restaurar valores e Baixar `.html` funcionam (o arquivo baixado abre sozinho no navegador)
+- [ ] Magnético e Card tilt reagem ao mouse; com Tab, o botão e o card mostram o foco
+- [ ] A ficha técnica aparece completa embaixo; as setas levam ao kit anterior e ao próximo
+- [ ] Recarregar a página (F5) num `/efeitos/...` continua funcionando
 
 ## Fase 6 — Qualidade
 

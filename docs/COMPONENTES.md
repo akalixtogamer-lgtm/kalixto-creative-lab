@@ -42,11 +42,13 @@ Com `prefers-reduced-motion`, as durações viram 0.
 | `StatusBadge` | `kx-status-badge` | `status`* (`em-teste`, `em-construcao`, `planejado`, `bloqueado`, `validado`) |
 | `CodeViewer` | `kx-code-viewer` | `codigo`*, `linguagem`, `titulo` — botão Copiar incluso |
 | `Breadcrumb` | `kx-breadcrumb` | `itens`* (`{ rotulo, rota? }[]`) |
-| `Icon` | `kx-icon` | `name`* (home, library, palette, route, play, reset, copy, check, lock, arrow-left, arrow-right, menu, close) |
+| `Icon` | `kx-icon` | `name`* (home, library, palette, route, play, reset, copy, check, lock, arrow-left, arrow-right, menu, close, download…) |
 | `Logo` | `kx-logo` | `tamanho` (px, padrão 44), `descritiva` (adiciona texto alternativo) |
 | `DemoControls` | `kx-demo-controls` | `params`*, `valores`*, saída `mudou` |
 | `LabLayout` | `kx-lab-layout` | `lab`*, `demos`*, `atual`*, `valores`*, `codigo`*, `linguagem`; saídas `executar`, `reiniciar`, `mudou`, `aplicar`; slots `[palco]` e `[toolbar]` |
 | `CssPlayground` · `GsapStudio` · `ScrollLab` · `SvgLab` · `ThreeLab` · `GlslLab` · `UiLab` | páginas | query `?demo=` |
+| `Efeito` | página `/efeitos/:id` | `id`* (rota) — preview em iframe sandbox, controles, abas HTML/CSS/JS, download, ficha técnica |
+| `Biblioteca` | página `/biblioteca` | query `?lab=` e `?categoria=`; busca e 8 filtros sobre kits + demos |
 
 ## Marca
 

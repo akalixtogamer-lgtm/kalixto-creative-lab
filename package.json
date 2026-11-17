@@ -1,6 +1,6 @@
 {
   "name": "kalixto-creative-lab",
-  "version": "1.1.0-rc.1",
+  "version": "1.2.0-rc.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,7 +8,8 @@
     "build:pages": "ng build --base-href /kalixto-creative-lab/ && node scripts/copiar-404.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false",
-    "test:watch": "ng test"
+    "test:watch": "ng test",
+    "docs:efeitos": "esbuild scripts/exportar-efeitos.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/exportar-efeitos.mjs && node .angular/exportar-efeitos.mjs | python3 scripts/gerar-docs-efeitos.py"
   },
   "private": true,
   "packageManager": "npm@10.9.9",

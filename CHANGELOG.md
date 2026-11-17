@@ -7,6 +7,34 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.2.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 1
+
+> Master Prompt "Auditoria, expansão, implementação e documentação de efeitos web". Diagnóstico em `docs/AUDITORIA.md`.
+
+### Adicionado
+- **Ficha técnica tipada** (`EffectSheet`) com os campos da seção 05: categoria, subcategoria, objetivo, aplicações, nível (inclusive experimental), tecnologias, dependências, interação, tags, explicação, alternativa, compatibilidade, responsividade, acessibilidade, performance, limitações, referências, data de validação e status.
+- **15 categorias** do mapa de efeitos. As 60 demos existentes foram classificadas sem duplicar código.
+- **10 kits** autossuficientes: Fade In, Slide In, Scale Reveal, Button Hover, Magnetic Button, Glow Button, Animated Gradient, Text Reveal, 3D Card Tilt e Animated Border. Todos em HTML, CSS e JS nativos, sem bibliotecas.
+- **Página `/efeitos/:id`:**
+  - preview em `iframe sandbox="allow-scripts"` com CSP sem rede, rodando exatamente o código exibido;
+  - controles, abas HTML/CSS/JS, Reiniciar, Restaurar valores e download do `.html`;
+  - ficha técnica completa.
+- **Biblioteca:**
+  - busca por nome, descrição, tecnologia, categoria, aplicação e tags, ignorando acentos;
+  - filtros por categoria, tipo, nível, interação e dependências;
+  - ordenação por nome e por dificuldade;
+  - `?categoria=` na URL.
+- `npm run docs:efeitos` gera `docs/CATALOGO-DE-EFEITOS.md` e uma página por kit em `docs/efeitos/`.
+- Documentação nova: `AUDITORIA`, `SEGURANCA`, `ACESSIBILIDADE`, `PERFORMANCE` e `TECNOLOGIAS`.
+- 62 testes novos (295 no total). Entre eles, um teste garante que **cada controle muda o código** e que todo kit respeita `prefers-reduced-motion`.
+
+### Corrigido durante a verificação
+- Text Reveal quebrava palavras no meio da linha no modo letras. Agora as letras ficam agrupadas por palavra.
+- Bind dinâmico do atributo `sandbox` é bloqueado pelo Angular (NG0910). O atributo passou a ser estático no template.
+
+### Preservado
+- Todas as rotas, os laboratórios, o progresso salvo e os filtros antigos da Biblioteca (`?lab=`, situação).
+
 ## [1.1.0-rc.1] — 2026-11-16 · Efeitos das referências
 
 > Avaliação das 8 imagens da pasta "efeitos pra site" em `docs/REFERENCIAS.md`.

@@ -70,3 +70,32 @@ o progresso vale só na sessão.
 3. Crie `pages/<lab>/` com o componente usando `<kx-lab-layout>`.
 4. Adicione a rota em `app.routes.ts` (antes de `labs/:id`).
 5. Escreva os testes (`<lab>.spec.ts`); o teste de integridade dos dados roda sozinho.
+
+## Biblioteca de efeitos e kits (Master Prompt, Fase 1)
+
+Planejamento completo em [`AUDITORIA.md`](AUDITORIA.md).
+
+| Arquivo | Papel |
+|---|---|
+| `core/models/effect-sheet.model.ts` | Ficha técnica (`EffectSheet`), `EffectKit`, níveis, interações e tecnologias |
+| `core/efeitos/categorias.ts` | As 15 categorias do mapa de efeitos |
+| `core/efeitos/kits/*.kit.ts` | Um arquivo por efeito: ficha, parâmetros e `gerar(valores)` → `{ html, css, js }` |
+| `core/efeitos/registry.ts` | `EFFECT_REGISTRY` (kits), `CATEGORIA_DAS_DEMOS` (as 60 demos no mapa) e `CATALOGO` (kits + demos) |
+| `core/efeitos/sandbox.ts` | `montarDocumento()`: o HTML completo com CSP, usado no preview **e** no download |
+| `pages/efeito/` | `/efeitos/:id`: preview isolado, controles, abas de código, ficha técnica |
+| `pages/biblioteca/` | Busca e filtros sobre o `CATALOGO` |
+
+**Fluxo:** controle → `valores` (signal) → `kit.gerar()` → `montarDocumento()` →
+`iframe.srcdoc`. As abas de código mostram o mesmo objeto, então preview e código
+não podem divergir.
+
+### Como criar um efeito novo
+
+1. Crie `core/efeitos/kits/<id>.kit.ts` exportando um `EffectKit`. Use
+   `cssPalco()` e os helpers de `_base.ts`.
+2. Inclua o kit em `EFFECT_REGISTRY` (`registry.ts`).
+3. Rode `npm test`. Os testes verificam se a ficha está completa, se os valores
+   padrão são válidos, se **cada controle muda o código** e se há
+   `prefers-reduced-motion`.
+4. Rode `npm run docs:efeitos` para gerar `docs/efeitos/<id>.md` e atualizar
+   `docs/CATALOGO-DE-EFEITOS.md`.

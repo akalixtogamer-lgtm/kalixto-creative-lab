@@ -13,11 +13,11 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `1.1.0-rc.1` (candidata) |
+| Versão | `1.2.0-rc.1` (candidata — Fase 1 da biblioteca técnica) |
 | Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
-| Conteúdo | 7 laboratórios · 60 demos interativas · 27 exercícios · 60 desafios |
-| Testes | 233 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
-| Publicado no GitHub Pages | **Não** — só depois da sua avaliação |
+| Conteúdo | 7 laboratórios · 60 demos interativas · 10 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
+| Testes | 295 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
+| Publicado no GitHub Pages | Sim, a `v1.1.0-rc.1`. A `v1.2.0-rc.1` só vai depois da sua avaliação |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
 
@@ -61,7 +61,8 @@ Cada uma tem presets prontos, um desafio prático e fica na URL (`?demo=…`) pa
 | Trilha de aprendizagem | Caminho do CSS ao WebGL, com ✓ por demo, ★ por desafio e "Continuar de onde parei" | `/trilha` |
 | Exercícios | 27 perguntas com correção e explicação | `/exercicios` |
 | Comparador | Quando usar cada tecnologia + o mesmo efeito em CSS, Web Animations e GSAP | `/comparador` |
-| Biblioteca de efeitos | Todas as demos com busca e filtros (lab, nível, executados) | `/biblioteca` |
+| Biblioteca de efeitos | 10 kits + 60 demos nas 15 categorias, com busca (nome, tecnologia, aplicação, tags) e filtros (categoria, tipo, lab, nível, interação, dependências, situação) | `/biblioteca` |
+| Ficha do efeito | Preview isolado, controles, código HTML/CSS/JS sincronizado, download e ficha técnica | `/efeitos/:id` |
 
 O progresso (demos executadas, desafios, exercícios e presets) fica salvo **no navegador** — nada é enviado para a internet.
 
@@ -119,6 +120,12 @@ Endereço final: `https://akalixtogamer-lgtm.github.io/kalixto-creative-lab/`
 | Arquivo | Conteúdo |
 |---|---|
 | [`docs/AVALIACAO.md`](docs/AVALIACAO.md) | Roteiro para você avaliar cada fase |
+| [`docs/AUDITORIA.md`](docs/AUDITORIA.md) | Fase Zero: diagnóstico, arquitetura proposta e plano |
+| [`docs/CATALOGO-DE-EFEITOS.md`](docs/CATALOGO-DE-EFEITOS.md) | Catálogo por categoria (gerado) + uma página por kit em `docs/efeitos/` |
+| [`docs/SEGURANCA.md`](docs/SEGURANCA.md) | Isolamento do preview (sandbox + CSP) e verificações |
+| [`docs/ACESSIBILIDADE.md`](docs/ACESSIBILIDADE.md) | WCAG 2.2 AA: o que foi feito e o que falta |
+| [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md) | Pacotes medidos e decisões |
+| [`docs/TECNOLOGIAS.md`](docs/TECNOLOGIAS.md) | Bibliotecas em uso e avaliadas (Lenis, Lottie, Rive, PixiJS) |
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Fases, critérios de passagem e versões |
 | [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) | Como o projeto funciona e como estender |
 | [`docs/EFEITOS.md`](docs/EFEITOS.md) | Registro das 60 demos com links diretos |

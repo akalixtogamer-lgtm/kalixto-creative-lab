@@ -4,7 +4,7 @@ Data: 16/11/2026 · Versão: `1.0.0-rc.1`
 
 ## 1. Testes automáticos (`npm test`)
 
-**233 testes passando**, em 9 arquivos:
+**295 testes passando**, em 10 arquivos (17/11/2026):
 
 | Arquivo | O que cobre |
 |---|---|
@@ -16,6 +16,7 @@ Data: 16/11/2026 · Versão: `1.0.0-rc.1`
 | `fase3.spec.ts` | SVG Lab, progresso salvo, desafios, presets do usuário, Trilha, Exercícios, Comparador |
 | `three-lab.spec.ts` | 9 demos, código, demos ao vivo, desafio automático, aviso sem WebGL |
 | `glsl-lab.spec.ts` | 7 demos; todo uniform controlado existe no shader |
+| `efeitos.spec.ts` | 15 categorias; 10 kits: ficha completa, padrões válidos, código sem `undefined`/`NaN`, **cada controle altera o código**, `prefers-reduced-motion`; todas as demos classificadas; sandbox/CSP; páginas `/efeitos/:id` e Biblioteca |
 | `ui-lab.spec.ts` | 13 demos do Interface Lab; caminhos dos 17 divisores; bento; tipografia |
 
 > O ambiente de testes (jsdom) não tem WebGL nem layout real. Por isso as cenas 3D, os shaders e a rolagem
@@ -66,3 +67,21 @@ O palco 3D pausa fora da tela e com a aba escondida; densidade de pixels limitad
 
 `npm run build:pages` testado num servidor que imita o Pages (subpasta `/kalixto-creative-lab/` e `404.html`):
 links diretos para labs e demos abrem certo; logo, texturas e o modelo `.glb` carregam sem erro.
+
+## 7. Biblioteca técnica · Fase 1 (17/11/2026)
+
+Verificado no Chromium (Playwright), sobre o build de produção:
+
+| Verificação | Resultado |
+|---|---|
+| Os 10 previews carregam no iframe | ✅ 10/10 |
+| Magnético: aproximar o mouse gera `translate(...)` | ✅ `translate(13.36px, 6.56px)` |
+| Card tilt: mouse no canto gera rotação | ✅ `--ry: 8.17deg` |
+| Borda animada: o ângulo avança com o tempo | ✅ 120° → 166° em 0,5 s |
+| Gradiente: `background-position` muda | ✅ 3,5% → 8,4% |
+| Text Reveal: partes criadas | ✅ 32 letras |
+| Sincronia: mudar duração para 1500 ms | ✅ aparece no preview e na aba CSS, que são idênticos |
+| Isolamento: `localStorage`, `parent.document`, `fetch` dentro do preview | ✅ todos bloqueados |
+| axe na página e dentro dos 10 previews | ✅ 0 violações |
+| Overflow horizontal em 390, 820 e 1440 px (`/biblioteca`, `/efeitos/text-reveal`, `/efeitos/card-tilt`) | ✅ 0 px |
+| `ng build` | ✅ sem avisos |

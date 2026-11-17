@@ -17,6 +17,22 @@ Desenvolvimento incremental, uma fase por vez. Os dados exibidos na página `/ro
 
 Roteiro de avaliação: [`AVALIACAO.md`](AVALIACAO.md).
 
+### Segunda etapa: biblioteca técnica (Master Prompt de 17/11/2026)
+
+O roadmap desta etapa substitui o `IMPLEMENTATION_ROADMAP.md` pedido no Master
+Prompt. O plano completo está em [`AUDITORIA.md`](AUDITORIA.md).
+
+| Fase | Entrega | Situação | Versão | Branch |
+|---|---|---|---|---|
+| 0 | Auditoria do projeto | ✅ | — | `efeitos-fase1` |
+| 1 | Fichas, registro, 15 categorias, 10 kits, busca/filtros, `/efeitos/:id` | 🟡 Pronta para avaliar | `v1.2.0-rc.1` | `efeitos-fase1` |
+| 2 | Code Lab (edição no sandbox), versão Angular dos kits, Code Explainer | ⏳ | — | — |
+| 3 | Scroll, cursor, máscaras, distorção de imagem; avaliar Lenis | ⏳ | — | — |
+| 4 | Comparação lado a lado, Composer de camadas, favoritos e histórico | ⏳ | — | — |
+| 5 | Canvas e partículas; avaliar Lottie, Rive e PixiJS | ⏳ | — | — |
+| 6 | Learning Center e exportação completa | ⏳ | — | — |
+| 7 | QA final e estabilização | ⏳ | — | — |
+
 ---
 
 ## Fase 1 — Fundação Angular ✅
