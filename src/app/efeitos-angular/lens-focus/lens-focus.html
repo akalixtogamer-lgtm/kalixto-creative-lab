@@ -1,0 +1,25 @@
+<section
+  #cena
+  class="cena-lente"
+  [class.is-foco]="foco()"
+  [style.--x]="x()"
+  [style.--y]="y()"
+  (pointermove)="mover($event)"
+>
+  <div class="camada desfocada" aria-hidden="true">
+    <div class="conteudo">
+      <h1>Tudo em foco</h1>
+      <p>Uma distância só, nítido de borda a borda.</p>
+    </div>
+  </div>
+  <div class="camada nitida">
+    <div class="conteudo zoom">
+      <h1>Tudo em foco</h1>
+      <p>Uma distância só, nítido de borda a borda.</p>
+    </div>
+  </div>
+  <div class="aro" aria-hidden="true"></div>
+</section>
+<button class="foco-total" type="button" [attr.aria-pressed]="foco()" (click)="foco.set(!foco())">
+  {{ foco() ? 'Voltar à lente' : 'Tudo em foco' }}
+</button>

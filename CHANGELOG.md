@@ -7,6 +7,18 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.5.0-rc.1] — 2026-11-17 · Referências em vídeo
+
+### Adicionado
+- **Mapa das referências** em [`docs/REFERENCIAS-ANIMACAO.md`](docs/REFERENCIAS-ANIMACAO.md): 4 Reels decupados quadro a quadro, 21 animações identificadas, cada uma ligada a um kit novo, a uma demo que já existia ou marcada como próxima a fazer — e uma lista de galerias e tutoriais para buscar mais referências.
+- **7 kits novos** (25 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
+  - **Tipografia:** Legenda cinética (palavra por palavra, estilo Reels), Escrita neon à mão (SVG `stroke-dashoffset` + brilho), Tipografia inflada (`text-shadow` em camadas).
+  - **Luz e profundidade:** Interface isométrica em camadas (vista explodida em CSS 3D).
+  - **Transições:** Troca de mundo com revelação circular (`clip-path: circle()` a partir do botão).
+  - **Cards e imagens:** Fita 3D de imagens (cilindro CSS girando em volta do título, com Pausar).
+  - **Cursor:** Lente de foco (página desfocada, óculos com conteúdo nítido e ampliado).
+- Todos os kits novos têm a tag "referência em vídeo" para filtrar na Biblioteca.
+
 ## [1.4.1-rc.1] — 2026-11-17 · Correção
 
 ### Corrigido

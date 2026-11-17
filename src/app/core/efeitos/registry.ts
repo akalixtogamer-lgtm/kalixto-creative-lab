@@ -19,6 +19,13 @@ import { SCROLL_PROGRESS } from './kits/scroll-progress.kit';
 import { SCROLL_REVEAL } from './kits/scroll-reveal.kit';
 import { SMOOTH_SCROLL } from './kits/smooth-scroll.kit';
 import { SPOTLIGHT_REVEAL } from './kits/spotlight-reveal.kit';
+import { KINETIC_CAPTIONS } from './kits/kinetic-captions.kit';
+import { ISOMETRIC_LAYERS } from './kits/isometric-layers.kit';
+import { NEON_HANDWRITING } from './kits/neon-handwriting.kit';
+import { THEME_WIPE } from './kits/theme-wipe.kit';
+import { IMAGE_RIBBON } from './kits/image-ribbon.kit';
+import { LENS_FOCUS } from './kits/lens-focus.kit';
+import { PUFFY_TEXT } from './kits/puffy-text.kit';
 
 /**
  * Registro central de efeitos.
@@ -46,6 +53,14 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   CUSTOM_CURSOR,
   SPOTLIGHT_REVEAL,
   IMAGE_DISTORTION,
+  // Referências em vídeo (Reels mapeados em 17/11/2026) — docs/REFERENCIAS-ANIMACAO.md
+  KINETIC_CAPTIONS,
+  ISOMETRIC_LAYERS,
+  NEON_HANDWRITING,
+  THEME_WIPE,
+  IMAGE_RIBBON,
+  LENS_FOCUS,
+  PUFFY_TEXT,
 ];
 
 export function findKit(id: string): EffectKit | undefined {

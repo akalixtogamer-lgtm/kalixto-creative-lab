@@ -1,0 +1,65 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.cena {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 640px);
+  aspect-ratio: 16 / 10;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+}
+/* o anel inclinado: tira a fita do horizonte */
+.fita {
+  position: absolute;
+  transform-style: preserve-3d;
+  transform: rotateX(-6deg) rotateZ(-8deg);
+}
+/* cada card: gira para a sua posição e "anda" até a borda do cilindro */
+.card {
+  --w: min(22vw, 112px);
+  position: absolute;
+  left: calc(var(--w) / -2);
+  top: calc(var(--w) * -0.375); /* metade da altura (4:3) */
+  width: var(--w);
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  background: var(--fundo);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+  transform: rotateY(calc(var(--i) * 360deg / var(--total))) translateZ(min(38vw, 240px));
+}
+/* a fita inteira gira sem parar */
+.giro {
+  transform-style: preserve-3d;
+  animation: girar 18s linear infinite;
+}
+@keyframes girar { to { transform: rotateY(-360deg); } }
+.cena:hover .giro,
+.cena.is-pausada .giro { animation-play-state: paused; }
+
+.titulo {
+  position: relative;
+  margin: 0;
+  font: 700 clamp(2.4rem, 11vw, 5rem) / 0.95 Georgia, 'Times New Roman', serif;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.pausar {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.pausar:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .giro { animation: none; }
+}

@@ -23,4 +23,11 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'custom-cursor': () => import('./custom-cursor/custom-cursor').then((m) => m.CustomCursor),
   'spotlight-reveal': () => import('./spotlight-reveal/spotlight-reveal').then((m) => m.SpotlightReveal),
   'image-distortion': () => import('./image-distortion/image-distortion').then((m) => m.ImageDistortion),
+  'kinetic-captions': () => import('./kinetic-captions/kinetic-captions').then((m) => m.KineticCaptions),
+  'isometric-layers': () => import('./isometric-layers/isometric-layers').then((m) => m.IsometricLayers),
+  'neon-handwriting': () => import('./neon-handwriting/neon-handwriting').then((m) => m.NeonHandwriting),
+  'theme-wipe': () => import('./theme-wipe/theme-wipe').then((m) => m.ThemeWipe),
+  'image-ribbon': () => import('./image-ribbon/image-ribbon').then((m) => m.ImageRibbon),
+  'lens-focus': () => import('./lens-focus/lens-focus').then((m) => m.LensFocus),
+  'puffy-text': () => import('./puffy-text/puffy-text').then((m) => m.PuffyText),
 };

@@ -1,0 +1,13 @@
+<div class="cena" [class.is-pausada]="pausada()">
+  <div class="fita" [style.--total]="total">
+    <div class="giro">
+      @for (fundo of cards; track $index) {
+        <div class="card" [style.--i]="$index" [style.--fundo]="fundo"></div>
+      }
+    </div>
+  </div>
+  <h1 class="titulo">Criamos<br />rápido</h1>
+</div>
+<button class="pausar" type="button" [attr.aria-pressed]="pausada()" (click)="pausada.set(!pausada())">
+  {{ pausada() ? 'Continuar' : 'Pausar' }}
+</button>

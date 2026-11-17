@@ -1,0 +1,47 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.legenda {
+  margin: 0;
+  max-width: 14ch;
+  font-size: clamp(1.8rem, 7vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
+}
+
+/* Cada palavra: entra e acende no seu tempo (--i = posição na frase) */
+.palavra {
+  display: inline-block;
+  margin-inline: 0.12em;
+  animation:
+    entrar 320ms cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--i) * 260ms) both,
+    destaque 260ms steps(1) calc(var(--i) * 260ms);
+}
+@keyframes entrar {
+  from { opacity: 0; transform: scale(0.55) translateY(0.25em); }
+}
+/* sem fill-mode: ao terminar, a cor volta ao normal */
+@keyframes destaque {
+  0%, 100% { color: #ff2e3e; }
+}
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .palavra { animation: none; }
+}

@@ -2,18 +2,18 @@
 
 > Gerado por `npm run docs:efeitos` a partir do registro (`src/app/core/efeitos/registry.ts`).
 
-Total: **78** itens — **18 kits** com ficha técnica completa e **60 demos** dos laboratórios.
+Total: **85** itens — **25 kits** com ficha técnica completa e **60 demos** dos laboratórios.
 
 | # | Categoria | Kits | Demos |
 |---|---|---|---|
 | 01 | Microinterações e UI | 2 | 3 |
-| 02 | Entradas, saídas e transições | 3 | 10 |
+| 02 | Entradas, saídas e transições | 4 | 10 |
 | 03 | Scroll e parallax | 4 | 8 |
-| 04 | Tipografia e texto | 1 | 5 |
-| 05 | Mouse e cursor | 3 | 2 |
-| 06 | Cards, imagens e galerias | 1 | 4 |
+| 04 | Tipografia e texto | 4 | 5 |
+| 05 | Mouse e cursor | 4 | 2 |
+| 06 | Cards, imagens e galerias | 2 | 4 |
 | 07 | Backgrounds | 1 | 1 |
-| 08 | Luz, sombra e profundidade | 1 | 1 |
+| 08 | Luz, sombra e profundidade | 2 | 1 |
 | 09 | SVG, geometria e máscaras | 0 | 8 |
 | 10 | Partículas e simulações | 0 | 0 |
 | 11 | 3D e WebGL | 0 | 12 |
@@ -43,6 +43,7 @@ Como um elemento aparece, some ou troca de estado.
 | [Aparecer suavemente](efeitos/fade-in.md) | Kit (ficha completa) | Iniciante | `/efeitos/fade-in` |
 | [Deslizar para dentro](efeitos/slide-in.md) | Kit (ficha completa) | Iniciante | `/efeitos/slide-in` |
 | [Crescer ao aparecer](efeitos/scale-reveal.md) | Kit (ficha completa) | Iniciante | `/efeitos/scale-reveal` |
+| [Troca de mundo com revelação circular](efeitos/theme-wipe.md) | Kit (ficha completa) | Intermediário | `/efeitos/theme-wipe` |
 | Transição entre dois estados | Demo | Iniciante | `/labs/css?demo=transitions` |
 | Animação com @keyframes | Demo | Iniciante | `/labs/css?demo=keyframes` |
 | Mover, girar, escalar e inclinar | Demo | Iniciante | `/labs/css?demo=transform` |
@@ -80,6 +81,9 @@ Revelar, animar e estilizar texto.
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
 | [Revelar texto em sequência](efeitos/text-reveal.md) | Kit (ficha completa) | Intermediário | `/efeitos/text-reveal` |
+| [Legenda cinética](efeitos/kinetic-captions.md) | Kit (ficha completa) | Iniciante | `/efeitos/kinetic-captions` |
+| [Escrita neon à mão](efeitos/neon-handwriting.md) | Kit (ficha completa) | Intermediário | `/efeitos/neon-handwriting` |
+| [Tipografia inflada](efeitos/puffy-text.md) | Kit (ficha completa) | Iniciante | `/efeitos/puffy-text` |
 | Revelar texto por letras, palavras ou linhas | Demo | Intermediário | `/labs/gsap?demo=splittext` |
 | Hero com título editorial e entrada em sequência | Demo | Intermediário | `/labs/ui?demo=hero-editorial` |
 | Título gigante entre camadas | Demo | Intermediário | `/labs/ui?demo=texto-profundidade` |
@@ -95,6 +99,7 @@ Elementos que reagem à posição do ponteiro.
 | [Botão magnético](efeitos/magnetic-button.md) | Kit (ficha completa) | Intermediário | `/efeitos/magnetic-button` |
 | [Cursor personalizado](efeitos/custom-cursor.md) | Kit (ficha completa) | Intermediário | `/efeitos/custom-cursor` |
 | [Lanterna que revela](efeitos/spotlight-reveal.md) | Kit (ficha completa) | Intermediário | `/efeitos/spotlight-reveal` |
+| [Lente de foco](efeitos/lens-focus.md) | Kit (ficha completa) | Avançado | `/efeitos/lens-focus` |
 | Anel orbital e camadas que seguem o mouse | Demo | Avançado | `/labs/ui?demo=orbita` |
 | Botões magnéticos e cursor personalizado | Demo | Intermediário | `/labs/ui?demo=magnetico` |
 
@@ -105,6 +110,7 @@ Profundidade, máscaras e carrosséis de conteúdo visual.
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
 | [Card que inclina com o mouse](efeitos/card-tilt.md) | Kit (ficha completa) | Intermediário | `/efeitos/card-tilt` |
+| [Fita 3D de imagens](efeitos/image-ribbon.md) | Kit (ficha completa) | Intermediário | `/efeitos/image-ribbon` |
 | Card 3D com perspectiva | Demo | Intermediário | `/labs/css?demo=perspective` |
 | Recortar a imagem com formas | Demo | Intermediário | `/labs/ui?demo=mascara-formas` |
 | Cards de vidro sobre uma paisagem | Demo | Intermediário | `/labs/ui?demo=carrossel-vidro` |
@@ -126,6 +132,7 @@ Brilho, reflexo, vidro e camadas.
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
 | [Botão com brilho neon](efeitos/glow-button.md) | Kit (ficha completa) | Iniciante | `/efeitos/glow-button` |
+| [Interface isométrica em camadas](efeitos/isometric-layers.md) | Kit (ficha completa) | Intermediário | `/efeitos/isometric-layers` |
 | Cards escuros com sombras suaves e forma de destaque | Demo | Intermediário | `/labs/ui?demo=cards-profundidade` |
 
 ## 09 · SVG, geometria e máscaras
