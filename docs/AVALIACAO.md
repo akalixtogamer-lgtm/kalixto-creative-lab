@@ -107,6 +107,19 @@ Em qualquer `/efeitos/...`:
 - [ ] **Baixar pacote .zip**: o zip abre; `index.html` funciona sozinho; o README mostra os valores usados
 - [ ] **Como funciona**: troque entre Iniciante, Intermediário e Avançado; o glossário aparece embaixo
 
+## Biblioteca técnica · Fase 3
+
+Em `/biblioteca`, filtre a categoria **Scroll e parallax** e abra cada kit:
+- [ ] **Revelar ao rolar:** role **dentro do preview**; os cards entram ao aparecer. Troque "repetir" para "sempre" e role para cima e para baixo
+- [ ] **Barra de progresso:** a barra enche conforme você rola o texto; troque a posição para baixo
+- [ ] **Parallax em camadas:** as montanhas se movem em velocidades diferentes
+- [ ] **Revelar com GSAP:** aparece a nota "este efeito carrega GSAP e ScrollTrigger"; troque o modo para "scrub" e veja a animação seguir a rolagem
+- [ ] **Rolagem suave (Lenis):** compare os modos "Lenis" e "nativo"; os links do menu levam às seções
+- [ ] **Cursor personalizado** e **Lanterna:** mova o mouse sobre o preview; na lanterna, teste "Acender tudo"
+- [ ] **Distorção líquida:** passe o mouse e use Tab para focar a imagem; troque para "sempre"
+- [ ] Nos 5 kits de rolagem, o botão **Angular** fica desabilitado com explicação; nos outros 3, ele funciona
+- [ ] **Baixar pacote .zip** do kit GSAP: tem a pasta `vendor/` e o `index.html` funciona sozinho
+
 ## Fase 6 — Qualidade
 
 - [ ] Celular (F12 → modo dispositivo): nenhuma página rola para o lado; menu abre e fecha

@@ -1,0 +1,41 @@
+:host { display: block; }
+/* no projeto real, coloque no styles.css global: */
+/* html { scroll-behavior: smooth; } */
+
+.menu {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgb(11 10 20 / 0.85);
+  backdrop-filter: blur(8px);
+}
+.menu a {
+  padding: 6px 14px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  color: #f4f2ff;
+  text-decoration: none;
+}
+.menu a:focus-visible { outline: 2px solid #22e3ff; outline-offset: 2px; }
+
+.secao {
+  display: grid;
+  place-items: center;
+  min-height: 90vh;
+  border-bottom: 1px solid #221d3b;
+}
+.secao:nth-child(odd) { background: #120f22; }
+.secao h2 { font-size: clamp(1.6rem, 6vw, 3rem); }
+
+/* Estilos recomendados pelo Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

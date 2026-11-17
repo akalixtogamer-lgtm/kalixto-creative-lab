@@ -47,3 +47,21 @@ O axe não substitui teste manual com leitor de tela, que ainda está pendente
 - **Code Explainer:** os níveis são um grupo de rádio nativo (`fieldset` + `legend`), e a lista é atualizada com `aria-live`.
 - **Controles:** ficam num `fieldset` que é desabilitado enquanto o código editado está em uso, com a explicação visível.
 - **Verificação com axe:** 0 violações em `/efeitos/*` (modo isolado, modo Angular, editando, comparando), em `/labs/css`, `/labs/gsap`, `/comparador` e em `/biblioteca`.
+
+## Fase 3 (17/11/2026)
+
+- **Redução de movimento** (verificado no Chromium com `prefers-reduced-motion: reduce`):
+  - **Revelar:** os cards aparecem sem deslocamento.
+  - **Parallax:** as camadas ficam paradas (`transform` vazio).
+  - **GSAP:** os cards ficam visíveis (opacidade 1), porque as animações só são criadas dentro de `gsap.matchMedia('(prefers-reduced-motion: no-preference)')`.
+  - **Lenis:** não é iniciado.
+  - **Distorção:** fica parada no hover.
+  - **Cursor:** o anel acompanha sem atraso.
+- **Cursor personalizado:**
+  - É decorativo (`aria-hidden`) e só aparece com `pointer: fine`.
+  - O cursor nativo continua visível por padrão.
+- **Lanterna:** o texto escondido está no HTML (o leitor de tela lê), e o botão "Acender tudo" dá o mesmo acesso sem ponteiro.
+- **Distorção:** a cena tem `role="img"` com nome, e o efeito também liga com o foco do teclado.
+- **Verificação com axe:**
+  - **Página `/efeitos/*` dos 8 kits:** 0 violações. Sem overflow horizontal em 1440, 820 e 390 px.
+  - **Dentro dos iframes de demonstração:** só aparecem regras de boas práticas de página inteira (`landmark-one-main`, `region`, `page-has-heading-one`), porque o documento é um trecho de exemplo, não uma página.

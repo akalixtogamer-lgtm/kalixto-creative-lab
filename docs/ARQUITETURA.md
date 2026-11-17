@@ -124,3 +124,18 @@ Cada kit agora tem, além da ficha e de `gerar()`:
 - **Componentes Angular:** o teste compila e renderiza cada um.
 - **Arquivos gerados:** `npm run verificar:angular` regenera e falha se o arquivo commitado divergir do gerador.
 - **Glossário:** todo termo precisa aparecer literalmente no código.
+
+## Fase 3 da biblioteca: kits com bibliotecas e páginas roláveis
+
+| Arquivo | Papel |
+|---|---|
+| `core/efeitos/bibliotecas.ts` | Lista das bibliotecas permitidas (GSAP, ScrollTrigger, Lenis): versão, licença, arquivo em `/vendor` e pacote npm. `carregarBiblioteca()` baixa e guarda em cache |
+| `core/efeitos/sandbox.ts` | `montarDocumento(..., bibliotecas)` embute o código das bibliotecas antes do script do kit |
+| `core/efeitos/exportar.ts` | No `.zip`, as bibliotecas vão em `vendor/` e o `index.html` as carrega com `<script defer>` |
+| `angular.json` | Copia `gsap.min.js`, `ScrollTrigger.min.js` e `lenis.min.js` para `/vendor` |
+| `kits/_base.ts` | `cssPagina()` (página rolável com intro e fim) e `cssAngularPagina()` (o mesmo CSS sem a página, para o componente) |
+
+Campos novos no `EffectKit`:
+
+- `bibliotecas?: BibliotecaId[]`: o preview espera os arquivos carregarem antes de montar o documento.
+- `previewAngular?: false`: desliga o modo Angular no preview, para kits que dependem da rolagem da janela. Os arquivos Angular continuam no Code Lab e no `.zip`.

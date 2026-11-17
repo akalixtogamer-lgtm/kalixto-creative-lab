@@ -122,7 +122,7 @@ pages/biblioteca/                   passa a listar kits + demos, com filtros nov
 | 0 | Esta auditoria | ✅ |
 | 1 | Fichas, registro, 15 categorias, 10 efeitos (Fade, Slide, Scale, Hover, Magnetic, Glow, Gradient, Text Reveal, Card Tilt, Animated Border), busca e filtros, rota por efeito | Em execução |
 | 2 | Code Lab (edição no sandbox, abas, numeração, download zip), versão Angular dos kits, Code Explainer em 3 níveis | Próxima |
-| 3 | Kits de scroll, cursor, máscara e distorção de imagem; avaliar Lenis | — |
+| 3 | Kits de scroll, cursor, máscara e distorção de imagem; avaliar Lenis | ✅ `v1.4.0-rc.1` (Lenis instalado só para o kit de rolagem suave) |
 | 4 | Comparação lado a lado e Composer de camadas; favoritos e histórico (IndexedDB) | — |
 | 5 | Canvas e partículas; avaliar Lottie, Rive e PixiJS | — |
 | 6 | Learning Center e exportação completa | — |

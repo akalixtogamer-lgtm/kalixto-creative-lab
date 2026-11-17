@@ -1,5 +1,6 @@
 import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
 import { CodigoAngular, CodigoKit } from '../../../core/models/effect-sheet.model';
+import { Biblioteca } from '../../../core/efeitos/bibliotecas';
 import { CodeViewer } from '../../../shared/components/code-viewer/code-viewer';
 import { Icon } from '../../../shared/components/icon/icon';
 import { diffLinhas } from '../../../shared/utils/diff';
@@ -33,6 +34,8 @@ export class CodeLab {
   /** Código editado em execução no preview (null = usando o gerado). */
   readonly editado = input<CodigoKit | null>(null);
   readonly angular = input.required<CodigoAngular>();
+  /** Bibliotecas carregadas antes do script (mostradas como aviso). */
+  readonly bibliotecas = input<Biblioteca[]>([]);
 
   /** Executar o código editado no preview. */
   readonly executar = output<CodigoKit>();

@@ -41,3 +41,14 @@ Nenhum número desse tipo aparece na plataforma enquanto não for medido.
 - **Componente Angular no preview sem `NgComponentOutlet`:** ele é criado com `ViewContainerRef.createComponent`, para não puxar código do `@angular/common` para o pacote inicial.
 - **Componentes Angular dos kits:** cada um vira um chunk separado e só é baixado ao escolher o modo "Angular".
 - **ZIP:** é gerado no navegador, sem compressão, porque os arquivos são pequenos e assim não precisa de biblioteca.
+
+## Fase 3
+
+- **Pacote inicial:** 294,43 kB, com 8 kits a mais (+0,09 kB, só das entradas do registro).
+- **Bibliotecas dos kits:** só são baixadas na página do kit que as usa: GSAP + ScrollTrigger somam 118.040 B e o Lenis 18.815 B.
+- **Componentes Angular** de GSAP e Lenis viram chunks lazy próprios (por exemplo, `smooth-scroll` com 21,03 kB).
+- **Rolagem:**
+  - O Revelar nativo usa IntersectionObserver, sem trabalho por quadro.
+  - A barra de progresso usa `animation-timeline` quando o navegador suporta, sem JavaScript.
+  - O parallax lê `scrollY` uma vez por quadro e só escreve `transform`.
+- **Laços com `requestAnimationFrame`:** o do cursor e o da distorção param quando chegam ao alvo.

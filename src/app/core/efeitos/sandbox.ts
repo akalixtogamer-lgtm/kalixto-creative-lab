@@ -22,8 +22,13 @@ function proteger(codigo: string, tag: 'script' | 'style'): string {
 /**
  * Monta o documento HTML completo de um efeito.
  * É exatamente o mesmo texto usado no preview e no arquivo baixado.
+ * Bibliotecas (GSAP, Lenis…) entram embutidas antes do script do kit.
  */
-export function montarDocumento(titulo: string, c: CodigoKit): string {
+export function montarDocumento(
+  titulo: string,
+  c: CodigoKit,
+  bibliotecas: { nome: string; codigo: string }[] = [],
+): string {
   const t = titulo.replace(/[<>&"]/g, '');
   return `<!doctype html>
 <html lang="pt-BR">
@@ -38,7 +43,7 @@ ${proteger(c.css, 'style')}
 </head>
 <body>
 ${c.html}
-<script>
+${bibliotecas.map((b) => `<script>/* ${b.nome} */\n${proteger(b.codigo, 'script')}\n</script>\n`).join('')}<script>
 ${proteger(c.js, 'script')}
 </script>
 </body>

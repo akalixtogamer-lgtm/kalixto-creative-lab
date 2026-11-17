@@ -17,6 +17,7 @@ import { findCategoria } from '../../core/efeitos/categorias';
 import { EFFECT_REGISTRY, findKit } from '../../core/efeitos/registry';
 import { montarDocumento } from '../../core/efeitos/sandbox';
 import { montarPacote } from '../../core/efeitos/exportar';
+import { BIBLIOTECAS, carregarBiblioteca } from '../../core/efeitos/bibliotecas';
 import { COMPONENTES_ANGULAR } from '../../efeitos-angular';
 import { criarZip } from '../../shared/utils/zip';
 import { CodeLab } from './code-lab/code-lab';
@@ -98,10 +99,26 @@ export class Efeito {
     return Object.keys(p).some((key) => String(p[key]) !== String(this.valores()[key]));
   });
 
+  /** Bibliotecas do kit (GSAP, Lenis…), com o código já baixado do próprio app. */
+  protected readonly bibliotecas = computed(() =>
+    (this.kit()?.bibliotecas ?? []).map((id) => BIBLIOTECAS[id]),
+  );
+  private readonly codigoBibliotecas = signal<{ id: string; nome: string; codigo: string }[] | null>(null);
+  protected readonly erroBibliotecas = signal('');
+  protected readonly bibliotecasProntas = computed(() => {
+    const libs = this.bibliotecas();
+    const carregadas = this.codigoBibliotecas();
+    return libs.length === 0 || (!!carregadas && carregadas.length === libs.length && carregadas.every((c, i) => c.id === libs[i].id));
+  });
+  protected readonly nomesBibliotecas = computed(() => this.bibliotecas().map((b) => b.nome).join(' e '));
+  protected readonly angularDisponivel = computed(() => this.kit()?.previewAngular !== false);
+
   protected readonly documento = computed(() => {
     const c = this.codigo();
     const f = this.ficha();
-    return c && f ? montarDocumento(f.nomeAmigavel, c) : '';
+    if (!c || !f || !this.bibliotecasProntas()) return '';
+    const libs = this.bibliotecas().length ? (this.codigoBibliotecas() ?? []) : [];
+    return montarDocumento(f.nomeAmigavel, c, libs.map((l) => ({ nome: `${l.nome}`, codigo: l.codigo })));
   });
 
   protected readonly nivelRotulo = NIVEL_FICHA_ROTULO;
@@ -131,6 +148,22 @@ export class Efeito {
   private readonly title = inject(Title);
 
   constructor() {
+    // Baixa as bibliotecas do kit (uma vez por sessão) antes de montar o preview.
+    effect(() => {
+      const libs = this.bibliotecas();
+      this.codigoBibliotecas.set(null);
+      this.erroBibliotecas.set('');
+      if (!libs.length) return;
+      Promise.all(libs.map((l) => carregarBiblioteca(l.id)))
+        .then((codigos) => {
+          if (this.bibliotecas() !== libs) return;
+          this.codigoBibliotecas.set(
+            libs.map((l, i) => ({ id: l.id, nome: `${l.nome} ${l.versao} — ${l.licenca}`, codigo: codigos[i] })),
+          );
+        })
+        .catch(() => this.erroBibliotecas.set('Não foi possível carregar as bibliotecas do efeito.'));
+    });
+
     // Carrega o componente Angular do efeito só quando o modo Angular é escolhido.
     effect(() => {
       const id = this.id();
@@ -161,7 +194,7 @@ export class Efeito {
     effect((onCleanup) => {
       const doc = this.documento();
       const el = this.frame()?.nativeElement;
-      if (!el) return;
+      if (!el || !doc) return;
       clearTimeout(this.timer);
       this.timer = setTimeout(() => (el.srcdoc = doc), 120);
       onCleanup(() => clearTimeout(this.timer));
@@ -205,7 +238,11 @@ export class Efeito {
     const c = this.codigo();
     const ng = this.angular();
     if (!k || !c || !ng) return;
-    const arquivos = montarPacote(k, this.valores(), c, ng, !!this.editado());
+    const libs = (this.codigoBibliotecas() ?? []).map((l, i) => ({
+      biblioteca: this.bibliotecas()[i],
+      codigo: l.codigo,
+    }));
+    const arquivos = montarPacote(k, this.valores(), c, ng, !!this.editado(), libs);
     this.salvar(new Blob([criarZip(arquivos) as BlobPart], { type: 'application/zip' }), `${k.ficha.id}.zip`);
   }
 

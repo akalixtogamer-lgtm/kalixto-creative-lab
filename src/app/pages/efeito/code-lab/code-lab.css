@@ -83,3 +83,10 @@
 .cl__dl.is-add { background: rgb(46 229 157 / 0.12); color: #b8f5dc; }
 .cl__dl.is-del { background: rgb(255 92 122 / 0.12); color: #ffc2cd; text-decoration: line-through; }
 .cl__sinal { display: inline-block; width: 1.5em; color: var(--kx-text-muted); user-select: none; }
+
+.cl__libs {
+  margin: 0 0 var(--kx-space-2);
+  color: var(--kx-text-soft);
+  font-size: var(--kx-fs-sm);
+}
+.cl__libs a { color: var(--kx-ciano); }

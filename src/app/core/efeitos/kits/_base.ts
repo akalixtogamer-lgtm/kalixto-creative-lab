@@ -91,6 +91,32 @@ export const MDN = {
     titulo: 'MDN — animation-delay',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/animation-delay',
   },
+  io: { titulo: 'MDN — Intersection Observer API', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API' },
+  scrollTimeline: {
+    titulo: 'MDN — CSS scroll-driven animations',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_scroll-driven_animations',
+  },
+  mask: { titulo: 'MDN — mask-image', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/mask-image' },
+  displacement: {
+    titulo: 'MDN — <feDisplacementMap>',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap',
+  },
+  turbulence: {
+    titulo: 'MDN — <feTurbulence>',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence',
+  },
+  scrollTrigger: { titulo: 'GSAP — ScrollTrigger', url: 'https://gsap.com/docs/v3/Plugins/ScrollTrigger/' },
+  gsapMatchMedia: { titulo: 'GSAP — gsap.matchMedia()', url: 'https://gsap.com/docs/v3/GSAP/gsap.matchMedia()' },
+  lenis: { titulo: 'Lenis — repositório oficial', url: 'https://github.com/darkroomengineering/lenis' },
+  scrollBehavior: {
+    titulo: 'MDN — scroll-behavior',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-behavior',
+  },
+  cursor: { titulo: 'MDN — cursor', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/cursor' },
+  pointerMedia: {
+    titulo: 'MDN — @media (pointer)',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/pointer',
+  },
 };
 
 export const VALIDADO_EM = '2026-11-17';
@@ -161,5 +187,40 @@ export function htmlRepetir(elemento: string): string {
   ${elemento}
 }
 <button class="repetir" type="button" (click)="repetir()">Repetir</button>
+`;
+}
+
+/* ===================== Kits de rolagem ===================== */
+
+/** CSS de página rolável (o documento do preview rola sozinho). */
+export function cssPagina(extra = ''): string {
+  return `/* Página da demonstração (rolável) */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: #0b0a14;
+  color: #f4f2ff;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+${extra}}
+.intro, .fim {
+  display: grid;
+  place-items: center;
+  min-height: 70vh;
+  padding: 24px;
+  color: #c9c3ea;
+  text-align: center;
+}`;
+}
+
+/** CSS Angular de um kit de página rolável: tira o bloco da página e a intro/fim. */
+export function cssAngularPagina(cssDoKit: string): string {
+  const semPagina = cssDoKit.replace(
+    /\/\* Página da demonstração[\s\S]*?\n}\n\.intro, \.fim \{[\s\S]*?\n}\n*/,
+    '',
+  );
+  return `:host { display: block; }
+
+${semPagina.trim()}
 `;
 }

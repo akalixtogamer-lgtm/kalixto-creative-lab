@@ -35,6 +35,15 @@
     </div>
   </div>
 
+  @if (bibliotecas().length) {
+    <p class="cl__libs">
+      Antes do <code>script.js</code>, este efeito carrega:
+      @for (b of bibliotecas(); track b.id; let ultimo = $last) {
+        <a [href]="b.licencaUrl" target="_blank" rel="noopener noreferrer">{{ b.nome }} {{ b.versao }}</a>@if (!ultimo) {<span>, </span>}
+      }
+      — no preview e no .html único elas vão embutidas; no .zip, na pasta <code>vendor/</code>.
+    </p>
+  }
   @if (editado() && !editando()) {
     <p class="cl__aviso" role="status">
       O preview está rodando o <strong>seu código editado</strong>. Os controles voltam a valer quando você clicar em Restaurar original.

@@ -11,6 +11,14 @@ import { MAGNETIC_BUTTON } from './kits/magnetic-button.kit';
 import { SCALE_REVEAL } from './kits/scale-reveal.kit';
 import { SLIDE_IN } from './kits/slide-in.kit';
 import { TEXT_REVEAL } from './kits/text-reveal.kit';
+import { CUSTOM_CURSOR } from './kits/custom-cursor.kit';
+import { GSAP_SCROLL_REVEAL } from './kits/gsap-scroll-reveal.kit';
+import { IMAGE_DISTORTION } from './kits/image-distortion.kit';
+import { LAYERED_PARALLAX } from './kits/layered-parallax.kit';
+import { SCROLL_PROGRESS } from './kits/scroll-progress.kit';
+import { SCROLL_REVEAL } from './kits/scroll-reveal.kit';
+import { SMOOTH_SCROLL } from './kits/smooth-scroll.kit';
+import { SPOTLIGHT_REVEAL } from './kits/spotlight-reveal.kit';
 
 /**
  * Registro central de efeitos.
@@ -29,6 +37,15 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   TEXT_REVEAL,
   CARD_TILT,
   ANIMATED_BORDER,
+  // Fase 3 — rolagem, cursor, máscaras e distorção
+  SCROLL_REVEAL,
+  SCROLL_PROGRESS,
+  LAYERED_PARALLAX,
+  GSAP_SCROLL_REVEAL,
+  SMOOTH_SCROLL,
+  CUSTOM_CURSOR,
+  SPOTLIGHT_REVEAL,
+  IMAGE_DISTORTION,
 ];
 
 export function findKit(id: string): EffectKit | undefined {

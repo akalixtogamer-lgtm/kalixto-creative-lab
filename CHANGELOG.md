@@ -7,6 +7,24 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.4.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 3
+
+### Adicionado
+- **8 kits novos** (18 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
+  - **Rolagem:** Revelar ao rolar (IntersectionObserver), Barra de progresso de leitura (`animation-timeline: scroll()` com reserva em JS), Parallax em camadas, Revelar ao rolar com GSAP (ScrollTrigger `batch` ou `scrub`, com `gsap.matchMedia`).
+  - **Navegação:** Rolagem suave com **Lenis** (com modo nativo para comparar).
+  - **Cursor e máscaras:** Cursor personalizado (ponto + anel com atraso), Lanterna com `mask-image`.
+  - **Experimental:** Distorção líquida com filtros SVG (`feTurbulence` + `feDisplacementMap`).
+- **Bibliotecas nos kits:** um kit pode declarar `bibliotecas` (GSAP, ScrollTrigger, Lenis).
+  - **Preview e `.html` único:** o código delas vai embutido no documento isolado, porque o CSP continua bloqueando a rede.
+  - **`.zip`:** elas vão na pasta `vendor/`, e o README traz a licença e o `npm install`.
+  - **Code Lab:** mostra uma nota com os nomes, as versões e os links das licenças.
+- **Lenis 1.3.27** (MIT) instalado, usado só no kit de rolagem suave. A aplicação continua com rolagem nativa.
+- Kits de página rolável (`previewAngular: false`): o botão **Angular** fica desabilitado com explicação, porque o componente depende da rolagem da janela inteira. Os arquivos Angular continuam no Code Lab e no `.zip`.
+
+### Alterado
+- Testes da versão Angular: aceitam componentes sem texto (a barra de progresso) e ignoram o CSS da página de demonstração.
+
 ## [1.3.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 2
 
 ### Adicionado

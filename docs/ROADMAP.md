@@ -26,8 +26,8 @@ Prompt. O plano completo está em [`AUDITORIA.md`](AUDITORIA.md).
 |---|---|---|---|---|
 | 0 | Auditoria do projeto | ✅ | — | `efeitos-fase1` |
 | 1 | Fichas, registro, 15 categorias, 10 kits, busca/filtros, `/efeitos/:id` | ✅ Aprovada (17/11) e publicada | `v1.2.0-rc.1` | `efeitos-fase1` |
-| 2 | Code Lab (edição no sandbox, diff, realce, numeração), versão Angular dos kits, exportação .zip, Code Explainer em 3 níveis | 🟡 Pronta para avaliar | `v1.3.0-rc.1` | `efeitos-fase2` |
-| 3 | Scroll, cursor, máscaras, distorção de imagem; avaliar Lenis | ⏳ | — | — |
+| 2 | Code Lab (edição no sandbox, diff, realce, numeração), versão Angular dos kits, exportação .zip, Code Explainer em 3 níveis | ✅ Aprovada (17/11) e publicada | `v1.3.0-rc.1` | `efeitos-fase2` |
+| 3 | 8 kits: scroll reveal, progresso, parallax, GSAP ScrollTrigger, Lenis, cursor, máscara, distorção SVG; bibliotecas embutidas no sandbox | 🟡 Pronta para avaliar | `v1.4.0-rc.1` | `efeitos-fase3` |
 | 4 | Comparação lado a lado, Composer de camadas, favoritos e histórico | ⏳ | — | — |
 | 5 | Canvas e partículas; avaliar Lottie, Rive e PixiJS | ⏳ | — | — |
 | 6 | Learning Center e exportação completa | ⏳ | — | — |

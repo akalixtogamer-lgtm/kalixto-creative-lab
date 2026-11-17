@@ -119,7 +119,19 @@ export interface EffectKit {
   /** Explicações de nível 1 e 3 (o nível 2 é ficha.explicacao). */
   niveis: { iniciante: string[]; avancado: string[] };
   glossario: TermoGlossario[];
+  /**
+   * Bibliotecas externas carregadas antes do script do kit (na ordem).
+   * O preview as embute no documento isolado; o pacote .zip as inclui em vendor/.
+   */
+  bibliotecas?: BibliotecaId[];
+  /**
+   * false quando o componente Angular não pode ser demonstrado dentro de uma
+   * caixa da página (ex.: efeitos que dependem da rolagem da janela inteira).
+   */
+  previewAngular?: boolean;
 }
+
+export type BibliotecaId = 'gsap' | 'scrolltrigger' | 'lenis';
 
 export const NIVEL_FICHA_ROTULO: Record<NivelFicha, string> = {
   iniciante: 'iniciante',

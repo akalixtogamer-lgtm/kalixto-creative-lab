@@ -104,3 +104,24 @@ Verificado no Chromium (Playwright), sobre o build de produção:
 | axe: modo Angular, editando, comparando, `/labs/css`, `/labs/gsap`, `/comparador`, `/biblioteca` | ✅ 0 violações |
 | Overflow horizontal em 390 e 820 px | ✅ 0 px |
 | Pacote inicial | ✅ 294,34 kB (igual à Fase 1) |
+
+## 9. Biblioteca técnica · Fase 3 (17/11/2026)
+
+| Verificação (Chromium, build de produção) | Resultado |
+|---|---|
+| Revelar (IO): cards ganham `is-visivel` ao rolar o iframe | ✅ 3 → 6 |
+| Progresso: barra cheia no fim da rolagem | ✅ `matrix(1, 0, 0, 1, 0, 0)` |
+| Parallax: camadas com velocidades diferentes | ✅ `translateY` 168 / 98 / 56 px |
+| GSAP: bibliotecas embutidas e card revelado ao rolar | ✅ `gsap` e `ScrollTrigger` definidos; opacidade 0 → 0,98 |
+| Lenis: classe `lenis` no `<html>` e rolagem funcionando | ✅ |
+| Cursor: anel atrasado em relação ao ponto | ✅ |
+| Lanterna: `--x`/`--y` seguem o mouse | ✅ |
+| Distorção: `scale` 0 → 29,9 no hover, volta a 0,09 ao sair, 29,8 com foco | ✅ |
+| Botão Angular desabilitado nos 5 kits de página rolável; renderiza nos outros 3 | ✅ |
+| ZIP do kit GSAP: 9 arquivos com `vendor/`; `index.html` aberto do disco carrega as bibliotecas | ✅ |
+| Isolamento com bibliotecas embutidas | ✅ `SecurityError` / `TypeError` |
+| Erros no console | ✅ nenhum |
+| axe nas páginas dos 8 kits | ✅ 0 violações |
+| Overflow horizontal em 1440, 820 e 390 px | ✅ 0 |
+| `npm test` | ✅ 398 testes |
+| `npm audit --omit=dev` | ✅ 0 vulnerabilidades |

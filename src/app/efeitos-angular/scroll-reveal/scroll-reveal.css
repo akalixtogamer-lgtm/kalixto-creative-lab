@@ -1,0 +1,37 @@
+:host { display: block; }
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.card {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #2a1f4d, #161229);
+  border: 1px solid #3a3456;
+}
+.card h2 { margin: 0; font-size: 1.2rem; }
+
+/* O efeito: só esconde se o JavaScript estiver ativo (classe .js no <html>) */
+:host(.js) .revelar {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i) * 80ms);
+}
+:host(.js) .revelar.is-visivel {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host(.js) .revelar { transform: none; }
+}

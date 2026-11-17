@@ -1,0 +1,9 @@
+<section class="cena">
+  @for (c of camadas; track c.classe) {
+    @if (c.classe === 'titulo') {
+      <h1 class="camada titulo" [style.transform]="deslocamento(c)">Profundidade</h1>
+    } @else {
+      <div class="camada" [class]="'camada ' + c.classe" aria-hidden="true" [style.transform]="deslocamento(c)"></div>
+    }
+  }
+</section>

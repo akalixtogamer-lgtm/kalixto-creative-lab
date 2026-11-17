@@ -23,18 +23,26 @@ describe('Efeitos · registro e fichas', () => {
     for (const id of ids) expect(id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
   });
 
-  it('entrega os 10 efeitos da Fase 1', () => {
+  it('entrega os 18 efeitos das Fases 1 e 3', () => {
     expect(EFFECT_REGISTRY.map((k) => k.ficha.id).sort()).toEqual(
       [
         'animated-border',
         'animated-gradient',
         'button-hover',
         'card-tilt',
+        'custom-cursor',
         'fade-in',
         'glow-button',
+        'gsap-scroll-reveal',
+        'image-distortion',
+        'layered-parallax',
         'magnetic-button',
         'scale-reveal',
+        'scroll-progress',
+        'scroll-reveal',
         'slide-in',
+        'smooth-scroll',
+        'spotlight-reveal',
         'text-reveal',
       ].sort(),
     );

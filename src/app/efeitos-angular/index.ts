@@ -15,4 +15,12 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'text-reveal': () => import('./text-reveal/text-reveal').then((m) => m.TextReveal),
   'card-tilt': () => import('./card-tilt/card-tilt').then((m) => m.CardTilt),
   'animated-border': () => import('./animated-border/animated-border').then((m) => m.AnimatedBorder),
+  'scroll-reveal': () => import('./scroll-reveal/scroll-reveal').then((m) => m.ScrollReveal),
+  'scroll-progress': () => import('./scroll-progress/scroll-progress').then((m) => m.ScrollProgress),
+  'layered-parallax': () => import('./layered-parallax/layered-parallax').then((m) => m.LayeredParallax),
+  'gsap-scroll-reveal': () => import('./gsap-scroll-reveal/gsap-scroll-reveal').then((m) => m.GsapScrollReveal),
+  'smooth-scroll': () => import('./smooth-scroll/smooth-scroll').then((m) => m.SmoothScroll),
+  'custom-cursor': () => import('./custom-cursor/custom-cursor').then((m) => m.CustomCursor),
+  'spotlight-reveal': () => import('./spotlight-reveal/spotlight-reveal').then((m) => m.SpotlightReveal),
+  'image-distortion': () => import('./image-distortion/image-distortion').then((m) => m.ImageDistortion),
 };

@@ -10,6 +10,7 @@ Verificado em **16/11/2026**.
 | rxjs | 7.8 | exigido pelo Angular |
 | gsap | 3.15 | GSAP Studio, Scroll Lab (ScrollTrigger), SVG Lab (DrawSVG, MorphSVG, MotionPath), Three.js e GLSL |
 | three | 0.187 | Three.js Lab e WebGL & GLSL |
+| lenis | 1.3.27 | só o kit "Rolagem suave" (Fase 3), embutido no preview isolado |
 | @fontsource/inter · space-grotesk · jetbrains-mono | 5.x | fontes dentro do projeto |
 
 Desde a versão 3.13 todos os plugins do GSAP (incluindo DrawSVG e MorphSVG) são gratuitos e vêm no pacote `gsap`.

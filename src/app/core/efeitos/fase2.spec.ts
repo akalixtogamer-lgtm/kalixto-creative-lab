@@ -27,7 +27,8 @@ describe('Fase 2 · versão Angular dos kits', () => {
       f.detectChanges();
       await f.whenStable();
       const el = f.nativeElement as HTMLElement;
-      expect(el.textContent?.trim().length).toBeGreaterThan(0);
+      // renderizou elementos (a barra de progresso, por exemplo, não tem texto)
+      expect(el.querySelector('*')).not.toBeNull();
       f.destroy();
     });
 
@@ -35,8 +36,11 @@ describe('Fase 2 · versão Angular dos kits', () => {
       const v = padrao(id);
       const css = kit.angular(v).css;
       // o CSS do efeito (sem o palco) é o mesmo da versão HTML/CSS/JS
-      for (const linha of kit.gerar(v).css.split('\n').filter((l) => l.includes('ms') || l.includes('px'))) {
-        if (!/height: 100%|padding: 24px|gap: 24px/.test(linha)) expect(css).toContain(linha.trim());
+      // o bloco da página rolável (body, intro/fim) fica de fora do componente
+      const cssKit = kit.gerar(v).css.replace(/\/\* Página da demonstração[\s\S]*?\n}\n\.intro, \.fim \{[\s\S]*?\n}\n*/, '');
+      for (const linha of cssKit.split('\n').filter((l) => l.includes('ms') || l.includes('px'))) {
+        // linhas em vh são do conteúdo de demonstração (texto longo), não do efeito
+        if (!/height: 100%|padding: 24px|gap: 24px|vh;/.test(linha)) expect(css).toContain(linha.trim());
       }
     });
   }

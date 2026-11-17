@@ -27,10 +27,13 @@
           </div>
           <div class="ef__modo" role="group" aria-label="Tipo de preview">
             <button type="button" class="ef__modo-btn" [attr.aria-pressed]="modoPreview() === 'isolado'" (click)="modoPreview.set('isolado')">HTML/CSS/JS</button>
-            <button type="button" class="ef__modo-btn" [attr.aria-pressed]="modoPreview() === 'angular'" (click)="modoPreview.set('angular')">Angular</button>
+            <button type="button" class="ef__modo-btn" [attr.aria-pressed]="modoPreview() === 'angular'" [disabled]="!angularDisponivel()" [title]="angularDisponivel() ? '' : 'Este efeito depende da rolagem da página inteira; teste o componente no seu projeto'" (click)="modoPreview.set('angular')">Angular</button>
           </div>
         </header>
         @if (modoPreview() === 'isolado') {
+          @if (!bibliotecasProntas()) {
+            <p class="kx-muted ef__nota" role="status">{{ erroBibliotecas() || 'Carregando ' + nomesBibliotecas() + '…' }}</p>
+          }
           <iframe
             #frame
             class="ef__frame"
@@ -79,12 +82,16 @@
           <kx-icon name="reset" /> Restaurar valores
         </button>
         <p class="kx-muted ef__nota">Cada controle muda o código e o preview ao mesmo tempo.</p>
+        @if (!angularDisponivel()) {
+          <p class="kx-muted ef__nota">O preview Angular está desligado neste efeito porque ele depende da rolagem da página inteira. O código Angular continua nas abas e é compilado e testado com o app.</p>
+        }
       </section>
 
       <section class="pg__codigo" aria-labelledby="ef-codigo">
         <h2 id="ef-codigo" class="pg__bloco-titulo ef__h-codigo">Code Lab</h2>
         <kx-code-lab
           [id]="f.id"
+          [bibliotecas]="bibliotecas()"
           [gerado]="gerado()!"
           [editado]="editado()"
           [angular]="angular()!"

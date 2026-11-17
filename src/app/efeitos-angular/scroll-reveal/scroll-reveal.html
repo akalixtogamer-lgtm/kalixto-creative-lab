@@ -1,0 +1,13 @@
+<section class="grade">
+  @for (c of cards; track c; let i = $index) {
+    <article
+      #revelar
+      class="card revelar"
+      [attr.data-i]="i"
+      [style.--i]="i % 3"
+      [class.is-visivel]="visiveis().has(i)"
+    >
+      <h2>{{ c }}</h2>
+    </article>
+  }
+</section>

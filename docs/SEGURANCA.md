@@ -32,6 +32,13 @@ escape de `</script>` funciona e que o iframe não tem `allow-same-origin`.
 - **Nada é salvo:** a edição fica só na memória da página e some ao recarregar, então nenhum código é reexecutado automaticamente em outra visita. A persistência de experimentos (Fase 4) vai guardar o código como texto e não vai executar nada sozinha.
 - **Sem `innerHTML`:** o realce de sintaxe renderiza trechos como texto, então o código exibido não é interpretado como HTML na página.
 
+## Bibliotecas dentro do preview (Fase 3)
+
+- **Origem do código:** GSAP, ScrollTrigger e Lenis vêm do `node_modules` do projeto, copiados para `/vendor` no build. A página do efeito baixa esses arquivos da **própria origem** do site.
+- **Como entram no preview:** o código é embutido no `srcdoc` antes do script do kit, com o mesmo escape de `</script>`. O CSP não foi afrouxado: `script-src` continua só `'unsafe-inline'`, sem nenhuma origem externa.
+- **Comentário de source map:** a linha `//# sourceMappingURL` é retirada, para o navegador não tentar buscar o `.map`.
+- **Verificação (Chromium, 17/11/2026):** em Revelar com GSAP, Rolagem suave e Distorção, `localStorage` e `parent.document` deram `SecurityError` e `fetch` deu `TypeError`. As bibliotecas carregaram (`typeof gsap === 'object'`, `typeof Lenis === 'function'`).
+
 ## O que ainda não existe
 
 - **Importação de arquivos:** quando existir, os arquivos serão validados (tipo, tamanho, JSON com esquema) antes de qualquer uso.

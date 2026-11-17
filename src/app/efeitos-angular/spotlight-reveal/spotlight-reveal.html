@@ -1,0 +1,10 @@
+<section #palco class="palco-luz" [class.is-acesa]="acesa()" (pointermove)="mover($event, palco)">
+  <div class="conteudo">
+    <h1>Criatividade escondida</h1>
+    <p>Explore a área com o mouse ou o dedo.</p>
+  </div>
+  <div class="sombra" aria-hidden="true" [style.--x]="x()" [style.--y]="y()"></div>
+</section>
+<button class="acender" type="button" [attr.aria-pressed]="acesa()" (click)="acesa.set(!acesa())">
+  {{ acesa() ? 'Apagar' : 'Acender tudo' }}
+</button>

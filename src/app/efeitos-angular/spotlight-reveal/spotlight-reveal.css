@@ -1,0 +1,56 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.palco-luz {
+  position: relative;
+  width: min(100%, 640px);
+  aspect-ratio: 16 / 10;
+  border-radius: 20px;
+  overflow: hidden;
+  touch-action: none; /* o dedo move a luz em vez de rolar a página */
+}
+.conteudo {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 20% 30%, #ff2bd6, transparent 45%),
+    radial-gradient(circle at 80% 70%, #22e3ff, transparent 45%),
+    linear-gradient(135deg, #2a1f6b, #7c3aed);
+}
+.conteudo h1 { margin: 0 0 8px; font-size: clamp(1.5rem, 6vw, 2.6rem); }
+.conteudo p { margin: 0; }
+
+/* O efeito: uma camada escura com um "furo" redondo onde está o ponteiro */
+.sombra {
+  position: absolute;
+  inset: 0;
+  background: rgb(5 5 5 / 0.94);
+  pointer-events: none;
+  --x: 50%;
+  --y: 50%;
+  -webkit-mask-image: radial-gradient(circle at var(--x) var(--y), transparent 110px, #000 150px);
+  mask-image: radial-gradient(circle at var(--x) var(--y), transparent 110px, #000 150px);
+  transition: opacity 400ms ease;
+}
+.palco-luz.is-acesa .sombra { opacity: 0; }
+
+.acender {
+  padding: 10px 20px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #f4f2ff;
+  font: inherit;
+  cursor: pointer;
+}
+.acender:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sombra { transition: none; }
+}

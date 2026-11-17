@@ -1,0 +1,30 @@
+<div
+  class="imagem"
+  tabindex="0"
+  (pointerenter)="continuo || ligar()"
+  (pointerleave)="desligar()"
+  (focus)="continuo || ligar()"
+  (blur)="desligar()"
+>
+  <svg viewBox="0 0 400 250" role="img" aria-label="Paisagem com montanhas, sol e o nome KALIXTO">
+    <filter id="distorcer" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence #ruido type="fractalNoise" [attr.baseFrequency]="frequencia" numOctaves="2" seed="3" result="ruido" />
+      <feDisplacementMap #mapa in="SourceGraphic" in2="ruido" scale="0" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <defs>
+      <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1a1040" />
+        <stop offset="0.7" stop-color="#7c3aed" />
+        <stop offset="1" stop-color="#ff2bd6" />
+      </linearGradient>
+    </defs>
+    <g filter="url(#distorcer)">
+      <rect width="400" height="250" fill="url(#ceu)" />
+      <circle cx="200" cy="150" r="42" fill="#ffd27a" />
+      <polygon points="0,190 70,140 140,185 210,130 290,180 360,145 400,170 400,250 0,250" fill="#2d1a66" />
+      <polygon points="0,220 90,190 180,225 270,195 400,225 400,250 0,250" fill="#0b0a14" />
+      <text x="200" y="80" text-anchor="middle" font-size="34" font-weight="700" fill="#f4f2ff" font-family="system-ui, sans-serif">KALIXTO</text>
+    </g>
+  </svg>
+</div>
+<p class="dica">{{ continuo ? 'A distorção roda o tempo todo.' : 'Passe o mouse ou use Tab para focar a imagem.' }}</p>

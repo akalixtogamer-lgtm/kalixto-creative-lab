@@ -1,0 +1,33 @@
+:host { display: block; }
+
+
+/* O efeito */
+.progresso {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 4px;
+  background: linear-gradient(90deg, #ff2bd6, #22e3ff);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--progresso, 0));
+  transition: transform 80ms linear; /* suaviza o fallback em JavaScript */
+}
+
+/* Navegadores com scroll-driven animations: a rolagem É a linha do tempo */
+@supports (animation-timeline: scroll()) {
+  .progresso {
+    transition: none;
+    animation: encher linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes encher {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progresso { transition: none; }
+}

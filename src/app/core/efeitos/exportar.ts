@@ -2,9 +2,10 @@ import { ParamDef, Valores } from '../models/demo.model';
 import { CodigoAngular, CodigoKit, EffectKit } from '../models/effect-sheet.model';
 import { ArquivoZip } from '../../shared/utils/zip';
 import { findCategoria } from './categorias';
+import { BIBLIOTECAS, Biblioteca } from './bibliotecas';
 
 /** index.html do pacote: arquivos separados, como num projeto real. */
-export function htmlDoPacote(titulo: string, html: string): string {
+export function htmlDoPacote(titulo: string, html: string, libs: Biblioteca[] = []): string {
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -12,7 +13,7 @@ export function htmlDoPacote(titulo: string, html: string): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${titulo.replace(/[<>&"]/g, '')}</title>
 <link rel="stylesheet" href="styles.css">
-<script src="script.js" defer></script>
+${libs.map((l) => `<script src="vendor/${l.nomeArquivo}" defer></script>\n`).join('')}<script src="script.js" defer></script>
 </head>
 <body>
 ${html}
@@ -44,7 +45,9 @@ Exportado do **Kalixto Creative Lab** · categoria ${findCategoria(f.categoria)?
 | \`index.html\` | Página de exemplo; abra direto no navegador |
 | \`styles.css\` | Estilos do efeito (inclui o palco escuro da demonstração) |
 | \`script.js\` | Comportamento do efeito${f.tecnologias.includes('JavaScript') ? '' : ' (este efeito não usa JavaScript)'} |
-| \`angular/${id}.ts\`, \`.html\`, \`.css\` | O mesmo efeito como componente Angular standalone |
+| \`angular/${id}.ts\`, \`.html\`, \`.css\` | O mesmo efeito como componente Angular standalone |${
+  kit.bibliotecas?.length ? '\n| `vendor/` | Bibliotecas usadas pelo efeito (sem precisar de internet) |' : ''
+}
 
 ${
   editado
@@ -68,7 +71,14 @@ import { ${classe} } from './${id}/${id}';
 
 ## Dependências
 
-${f.dependencias.length ? f.dependencias.map((d) => `- ${d}`).join('\n') : 'Nenhuma — só recursos nativos do navegador.'}
+${
+  kit.bibliotecas?.length
+    ? kit.bibliotecas
+        .map((id) => BIBLIOTECAS[id])
+        .map((b) => `- **${b.nome} ${b.versao}** — \`vendor/${b.nomeArquivo}\` (licença: [${b.licenca}](${b.licencaUrl})). Em projetos com npm: \`npm install ${b.pacoteNpm}\`.`)
+        .join('\n')
+    : 'Nenhuma — só recursos nativos do navegador.'
+}
 
 ## Compatibilidade
 
@@ -98,15 +108,20 @@ export function montarPacote(
   codigo: CodigoKit,
   angular: CodigoAngular,
   editado: boolean,
+  bibliotecas: { biblioteca: Biblioteca; codigo: string }[] = [],
 ): ArquivoZip[] {
   const id = kit.ficha.id;
   return [
     { nome: `${id}/README.md`, conteudo: readmeDoPacote(kit, valores, editado) },
-    { nome: `${id}/index.html`, conteudo: htmlDoPacote(kit.ficha.nomeAmigavel, codigo.html) },
+    {
+      nome: `${id}/index.html`,
+      conteudo: htmlDoPacote(kit.ficha.nomeAmigavel, codigo.html, bibliotecas.map((b) => b.biblioteca)),
+    },
     { nome: `${id}/styles.css`, conteudo: codigo.css + '\n' },
     { nome: `${id}/script.js`, conteudo: codigo.js + '\n' },
     { nome: `${id}/angular/${id}.ts`, conteudo: angular.ts },
     { nome: `${id}/angular/${id}.html`, conteudo: angular.html },
     { nome: `${id}/angular/${id}.css`, conteudo: angular.css },
+    ...bibliotecas.map((b) => ({ nome: `${id}/vendor/${b.biblioteca.nomeArquivo}`, conteudo: b.codigo })),
   ];
 }

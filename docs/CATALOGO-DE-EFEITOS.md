@@ -2,15 +2,15 @@
 
 > Gerado por `npm run docs:efeitos` a partir do registro (`src/app/core/efeitos/registry.ts`).
 
-Total: **70** itens — **10 kits** com ficha técnica completa e **60 demos** dos laboratórios.
+Total: **78** itens — **18 kits** com ficha técnica completa e **60 demos** dos laboratórios.
 
 | # | Categoria | Kits | Demos |
 |---|---|---|---|
 | 01 | Microinterações e UI | 2 | 3 |
 | 02 | Entradas, saídas e transições | 3 | 10 |
-| 03 | Scroll e parallax | 0 | 8 |
+| 03 | Scroll e parallax | 4 | 8 |
 | 04 | Tipografia e texto | 1 | 5 |
-| 05 | Mouse e cursor | 1 | 2 |
+| 05 | Mouse e cursor | 3 | 2 |
 | 06 | Cards, imagens e galerias | 1 | 4 |
 | 07 | Backgrounds | 1 | 1 |
 | 08 | Luz, sombra e profundidade | 1 | 1 |
@@ -19,8 +19,8 @@ Total: **70** itens — **10 kits** com ficha técnica completa e **60 demos** d
 | 11 | 3D e WebGL | 0 | 12 |
 | 12 | Áudio e audiovisual | 0 | 0 |
 | 13 | Componentes e dados | 0 | 1 |
-| 14 | Navegação e experiência de página | 0 | 1 |
-| 15 | Experimental e creative coding | 0 | 4 |
+| 14 | Navegação e experiência de página | 1 | 1 |
+| 15 | Experimental e creative coding | 1 | 4 |
 
 ## 01 · Microinterações e UI
 
@@ -60,6 +60,10 @@ Efeitos controlados pela rolagem da página.
 
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
+| [Revelar ao rolar](efeitos/scroll-reveal.md) | Kit (ficha completa) | Iniciante | `/efeitos/scroll-reveal` |
+| [Barra de progresso de leitura](efeitos/scroll-progress.md) | Kit (ficha completa) | Intermediário | `/efeitos/scroll-progress` |
+| [Parallax em camadas](efeitos/layered-parallax.md) | Kit (ficha completa) | Intermediário | `/efeitos/layered-parallax` |
+| [Revelar ao rolar com GSAP](efeitos/gsap-scroll-reveal.md) | Kit (ficha completa) | Intermediário | `/efeitos/gsap-scroll-reveal` |
 | Disparar animação ao rolar | Demo | Iniciante | `/labs/scroll?demo=gatilho` |
 | Animação presa à barra de rolagem | Demo | Intermediário | `/labs/scroll?demo=scrub` |
 | Fixar uma seção enquanto anima | Demo | Intermediário | `/labs/scroll?demo=pin` |
@@ -89,6 +93,8 @@ Elementos que reagem à posição do ponteiro.
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
 | [Botão magnético](efeitos/magnetic-button.md) | Kit (ficha completa) | Intermediário | `/efeitos/magnetic-button` |
+| [Cursor personalizado](efeitos/custom-cursor.md) | Kit (ficha completa) | Intermediário | `/efeitos/custom-cursor` |
+| [Lanterna que revela](efeitos/spotlight-reveal.md) | Kit (ficha completa) | Intermediário | `/efeitos/spotlight-reveal` |
 | Anel orbital e camadas que seguem o mouse | Demo | Avançado | `/labs/ui?demo=orbita` |
 | Botões magnéticos e cursor personalizado | Demo | Intermediário | `/labs/ui?demo=magnetico` |
 
@@ -182,6 +188,7 @@ Navbars, transições de página e menus.
 
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
+| [Rolagem suave](efeitos/smooth-scroll.md) | Kit (ficha completa) | Intermediário | `/efeitos/smooth-scroll` |
 | Navbar transparente que fixa com sombra | Demo | Intermediário | `/labs/scroll?demo=navbar` |
 
 ## 15 · Experimental e creative coding
@@ -190,6 +197,7 @@ Distorções, glitch, procedural e arte generativa.
 
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
+| [Distorção líquida na imagem](efeitos/image-distortion.md) | Kit (ficha completa) | Avançado | `/efeitos/image-distortion` |
 | Ruído e fbm | Demo | Avançado | `/labs/webgl?demo=noise` |
 | Distorcer uma imagem | Demo | Avançado | `/labs/webgl?demo=distortion` |
 | Plasma e Voronoi | Demo | Avançado | `/labs/webgl?demo=procedural` |

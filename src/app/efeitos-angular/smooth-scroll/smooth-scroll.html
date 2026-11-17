@@ -1,0 +1,9 @@
+<nav class="menu">
+  @for (s of secoes; track s; let i = $index) {
+    <a [href]="'#s' + (i + 1)" (click)="irPara($event, '#s' + (i + 1))">{{ s }}</a>
+  }
+</nav>
+
+@for (s of secoes; track s; let i = $index) {
+  <section class="secao" [id]="'s' + (i + 1)"><h2>{{ i + 1 }}. {{ s }}</h2></section>
+}
