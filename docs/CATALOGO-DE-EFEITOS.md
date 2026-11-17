@@ -2,20 +2,20 @@
 
 > Gerado por `npm run docs:efeitos` a partir do registro (`src/app/core/efeitos/registry.ts`).
 
-Total: **95** itens — **35 kits** com ficha técnica completa e **60 demos** dos laboratórios.
+Total: **98** itens — **38 kits** com ficha técnica completa e **60 demos** dos laboratórios.
 
 | # | Categoria | Kits | Demos |
 |---|---|---|---|
 | 01 | Microinterações e UI | 2 | 3 |
 | 02 | Entradas, saídas e transições | 4 | 10 |
 | 03 | Scroll e parallax | 7 | 8 |
-| 04 | Tipografia e texto | 5 | 5 |
+| 04 | Tipografia e texto | 6 | 5 |
 | 05 | Mouse e cursor | 5 | 2 |
 | 06 | Cards, imagens e galerias | 3 | 4 |
-| 07 | Backgrounds | 1 | 1 |
+| 07 | Backgrounds | 2 | 1 |
 | 08 | Luz, sombra e profundidade | 3 | 1 |
 | 09 | SVG, geometria e máscaras | 1 | 8 |
-| 10 | Partículas e simulações | 0 | 0 |
+| 10 | Partículas e simulações | 1 | 0 |
 | 11 | 3D e WebGL | 1 | 12 |
 | 12 | Áudio e audiovisual | 0 | 0 |
 | 13 | Componentes e dados | 0 | 1 |
@@ -88,6 +88,7 @@ Revelar, animar e estilizar texto.
 | [Escrita neon à mão](efeitos/neon-handwriting.md) | Kit (ficha completa) | Intermediário | `/efeitos/neon-handwriting` |
 | [Tipografia inflada](efeitos/puffy-text.md) | Kit (ficha completa) | Iniciante | `/efeitos/puffy-text` |
 | [Texto embaralhado (decodificar)](efeitos/text-scramble.md) | Kit (ficha completa) | Intermediário | `/efeitos/text-scramble` |
+| [Título que se monta em pixels](efeitos/pixel-text.md) | Kit (ficha completa) | Avançado | `/efeitos/pixel-text` |
 | Revelar texto por letras, palavras ou linhas | Demo | Intermediário | `/labs/gsap?demo=splittext` |
 | Hero com título editorial e entrada em sequência | Demo | Intermediário | `/labs/ui?demo=hero-editorial` |
 | Título gigante entre camadas | Demo | Intermediário | `/labs/ui?demo=texto-profundidade` |
@@ -129,6 +130,7 @@ Fundos animados, texturas e padrões.
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
 | [Gradiente animado](efeitos/animated-gradient.md) | Kit (ficha completa) | Iniciante | `/efeitos/animated-gradient` |
+| [Mosaico de células que acendem](efeitos/tile-grid-reveal.md) | Kit (ficha completa) | Iniciante | `/efeitos/tile-grid-reveal` |
 | Grão de filme e vinheta cinematográfica | Demo | Iniciante | `/labs/ui?demo=grao-filme` |
 
 ## 08 · Luz, sombra e profundidade
@@ -162,7 +164,9 @@ Traços, morphing, recortes e filtros vetoriais.
 
 Sistemas de partículas e física simples.
 
-_Nenhum efeito implementado ainda nesta categoria._
+| Efeito | Tipo | Nível | Onde |
+|---|---|---|---|
+| [Campo de partículas com constelação](efeitos/particle-field.md) | Kit (ficha completa) | Intermediário | `/efeitos/particle-field` |
 
 ## 11 · 3D e WebGL
 

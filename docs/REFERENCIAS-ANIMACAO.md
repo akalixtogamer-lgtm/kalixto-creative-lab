@@ -54,6 +54,23 @@ Sites gerados por IA, gravados na tela do notebook.
 | 4.7 | Texto embaçado que entra em foco ("Agende seu exame") | Split em letras + `filter: blur()` → 0 | 🔁 Kit `text-reveal` (efeito *desfocar*) |
 | 4.8 | Galeria de sites em grade | Bento grid | 🔁 Interface Lab → *Bento* |
 
+## Vídeo 5 — "IA só faz site genérico?" (@luccas2santos · 27 s)
+
+Dois sites gravados no notebook: uma marca de sementes de milho e uma transportadora (projeto demonstrativo).
+
+| # | O que aparece | Técnica | No lab |
+|---|---|---|---|
+| 5.1 | "CORN. REVOLUTIONIZED." se montando em blocos, como pixels de LED, até ficar nítido | Texto amostrado em canvas (`getImageData`) e redesenhado célula a célula | ✅ [`pixel-text`](../src/app/core/efeitos/kits/pixel-text.kit.ts) |
+| 5.2 | Pontos de luz verdes flutuando, ligados por linhas finas ("Computers cut down the contenders") | Partículas em canvas + linhas entre vizinhos próximos | ✅ [`particle-field`](../src/app/core/efeitos/kits/particle-field.kit.ts) |
+| 5.3 | Parede de pequenas células verdes acendendo atrás de "Testing, testing and more testing" | CSS Grid com atraso por célula (aleatório, diagonal, centro) | ✅ [`tile-grid-reveal`](../src/app/core/efeitos/kits/tile-grid-reveal.kit.ts) |
+| 5.4 | Broto de milho crescendo / semente que vira planta conforme a rolagem | Sequência de quadros no scroll | 🔁 Kit `image-sequence` |
+| 5.5 | Grão de milho 3D flutuando sobre um pôr do sol | Modelo 3D + flutuação | 🔁 Three.js Lab → *GLTF* e *Animação* |
+| 5.6 | Links do rodapé centralizados entrando um a um | Revelação em sequência (stagger) | 🔁 Kit `text-reveal` / GSAP Studio → *Stagger* |
+| 5.7 | Caminhão em vídeo de fundo com o título "O mundo não para" empilhado e cortado pela imagem | Hero com vídeo + texto atrás do objeto | 🔁 Interface Lab → *Texto atrás do objeto* · kit `scroll-zoom-hero` |
+| 5.8 | "Logística que conecta o Brasil" surgindo palavra por palavra sobre a estrada | Kinetic typography | 🔁 Kit `kinetic-captions` |
+| 5.9 | Contador de quilômetros | Números animados | 🔁 Interface Lab → *Números* |
+| 5.10 | Troca de cena com desfoque entre seções | Transição com blur entre capítulos | 🔁 Scroll Lab → *Capítulos* |
+
 ---
 
 ## As animações mais usadas hoje (importadas para o lab)

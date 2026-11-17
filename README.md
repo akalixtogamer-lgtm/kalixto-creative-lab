@@ -13,10 +13,10 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `1.5.0-rc.1` (17 kits novos: referências em vídeo + animações mais usadas) |
+| Versão | `1.5.0-rc.1` (20 kits novos: referências em vídeo + animações mais usadas) |
 | Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
-| Conteúdo | 7 laboratórios · 60 demos interativas · 35 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
-| Testes | 534 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
+| Conteúdo | 7 laboratórios · 60 demos interativas · 38 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
+| Testes | 558 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
 | Publicado no GitHub Pages | Sim, a `v1.4.1-rc.1` (a `1.5.0-rc.1` aguarda o teste do Wallace) |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
@@ -61,7 +61,7 @@ Cada uma tem presets prontos, um desafio prático e fica na URL (`?demo=…`) pa
 | Trilha de aprendizagem | Caminho do CSS ao WebGL, com ✓ por demo, ★ por desafio e "Continuar de onde parei" | `/trilha` |
 | Exercícios | 27 perguntas com correção e explicação | `/exercicios` |
 | Comparador | Quando usar cada tecnologia + o mesmo efeito em CSS, Web Animations e GSAP | `/comparador` |
-| Biblioteca de efeitos | 35 kits + 60 demos nas 15 categorias, com busca (nome, tecnologia, aplicação, tags) e filtros (categoria, tipo, lab, nível, interação, dependências, situação) | `/biblioteca` |
+| Biblioteca de efeitos | 38 kits + 60 demos nas 15 categorias, com busca (nome, tecnologia, aplicação, tags) e filtros (categoria, tipo, lab, nível, interação, dependências, situação) | `/biblioteca` |
 | Ficha do efeito | Preview isolado ou componente Angular, controles, Code Lab (editar, executar, comparar), versão Angular, explicação em 3 níveis, download .zip/.html e ficha técnica | `/efeitos/:id` |
 
 O progresso (demos executadas, desafios, exercícios e presets) fica salvo **no navegador** — nada é enviado para a internet.

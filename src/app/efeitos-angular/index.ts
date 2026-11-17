@@ -40,4 +40,7 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'hover-image-list': () => import('./hover-image-list/hover-image-list').then((m) => m.HoverImageList),
   'spotlight-cards': () => import('./spotlight-cards/spotlight-cards').then((m) => m.SpotlightCards),
   'expanding-gallery': () => import('./expanding-gallery/expanding-gallery').then((m) => m.ExpandingGallery),
+  'pixel-text': () => import('./pixel-text/pixel-text').then((m) => m.PixelText),
+  'particle-field': () => import('./particle-field/particle-field').then((m) => m.ParticleField),
+  'tile-grid-reveal': () => import('./tile-grid-reveal/tile-grid-reveal').then((m) => m.TileGridReveal),
 };

@@ -36,6 +36,9 @@ import { PRELOADER_COUNTER } from './kits/preloader-counter.kit';
 import { HOVER_IMAGE_LIST } from './kits/hover-image-list.kit';
 import { SPOTLIGHT_CARDS } from './kits/spotlight-cards.kit';
 import { EXPANDING_GALLERY } from './kits/expanding-gallery.kit';
+import { PIXEL_TEXT } from './kits/pixel-text.kit';
+import { PARTICLE_FIELD } from './kits/particle-field.kit';
+import { TILE_GRID_REVEAL } from './kits/tile-grid-reveal.kit';
 
 /**
  * Registro central de efeitos.
@@ -82,6 +85,10 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   HOVER_IMAGE_LIST,
   SPOTLIGHT_CARDS,
   EXPANDING_GALLERY,
+  // Referências em vídeo — lote 2 (site de agro/sementes)
+  PIXEL_TEXT,
+  PARTICLE_FIELD,
+  TILE_GRID_REVEAL,
 ];
 
 export function findKit(id: string): EffectKit | undefined {
