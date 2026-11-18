@@ -9,8 +9,8 @@ export const appConfig: ApplicationConfig = {
       routes,
       // Parâmetros de rota (:id, ?lab=) chegam direto como input() nos componentes
       withComponentInputBinding(),
-      // Ao trocar de página, volta ao topo
-      withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
+      // Ao trocar de página, volta ao topo; links com âncora (#ef-codigo) rolam até ela
+      withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' }),
     ),
   ],
 };

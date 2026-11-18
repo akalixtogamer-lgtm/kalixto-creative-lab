@@ -1,0 +1,14 @@
+<section class="sanfona" aria-label="Destinos">
+  @for (p of paineis; track p.nome; let i = $index) {
+    <button
+      class="faixa"
+      type="button"
+      [class.is-ativa]="ativa() === i"
+      [attr.aria-pressed]="ativa() === i"
+      [style.--fundo]="p.fundo"
+      (click)="ativa.set(i)"
+    >
+      <span>{{ p.nome }}</span>
+    </button>
+  }
+</section>

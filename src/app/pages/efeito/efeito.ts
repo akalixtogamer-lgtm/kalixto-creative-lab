@@ -20,7 +20,7 @@ import { montarPacote } from '../../core/efeitos/exportar';
 import { BIBLIOTECAS, carregarBiblioteca } from '../../core/efeitos/bibliotecas';
 import { COMPONENTES_ANGULAR } from '../../efeitos-angular';
 import { criarZip } from '../../shared/utils/zip';
-import { CodeLab } from './code-lab/code-lab';
+import { Arquivo, CodeLab } from './code-lab/code-lab';
 import { Explicador } from './explicador/explicador';
 import { ParamDef, Valor, Valores } from '../../core/models/demo.model';
 import {
@@ -55,6 +55,12 @@ function padrao(kit: EffectKit): Valores {
 export class Efeito {
   /** Parâmetro de rota :id (withComponentInputBinding). */
   readonly id = input.required<string>();
+  /** ?arquivo=css|js|html — aba do Code Lab que abre primeiro (links do Glossário). */
+  readonly arquivo = input<string | undefined>();
+  protected readonly abaInicial = computed<Arquivo>(() => {
+    const a = this.arquivo();
+    return a === 'css' || a === 'js' ? a : 'html';
+  });
 
   protected readonly kit = computed(() => findKit(this.id()));
   protected readonly ficha = computed(() => this.kit()?.ficha);

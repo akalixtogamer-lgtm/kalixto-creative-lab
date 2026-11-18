@@ -1,0 +1,8 @@
+@for (c of [ciclo()]; track c) {
+  <p class="legenda" [attr.aria-label]="frase">
+    @for (p of palavras; track $index) {
+      <span class="palavra" aria-hidden="true" [style.--i]="$index">{{ p }}</span>
+    }
+  </p>
+}
+<button class="repetir" type="button" (click)="repetir()">Repetir</button>

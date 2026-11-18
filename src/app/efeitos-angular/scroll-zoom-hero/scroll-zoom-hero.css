@@ -1,0 +1,40 @@
+:host { display: block; }
+
+.zoom-hero { --p: 0; height: 300vh; }
+.fixo-hero {
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* A imagem: começa pequena e cresce até a tela cheia */
+.moldura {
+  position: absolute;
+  inset: 0;
+  scale: calc(0.35 + 0.65 * var(--p));
+  border-radius: calc((1 - var(--p)) * 32px / 0.35);
+  background:
+    radial-gradient(circle at 70% 30%, #ffd27a, transparent 25%),
+    linear-gradient(180deg, #ff8a5c 0%, #c24d7a 45%, #2a1f6b 70%, #0b0a14 100%);
+}
+
+/* As palavras se afastam para os lados */
+.titulo-hero {
+  position: relative;
+  display: flex;
+  gap: 0.3em;
+  margin: 0;
+  font: 800 clamp(2.4rem, 10vw, 7rem) / 1 system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  mix-blend-mode: difference;
+}
+.lado.esq { translate: calc(var(--p) * -80%) 0; }
+.lado.dir { translate: calc(var(--p) * 80%) 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .zoom-hero { --p: 1 !important; height: auto; }
+  .fixo-hero { position: relative; }
+}

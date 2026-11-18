@@ -1,0 +1,9 @@
+<section class="site" [class.is-pronto]="pronto()">
+  <h1 class="hero-loader">Bem-vindo ao lab</h1>
+  <div class="loader" [class.is-pronto]="pronto()" [style.--p]="p()">
+    <span class="numero" aria-hidden="true">{{ (p() * 100).toFixed(0) }}</span>
+    <span class="barra" aria-hidden="true"></span>
+  </div>
+  <p class="status" role="status">{{ pronto() ? 'Pronto' : 'Carregando' }}</p>
+</section>
+<button class="repetir" type="button" (click)="carregar()">Repetir</button>

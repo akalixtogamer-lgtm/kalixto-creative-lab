@@ -19,6 +19,26 @@ import { SCROLL_PROGRESS } from './kits/scroll-progress.kit';
 import { SCROLL_REVEAL } from './kits/scroll-reveal.kit';
 import { SMOOTH_SCROLL } from './kits/smooth-scroll.kit';
 import { SPOTLIGHT_REVEAL } from './kits/spotlight-reveal.kit';
+import { KINETIC_CAPTIONS } from './kits/kinetic-captions.kit';
+import { ISOMETRIC_LAYERS } from './kits/isometric-layers.kit';
+import { NEON_HANDWRITING } from './kits/neon-handwriting.kit';
+import { THEME_WIPE } from './kits/theme-wipe.kit';
+import { IMAGE_RIBBON } from './kits/image-ribbon.kit';
+import { LENS_FOCUS } from './kits/lens-focus.kit';
+import { PUFFY_TEXT } from './kits/puffy-text.kit';
+import { IMAGE_SEQUENCE } from './kits/image-sequence.kit';
+import { GOOEY_INK } from './kits/gooey-ink.kit';
+import { ROOM_3D } from './kits/room-3d.kit';
+import { STICKY_STACK } from './kits/sticky-stack.kit';
+import { SCROLL_ZOOM_HERO } from './kits/scroll-zoom-hero.kit';
+import { TEXT_SCRAMBLE } from './kits/text-scramble.kit';
+import { PRELOADER_COUNTER } from './kits/preloader-counter.kit';
+import { HOVER_IMAGE_LIST } from './kits/hover-image-list.kit';
+import { SPOTLIGHT_CARDS } from './kits/spotlight-cards.kit';
+import { EXPANDING_GALLERY } from './kits/expanding-gallery.kit';
+import { PIXEL_TEXT } from './kits/pixel-text.kit';
+import { PARTICLE_FIELD } from './kits/particle-field.kit';
+import { TILE_GRID_REVEAL } from './kits/tile-grid-reveal.kit';
 
 /**
  * Registro central de efeitos.
@@ -46,6 +66,29 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   CUSTOM_CURSOR,
   SPOTLIGHT_REVEAL,
   IMAGE_DISTORTION,
+  // Referências em vídeo (Reels mapeados em 17/11/2026) — docs/REFERENCIAS-ANIMACAO.md
+  KINETIC_CAPTIONS,
+  ISOMETRIC_LAYERS,
+  NEON_HANDWRITING,
+  THEME_WIPE,
+  IMAGE_RIBBON,
+  LENS_FOCUS,
+  PUFFY_TEXT,
+  IMAGE_SEQUENCE,
+  GOOEY_INK,
+  ROOM_3D,
+  // Animações mais usadas em 2026 (tendências) — docs/REFERENCIAS-ANIMACAO.md
+  STICKY_STACK,
+  SCROLL_ZOOM_HERO,
+  TEXT_SCRAMBLE,
+  PRELOADER_COUNTER,
+  HOVER_IMAGE_LIST,
+  SPOTLIGHT_CARDS,
+  EXPANDING_GALLERY,
+  // Referências em vídeo — lote 2 (site de agro/sementes)
+  PIXEL_TEXT,
+  PARTICLE_FIELD,
+  TILE_GRID_REVEAL,
 ];
 
 export function findKit(id: string): EffectKit | undefined {

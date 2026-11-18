@@ -1,0 +1,31 @@
+<section #vitrine class="vitrine" aria-label="Vitrine com quatro mundos">
+  @for (m of mundos(); track m.id) {
+    <div
+      class="mundo"
+      [class.entrando]="m.entrando"
+      [style.--fundo]="m.tema.fundo"
+      [style.--tinta]="m.tema.tinta"
+      [style.--x]="m.x"
+      [style.--y]="m.y"
+      (animationend)="limpar(m.id)"
+    >
+      <p class="titulo">Troque<br />o visual</p>
+      <span class="figura"></span>
+    </div>
+  }
+</section>
+<div class="amostras" role="group" aria-label="Escolher mundo">
+  @for (t of temas; track t.nome; let i = $index) {
+    <button
+      #botao
+      class="amostra"
+      type="button"
+      [style.--cor]="t.fundo"
+      [attr.aria-pressed]="atual() === i"
+      (click)="trocar(i, botao)"
+    >
+      Mundo {{ t.nome }}
+    </button>
+  }
+</div>
+<p class="anuncio" aria-live="polite">Mundo {{ temas[atual()].nome }}</p>

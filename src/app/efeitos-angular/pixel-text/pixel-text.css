@@ -1,0 +1,22 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.painel {
+  width: min(100%, 720px);
+  height: auto;
+  border-radius: 16px;
+  background: radial-gradient(ellipse at 50% 120%, #1f6b4a, #0b1a12 70%);
+}
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}

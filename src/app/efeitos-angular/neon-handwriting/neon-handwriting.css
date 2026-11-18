@@ -1,0 +1,44 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.neon { width: min(100%, 640px); overflow: visible; }
+
+.neon .escrita {
+  font: italic 700 120px 'Segoe Script', 'Snell Roundhand', 'Brush Script MT', cursive;
+  fill: #ff2e3e;
+  fill-opacity: 0;
+  stroke: #ff2e3e;
+  stroke-width: 2px;
+  /* traço gigante + vazio do mesmo tamanho; o deslocamento esconde tudo */
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  filter: drop-shadow(0 0 10px #ff2e3e) drop-shadow(0 0 20px #ff2e3e);
+  animation:
+    escrever 2200ms cubic-bezier(0.45, 0, 0.25, 1) forwards,
+    acender 400ms ease 2200ms forwards,
+    oscilar 4s linear 2600ms infinite;
+}
+@keyframes escrever { to { stroke-dashoffset: 0; } }
+@keyframes acender { to { fill-opacity: 1; } }
+@keyframes oscilar {
+  0%, 17%, 21%, 24%, 52%, 56%, 100% { opacity: 1; }
+  19%, 23%, 54% { opacity: 0.6; }
+}
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .neon .escrita { animation: none; stroke-dashoffset: 0; fill-opacity: 1; }
+}

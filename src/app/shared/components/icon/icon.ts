@@ -17,7 +17,10 @@ export type IconName =
   | 'trail'
   | 'quiz'
   | 'compare'
-  | 'download';
+  | 'download'
+  | 'book'
+  | 'sun'
+  | 'moon';
 
 /**
  * Ícones SVG de traço único (24×24, stroke 1.8) — consistentes em
@@ -45,6 +48,9 @@ export type IconName =
         @case ('menu') { <path d="M4 7h16M4 12h16M4 17h16"/> }
         @case ('close') { <path d="M6 6l12 12M18 6L6 18"/> }
         @case ('trail') { <circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h4a3 3 0 0 0 3-3V8a3 3 0 0 1 3-3"/><path d="M5 5h.01M9 5h.01M19 19h.01M15 19h.01"/> }
+        @case ('book') { <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/> }
+        @case ('sun') { <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/> }
+        @case ('moon') { <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/> }
         @case ('quiz') { <circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/> }
         @case ('download') { <path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/> }
         @case ('compare') { <rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/><path d="M6.5 9v6M17.5 12v3"/> }

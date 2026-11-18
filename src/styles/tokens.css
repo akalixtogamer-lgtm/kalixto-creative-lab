@@ -4,7 +4,21 @@
    sobre fundo quase preto, com superfícies de vidro (glassmorphism).
    Altere aqui para ajustar a identidade de todo o laboratório.
    ========================================================= */
-:root {
+/* =========================================================
+   CORES — MODO ESCURO (padrão)
+   Os palcos das demos e os blocos de código usam sempre estas cores,
+   mesmo no modo claro: os efeitos foram desenhados para fundo escuro.
+   ========================================================= */
+:root,
+.kx-sempre-escuro,
+.palco,
+.cmp-palco,
+.kx-code,
+.cv,
+.cl__editor,
+.cl__diff,
+.ef__ng {
+  color-scheme: dark;
   /* ---------- Cores de marca ---------- */
   --kx-magenta: #ff2bd6;
   --kx-roxo: #8b5cf6;
@@ -31,6 +45,15 @@
   --kx-warning: #ffb547;
   --kx-danger: #ff5c7a;
 
+  /* ---------- Campos, código e brilhos do fundo ---------- */
+  --kx-input-bg: rgb(0 0 0 / 0.35);
+  --kx-code-bg: rgb(4 3 10 / 0.75);
+  --kx-palco-bg: rgb(0 0 0 / 0.3);
+  --kx-brilho-1: rgb(139 92 246 / 0.18);
+  --kx-brilho-2: rgb(255 43 214 / 0.12);
+  --kx-brilho-3: transparent;
+  --kx-sombra: rgb(0 0 0 / 0.35);
+
   /* ---------- Gradientes e brilhos ---------- */
   --kx-gradient: linear-gradient(135deg, var(--kx-magenta), var(--kx-roxo) 50%, var(--kx-azul));
   --kx-gradient-text: linear-gradient(90deg, var(--kx-magenta), var(--kx-ciano));
@@ -40,6 +63,69 @@
   --kx-glow-magenta: 0 0 24px rgb(255 43 214 / 0.35);
   --kx-glow-azul: 0 0 24px rgb(47 123 255 / 0.35);
 
+}
+
+/* Áreas sempre escuras dentro do modo claro: fundo opaco
+   (o translúcido do modo escuro ficaria cinza sobre o branco) */
+:root[data-tema='claro'] :is(.kx-sempre-escuro, .palco, .cmp-palco, .kx-code, .cv, .cl__editor, .cl__diff, .ef__ng) {
+  --kx-palco-bg: #120d24;
+  --kx-code-bg: #15112a;
+  --kx-input-bg: rgb(0 0 0 / 0.35);
+}
+
+/* =========================================================
+   CORES — MODO CLARO
+   Rosa, azul, lilás e branco. Textos com contraste AA (≥ 4,5:1)
+   sobre o fundo branco-lilás.
+   ========================================================= */
+:root[data-tema='claro'] {
+  color-scheme: light;
+
+  /* ---------- Cores de marca (versões que funcionam como texto) ---------- */
+  --kx-magenta: #c81a8c;
+  --kx-roxo: #7c4ddb;
+  --kx-azul: #2563eb;
+  --kx-ciano: #1059c9;
+
+  /* ---------- Fundo e superfícies ---------- */
+  --kx-bg: #fbf7ff;
+  --kx-bg-elev: #ffffff;
+  --kx-bg-blur: rgb(251 247 255 / 0.82);
+  --kx-surface: rgb(255 255 255 / 0.72);
+  --kx-surface-hover: rgb(167 139 250 / 0.12);
+  --kx-surface-active: rgb(167 139 250 / 0.2);
+  --kx-border: rgb(76 45 140 / 0.12);
+  --kx-border-strong: rgb(76 45 140 / 0.26);
+
+  /* ---------- Texto ---------- */
+  --kx-text: #231640;
+  --kx-text-soft: #3f2f63;
+  --kx-text-muted: #5f5183;
+
+  /* ---------- Estados ---------- */
+  --kx-success: #0b7a51;
+  --kx-warning: #8f5100;
+  --kx-danger: #c01d47;
+
+  /* ---------- Campos, código e brilhos do fundo ---------- */
+  --kx-input-bg: #ffffff;
+  --kx-code-bg: #15112a;
+  --kx-palco-bg: #120d24;
+  --kx-brilho-1: rgb(167 139 250 / 0.32);
+  --kx-brilho-2: rgb(244 114 182 / 0.24);
+  --kx-brilho-3: rgb(96 165 250 / 0.22);
+  --kx-sombra: rgb(76 45 140 / 0.14);
+
+  /* ---------- Gradientes e brilhos ---------- */
+  --kx-gradient: linear-gradient(135deg, #f472b6, #a78bfa 50%, #60a5fa);
+  --kx-gradient-text: linear-gradient(90deg, #c81a8c, #7c4ddb 50%, #2563eb);
+  --kx-magenta-texto: #b5177f;
+  --kx-gradient-btn: linear-gradient(135deg, #d4119f, #7c3aed 50%, #2563eb);
+  --kx-glow-magenta: 0 6px 24px rgb(244 114 182 / 0.35);
+  --kx-glow-azul: 0 6px 24px rgb(96 165 250 / 0.35);
+}
+
+:root {
   /* ---------- Tipografia ---------- */
   --kx-font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
   --kx-font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;

@@ -1,0 +1,7 @@
+<section #campo class="campo" (pointermove)="mover($event)" (pointerleave)="sair()">
+  <canvas #canvas class="particulas" aria-hidden="true"></canvas>
+  <h1>Dados que crescem</h1>
+</section>
+<button class="pausar" type="button" [attr.aria-pressed]="pausado()" (click)="alternar()">
+  {{ pausado() ? 'Continuar' : 'Pausar' }}
+</button>

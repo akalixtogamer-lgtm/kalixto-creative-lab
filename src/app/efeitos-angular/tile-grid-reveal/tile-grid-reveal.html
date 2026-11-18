@@ -1,0 +1,11 @@
+<section class="mosaico-palco">
+  @for (k of [ciclo()]; track k) {
+    <div class="mosaico" aria-hidden="true">
+      @for (cel of celulas(); track $index) {
+        <span class="celula" [style.--d]="cel.d" [style.--l]="cel.l"></span>
+      }
+    </div>
+  }
+  <h1>Testar, testar e testar.</h1>
+</section>
+<button class="repetir" type="button" (click)="repetir()">Repetir</button>

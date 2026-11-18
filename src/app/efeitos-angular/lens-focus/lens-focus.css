@@ -1,0 +1,87 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.cena-lente {
+  --x: 50%;
+  --y: 50%;
+  position: relative;
+  width: min(100%, 640px);
+  aspect-ratio: 16 / 10;
+  border-radius: 20px;
+  overflow: hidden;
+  touch-action: none; /* o dedo move a lente em vez de rolar a página */
+}
+.camada { position: absolute; inset: 0; }
+.conteudo {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+  color: #fff;
+  background:
+    linear-gradient(180deg, transparent 55%, rgb(8 40 30 / 0.85)),
+    radial-gradient(ellipse at 50% 120%, #1f6b4a 30%, transparent 60%),
+    linear-gradient(180deg, #3aa0ff 0%, #9fd8ff 45%, #e8f4ff 60%, #2f8f6b 61%);
+}
+.conteudo h1 { margin: 0; font-size: clamp(2rem, 9vw, 4.4rem); line-height: 0.95; letter-spacing: -0.03em; }
+.conteudo p { margin: 12px 0 0; font-weight: 600; }
+
+/* Visão "sem óculos" */
+.desfocada { filter: blur(8px); }
+
+/* Visão "com óculos": só aparece dentro da(s) lente(s) */
+.nitida {
+  -webkit-mask-image: radial-gradient(circle at calc(var(--x) - 95px) var(--y), #000 85px, transparent 86px), radial-gradient(circle at calc(var(--x) + 95px) var(--y), #000 85px, transparent 86px);
+  mask-image: radial-gradient(circle at calc(var(--x) - 95px) var(--y), #000 85px, transparent 86px), radial-gradient(circle at calc(var(--x) + 95px) var(--y), #000 85px, transparent 86px);
+}
+/* lupa: amplia em volta do ponteiro (o ponto sob a lente não se move) */
+.zoom {
+  transform: scale(1.15);
+  transform-origin: var(--x) var(--y);
+}
+
+/* O aro (só desenho) segue o mesmo ponto */
+.aro {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: var(--x) var(--y);
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+.aro::before, .aro::after {
+  content: '';
+  position: absolute;
+  top: -85px;
+  left: -180px;
+  width: 170px;
+  height: 170px;
+  border: 3px solid rgb(255 255 255 / 0.8);
+  border-radius: 50%;
+  box-shadow: inset 0 0 18px rgb(255 255 255 / 0.35), 0 8px 28px rgb(0 0 0 / 0.35);
+}
+.aro::after { left: 10px; }
+
+/* Botão: tudo nítido, sem lente */
+.cena-lente.is-foco .nitida { -webkit-mask-image: none; mask-image: none; }
+.cena-lente.is-foco .zoom { transform: none; }
+.cena-lente.is-foco .aro { opacity: 0; }
+
+.foco-total {
+  padding: 10px 20px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #f4f2ff;
+  font: inherit;
+  cursor: pointer;
+}
+.foco-total:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .aro { transition: none; }
+}

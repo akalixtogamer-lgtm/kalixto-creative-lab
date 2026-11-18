@@ -1,0 +1,25 @@
+:host { display: block; }
+
+.pilha-cards {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px 30vh;
+}
+/* todos grudam no topo, cada um um degrau abaixo do anterior */
+.card-pilha {
+  position: sticky;
+  top: calc(12vh + var(--i) * 24px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 60vh;
+  margin-bottom: 20vh;
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--fundo);
+  color: #fff;
+  box-shadow: 0 -10px 40px rgb(0 0 0 / 0.35);
+  transform-origin: center top;
+}
+.card-pilha span { font: 600 14px ui-monospace, monospace; opacity: 0.8; }
+.card-pilha h2 { margin: 0; font-size: clamp(2rem, 8vw, 4rem); letter-spacing: -0.03em; }

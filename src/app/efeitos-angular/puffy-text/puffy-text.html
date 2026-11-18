@@ -1,0 +1,5 @@
+<h1 class="inflado" [attr.aria-label]="palavra">
+  @for (l of letras; track $index) {
+    <span class="letra" aria-hidden="true" [style.--i]="$index">{{ l }}</span>
+  }
+</h1>

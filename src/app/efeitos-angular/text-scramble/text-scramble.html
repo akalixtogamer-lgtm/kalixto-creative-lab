@@ -1,0 +1,17 @@
+<h1 class="embaralhar titulo-codigo" [attr.aria-label]="titulo">
+  <span #alvoTitulo aria-hidden="true">{{ titulo }}</span>
+</h1>
+<nav class="menu-codigo" aria-label="Menu de exemplo">
+  @for (t of links; track t) {
+    <a
+      class="embaralhar"
+      href="#"
+      [attr.aria-label]="t"
+      (pointerenter)="embaralhar(alvo, t)"
+      (focus)="embaralhar(alvo, t)"
+      (click)="$event.preventDefault()"
+      ><span #alvo aria-hidden="true">{{ t }}</span></a
+    >
+  }
+</nav>
+<button class="repetir" type="button" (click)="repetir()">Repetir título</button>

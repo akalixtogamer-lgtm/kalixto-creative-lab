@@ -83,7 +83,7 @@
   height: 170px;
   border: 1px solid var(--kx-border);
   border-radius: var(--kx-radius-md);
-  background: rgb(0 0 0 / 0.3);
+  background: var(--kx-palco-bg);
 }
 .cmp-cena {
   display: flex;

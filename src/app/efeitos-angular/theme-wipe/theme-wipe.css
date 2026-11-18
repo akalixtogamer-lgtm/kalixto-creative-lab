@@ -1,0 +1,76 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.vitrine {
+  position: relative;
+  width: min(100%, 640px);
+  aspect-ratio: 16 / 10;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Um mundo: fundo, título enorme e uma figura na frente */
+.mundo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--fundo);
+  color: var(--tinta);
+}
+.mundo .titulo {
+  margin: 0;
+  font: 900 clamp(2rem, 11vw, 5rem) / 0.9 system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.mundo .figura {
+  position: absolute;
+  bottom: 0;
+  width: 30%;
+  aspect-ratio: 3 / 4;
+  border-radius: 48% 48% 12px 12px;
+  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.55), transparent 40%), var(--tinta);
+  opacity: 0.92;
+}
+
+/* A camada nova abre em círculo a partir de (--x, --y) */
+.mundo.entrando {
+  animation: revelar 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes revelar {
+  from { clip-path: circle(0% at var(--x) var(--y)); }
+  to { clip-path: circle(150% at var(--x) var(--y)); }
+}
+
+.amostras { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.amostra {
+  padding: 8px 14px 8px 10px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #f4f2ff;
+  font: inherit;
+  cursor: pointer;
+}
+.amostra::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--cor);
+  vertical-align: -1px;
+}
+.amostra[aria-pressed='true'] { border-color: var(--cor); }
+.amostra:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mundo.entrando { animation: none; }
+}

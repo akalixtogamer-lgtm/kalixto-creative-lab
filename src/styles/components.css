@@ -100,7 +100,7 @@ a.kx-card:hover,
 a.kx-card:focus-visible {
   transform: translateY(-3px);
   border-color: var(--kx-border-strong);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35), 0 0 0 1px var(--kx-acento, var(--kx-roxo));
+  box-shadow: 0 12px 32px var(--kx-sombra), 0 0 0 1px var(--kx-acento, var(--kx-roxo));
 }
 .kx-card__title {
   font-size: var(--kx-fs-lg);
@@ -234,7 +234,7 @@ a.kx-card:focus-visible {
   padding: var(--kx-space-4);
   border: 1px solid var(--kx-border);
   border-radius: var(--kx-radius-md);
-  background: rgb(0 0 0 / 0.4);
+  background: var(--kx-code-bg);
   color: var(--kx-text-soft);
   font-size: var(--kx-fs-sm);
   overflow-x: auto;

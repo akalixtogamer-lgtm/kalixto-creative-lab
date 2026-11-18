@@ -1,5 +1,7 @@
 # Referências avaliadas — pasta "efeitos pra site"
 
+> As referências em vídeo (Reels de 17/11/2026) estão mapeadas em [`REFERENCIAS-ANIMACAO.md`](REFERENCIAS-ANIMACAO.md).
+
 Em 16/11/2026 o Wallace enviou 8 imagens de referência. Cada uma foi avaliada para extrair **técnicas**
 reaproveitáveis. Nada foi copiado: marcas, textos e fotos das referências não aparecem no projeto.
 As imagens foram substituídas por ilustrações próprias (`public/ilustracoes/`).

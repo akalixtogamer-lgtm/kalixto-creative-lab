@@ -5,7 +5,7 @@ import { CodeViewer } from '../../../shared/components/code-viewer/code-viewer';
 import { Icon } from '../../../shared/components/icon/icon';
 import { diffLinhas } from '../../../shared/utils/diff';
 
-type Arquivo = 'html' | 'css' | 'js' | 'ng-ts' | 'ng-html' | 'ng-css';
+export type Arquivo = 'html' | 'css' | 'js' | 'ng-ts' | 'ng-html' | 'ng-css';
 
 /** Tamanho máximo de cada arquivo editado (evita travar o navegador com textos enormes). */
 export const LIMITE_EDICAO = 50_000;
@@ -36,6 +36,8 @@ export class CodeLab {
   readonly angular = input.required<CodigoAngular>();
   /** Bibliotecas carregadas antes do script (mostradas como aviso). */
   readonly bibliotecas = input<Biblioteca[]>([]);
+  /** Aba aberta ao entrar (ex.: o Glossário abre direto no arquivo onde o termo aparece). */
+  readonly abaInicial = input<Arquivo>('html');
 
   /** Executar o código editado no preview. */
   readonly executar = output<CodigoKit>();
@@ -50,7 +52,7 @@ export class CodeLab {
     { id: 'ng-html', rotulo: 'Angular · HTML', linguagem: 'HTML', editavel: false },
     { id: 'ng-css', rotulo: 'Angular · CSS', linguagem: 'CSS', editavel: false },
   ];
-  protected readonly aba = signal<Arquivo>('html');
+  protected readonly aba = linkedSignal<Arquivo>(() => this.abaInicial());
   protected readonly abaAtual = computed(() => this.abas.find((a) => a.id === this.aba())!);
 
   /** Código que está no preview agora. */

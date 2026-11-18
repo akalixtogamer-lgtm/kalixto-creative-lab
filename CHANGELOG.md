@@ -7,6 +7,30 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.5.0-rc.1] — 2026-11-17 · Referências em vídeo
+
+### Adicionado
+- **Mapa das referências** em [`docs/REFERENCIAS-ANIMACAO.md`](docs/REFERENCIAS-ANIMACAO.md): 5 Reels decupados quadro a quadro, 31 animações identificadas e ligadas a um kit do lab, a seção "As animações mais usadas hoje" e uma lista de galerias e tutoriais para buscar mais referências.
+- **20 kits novos** (38 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
+  - **Tipografia:** Legenda cinética (palavra por palavra, estilo Reels), Escrita neon à mão (SVG `stroke-dashoffset` + brilho), Tipografia inflada (`text-shadow` em camadas).
+  - **Luz e profundidade:** Interface isométrica em camadas (vista explodida em CSS 3D).
+  - **Transições:** Troca de mundo com revelação circular (`clip-path: circle()` a partir do botão).
+  - **Cards e imagens:** Fita 3D de imagens (cilindro CSS girando em volta do título, com Pausar).
+  - **Cursor:** Lente de foco (página desfocada, óculos com conteúdo nítido e ampliado).
+  - **Scroll:** Sequência de quadros no scroll (canvas + sticky), Cards empilhados no scroll, Hero que abre no scroll.
+  - **SVG:** Mancha de tinta viva (filtro gooey com `feColorMatrix`, clique pinga gotas).
+  - **3D:** Sala 3D em CSS (corredor com `perspective-origin` seguindo o mouse e botão Entrar).
+  - **Tipografia:** Texto embaralhado (decode) no título e no menu.
+  - **Navegação:** Tela de carregamento com contador 0 → 100 e 3 saídas.
+  - **Cursor:** Lista com imagem que segue o cursor (lerp + inclinação pela velocidade).
+  - **Luz:** Cards com luz que segue o mouse (borda com `mask-composite`).
+  - **Cards e imagens:** Galeria sanfona (`flex-grow`).
+  - **Lote 2 das referências:** Título que se monta em pixels (canvas `getImageData`), Campo de partículas com constelação (primeiro kit da categoria Partículas), Mosaico de células que acendem.
+- Tags "referência em vídeo" e "tendência 2026" para filtrar na Biblioteca.
+- **Glossário A–Z** (`/glossario`, no menu Geral e na Biblioteca): os 38 efeitos, as 60 demos e os 150 termos de código em ordem alfabética, com busca (também pela URL, `?q=`), filtro por tipo e índice de letras fixo no topo. Efeitos têm "Testar" e "Ver e copiar o código"; demos abrem o laboratório já na demo; termos levam a cada efeito que os usa.
+- **Modo claro e escuro.** Botão no menu lateral (e no topo, no celular). O modo claro usa rosa, azul, lilás e branco, com todos os textos em contraste AA (≥ 4,5:1). Sem escolha salva, o lab segue o tema do sistema; a escolha fica salva no navegador e é aplicada antes da página aparecer (sem piscar). Palcos das demos, previews e blocos de código continuam escuros nos dois modos, porque os efeitos foram desenhados para fundo escuro. As cores ficam em `src/styles/tokens.css` (`:root` e `:root[data-tema='claro']`).
+- **Code Lab abre na aba certa:** `/efeitos/:id?arquivo=css|js|html` abre direto no arquivo, e links com `#ef-codigo` rolam até o Code Lab.
+
 ## [1.4.1-rc.1] — 2026-11-17 · Correção
 
 ### Corrigido

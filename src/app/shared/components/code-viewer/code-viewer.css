@@ -2,7 +2,7 @@
 .cv {
   border: 1px solid var(--kx-border);
   border-radius: var(--kx-radius-md);
-  background: rgb(4 3 10 / 0.75);
+  background: var(--kx-code-bg);
   overflow: hidden;
 }
 .cv__topo {
