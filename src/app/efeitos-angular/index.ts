@@ -48,4 +48,11 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'echo-text': () => import('./echo-text/echo-text').then((m) => m.EchoText),
   'light-beams': () => import('./light-beams/light-beams').then((m) => m.LightBeams),
   'glitch-text': () => import('./glitch-text/glitch-text').then((m) => m.GlitchText),
+  'curtain-reveal': () => import('./curtain-reveal/curtain-reveal').then((m) => m.CurtainReveal),
+  'ripple-halo': () => import('./ripple-halo/ripple-halo').then((m) => m.RippleHalo),
+  'rotating-headline': () => import('./rotating-headline/rotating-headline').then((m) => m.RotatingHeadline),
+  'typewriter-prompt': () => import('./typewriter-prompt/typewriter-prompt').then((m) => m.TypewriterPrompt),
+  'gauge-meter': () => import('./gauge-meter/gauge-meter').then((m) => m.GaugeMeter),
+  'step-unlock': () => import('./step-unlock/step-unlock').then((m) => m.StepUnlock),
+  'device-switcher': () => import('./device-switcher/device-switcher').then((m) => m.DeviceSwitcher),
 };

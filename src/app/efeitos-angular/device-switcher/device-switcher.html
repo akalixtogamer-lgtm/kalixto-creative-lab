@@ -1,0 +1,17 @@
+<div class="segmentos" role="group" aria-label="Ver em">
+  <span class="indicador" aria-hidden="true" [style.--x]="x()" [style.--w]="w()"></span>
+  @for (d of dispositivos; track d.id; let i = $index) {
+    <button #opcao class="opcao" type="button" [attr.aria-pressed]="atual().id === d.id" (click)="escolher(i)">
+      {{ d.rotulo }}
+    </button>
+  }
+</div>
+<section class="area-previa">
+  <div class="moldura" [style.--largura]="atual().largura" [style.--proporcao]="atual().proporcao" [style.--raio]="atual().raio">
+    <div class="site-falso">
+      <header><span class="logo"></span><span class="menu"></span></header>
+      <h2>Lumen Residencial</h2>
+      <div class="cards"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</section>
