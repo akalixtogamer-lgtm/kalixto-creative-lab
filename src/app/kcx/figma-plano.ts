@@ -396,7 +396,13 @@ function difereDaBase(ctx: Contexto, ids: string[]): boolean {
 }
 
 function idsDeOps(ops: KcxOperacao[] = []): string[] {
-  return ops.flatMap((o) => ('variavel' in o && o.variavel ? [o.variavel] : []));
+  return ops.flatMap((o) =>
+    o.op === 'variavelPorOpcao'
+      ? Object.values(o.variaveis)
+      : 'variavel' in o && o.variavel
+        ? [o.variavel]
+        : [],
+  );
 }
 
 /** Resolve uma referência da estrutura em valor + (opcional) variável do Figma. */
@@ -440,7 +446,15 @@ function resolverRef<T>(
     const v = porId(comp, ref.$derivado);
     const bruto = aplicarOperacoes(v, valores[v.id], ref.transformar, valores, comp.variaveis);
     // 'mapa' devolve texto: em campos BOOLEAN, "true"/"false" viram boolean (permite negar).
-    const calc = campo.tipo === 'BOOLEAN' ? bruto === true || bruto === 'true' : bruto;
+    const calc =
+      campo.tipo === 'BOOLEAN'
+        ? bruto === true || bruto === 'true'
+        : campo.tipo === 'FLOAT' &&
+            typeof bruto === 'string' &&
+            bruto.trim() !== '' &&
+            !isNaN(Number(bruto))
+          ? Number(bruto)
+          : bruto;
     const valor = (campo.tipo === 'COLOR' ? corFigma(String(calc)) : calc) as T;
     if (!ctx.usarVariaveis || !campo.vinculavel) return { valor };
     const sufixo = difereDaBase(ctx, [v.id, ...idsDeOps(ref.transformar)]) ? ctx.sufixo : '';

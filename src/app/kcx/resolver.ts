@@ -200,6 +200,11 @@ export function aplicarOperacoes(
         x = outra === 0 ? 0 : comoNumero(x, variavel.id) / outra;
         break;
       }
+      case 'variavelPorOpcao': {
+        const alvo = o.variaveis[String(x)];
+        x = (alvo && (valores[alvo] ?? todas.find((t) => t.id === alvo)?.valor)) ?? x;
+        break;
+      }
       case 'somarVariavel': {
         const outra = valores[o.variavel] ?? todas.find((t) => t.id === o.variavel)?.valor;
         x = comoNumero(x, variavel.id) + o.fator * comoNumero(outra as KcxValor, o.variavel);

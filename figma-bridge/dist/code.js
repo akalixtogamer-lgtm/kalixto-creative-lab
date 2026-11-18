@@ -330,7 +330,7 @@
     return x;
   }
   function aplicarOperacoes(variavel2, valor, ops = [], valores = {}, todas = []) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
     let x = valor;
     let unidade = (_a = variavel2.unidade) != null ? _a : "";
     for (const o of ops) {
@@ -376,16 +376,21 @@
           x = outra === 0 ? 0 : comoNumero(x, variavel2.id) / outra;
           break;
         }
+        case "variavelPorOpcao": {
+          const alvo = o.variaveis[String(x)];
+          x = (_h = alvo && ((_g = valores[alvo]) != null ? _g : (_f = todas.find((t) => t.id === alvo)) == null ? void 0 : _f.valor)) != null ? _h : x;
+          break;
+        }
         case "somarVariavel": {
-          const outra = (_g = valores[o.variavel]) != null ? _g : (_f = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _f.valor;
+          const outra = (_j = valores[o.variavel]) != null ? _j : (_i = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _i.valor;
           x = comoNumero(x, variavel2.id) + o.fator * comoNumero(outra, o.variavel);
           break;
         }
         case "alpha": {
           if (typeof x !== "string")
             throw new Error(`KCX: alpha em "${variavel2.id}" precisa de cor.`);
-          const a = o.variavel ? (_i = valores[o.variavel]) != null ? _i : (_h = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _h.valor : o.valor;
-          x = comAlpha(x, comoNumero(a != null ? a : 1, (_j = o.variavel) != null ? _j : variavel2.id));
+          const a = o.variavel ? (_l = valores[o.variavel]) != null ? _l : (_k = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _k.valor : o.valor;
+          x = comAlpha(x, comoNumero(a != null ? a : 1, (_m = o.variavel) != null ? _m : variavel2.id));
           break;
         }
         case "converter":
@@ -403,11 +408,11 @@
         }
         case "pontoNoCaminho":
         case "tracoNoCaminho": {
-          const forma = String((_l = valores[o.variavel]) != null ? _l : (_k = todas.find((t2) => t2.id === o.variavel)) == null ? void 0 : _k.valor);
+          const forma = String((_o = valores[o.variavel]) != null ? _o : (_n = todas.find((t2) => t2.id === o.variavel)) == null ? void 0 : _n.valor);
           const d = o.caminhos[forma];
           if (!d) throw new Error(`KCX: caminho "${forma}" n\xE3o encontrado.`);
           const t = comoNumero(x, variavel2.id);
-          x = o.op === "tracoNoCaminho" ? comprimento(d) * t : pontoEm(d, t)[o.eixo] + ((_m = o.somar) != null ? _m : 0);
+          x = o.op === "tracoNoCaminho" ? comprimento(d) * t : pontoEm(d, t)[o.eixo] + ((_p = o.somar) != null ? _p : 0);
           break;
         }
       }
@@ -494,7 +499,7 @@
         if (!ehTexto(vin.alvo.seletor)) e(`${cv}.alvo.seletor`, "Seletor obrigat\xF3rio.");
       } else e(`${cv}.alvo`, "Alvo deve ser css-var, atributo ou texto.");
       for (const o of (_e = vin.transformar) != null ? _e : []) {
-        if (o.op === "pontoNoCaminho" || o.op === "tracoNoCaminho") {
+        if (o.op === "pontoNoCaminho" || o.op === "tracoNoCaminho" || o.op === "variavelPorOpcao") {
           e(`${cv}.transformar`, `A opera\xE7\xE3o ${o.op} s\xF3 pode ser usada na estrutura visual.`);
         }
         if ((o.op === "multiplicarPorVariavel" || o.op === "dividirPorVariavel" || o.op === "somarVariavel" || o.op === "alpha" && o.variavel) && !todas.has(o.variavel)) {
@@ -1594,7 +1599,9 @@ ${cssAnim}`,
     return ids.some((id) => JSON.stringify(ctx.valores[id]) !== JSON.stringify(ctx.base[id]));
   }
   function idsDeOps(ops = []) {
-    return ops.flatMap((o) => "variavel" in o && o.variavel ? [o.variavel] : []);
+    return ops.flatMap(
+      (o) => o.op === "variavelPorOpcao" ? Object.values(o.variaveis) : "variavel" in o && o.variavel ? [o.variavel] : []
+    );
   }
   function resolverRef(ref, campo, onde, ctx) {
     var _a, _b;
@@ -1633,7 +1640,7 @@ ${cssAnim}`,
     if (ehRefDerivada(ref)) {
       const v = porId(comp, ref.$derivado);
       const bruto = aplicarOperacoes(v, valores[v.id], ref.transformar, valores, comp.variaveis);
-      const calc = campo.tipo === "BOOLEAN" ? bruto === true || bruto === "true" : bruto;
+      const calc = campo.tipo === "BOOLEAN" ? bruto === true || bruto === "true" : campo.tipo === "FLOAT" && typeof bruto === "string" && bruto.trim() !== "" && !isNaN(Number(bruto)) ? Number(bruto) : bruto;
       const valor = campo.tipo === "COLOR" ? corFigma(String(calc)) : calc;
       if (!ctx.usarVariaveis || !campo.vinculavel) return { valor };
       const sufixo = difereDaBase(ctx, [v.id, ...idsDeOps(ref.transformar)]) ? ctx.sufixo : "";

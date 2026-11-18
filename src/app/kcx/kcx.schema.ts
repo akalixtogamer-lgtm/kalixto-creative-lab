@@ -103,6 +103,7 @@ export const KCX_JSON_SCHEMA = {
             'mapa',
             'pontoNoCaminho',
             'tracoNoCaminho',
+            'variavelPorOpcao',
           ],
         },
       },

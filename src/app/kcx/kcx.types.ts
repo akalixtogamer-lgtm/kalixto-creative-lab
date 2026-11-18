@@ -91,7 +91,9 @@ export type KcxOperacao =
       somar?: number;
     }
   /** Só na estrutura visual: fração do percurso → comprimento do traço (px). */
-  | { op: 'tracoNoCaminho'; variavel: string; caminhos: Record<string, string> };
+  | { op: 'tracoNoCaminho'; variavel: string; caminhos: Record<string, string> }
+  /** Só na estrutura visual: devolve o valor da variável escolhida pela opção atual (enum). */
+  | { op: 'variavelPorOpcao'; variaveis: Record<string, string> };
 
 export type KcxAlvo =
   /** Custom property CSS. Sempre começa com --kcx-. */

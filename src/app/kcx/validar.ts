@@ -113,7 +113,7 @@ function validarVariavel(
       if (!ehTexto(vin.alvo.seletor)) e(`${cv}.alvo.seletor`, 'Seletor obrigatório.');
     } else e(`${cv}.alvo`, 'Alvo deve ser css-var, atributo ou texto.');
     for (const o of vin.transformar ?? []) {
-      if (o.op === 'pontoNoCaminho' || o.op === 'tracoNoCaminho') {
+      if (o.op === 'pontoNoCaminho' || o.op === 'tracoNoCaminho' || o.op === 'variavelPorOpcao') {
         e(`${cv}.transformar`, `A operação ${o.op} só pode ser usada na estrutura visual.`);
       }
       if (

@@ -53,7 +53,12 @@ describe('Construtor KCX — todos os tipos', () => {
           const mock = criarFigmaMock();
           const rel = await importarNoFigma(mock.figma, plano, serializar(pacote), 'atualizar');
           expect(rel.vinculosFalhos).toEqual([]);
-          expect(rel.componentes[0].variantes).toBe(comp.estados.length);
+          const eixos = (comp.compatibilidade.figma.eixosVariante ?? []).map(
+            (id) => comp.variaveis.find((v) => v.id === id)!.opcoes!.length,
+          );
+          expect(rel.componentes[0].variantes).toBe(
+            eixos.reduce((a, b) => a * b, comp.estados.length),
+          );
           expect(rel.avisos.filter((a) => !a.startsWith('Fonte'))).toEqual([]);
           // cada interação aponta para nós e estados que existem
           for (const it of comp.interacoes ?? []) {
@@ -137,6 +142,31 @@ describe('Construtor KCX — todos os tipos', () => {
     // o trilho anda: x = -(ativo - 1) × 480
     const trilho = (i: number) => plano.componentes[0].variantes[i].arvore.filhos[0].filhos[0];
     expect([0, 1, 2].map((i) => trilho(i).x)).toEqual([-0, -480, -960].map((x) => x || 0));
+  });
+
+  it('conjunto de botões: Entrar e Criar conta × P/M/G × Padrão/Hover, com cor e nome de cada um', async () => {
+    const def = TIPOS_CONSTRUTOR.find((t) => t.id === 'botoes')!;
+    const comp = montarDoConstrutor({
+      ...configPadrao(def, 'Botões de acesso'),
+      itens: ['Entrar', 'Criar conta'],
+    });
+    const plano = planejarFigma(criarPacote([comp], { agora }));
+    const vs = plano.componentes[0].variantes;
+    expect(vs).toHaveLength(12);
+    const achar = (nome: string) => vs.find((v) => v.nome === nome)!.arvore;
+    const entrarM = achar('Estado=Padrão, Botão=Entrar, Tamanho=M');
+    const criarG = achar('Estado=Hover, Botão=Criar conta, Tamanho=G');
+    expect(entrarM.filhos[0].texto!.conteudo.valor).toBe('Entrar');
+    expect(criarG.filhos[0].texto!.conteudo.valor).toBe('Criar conta');
+    expect(entrarM.preenchimentos[0]).not.toEqual(criarG.preenchimentos[0]);
+    expect(criarG.autoLayout!.paddingX.valor).toBe(32);
+    expect(entrarM.autoLayout!.paddingX.valor).toBe(24);
+    expect(Number(criarG.efeitos[0].tipo === 'DROP_SHADOW' && criarG.efeitos[0].raio.valor)).toBe(
+      24,
+    );
+    const rel = await importarNoFigma(criarFigmaMock().figma, plano, '{}', 'atualizar');
+    expect(rel.vinculosFalhos).toEqual([]);
+    expect(rel.interacoes.length).toBe(6); // hover em cada combinação de botão × tamanho
   });
 
   it('a lista de itens respeita mínimo e máximo do tipo', () => {
