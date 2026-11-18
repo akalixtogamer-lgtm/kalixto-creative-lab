@@ -55,4 +55,7 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'gauge-meter': () => import('./gauge-meter/gauge-meter').then((m) => m.GaugeMeter),
   'step-unlock': () => import('./step-unlock/step-unlock').then((m) => m.StepUnlock),
   'device-switcher': () => import('./device-switcher/device-switcher').then((m) => m.DeviceSwitcher),
+  'glass-card': () => import('./glass-card/glass-card').then((m) => m.GlassCard),
+  'frosted-navbar': () => import('./frosted-navbar/frosted-navbar').then((m) => m.FrostedNavbar),
+  'blur-modal': () => import('./blur-modal/blur-modal').then((m) => m.BlurModal),
 };

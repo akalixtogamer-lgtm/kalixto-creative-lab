@@ -2,24 +2,24 @@
 
 > Gerado por `npm run docs:efeitos` a partir do registro (`src/app/core/efeitos/registry.ts`).
 
-Total: **110** itens — **50 kits** com ficha técnica completa e **60 demos** dos laboratórios.
+Total: **113** itens — **53 kits** com ficha técnica completa e **60 demos** dos laboratórios.
 
 | # | Categoria | Kits | Demos |
 |---|---|---|---|
-| 01 | Microinterações e UI | 3 | 3 |
+| 01 | Microinterações e UI | 4 | 3 |
 | 02 | Entradas, saídas e transições | 5 | 10 |
 | 03 | Scroll e parallax | 7 | 8 |
 | 04 | Tipografia e texto | 8 | 5 |
 | 05 | Mouse e cursor | 6 | 2 |
 | 06 | Cards, imagens e galerias | 3 | 4 |
 | 07 | Backgrounds | 3 | 1 |
-| 08 | Luz, sombra e profundidade | 4 | 1 |
+| 08 | Luz, sombra e profundidade | 5 | 1 |
 | 09 | SVG, geometria e máscaras | 1 | 8 |
 | 10 | Partículas e simulações | 2 | 0 |
 | 11 | 3D e WebGL | 1 | 12 |
 | 12 | Áudio e audiovisual | 0 | 0 |
 | 13 | Componentes e dados | 3 | 1 |
-| 14 | Navegação e experiência de página | 2 | 1 |
+| 14 | Navegação e experiência de página | 3 | 1 |
 | 15 | Experimental e creative coding | 2 | 4 |
 
 ## 01 · Microinterações e UI
@@ -31,6 +31,7 @@ Botões, toggles, tooltips, menus e respostas imediatas a uma ação.
 | [Botão que sobe no hover](efeitos/button-hover.md) | Kit (ficha completa) | Iniciante | `/efeitos/button-hover` |
 | [Borda animada](efeitos/animated-border.md) | Kit (ficha completa) | Intermediário | `/efeitos/animated-border` |
 | [Troca de dispositivo (computador, tablet, celular)](efeitos/device-switcher.md) | Kit (ficha completa) | Intermediário | `/efeitos/device-switcher` |
+| [Janela com fundo desfocado](efeitos/blur-modal.md) | Kit (ficha completa) | Intermediário | `/efeitos/blur-modal` |
 | Estados de hover em botões | Demo | Iniciante | `/labs/css?demo=hover` |
 | Elemento flutuante | Demo | Iniciante | `/labs/css?demo=floating` |
 | Curtir e interruptor | Demo | Intermediário | `/labs/css?demo=microinteracoes` |
@@ -149,6 +150,7 @@ Brilho, reflexo, vidro e camadas.
 | [Interface isométrica em camadas](efeitos/isometric-layers.md) | Kit (ficha completa) | Intermediário | `/efeitos/isometric-layers` |
 | [Cards com luz que segue o mouse](efeitos/spotlight-cards.md) | Kit (ficha completa) | Intermediário | `/efeitos/spotlight-cards` |
 | [Feixes de luz de palco](efeitos/light-beams.md) | Kit (ficha completa) | Intermediário | `/efeitos/light-beams` |
+| [Gerador de vidro (glassmorphism)](efeitos/glass-card.md) | Kit (ficha completa) | Iniciante | `/efeitos/glass-card` |
 | Cards escuros com sombras suaves e forma de destaque | Demo | Intermediário | `/labs/ui?demo=cards-profundidade` |
 
 ## 09 · SVG, geometria e máscaras
@@ -221,6 +223,7 @@ Navbars, transições de página e menus.
 |---|---|---|---|
 | [Rolagem suave](efeitos/smooth-scroll.md) | Kit (ficha completa) | Intermediário | `/efeitos/smooth-scroll` |
 | [Tela de carregamento com contador](efeitos/preloader-counter.md) | Kit (ficha completa) | Intermediário | `/efeitos/preloader-counter` |
+| [Menu que vira vidro ao rolar](efeitos/frosted-navbar.md) | Kit (ficha completa) | Iniciante | `/efeitos/frosted-navbar` |
 | Navbar transparente que fixa com sombra | Demo | Intermediário | `/labs/scroll?demo=navbar` |
 
 ## 15 · Experimental e creative coding

@@ -51,6 +51,9 @@ import { TYPEWRITER_PROMPT } from './kits/typewriter-prompt.kit';
 import { GAUGE_METER } from './kits/gauge-meter.kit';
 import { STEP_UNLOCK } from './kits/step-unlock.kit';
 import { DEVICE_SWITCHER } from './kits/device-switcher.kit';
+import { GLASS_CARD } from './kits/glass-card.kit';
+import { FROSTED_NAVBAR } from './kits/frosted-navbar.kit';
+import { BLUR_MODAL } from './kits/blur-modal.kit';
 
 /**
  * Registro central de efeitos.
@@ -115,6 +118,10 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   GAUGE_METER,
   STEP_UNLOCK,
   DEVICE_SWITCHER,
+  // Vidro e desfoque (glassmorphism)
+  GLASS_CARD,
+  FROSTED_NAVBAR,
+  BLUR_MODAL,
 ];
 
 export function findKit(id: string): EffectKit | undefined {
