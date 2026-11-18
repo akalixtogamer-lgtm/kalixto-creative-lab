@@ -19,13 +19,28 @@
 }
 
 @keyframes scale-reveal {
-  from { opacity: 0; transform: scale(0.6); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scale-reveal { animation-name: aparecer; }
-  @keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+  .scale-reveal {
+    animation-name: aparecer;
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 .repetir {
@@ -37,4 +52,7 @@
   font: inherit;
   cursor: pointer;
 }
-.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.repetir:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}

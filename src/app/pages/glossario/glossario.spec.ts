@@ -49,7 +49,9 @@ describe('Glossário A–Z · dados', () => {
 describe('Glossário A–Z · página', () => {
   let harness: RouterTestingHarness;
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
@@ -66,7 +68,11 @@ describe('Glossário A–Z · página', () => {
   it('filtra por tipo', async () => {
     await harness.navigateByUrl('/glossario');
     const el = harness.routeNativeElement!;
-    ([...el.querySelectorAll('.gl__tipo')].find((b) => b.textContent?.includes('Termos')) as HTMLButtonElement).click();
+    (
+      [...el.querySelectorAll('.gl__tipo')].find((b) =>
+        b.textContent?.includes('Termos'),
+      ) as HTMLButtonElement
+    ).click();
     harness.detectChanges();
     const total = GLOSSARIO.filter((e) => e.tipo === 'termo').length;
     expect(el.textContent).toContain(`${total} item(ns) encontrado(s)`);

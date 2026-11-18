@@ -38,7 +38,10 @@ const borda = (pontos: string) => `M0,100 L${pontos} L1000,100 Z`;
 
 function zigue(dentes: number, alto: number, baixo: number): string {
   const passo = 1000 / dentes;
-  const p = Array.from({ length: dentes + 1 }, (_, i) => `${(i * passo).toFixed(1)},${i % 2 ? baixo : alto}`);
+  const p = Array.from(
+    { length: dentes + 1 },
+    (_, i) => `${(i * passo).toFixed(1)},${i % 2 ? baixo : alto}`,
+  );
   return borda(p.join(' L'));
 }
 
@@ -84,12 +87,20 @@ function nuvens(): string {
 }
 
 export const DIVISORES_SVG: Record<string, { rotulo: string; camadas: Camada[] }> = {
-  ondas: { rotulo: 'ondas', camadas: [{ d: 'M0,100 L0,40 C150,95 350,0 500,40 C650,80 850,5 1000,45 L1000,100 Z', opacidade: 1 }] },
+  ondas: {
+    rotulo: 'ondas',
+    camadas: [
+      { d: 'M0,100 L0,40 C150,95 350,0 500,40 C650,80 850,5 1000,45 L1000,100 Z', opacidade: 1 },
+    ],
+  },
   'ondas-camadas': {
     rotulo: 'ondas em camadas',
     camadas: [
       { d: 'M0,100 L0,25 C200,80 400,0 600,35 C800,70 900,20 1000,30 L1000,100 Z', opacidade: 0.3 },
-      { d: 'M0,100 L0,45 C180,10 380,90 620,45 C820,10 920,70 1000,50 L1000,100 Z', opacidade: 0.55 },
+      {
+        d: 'M0,100 L0,45 C180,10 380,90 620,45 C820,10 920,70 1000,50 L1000,100 Z',
+        opacidade: 0.55,
+      },
       { d: 'M0,100 L0,65 C200,95 420,40 640,70 C820,95 920,55 1000,70 L1000,100 Z', opacidade: 1 },
     ],
   },
@@ -102,7 +113,10 @@ export const DIVISORES_SVG: Record<string, { rotulo: string; camadas: Camada[] }
     ],
   },
   triangulo: { rotulo: 'triângulo', camadas: [{ d: borda('0,0 L500,98 L1000,0'), opacidade: 1 }] },
-  'triangulo-assimetrico': { rotulo: 'triângulo assimétrico', camadas: [{ d: borda('0,0 L280,98 L1000,25'), opacidade: 1 }] },
+  'triangulo-assimetrico': {
+    rotulo: 'triângulo assimétrico',
+    camadas: [{ d: borda('0,0 L280,98 L1000,25'), opacidade: 1 }],
+  },
   inclinado: { rotulo: 'inclinado', camadas: [{ d: borda('0,85 L1000,5'), opacidade: 1 }] },
   'inclinado-opacidade': {
     rotulo: 'inclinado (opacidade)',
@@ -111,33 +125,66 @@ export const DIVISORES_SVG: Record<string, { rotulo: string; camadas: Camada[] }
       { d: borda('0,90 L1000,25'), opacidade: 1 },
     ],
   },
-  curva: { rotulo: 'curva', camadas: [{ d: 'M0,100 L0,0 Q500,200 1000,0 L1000,100 Z', opacidade: 1 }] },
-  'curva-assimetrica': { rotulo: 'curva assimétrica', camadas: [{ d: 'M0,100 L0,0 C150,170 650,130 1000,10 L1000,100 Z', opacidade: 1 }] },
-  livro: { rotulo: 'livro', camadas: [{ d: 'M0,100 L0,5 Q250,100 500,35 Q750,100 1000,5 L1000,100 Z', opacidade: 1 }] },
-  piramides: { rotulo: 'pirâmides', camadas: [{ d: borda('0,15 L200,60 L320,38 L580,98 L1000,15'), opacidade: 1 }] },
+  curva: {
+    rotulo: 'curva',
+    camadas: [{ d: 'M0,100 L0,0 Q500,200 1000,0 L1000,100 Z', opacidade: 1 }],
+  },
+  'curva-assimetrica': {
+    rotulo: 'curva assimétrica',
+    camadas: [{ d: 'M0,100 L0,0 C150,170 650,130 1000,10 L1000,100 Z', opacidade: 1 }],
+  },
+  livro: {
+    rotulo: 'livro',
+    camadas: [{ d: 'M0,100 L0,5 Q250,100 500,35 Q750,100 1000,5 L1000,100 Z', opacidade: 1 }],
+  },
+  piramides: {
+    rotulo: 'pirâmides',
+    camadas: [{ d: borda('0,15 L200,60 L320,38 L580,98 L1000,15'), opacidade: 1 }],
+  },
   nuvens: { rotulo: 'nuvens', camadas: [{ d: nuvens(), opacidade: 1 }] },
   gotas: { rotulo: 'gotas', camadas: [{ d: gotas(), opacidade: 1 }] },
   montanhas: {
     rotulo: 'montanhas (camadas)',
     camadas: [
-      { d: 'M0,100 L0,45 C90,20 160,55 240,30 C330,5 400,50 480,25 C560,5 640,45 730,20 C820,0 900,40 1000,25 L1000,100 Z', opacidade: 0.3 },
-      { d: 'M0,100 L0,60 C110,35 190,75 290,48 C380,25 460,70 560,45 C660,20 760,65 860,42 C930,30 970,50 1000,45 L1000,100 Z', opacidade: 0.55 },
-      { d: 'M0,100 L0,78 C120,58 220,92 340,72 C450,55 560,90 680,70 C800,52 900,85 1000,68 L1000,100 Z', opacidade: 1 },
+      {
+        d: 'M0,100 L0,45 C90,20 160,55 240,30 C330,5 400,50 480,25 C560,5 640,45 730,20 C820,0 900,40 1000,25 L1000,100 Z',
+        opacidade: 0.3,
+      },
+      {
+        d: 'M0,100 L0,60 C110,35 190,75 290,48 C380,25 460,70 560,45 C660,20 760,65 860,42 C930,30 970,50 1000,45 L1000,100 Z',
+        opacidade: 0.55,
+      },
+      {
+        d: 'M0,100 L0,78 C120,58 220,92 340,72 C450,55 560,90 680,70 C800,52 900,85 1000,68 L1000,100 Z',
+        opacidade: 1,
+      },
     ],
   },
-  'padrao-ondas': { rotulo: 'padrão de ondas', camadas: [{ d: ondinhas(24, 70, 26), opacidade: 1 }] },
+  'padrao-ondas': {
+    rotulo: 'padrão de ondas',
+    camadas: [{ d: ondinhas(24, 70, 26), opacidade: 1 }],
+  },
   'zigue-zague': { rotulo: 'zigue-zague fino', camadas: [{ d: zigue(60, 70, 92), opacidade: 1 }] },
-  split: { rotulo: 'split (seta central)', camadas: [{ d: borda('0,60 L480,60 L500,92 L520,60 L1000,60'), opacidade: 1 }] },
+  split: {
+    rotulo: 'split (seta central)',
+    camadas: [{ d: borda('0,60 L480,60 L500,92 L520,60 L1000,60'), opacidade: 1 }],
+  },
 };
 
 /** Texto do SVG do divisor (usado no palco e no Code Viewer). */
 export function svgDivisor(v: Valores, cor = '#0e0a1d'): string {
   const div = DIVISORES_SVG[String(v['forma'])];
-  const transformacoes = [v['inverter'] === 'true' ? 'scaleY(-1)' : '', v['espelhar'] === 'true' ? 'scaleX(-1)' : '']
+  const transformacoes = [
+    v['inverter'] === 'true' ? 'scaleY(-1)' : '',
+    v['espelhar'] === 'true' ? 'scaleX(-1)' : '',
+  ]
     .filter(Boolean)
     .join(' ');
   const caminhos = div.camadas
-    .map((c) => `  <path d="${c.d}" fill="${cor}"${c.opacidade < 1 ? ` opacity="${c.opacidade}"` : ''} />`)
+    .map(
+      (c) =>
+        `  <path d="${c.d}" fill="${cor}"${c.opacidade < 1 ? ` opacity="${c.opacidade}"` : ''} />`,
+    )
     .join('\n');
   return `<svg class="divisor" viewBox="0 0 1000 100" preserveAspectRatio="none"
      style="height: ${v['altura']}px${transformacoes ? `; transform: ${transformacoes}` : ''}">
@@ -167,11 +214,15 @@ export const MASCARAS: Record<string, { rotulo: string; formas: string[] }> = {
   },
   blob: {
     rotulo: 'forma orgânica',
-    formas: ['<path d="M330,0 C290,70 360,120 320,190 C280,260 330,330 300,400 L600,400 L600,0 Z" />'],
+    formas: [
+      '<path d="M330,0 C290,70 360,120 320,190 C280,260 330,330 300,400 L600,400 L600,0 Z" />',
+    ],
   },
   onda: {
     rotulo: 'onda em camadas',
-    formas: ['<path d="M360,0 C300,80 420,120 360,200 C300,280 420,330 340,400 L600,400 L600,0 Z" />'],
+    formas: [
+      '<path d="M360,0 C300,80 420,120 360,200 C300,280 420,330 340,400 L600,400 L600,0 Z" />',
+    ],
   },
 };
 
@@ -205,7 +256,8 @@ export const UI_DEMOS: LabDemo[] = [
     topico: 'Hero editorial',
     titulo: 'Hero com título editorial e entrada em sequência',
     nivel: 'intermediario',
-    resumo: 'Título fino com palavra de destaque, linha que cresce, botão circular e indicador de rolagem.',
+    resumo:
+      'Título fino com palavra de destaque, linha que cresce, botão circular e indicador de rolagem.',
     explicacao: [
       'A força de um hero editorial está no contraste: título grande e leve, uma única palavra em cor de destaque e muito respiro.',
       'Uma timeline do GSAP faz a entrada em ordem de leitura: menu, título (linha por linha), linha divisória, texto e botão.',
@@ -218,9 +270,18 @@ export const UI_DEMOS: LabDemo[] = [
       { nome: 'Cinema', valores: { destaque: '#f5c46b', entrada: 'mascara', dur: 1.2 } },
       { nome: 'Rápido', valores: { entrada: 'subir', dur: 0.5 } },
     ],
-    desafio: { enunciado: 'Monte uma entrada em máscara com destaque ciano em 0,8 s.', meta: { entrada: 'mascara', destaque: '#22e3ff', dur: 0.8 } },
+    desafio: {
+      enunciado: 'Monte uma entrada em máscara com destaque ciano em 0,8 s.',
+      meta: { entrada: 'mascara', destaque: '#22e3ff', dur: 0.8 },
+    },
     params: [
-      { id: 'destaque', rotulo: 'Cor de destaque', tipo: 'select', opcoes: CORES_DESTAQUE, padrao: '#f5c46b' },
+      {
+        id: 'destaque',
+        rotulo: 'Cor de destaque',
+        tipo: 'select',
+        opcoes: CORES_DESTAQUE,
+        padrao: '#f5c46b',
+      },
       {
         id: 'entrada',
         rotulo: 'Entrada do título',
@@ -231,7 +292,16 @@ export const UI_DEMOS: LabDemo[] = [
         ],
         padrao: 'subir',
       },
-      { id: 'dur', rotulo: 'Duração de cada passo', tipo: 'range', min: 0.4, max: 1.6, passo: 0.1, unidade: 's', padrao: 0.9 },
+      {
+        id: 'dur',
+        rotulo: 'Duração de cada passo',
+        tipo: 'range',
+        min: 0.4,
+        max: 1.6,
+        passo: 0.1,
+        unidade: 's',
+        padrao: 0.9,
+      },
     ],
     codigo: (v) => `<h1 class="titulo">
   <span class="linha"><span>Movimento</span></span>
@@ -243,7 +313,9 @@ export const UI_DEMOS: LabDemo[] = [
 const tl = gsap.timeline({ defaults: { duration: ${v['dur']}, ease: "power3.out" } });
 tl.from(".nav a", { y: -20, opacity: 0, stagger: 0.08 })
   .from(".linha > span", ${
-    v['entrada'] === 'mascara' ? '{ yPercent: 100, stagger: 0.12 }' : '{ y: 40, opacity: 0, stagger: 0.12 }'
+    v['entrada'] === 'mascara'
+      ? '{ yPercent: 100, stagger: 0.12 }'
+      : '{ y: 40, opacity: 0, stagger: 0.12 }'
   }, "-=0.4")
   .from(".divisoria", { scaleX: 0, transformOrigin: "left" }, "-=0.5")
   .from(".texto, .cta", { y: 20, opacity: 0, stagger: 0.1 }, "-=0.5");`,
@@ -254,7 +326,8 @@ tl.from(".nav a", { y: -20, opacity: 0, stagger: 0.08 })
     topico: 'Órbita e parallax',
     titulo: 'Anel orbital e camadas que seguem o mouse',
     nivel: 'avancado',
-    resumo: 'Um planeta percorre uma elipse inclinada enquanto esferas flutuam em profundidades diferentes.',
+    resumo:
+      'Um planeta percorre uma elipse inclinada enquanto esferas flutuam em profundidades diferentes.',
     explicacao: [
       'O anel é uma elipse do SVG convertida em caminho; o MotionPathPlugin faz o planeta percorrê-la sem parar.',
       'O anel fica dentro de um <g> com rotate(): inclinar o grupo inclina o desenho e o caminho do planeta juntos.',
@@ -268,11 +341,41 @@ tl.from(".nav a", { y: -20, opacity: 0, stagger: 0.08 })
       { nome: 'Lento e profundo', valores: { vel: 18, profundidade: 40 } },
       { nome: 'Anel reto', valores: { inclinacao: 0 } },
     ],
-    desafio: { enunciado: 'Incline o anel para o outro lado (20°) e deixe a órbita em 6 s.', meta: { inclinacao: 20, vel: 6 } },
+    desafio: {
+      enunciado: 'Incline o anel para o outro lado (20°) e deixe a órbita em 6 s.',
+      meta: { inclinacao: 20, vel: 6 },
+    },
     params: [
-      { id: 'vel', rotulo: 'Tempo de uma volta', tipo: 'range', min: 4, max: 20, passo: 1, unidade: 's', padrao: 10 },
-      { id: 'inclinacao', rotulo: 'Inclinação do anel', tipo: 'range', min: -40, max: 40, passo: 5, unidade: '°', padrao: -20 },
-      { id: 'profundidade', rotulo: 'Força do parallax', tipo: 'range', min: 0, max: 40, passo: 5, unidade: 'px', padrao: 20 },
+      {
+        id: 'vel',
+        rotulo: 'Tempo de uma volta',
+        tipo: 'range',
+        min: 4,
+        max: 20,
+        passo: 1,
+        unidade: 's',
+        padrao: 10,
+      },
+      {
+        id: 'inclinacao',
+        rotulo: 'Inclinação do anel',
+        tipo: 'range',
+        min: -40,
+        max: 40,
+        passo: 5,
+        unidade: '°',
+        padrao: -20,
+      },
+      {
+        id: 'profundidade',
+        rotulo: 'Força do parallax',
+        tipo: 'range',
+        min: 0,
+        max: 40,
+        passo: 5,
+        unidade: 'px',
+        padrao: 20,
+      },
     ],
     codigo: (v) => `gsap.registerPlugin(MotionPathPlugin);
 
@@ -308,7 +411,8 @@ palco.addEventListener("pointermove", (e) => {
     topico: 'Texto atrás do objeto',
     titulo: 'Título gigante entre camadas',
     nivel: 'intermediario',
-    resumo: 'O texto fica entre o céu e o primeiro plano, como se a paisagem estivesse na frente das letras.',
+    resumo:
+      'O texto fica entre o céu e o primeiro plano, como se a paisagem estivesse na frente das letras.',
     explicacao: [
       'O truque é empilhar três camadas: fundo (céu), texto e primeiro plano (silhueta com fundo transparente).',
       'Com z-index, a silhueta cobre a parte de baixo das letras — o cérebro entende que o texto está "atrás" da paisagem.',
@@ -321,11 +425,41 @@ palco.addEventListener("pointermove", (e) => {
       { nome: 'Monumental', valores: { tamanho: 150, sobreposicao: 45 } },
       { nome: 'Discreto', valores: { tamanho: 90, sobreposicao: 20, parallax: 5 } },
     ],
-    desafio: { enunciado: 'Deixe a frente cobrindo 60% e sem parallax (0).', meta: { sobreposicao: 60, parallax: 0 } },
+    desafio: {
+      enunciado: 'Deixe a frente cobrindo 60% e sem parallax (0).',
+      meta: { sobreposicao: 60, parallax: 0 },
+    },
     params: [
-      { id: 'tamanho', rotulo: 'Tamanho do título', tipo: 'range', min: 60, max: 160, passo: 10, unidade: 'px', padrao: 120 },
-      { id: 'sobreposicao', rotulo: 'Frente cobrindo as letras', tipo: 'range', min: 10, max: 60, passo: 5, unidade: '%', padrao: 35 },
-      { id: 'parallax', rotulo: 'Parallax por mouse', tipo: 'range', min: 0, max: 30, passo: 5, unidade: 'px', padrao: 15 },
+      {
+        id: 'tamanho',
+        rotulo: 'Tamanho do título',
+        tipo: 'range',
+        min: 60,
+        max: 160,
+        passo: 10,
+        unidade: 'px',
+        padrao: 120,
+      },
+      {
+        id: 'sobreposicao',
+        rotulo: 'Frente cobrindo as letras',
+        tipo: 'range',
+        min: 10,
+        max: 60,
+        passo: 5,
+        unidade: '%',
+        padrao: 35,
+      },
+      {
+        id: 'parallax',
+        rotulo: 'Parallax por mouse',
+        tipo: 'range',
+        min: 0,
+        max: 30,
+        passo: 5,
+        unidade: 'px',
+        padrao: 15,
+      },
     ],
     codigo: (v) => `<div class="cena">
   <img class="ceu" src="paisagem.svg" alt="" />
@@ -353,7 +487,8 @@ gsap.quickTo(".titulo", "x")(mouseX * ${Number(v['parallax']) / 3});`,
     topico: 'Imagem em formas',
     titulo: 'Recortar a imagem com formas',
     nivel: 'intermediario',
-    resumo: 'A imagem aparece só dentro de pílulas, cortes em X ou curvas orgânicas — como nas capas de apresentação.',
+    resumo:
+      'A imagem aparece só dentro de pílulas, cortes em X ou curvas orgânicas — como nas capas de apresentação.',
     explicacao: [
       'Um <clipPath> do SVG reúne várias formas; a imagem só aparece onde elas estão.',
       'Pílulas são retângulos com rx igual à metade da largura, giradas com transform.',
@@ -366,7 +501,10 @@ gsap.quickTo(".titulo", "x")(mouseX * ${Number(v['parallax']) / 3});`,
       { nome: 'Pílulas no pôr do sol', valores: { forma: 'pilulas', imagem: 'por-do-sol' } },
       { nome: 'Onda na aurora', valores: { forma: 'onda', imagem: 'aurora' } },
     ],
-    desafio: { enunciado: 'Recorte a paisagem do oceano com uma forma orgânica.', meta: { forma: 'blob', imagem: 'oceano' } },
+    desafio: {
+      enunciado: 'Recorte a paisagem do oceano com uma forma orgânica.',
+      meta: { forma: 'blob', imagem: 'oceano' },
+    },
     params: [
       {
         id: 'forma',
@@ -405,7 +543,8 @@ gsap.from("#recorte > *", {
     topico: 'Divisores SVG',
     titulo: 'Biblioteca de divisores de seção',
     nivel: 'iniciante',
-    resumo: '17 formatos de borda entre seções: ondas, nuvens, gotas, montanhas, livro, pirâmides e mais.',
+    resumo:
+      '17 formatos de borda entre seções: ondas, nuvens, gotas, montanhas, livro, pirâmides e mais.',
     explicacao: [
       'O divisor é um SVG largo e baixo colado no fim da seção, pintado com a cor da seção seguinte.',
       'preserveAspectRatio="none" deixa o desenho esticar para qualquer largura de tela sem perder a forma geral.',
@@ -420,7 +559,10 @@ gsap.from("#recorte > *", {
       { nome: 'Nuvens', valores: { forma: 'nuvens', altura: 90 } },
       { nome: 'Gotas', valores: { forma: 'gotas', altura: 80 } },
     ],
-    desafio: { enunciado: 'Use o divisor "livro" espelhado e invertido, com 120px.', meta: { forma: 'livro', espelhar: 'true', inverter: 'true', altura: 120 } },
+    desafio: {
+      enunciado: 'Use o divisor "livro" espelhado e invertido, com 120px.',
+      meta: { forma: 'livro', espelhar: 'true', inverter: 'true', altura: 120 },
+    },
     params: [
       {
         id: 'forma',
@@ -429,7 +571,16 @@ gsap.from("#recorte > *", {
         opcoes: Object.entries(DIVISORES_SVG).map(([valor, d]) => ({ valor, rotulo: d.rotulo })),
         padrao: 'ondas',
       },
-      { id: 'altura', rotulo: 'Altura', tipo: 'range', min: 30, max: 200, passo: 10, unidade: 'px', padrao: 100 },
+      {
+        id: 'altura',
+        rotulo: 'Altura',
+        tipo: 'range',
+        min: 30,
+        max: 200,
+        passo: 10,
+        unidade: 'px',
+        padrao: 100,
+      },
       {
         id: 'inverter',
         rotulo: 'Inverter (de cabeça para baixo)',
@@ -485,11 +636,41 @@ gsap.from("#recorte > *", {
       { nome: 'Vidro forte', valores: { blur: 20, escala: 0.85 } },
       { nome: 'Sem vidro', valores: { blur: 0, escala: 1 } },
     ],
-    desafio: { enunciado: 'Deixe os cards inativos em 80% do tamanho e com 32px de espaço.', meta: { escala: 0.8, espaco: 32 } },
+    desafio: {
+      enunciado: 'Deixe os cards inativos em 80% do tamanho e com 32px de espaço.',
+      meta: { escala: 0.8, espaco: 32 },
+    },
     params: [
-      { id: 'blur', rotulo: 'Desfoque do vidro', tipo: 'range', min: 0, max: 24, passo: 2, unidade: 'px', padrao: 12 },
-      { id: 'espaco', rotulo: 'Espaço entre cards', tipo: 'range', min: 8, max: 40, passo: 4, unidade: 'px', padrao: 16 },
-      { id: 'escala', rotulo: 'Tamanho dos inativos', tipo: 'range', min: 0.8, max: 1, passo: 0.05, unidade: 'x', padrao: 0.9 },
+      {
+        id: 'blur',
+        rotulo: 'Desfoque do vidro',
+        tipo: 'range',
+        min: 0,
+        max: 24,
+        passo: 2,
+        unidade: 'px',
+        padrao: 12,
+      },
+      {
+        id: 'espaco',
+        rotulo: 'Espaço entre cards',
+        tipo: 'range',
+        min: 8,
+        max: 40,
+        passo: 4,
+        unidade: 'px',
+        padrao: 16,
+      },
+      {
+        id: 'escala',
+        rotulo: 'Tamanho dos inativos',
+        tipo: 'range',
+        min: 0.8,
+        max: 1,
+        passo: 0.05,
+        unidade: 'x',
+        padrao: 0.9,
+      },
     ],
     codigo: (v) => `.trilho {
   display: flex;
@@ -535,9 +716,21 @@ cards.forEach((c) => obs.observe(c));`,
       { nome: 'Rápido', valores: { dur: 0.75, ease: 'expo.out' } },
       { nome: 'Dramático', valores: { dur: 3, ease: 'power3.out' } },
     ],
-    desafio: { enunciado: 'Conte com uma casa decimal, em 2 s, com ease expo.out.', meta: { formato: 'decimal', dur: 2, ease: 'expo.out' } },
+    desafio: {
+      enunciado: 'Conte com uma casa decimal, em 2 s, com ease expo.out.',
+      meta: { formato: 'decimal', dur: 2, ease: 'expo.out' },
+    },
     params: [
-      { id: 'dur', rotulo: 'Duração', tipo: 'range', min: 0.5, max: 3, passo: 0.25, unidade: 's', padrao: 1.5 },
+      {
+        id: 'dur',
+        rotulo: 'Duração',
+        tipo: 'range',
+        min: 0.5,
+        max: 3,
+        passo: 0.25,
+        unidade: 's',
+        padrao: 1.5,
+      },
       { id: 'ease', rotulo: 'ease', tipo: 'select', opcoes: EASES, padrao: 'power3.out' },
       {
         id: 'formato',
@@ -575,7 +768,8 @@ tl.to(contador, {
     topico: 'Tipografia vazada',
     titulo: 'Texto vazado, misto e que preenche no hover',
     nivel: 'iniciante',
-    resumo: 'Letras só com contorno, misturadas com letras cheias — muito usado em capas e títulos de seção.',
+    resumo:
+      'Letras só com contorno, misturadas com letras cheias — muito usado em capas e títulos de seção.',
     explicacao: [
       '-webkit-text-stroke desenha o contorno das letras; com color: transparent, o miolo fica vazado.',
       'Misturar uma palavra cheia e outra vazada cria ritmo e hierarquia sem trocar de fonte.',
@@ -589,7 +783,10 @@ tl.to(contador, {
       { nome: 'Capa', valores: { estilo: 'misto', tamanho: 110, espessura: 2 } },
       { nome: 'Fino', valores: { estilo: 'vazado', espessura: 1 } },
     ],
-    desafio: { enunciado: 'Configure o preenchimento no hover com contorno de 3px.', meta: { estilo: 'preenche', espessura: 3 } },
+    desafio: {
+      enunciado: 'Configure o preenchimento no hover com contorno de 3px.',
+      meta: { estilo: 'preenche', espessura: 3 },
+    },
     params: [
       {
         id: 'estilo',
@@ -602,8 +799,26 @@ tl.to(contador, {
         ],
         padrao: 'misto',
       },
-      { id: 'espessura', rotulo: 'Espessura do contorno', tipo: 'range', min: 1, max: 4, passo: 0.5, unidade: 'px', padrao: 2 },
-      { id: 'tamanho', rotulo: 'Tamanho', tipo: 'range', min: 40, max: 120, passo: 10, unidade: 'px', padrao: 90 },
+      {
+        id: 'espessura',
+        rotulo: 'Espessura do contorno',
+        tipo: 'range',
+        min: 1,
+        max: 4,
+        passo: 0.5,
+        unidade: 'px',
+        padrao: 2,
+      },
+      {
+        id: 'tamanho',
+        rotulo: 'Tamanho',
+        tipo: 'range',
+        min: 40,
+        max: 120,
+        passo: 10,
+        unidade: 'px',
+        padrao: 90,
+      },
     ],
     codigo: (v) => {
       const base = `.vazado {
@@ -651,7 +866,10 @@ ${base}`
       { nome: 'Compacto', valores: { gap: 6, raio: 8 } },
       { nome: 'Arejado', valores: { gap: 20, raio: 28, layout: 'destaque' } },
     ],
-    desafio: { enunciado: 'Monte o layout mosaico sem arredondamento (raio 0).', meta: { layout: 'mosaico', raio: 0 } },
+    desafio: {
+      enunciado: 'Monte o layout mosaico sem arredondamento (raio 0).',
+      meta: { layout: 'mosaico', raio: 0 },
+    },
     params: [
       {
         id: 'layout',
@@ -664,8 +882,26 @@ ${base}`
         ],
         padrao: 'classico',
       },
-      { id: 'gap', rotulo: 'Espaço', tipo: 'range', min: 4, max: 24, passo: 2, unidade: 'px', padrao: 12 },
-      { id: 'raio', rotulo: 'Arredondamento', tipo: 'range', min: 0, max: 32, passo: 4, unidade: 'px', padrao: 16 },
+      {
+        id: 'gap',
+        rotulo: 'Espaço',
+        tipo: 'range',
+        min: 4,
+        max: 24,
+        passo: 2,
+        unidade: 'px',
+        padrao: 12,
+      },
+      {
+        id: 'raio',
+        rotulo: 'Arredondamento',
+        tipo: 'range',
+        min: 0,
+        max: 32,
+        passo: 4,
+        unidade: 'px',
+        padrao: 16,
+      },
     ],
     codigo: (v) => `.bento {
   display: grid;
@@ -700,11 +936,38 @@ ${base}`
       { nome: 'Flutuando', valores: { profundidade: 28, raio: 28 } },
       { nome: 'Chapado', valores: { profundidade: 0, raio: 8 } },
     ],
-    desafio: { enunciado: 'Use destaque laranja, profundidade 20 e cards bem redondos (raio 36).', meta: { cor: '#ff7a1a', profundidade: 20, raio: 36 } },
+    desafio: {
+      enunciado: 'Use destaque laranja, profundidade 20 e cards bem redondos (raio 36).',
+      meta: { cor: '#ff7a1a', profundidade: 20, raio: 36 },
+    },
     params: [
-      { id: 'profundidade', rotulo: 'Profundidade da sombra', tipo: 'range', min: 0, max: 30, passo: 2, unidade: 'px', padrao: 14 },
-      { id: 'raio', rotulo: 'Arredondamento', tipo: 'range', min: 8, max: 40, passo: 4, unidade: 'px', padrao: 20 },
-      { id: 'cor', rotulo: 'Cor de destaque', tipo: 'select', opcoes: CORES_DESTAQUE, padrao: '#ff2bd6' },
+      {
+        id: 'profundidade',
+        rotulo: 'Profundidade da sombra',
+        tipo: 'range',
+        min: 0,
+        max: 30,
+        passo: 2,
+        unidade: 'px',
+        padrao: 14,
+      },
+      {
+        id: 'raio',
+        rotulo: 'Arredondamento',
+        tipo: 'range',
+        min: 8,
+        max: 40,
+        passo: 4,
+        unidade: 'px',
+        padrao: 20,
+      },
+      {
+        id: 'cor',
+        rotulo: 'Cor de destaque',
+        tipo: 'select',
+        opcoes: CORES_DESTAQUE,
+        padrao: '#ff2bd6',
+      },
     ],
     codigo: (v) => {
       const p = Number(v['profundidade']);
@@ -748,10 +1011,31 @@ ${base}`
       { nome: 'Película', valores: { grao: 0.2, vinheta: 0.7, animado: 'true' } },
       { nome: 'Limpo', valores: { grao: 0, vinheta: 0 } },
     ],
-    desafio: { enunciado: 'Grão bem sutil (0.1), parado, com vinheta forte (0.8).', meta: { grao: 0.1, animado: 'false', vinheta: 0.8 } },
+    desafio: {
+      enunciado: 'Grão bem sutil (0.1), parado, com vinheta forte (0.8).',
+      meta: { grao: 0.1, animado: 'false', vinheta: 0.8 },
+    },
     params: [
-      { id: 'grao', rotulo: 'Intensidade do grão', tipo: 'range', min: 0, max: 0.4, passo: 0.05, unidade: '', padrao: 0.15 },
-      { id: 'vinheta', rotulo: 'Vinheta', tipo: 'range', min: 0, max: 0.9, passo: 0.1, unidade: '', padrao: 0.5 },
+      {
+        id: 'grao',
+        rotulo: 'Intensidade do grão',
+        tipo: 'range',
+        min: 0,
+        max: 0.4,
+        passo: 0.05,
+        unidade: '',
+        padrao: 0.15,
+      },
+      {
+        id: 'vinheta',
+        rotulo: 'Vinheta',
+        tipo: 'range',
+        min: 0,
+        max: 0.9,
+        passo: 0.1,
+        unidade: '',
+        padrao: 0.5,
+      },
       {
         id: 'animado',
         rotulo: 'Grão animado',
@@ -801,7 +1085,8 @@ ${base}`
     topico: 'Botão magnético',
     titulo: 'Botões magnéticos e cursor personalizado',
     nivel: 'intermediario',
-    resumo: 'Os botões "puxam" o ponteiro quando ele chega perto, e um cursor próprio acompanha o mouse.',
+    resumo:
+      'Os botões "puxam" o ponteiro quando ele chega perto, e um cursor próprio acompanha o mouse.',
     explicacao: [
       'Para cada botão, medimos a distância do mouse até o centro; dentro do raio, o botão se desloca uma fração dessa distância.',
       'gsap.quickTo move o botão e o cursor com suavidade sem criar milhares de animações.',
@@ -815,10 +1100,31 @@ ${base}`
       { nome: 'Ímã forte', valores: { forca: 0.8, raio: 160 } },
       { nome: 'Sutil', valores: { forca: 0.2, raio: 80 } },
     ],
-    desafio: { enunciado: 'Ímã com força 0.5, raio 120 e cursor só de ponto.', meta: { forca: 0.5, raio: 120, cursor: 'ponto' } },
+    desafio: {
+      enunciado: 'Ímã com força 0.5, raio 120 e cursor só de ponto.',
+      meta: { forca: 0.5, raio: 120, cursor: 'ponto' },
+    },
     params: [
-      { id: 'forca', rotulo: 'Força', tipo: 'range', min: 0.1, max: 1, passo: 0.1, unidade: '', padrao: 0.4 },
-      { id: 'raio', rotulo: 'Raio de atração', tipo: 'range', min: 40, max: 160, passo: 20, unidade: 'px', padrao: 100 },
+      {
+        id: 'forca',
+        rotulo: 'Força',
+        tipo: 'range',
+        min: 0.1,
+        max: 1,
+        passo: 0.1,
+        unidade: '',
+        padrao: 0.4,
+      },
+      {
+        id: 'raio',
+        rotulo: 'Raio de atração',
+        tipo: 'range',
+        min: 40,
+        max: 160,
+        passo: 20,
+        unidade: 'px',
+        padrao: 100,
+      },
       {
         id: 'cursor',
         rotulo: 'Cursor',
@@ -863,7 +1169,8 @@ window.addEventListener("pointermove", (e) => { cursorX(e.clientX); cursorY(e.cl
     topico: 'Faixa infinita',
     titulo: 'Marquee: faixa de texto que não para',
     nivel: 'iniciante',
-    resumo: 'Duas faixas de palavras correndo em sentidos opostos, inclinadas, que pausam no hover.',
+    resumo:
+      'Duas faixas de palavras correndo em sentidos opostos, inclinadas, que pausam no hover.',
     explicacao: [
       'O conteúdo da faixa é repetido duas vezes; a animação move -50% e recomeça — como o fim encontra o começo, o laço é invisível.',
       'Só CSS: @keyframes com translateX e animation linear infinite.',
@@ -877,10 +1184,31 @@ window.addEventListener("pointermove", (e) => { cursorX(e.clientX); cursorY(e.cl
       { nome: 'Banner de evento', valores: { vel: 10, inclinacao: -4 } },
       { nome: 'Calmo', valores: { vel: 36, inclinacao: 0 } },
     ],
-    desafio: { enunciado: 'Faixas retas (0°), rápidas (8 s) e sem pausar no hover.', meta: { inclinacao: 0, vel: 8, pausa: 'false' } },
+    desafio: {
+      enunciado: 'Faixas retas (0°), rápidas (8 s) e sem pausar no hover.',
+      meta: { inclinacao: 0, vel: 8, pausa: 'false' },
+    },
     params: [
-      { id: 'vel', rotulo: 'Tempo de uma volta', tipo: 'range', min: 6, max: 40, passo: 2, unidade: 's', padrao: 18 },
-      { id: 'inclinacao', rotulo: 'Inclinação', tipo: 'range', min: -6, max: 6, passo: 1, unidade: '°', padrao: -3 },
+      {
+        id: 'vel',
+        rotulo: 'Tempo de uma volta',
+        tipo: 'range',
+        min: 6,
+        max: 40,
+        passo: 2,
+        unidade: 's',
+        padrao: 18,
+      },
+      {
+        id: 'inclinacao',
+        rotulo: 'Inclinação',
+        tipo: 'range',
+        min: -6,
+        max: 6,
+        passo: 1,
+        unidade: '°',
+        padrao: -3,
+      },
       {
         id: 'pausa',
         rotulo: 'Pausar no hover',

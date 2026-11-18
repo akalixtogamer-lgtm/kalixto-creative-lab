@@ -13,11 +13,11 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `1.9.0-rc.1` (KCX — Kalixto Component Exchange: variáveis funcionais, editor, composição e plugin Figma Bridge) |
+| Versão | `1.10.0-rc.1` (KCX: construtor de componentes no Studio, Figma → Studio, variáveis funcionais, editor, composição e plugin Figma Bridge) |
 | Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
 | Conteúdo | 7 laboratórios · 60 demos interativas · 53 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
 | Testes | 740 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
-| Publicado no GitHub Pages | Sim, a `v1.8.0-rc.1` (a `v1.9.0-rc.1` aguarda teste) |
+| Publicado no GitHub Pages | Sim, a `v1.8.0-rc.1` (a `v1.10.0-rc.1` aguarda teste) |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
 

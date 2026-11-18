@@ -16,40 +16,81 @@ export const THEME_WIPE: EffectKit = {
     nomeAmigavel: 'Troca de mundo com revelação circular',
     categoria: 'transicoes',
     subcategoria: 'Troca de tema e de cenário',
-    descricao: 'Ao escolher uma cor, o novo "mundo" (fundo, texto e figura) cresce em círculo a partir do botão e cobre o anterior — um estilo, vários cenários.',
-    objetivoVisual: 'Mostrar o mesmo produto em vários universos visuais, com uma troca que parece uma explosão de cor saindo do botão.',
-    aplicacoes: ['Vitrine de coleções e variações de produto', 'Troca de tema claro/escuro', 'Heros de moda e e-commerce'],
+    descricao:
+      'Ao escolher uma cor, o novo "mundo" (fundo, texto e figura) cresce em círculo a partir do botão e cobre o anterior — um estilo, vários cenários.',
+    objetivoVisual:
+      'Mostrar o mesmo produto em vários universos visuais, com uma troca que parece uma explosão de cor saindo do botão.',
+    aplicacoes: [
+      'Vitrine de coleções e variações de produto',
+      'Troca de tema claro/escuro',
+      'Heros de moda e e-commerce',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['click', 'keyboard'],
-    tags: ['tema', 'theme switch', 'wipe', 'clip-path', 'circle', 'revelação', 'coleção', 'referência em vídeo'],
+    tags: [
+      'tema',
+      'theme switch',
+      'wipe',
+      'clip-path',
+      'circle',
+      'revelação',
+      'coleção',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Cada mundo é uma camada absoluta que ocupa a vitrine inteira. Trocar de mundo = colocar uma camada nova por cima.',
       'A camada nova nasce com clip-path: circle(0% at x y) — invisível — e a animação abre o círculo até 150%, que cobre até os cantos.',
       'x e y vêm do centro do botão clicado (ou do meio da vitrine), gravados nas variáveis --x e --y da camada.',
       'No fim da animação (animationend), as camadas antigas saem do DOM: a vitrine nunca acumula mais de duas.',
     ],
-    alternativa: 'A View Transitions API (document.startViewTransition) faz o mesmo trocando o DOM de uma vez e animando ::view-transition-new(root) com clip-path — ótimo para trocar o tema da página inteira.',
-    compatibilidade: 'clip-path: circle() animado e variáveis dentro de @keyframes: todos os navegadores atuais.',
-    responsividade: 'A figura e o título usam porcentagens e clamp(); o círculo de 150% cobre qualquer proporção de tela.',
-    acessibilidade: 'Os botões de cor têm nome ("Mundo Lima"…) e aria-pressed. O nome do mundo atual é anunciado numa região aria-live. Com prefers-reduced-motion, a troca é instantânea.',
-    performance: 'clip-path animado é composto pelo navegador sem refazer o layout. Só há duas camadas ao mesmo tempo.',
+    alternativa:
+      'A View Transitions API (document.startViewTransition) faz o mesmo trocando o DOM de uma vez e animando ::view-transition-new(root) com clip-path — ótimo para trocar o tema da página inteira.',
+    compatibilidade:
+      'clip-path: circle() animado e variáveis dentro de @keyframes: todos os navegadores atuais.',
+    responsividade:
+      'A figura e o título usam porcentagens e clamp(); o círculo de 150% cobre qualquer proporção de tela.',
+    acessibilidade:
+      'Os botões de cor têm nome ("Mundo Lima"…) e aria-pressed. O nome do mundo atual é anunciado numa região aria-live. Com prefers-reduced-motion, a troca é instantânea.',
+    performance:
+      'clip-path animado é composto pelo navegador sem refazer o layout. Só há duas camadas ao mesmo tempo.',
     limitacoes: [
       'Cliques muito rápidos empilham várias camadas animando; todas são limpas quando a última termina.',
       'Conteúdo interativo dentro das camadas é recriado a cada troca — guarde estado fora delas.',
     ],
     referencias: [
-      { titulo: 'MDN — clip-path', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path' },
-      { titulo: 'MDN — View Transition API', url: 'https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API' },
+      {
+        titulo: 'MDN — clip-path',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path',
+      },
+      {
+        titulo: 'MDN — View Transition API',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API',
+      },
       MDN.reduzir,
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'duracao', rotulo: 'duração da troca', tipo: 'range', min: 300, max: 1500, passo: 50, unidade: 'ms', padrao: 800 },
-    { id: 'easing', rotulo: 'curva (easing)', tipo: 'select', opcoes: EASINGS, padrao: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+    {
+      id: 'duracao',
+      rotulo: 'duração da troca',
+      tipo: 'range',
+      min: 300,
+      max: 1500,
+      passo: 50,
+      unidade: 'ms',
+      padrao: 800,
+    },
+    {
+      id: 'easing',
+      rotulo: 'curva (easing)',
+      tipo: 'select',
+      opcoes: EASINGS,
+      padrao: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    },
     {
       id: 'origem',
       rotulo: 'origem do círculo',
@@ -212,7 +253,10 @@ interface Mundo {
   styleUrl: './theme-wipe.css',
 })
 export class ${nomeClasse('theme-wipe')} {
-  protected readonly temas: Tema[] = ${JSON.stringify(TEMAS, null, 2).replace(/\n/g, '\n  ').replace(/"(\w+)":/g, '$1:').replace(/"/g, "'")};
+  protected readonly temas: Tema[] = ${JSON.stringify(TEMAS, null, 2)
+    .replace(/\n/g, '\n  ')
+    .replace(/"(\w+)":/g, '$1:')
+    .replace(/"/g, "'")};
   private readonly vitrine = viewChild.required<ElementRef<HTMLElement>>('vitrine');
   private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)');
   private proximo = 1;
@@ -293,8 +337,15 @@ ${
     ],
   },
   glossario: [
-    { termo: 'clip-path: circle(0% at var(--x) var(--y))', explicacao: 'Começo da revelação: um círculo de raio zero no ponto escolhido.' },
-    { termo: 'animationend', explicacao: 'Evento disparado quando a revelação termina — hora de remover os mundos antigos.' },
+    {
+      termo: 'clip-path: circle(0% at var(--x) var(--y))',
+      explicacao: 'Começo da revelação: um círculo de raio zero no ponto escolhido.',
+    },
+    {
+      termo: 'animationend',
+      explicacao:
+        'Evento disparado quando a revelação termina — hora de remover os mundos antigos.',
+    },
     { termo: 'aria-live', explicacao: 'Anuncia o nome do mundo novo para o leitor de tela.' },
     { termo: 'aria-pressed', explicacao: 'Marca qual botão de cor está ativo.' },
   ],

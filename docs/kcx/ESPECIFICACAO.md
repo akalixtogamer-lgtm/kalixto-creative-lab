@@ -197,3 +197,28 @@ KCX.pause(); KCX.play(); KCX.restart(); KCX.speed(0.5);
 ```
 
 Um teste compara 300 combinações entre o runtime e o resolver TypeScript.
+
+
+## 13. Construtor (KCX Studio → Criar componente)
+
+`src/app/kcx/construtor/` monta um `KcxComponente` completo a partir de `ConfigConstrutor`
+(`tipo`, `nome`, `textos`, `itens`, `animacao`, `cores`, `raio`, `midia`). Cada tipo
+(`DefinicaoTipo`) gera HTML, CSS, JS, a estrutura do Figma, os estados e as interações.
+Variáveis comuns: `corPrimaria`, `corFundo`, `corSuperficie`, `corTexto`, `corSuave`, `raio`,
+`espaco`, `fonte`, `duracao`, `easing`; cada texto vira `texto<Nome>` e cada item `item<N>`.
+O componente guarda a configuração em `origemCriacao` para ser reaberto no construtor.
+
+## 14. Interações (`interacoes`)
+
+`{ no, gatilho: 'clique' | 'hover', de, para, transicao: 'smart-animate' | 'dissolver' | 'instantanea', duracao }`:
+no estado `de`, clicar (ou passar o mouse) no nó `no` troca para a variante do estado `para`. O plano
+resolve isso para nomes de variante (respeitando eixos extras) e o plugin chama `setReactionsAsync`
+com `CHANGE_TO`.
+
+## 15. Figma → KCX (`figma/ler-selecao.ts`)
+
+Lê o frame selecionado: Auto Layout (direção, gap, padding, alinhamentos, Fill/Hug/Fixed), posições
+absolutas, preenchimentos sólidos e gradientes, traços, sombras e desfoques, textos (fonte, peso,
+tamanho, espaçamento, altura de linha, alinhamento, caixa) e vetores (`exportAsync` SVG, limpo de
+scripts e eventos). Cores, textos, raios e espaçamentos viram variáveis (cores com o nome da variável
+do Figma, quando ligadas). A animação é a variável `animacao` (atributo `data-animacao` na raiz).

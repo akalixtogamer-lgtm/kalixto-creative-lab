@@ -59,7 +59,11 @@ export const ANIMACOES: Record<string, Construtor> = {
       opacity: 0,
       duration: 0.6,
       ease: String(v['ease']),
-      stagger: { each: Number(v['each']), from: String(v['from']) as gsap.StaggerVars['from'], grid: 'auto' },
+      stagger: {
+        each: Number(v['each']),
+        from: String(v['from']) as gsap.StaggerVars['from'],
+        grid: 'auto',
+      },
     }),
 
   easing: (palco, v) => {
@@ -71,7 +75,11 @@ export const ANIMACOES: Record<string, Construtor> = {
     const curva = gsap.parseEase(ease);
     return gsap
       .timeline()
-      .to(q(palco, '.g-bola'), { x: () => (trilho?.clientWidth ?? 300) - 36, duration: dur, ease }, 0)
+      .to(
+        q(palco, '.g-bola'),
+        { x: () => (trilho?.clientWidth ?? 300) - 36, duration: dur, ease },
+        0,
+      )
       .to(
         tempo,
         {
@@ -102,7 +110,11 @@ export const ANIMACOES: Record<string, Construtor> = {
         : efeito === 'girar'
           ? { rotationX: -90, opacity: 0, transformOrigin: '50% 50% -20px' }
           : efeito === 'espalhar'
-            ? { x: () => gsap.utils.random(-120, 120), y: () => gsap.utils.random(-80, 80), opacity: 0 }
+            ? {
+                x: () => gsap.utils.random(-120, 120),
+                y: () => gsap.utils.random(-80, 80),
+                opacity: 0,
+              }
             : { opacity: 0 };
     return gsap.from(split[tipo], {
       ...de,

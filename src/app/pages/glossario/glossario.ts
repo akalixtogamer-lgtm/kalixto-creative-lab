@@ -58,9 +58,10 @@ export class Glossario {
 
   /** Entradas agrupadas por letra, só as letras que têm itens. */
   protected readonly grupos = computed(() =>
-    LETRAS.map((letra) => ({ letra, itens: this.encontrados().filter((e) => e.letra === letra) })).filter(
-      (g) => g.itens.length > 0,
-    ),
+    LETRAS.map((letra) => ({
+      letra,
+      itens: this.encontrados().filter((e) => e.letra === letra),
+    })).filter((g) => g.itens.length > 0),
   );
 
   protected readonly letras = computed(() => {
@@ -74,7 +75,9 @@ export class Glossario {
 
   protected irPara(letra: string): void {
     const alvo = document.getElementById(this.idLetra(letra));
-    alvo?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    alvo?.scrollIntoView({
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    });
     alvo?.focus({ preventScroll: true });
   }
 

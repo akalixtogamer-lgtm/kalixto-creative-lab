@@ -21,6 +21,25 @@
           Figma: {{ nivelRotulo[c.compatibilidade.figma.nivel] }}
         </li>
       </ul>
+      @if (ehMeu()) {
+        <div class="kcxe__meu">
+          <span class="kx-chip"
+            >Meu componente{{
+              doConstrutor() ? ' · criado no construtor' : ' · importado do Figma'
+            }}</span
+          >
+          @if (doConstrutor()) {
+            <a
+              class="kx-btn kx-btn--ghost"
+              [routerLink]="['/kcx/criar']"
+              [queryParams]="{ de: c.id }"
+            >
+              <kx-icon name="layers" /> Editar no construtor
+            </a>
+          }
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="excluir()">Excluir</button>
+        </div>
+      }
     </header>
 
     <div class="kcxe__grid">

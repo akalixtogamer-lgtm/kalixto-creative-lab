@@ -9,10 +9,17 @@
       ' demos dos laboratórios, organizados nas 15 categorias do mapa de efeitos.'
     "
   >
-    <a class="kx-btn kx-btn--ghost" routerLink="/glossario"><kx-icon name="book" /> Ver o glossário A–Z</a>
+    <a class="kx-btn kx-btn--ghost" routerLink="/glossario"
+      ><kx-icon name="book" /> Ver o glossário A–Z</a
+    >
   </kx-page-header>
 
-  <form class="filtros kx-glass" role="search" aria-label="Buscar e filtrar efeitos" (submit)="$event.preventDefault()">
+  <form
+    class="filtros kx-glass"
+    role="search"
+    aria-label="Buscar e filtrar efeitos"
+    (submit)="$event.preventDefault()"
+  >
     <label class="filtros__campo filtros__campo--busca">
       <span class="kx-muted">Buscar</span>
       <input
@@ -26,7 +33,12 @@
     </label>
     <label class="filtros__campo">
       <span class="kx-muted">Categoria</span>
-      <select class="filtros__input" name="categoria" [ngModel]="filtroCategoria()" (ngModelChange)="categoriaManual.set($event)">
+      <select
+        class="filtros__input"
+        name="categoria"
+        [ngModel]="filtroCategoria()"
+        (ngModelChange)="categoriaManual.set($event)"
+      >
         <option value="todos">Todas</option>
         @for (c of categorias; track c.id) {
           <option [value]="c.id">{{ c.numero }} · {{ c.nome }} ({{ c.total }})</option>
@@ -35,7 +47,12 @@
     </label>
     <label class="filtros__campo">
       <span class="kx-muted">Tipo</span>
-      <select class="filtros__input" name="tipo" [ngModel]="filtroTipo()" (ngModelChange)="filtroTipo.set($event)">
+      <select
+        class="filtros__input"
+        name="tipo"
+        [ngModel]="filtroTipo()"
+        (ngModelChange)="filtroTipo.set($event)"
+      >
         <option value="todos">Kits e demos</option>
         <option value="kit">Kits com ficha completa</option>
         <option value="demo">Demos dos laboratórios</option>
@@ -43,7 +60,12 @@
     </label>
     <label class="filtros__campo">
       <span class="kx-muted">Laboratório</span>
-      <select class="filtros__input" name="lab" [ngModel]="filtroLab()" (ngModelChange)="labManual.set($event)">
+      <select
+        class="filtros__input"
+        name="lab"
+        [ngModel]="filtroLab()"
+        (ngModelChange)="labManual.set($event)"
+      >
         <option value="todos">Todos</option>
         @for (l of labs; track l.id) {
           <option [value]="l.id">{{ l.titulo }}</option>
@@ -52,7 +74,12 @@
     </label>
     <label class="filtros__campo">
       <span class="kx-muted">Nível</span>
-      <select class="filtros__input" name="nivel" [ngModel]="filtroNivel()" (ngModelChange)="filtroNivel.set($event)">
+      <select
+        class="filtros__input"
+        name="nivel"
+        [ngModel]="filtroNivel()"
+        (ngModelChange)="filtroNivel.set($event)"
+      >
         <option value="todos">Todos</option>
         <option value="iniciante">Iniciante</option>
         <option value="intermediario">Intermediário</option>
@@ -62,7 +89,12 @@
     </label>
     <label class="filtros__campo">
       <span class="kx-muted">Interação (kits)</span>
-      <select class="filtros__input" name="interacao" [ngModel]="filtroInteracao()" (ngModelChange)="filtroInteracao.set($event)">
+      <select
+        class="filtros__input"
+        name="interacao"
+        [ngModel]="filtroInteracao()"
+        (ngModelChange)="filtroInteracao.set($event)"
+      >
         <option value="todos">Todas</option>
         @for (i of interacoes; track i[0]) {
           <option [value]="i[0]">{{ i[1] }}</option>
@@ -71,7 +103,12 @@
     </label>
     <label class="filtros__campo">
       <span class="kx-muted">Dependências</span>
-      <select class="filtros__input" name="dependencia" [ngModel]="filtroDependencia()" (ngModelChange)="filtroDependencia.set($event)">
+      <select
+        class="filtros__input"
+        name="dependencia"
+        [ngModel]="filtroDependencia()"
+        (ngModelChange)="filtroDependencia.set($event)"
+      >
         <option value="todos">Todas</option>
         <option value="nenhuma">Sem bibliotecas</option>
         <option value="gsap">Usa GSAP</option>
@@ -80,7 +117,12 @@
     </label>
     <label class="filtros__campo">
       <span class="kx-muted">Situação (demos)</span>
-      <select class="filtros__input" name="situacao" [ngModel]="filtroSituacao()" (ngModelChange)="filtroSituacao.set($event)">
+      <select
+        class="filtros__input"
+        name="situacao"
+        [ngModel]="filtroSituacao()"
+        (ngModelChange)="filtroSituacao.set($event)"
+      >
         <option value="todos">Todos</option>
         <option value="feitos">Já executados</option>
         <option value="pendentes">Ainda não executados</option>
@@ -88,7 +130,12 @@
     </label>
     <label class="filtros__campo">
       <span class="kx-muted">Ordenar</span>
-      <select class="filtros__input" name="ordem" [ngModel]="ordem()" (ngModelChange)="ordem.set($event)">
+      <select
+        class="filtros__input"
+        name="ordem"
+        [ngModel]="ordem()"
+        (ngModelChange)="ordem.set($event)"
+      >
         <option value="padrao">Kits primeiro</option>
         <option value="az">Nome (A–Z)</option>
         <option value="nivel">Dificuldade</option>
@@ -107,9 +154,18 @@
 
   <div class="kx-grid">
     @for (e of efeitos(); track e.chave) {
-      <a class="kx-card" [class.is-kit]="e.tipo === 'kit'" [routerLink]="e.rota" [queryParams]="e.query" [attr.data-acento]="acento(e)">
+      <a
+        class="kx-card"
+        [class.is-kit]="e.tipo === 'kit'"
+        [routerLink]="e.rota"
+        [queryParams]="e.query"
+        [attr.data-acento]="acento(e)"
+      >
         <ng-container *ngTemplateOutlet="conteudo; context: { $implicit: e }" />
-        <span class="abrir">{{ e.tipo === 'kit' ? 'Abrir ficha e código' : 'Abrir demo' }} <kx-icon name="arrow-right" /></span>
+        <span class="abrir"
+          >{{ e.tipo === 'kit' ? 'Abrir ficha e código' : 'Abrir demo' }}
+          <kx-icon name="arrow-right"
+        /></span>
       </a>
     } @empty {
       <p class="kx-muted">Nenhum efeito encontrado com esse filtro.</p>

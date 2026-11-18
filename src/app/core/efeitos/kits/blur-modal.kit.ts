@@ -8,38 +8,97 @@ export const BLUR_MODAL: EffectKit = {
     nomeAmigavel: 'Janela com fundo desfocado',
     categoria: 'microinteracoes',
     subcategoria: 'Modais e janelas',
-    descricao: 'Ao abrir, uma janela de vidro surge crescendo e o resto da página fica desfocado e escurecido atrás dela; ao fechar, tudo volta ao foco.',
-    objetivoVisual: 'Concentrar a atenção num aviso, formulário ou confirmação, mantendo o contexto visível (porém desfocado) ao fundo.',
-    aplicacoes: ['Confirmações e avisos', 'Formulários de contato e login', 'Galerias (foto ampliada) e detalhes de produto'],
+    descricao:
+      'Ao abrir, uma janela de vidro surge crescendo e o resto da página fica desfocado e escurecido atrás dela; ao fechar, tudo volta ao foco.',
+    objetivoVisual:
+      'Concentrar a atenção num aviso, formulário ou confirmação, mantendo o contexto visível (porém desfocado) ao fundo.',
+    aplicacoes: [
+      'Confirmações e avisos',
+      'Formulários de contato e login',
+      'Galerias (foto ampliada) e detalhes de produto',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['click', 'keyboard'],
-    tags: ['modal', 'dialog', 'janela', 'blur', 'desfoque', 'backdrop', 'vidro', 'popup', 'tendência 2026'],
+    tags: [
+      'modal',
+      'dialog',
+      'janela',
+      'blur',
+      'desfoque',
+      'backdrop',
+      'vidro',
+      'popup',
+      'tendência 2026',
+    ],
     explicacao: [
       'A janela é um <dialog> nativo. showModal() abre de verdade em modo modal: o resto da página fica inerte, o foco vai para dentro e Esc fecha — tudo sem código extra.',
       'O pseudo-elemento ::backdrop é a camada que o navegador coloca entre a página e o dialog. Com backdrop-filter: blur() nele, a página inteira fica desfocada.',
       'A entrada usa @starting-style: o navegador anima do estado inicial (pequeno e transparente) para o normal assim que o dialog abre. A saída usa transition-behavior: allow-discrete para animar até ele sumir.',
       'O próprio dialog também é de vidro: fundo translúcido + backdrop-filter próprio.',
     ],
-    alternativa: 'Sem <dialog>: uma div com role="dialog", aria-modal="true", uma camada fixa com backdrop-filter e o controle de foco feito à mão (bem mais trabalhoso).',
-    compatibilidade: '<dialog> e ::backdrop: todos os navegadores atuais. @starting-style e allow-discrete: Chrome/Edge 117+, Safari 17.5+, Firefox 129+ — nos demais, a janela abre sem animação.',
-    responsividade: 'A janela tem largura máxima e margem automática; no celular ela ocupa quase toda a largura.',
-    acessibilidade: 'O <dialog> com showModal() já prende o foco, fecha com Esc e devolve o foco ao botão que abriu. A janela tem título ligado por aria-labelledby. Com prefers-reduced-motion, abre e fecha sem animação.',
-    performance: 'O desfoque do ::backdrop cobre a tela toda: use raio moderado (até ~10px) em páginas pesadas.',
-    limitacoes: ['Dentro do preview (iframe), o desfoque cobre só o preview; numa página normal, cobre a janela inteira.'],
+    alternativa:
+      'Sem <dialog>: uma div com role="dialog", aria-modal="true", uma camada fixa com backdrop-filter e o controle de foco feito à mão (bem mais trabalhoso).',
+    compatibilidade:
+      '<dialog> e ::backdrop: todos os navegadores atuais. @starting-style e allow-discrete: Chrome/Edge 117+, Safari 17.5+, Firefox 129+ — nos demais, a janela abre sem animação.',
+    responsividade:
+      'A janela tem largura máxima e margem automática; no celular ela ocupa quase toda a largura.',
+    acessibilidade:
+      'O <dialog> com showModal() já prende o foco, fecha com Esc e devolve o foco ao botão que abriu. A janela tem título ligado por aria-labelledby. Com prefers-reduced-motion, abre e fecha sem animação.',
+    performance:
+      'O desfoque do ::backdrop cobre a tela toda: use raio moderado (até ~10px) em páginas pesadas.',
+    limitacoes: [
+      'Dentro do preview (iframe), o desfoque cobre só o preview; numa página normal, cobre a janela inteira.',
+    ],
     referencias: [
-      { titulo: 'MDN — <dialog>', url: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog' },
-      { titulo: 'MDN — ::backdrop', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/::backdrop' },
-      { titulo: 'MDN — @starting-style', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@starting-style' },
+      {
+        titulo: 'MDN — <dialog>',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog',
+      },
+      {
+        titulo: 'MDN — ::backdrop',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/::backdrop',
+      },
+      {
+        titulo: 'MDN — @starting-style',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@starting-style',
+      },
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'desfoque', rotulo: 'desfoque do fundo', tipo: 'range', min: 0, max: 20, passo: 1, unidade: 'px', padrao: 8 },
-    { id: 'escurecer', rotulo: 'escurecer o fundo', tipo: 'range', min: 0, max: 0.8, passo: 0.05, unidade: '', padrao: 0.35 },
-    { id: 'duracao', rotulo: 'duração da animação', tipo: 'range', min: 150, max: 800, passo: 50, unidade: 'ms', padrao: 350 },
+    {
+      id: 'desfoque',
+      rotulo: 'desfoque do fundo',
+      tipo: 'range',
+      min: 0,
+      max: 20,
+      passo: 1,
+      unidade: 'px',
+      padrao: 8,
+    },
+    {
+      id: 'escurecer',
+      rotulo: 'escurecer o fundo',
+      tipo: 'range',
+      min: 0,
+      max: 0.8,
+      passo: 0.05,
+      unidade: '',
+      padrao: 0.35,
+    },
+    {
+      id: 'duracao',
+      rotulo: 'duração da animação',
+      tipo: 'range',
+      min: 150,
+      max: 800,
+      passo: 50,
+      unidade: 'ms',
+      padrao: 350,
+    },
   ],
   gerar: (v) => {
     const dur = Number(v['duracao']);

@@ -3,7 +3,9 @@
 
   @if (ficha(); as f) {
     <header class="kx-page-header">
-      <p class="kx-eyebrow">{{ categoria()?.numero }} · {{ categoria()?.nome }} · {{ f.subcategoria }}</p>
+      <p class="kx-eyebrow">
+        {{ categoria()?.numero }} · {{ categoria()?.nome }} · {{ f.subcategoria }}
+      </p>
       <h1 class="kx-title">{{ f.nomeAmigavel }}</h1>
       <p class="kx-lead">{{ f.descricao }}</p>
       <ul class="ef__chips" aria-label="Classificação">
@@ -12,7 +14,11 @@
         @for (t of f.tecnologias; track t) {
           <li class="kx-chip">{{ t }}</li>
         }
-        <li class="kx-chip">{{ f.dependencias.length ? 'depende de ' + f.dependencias.join(', ') : 'sem bibliotecas' }}</li>
+        <li class="kx-chip">
+          {{
+            f.dependencias.length ? 'depende de ' + f.dependencias.join(', ') : 'sem bibliotecas'
+          }}
+        </li>
       </ul>
     </header>
 
@@ -22,17 +28,45 @@
           <div>
             <p class="kx-eyebrow">Preview</p>
             <h2 id="ef-preview" class="pg__demo-titulo">
-              {{ modoPreview() === 'isolado' ? (editado() ? 'Rodando o seu código editado' : 'Roda o código abaixo, sem alterações') : 'Componente Angular compilado no app' }}
+              {{
+                modoPreview() === 'isolado'
+                  ? editado()
+                    ? 'Rodando o seu código editado'
+                    : 'Roda o código abaixo, sem alterações'
+                  : 'Componente Angular compilado no app'
+              }}
             </h2>
           </div>
           <div class="ef__modo" role="group" aria-label="Tipo de preview">
-            <button type="button" class="ef__modo-btn" [attr.aria-pressed]="modoPreview() === 'isolado'" (click)="modoPreview.set('isolado')">HTML/CSS/JS</button>
-            <button type="button" class="ef__modo-btn" [attr.aria-pressed]="modoPreview() === 'angular'" [disabled]="!angularDisponivel()" [title]="angularDisponivel() ? '' : 'Este efeito depende da rolagem da página inteira; teste o componente no seu projeto'" (click)="modoPreview.set('angular')">Angular</button>
+            <button
+              type="button"
+              class="ef__modo-btn"
+              [attr.aria-pressed]="modoPreview() === 'isolado'"
+              (click)="modoPreview.set('isolado')"
+            >
+              HTML/CSS/JS
+            </button>
+            <button
+              type="button"
+              class="ef__modo-btn"
+              [attr.aria-pressed]="modoPreview() === 'angular'"
+              [disabled]="!angularDisponivel()"
+              [title]="
+                angularDisponivel()
+                  ? ''
+                  : 'Este efeito depende da rolagem da página inteira; teste o componente no seu projeto'
+              "
+              (click)="modoPreview.set('angular')"
+            >
+              Angular
+            </button>
           </div>
         </header>
         @if (modoPreview() === 'isolado') {
           @if (!bibliotecasProntas()) {
-            <p class="kx-muted ef__nota" role="status">{{ erroBibliotecas() || 'Carregando ' + nomesBibliotecas() + '…' }}</p>
+            <p class="kx-muted ef__nota" role="status">
+              {{ erroBibliotecas() || 'Carregando ' + nomesBibliotecas() + '…' }}
+            </p>
           }
           <div #frameHost class="ef__frame-host">
             <iframe
@@ -42,14 +76,19 @@
             ></iframe>
           </div>
         } @else {
-          <div class="ef__ng" role="region" [attr.aria-label]="'Componente Angular do efeito ' + f.nomeAmigavel">
+          <div
+            class="ef__ng"
+            role="region"
+            [attr.aria-label]="'Componente Angular do efeito ' + f.nomeAmigavel"
+          >
             <ng-container #ngHost />
             @if (!componenteAngular()) {
               <p class="kx-muted">Carregando o componente…</p>
             }
           </div>
           <p class="kx-muted ef__nota">
-            Este é o arquivo <code>efeitos-angular/{{ f.id }}</code>, compilado com os <strong>valores padrão</strong>.
+            Este é o arquivo <code>efeitos-angular/{{ f.id }}</code
+            >, compilado com os <strong>valores padrão</strong>.
             @if (valoresAlterados()) {
               Os seus valores atuais estão nas abas “Angular” do código, prontos para copiar.
             }
@@ -73,18 +112,33 @@
       <section class="pg__controles kx-glass" aria-labelledby="ef-controles">
         <h2 id="ef-controles" class="pg__bloco-titulo">Controles</h2>
         @if (editado()) {
-          <p class="ef__bloqueio" role="status">Você editou o código. Restaure o original no Code Lab para voltar a usar os controles.</p>
+          <p class="ef__bloqueio" role="status">
+            Você editou o código. Restaure o original no Code Lab para voltar a usar os controles.
+          </p>
         }
         <fieldset class="ef__ctrls" [disabled]="!!editado()">
           <legend class="sr-only">Parâmetros do efeito</legend>
-          <kx-demo-controls [params]="kit()!.params" [valores]="valores()" prefixo="ef" (mudou)="alterar($event)" />
+          <kx-demo-controls
+            [params]="kit()!.params"
+            [valores]="valores()"
+            prefixo="ef"
+            (mudou)="alterar($event)"
+          />
         </fieldset>
-        <button type="button" class="kx-btn kx-btn--ghost ef__restaurar" [disabled]="!!editado()" (click)="restaurar()">
+        <button
+          type="button"
+          class="kx-btn kx-btn--ghost ef__restaurar"
+          [disabled]="!!editado()"
+          (click)="restaurar()"
+        >
           <kx-icon name="reset" /> Restaurar valores
         </button>
         <p class="kx-muted ef__nota">Cada controle muda o código e o preview ao mesmo tempo.</p>
         @if (!angularDisponivel()) {
-          <p class="kx-muted ef__nota">O preview Angular está desligado neste efeito porque ele depende da rolagem da página inteira. O código Angular continua nas abas e é compilado e testado com o app.</p>
+          <p class="kx-muted ef__nota">
+            O preview Angular está desligado neste efeito porque ele depende da rolagem da página
+            inteira. O código Angular continua nas abas e é compilado e testado com o app.
+          </p>
         }
       </section>
 
@@ -111,52 +165,120 @@
     <section class="ef__ficha kx-glass" aria-labelledby="ef-ficha">
       <h2 id="ef-ficha" class="pg__bloco-titulo">Ficha técnica</h2>
       <dl class="ef__dl">
-        <div><dt>ID</dt><dd><code>{{ f.id }}</code></dd></div>
-        <div><dt>Nome técnico</dt><dd>{{ f.nomeTecnico }}</dd></div>
-        <div><dt>Categoria</dt><dd>{{ categoria()?.nome }} › {{ f.subcategoria }}</dd></div>
-        <div><dt>Nível</dt><dd>{{ nivelRotulo[f.nivel] }}</dd></div>
-        <div><dt>Objetivo visual</dt><dd>{{ f.objetivoVisual }}</dd></div>
+        <div>
+          <dt>ID</dt>
+          <dd>
+            <code>{{ f.id }}</code>
+          </dd>
+        </div>
+        <div>
+          <dt>Nome técnico</dt>
+          <dd>{{ f.nomeTecnico }}</dd>
+        </div>
+        <div>
+          <dt>Categoria</dt>
+          <dd>{{ categoria()?.nome }} › {{ f.subcategoria }}</dd>
+        </div>
+        <div>
+          <dt>Nível</dt>
+          <dd>{{ nivelRotulo[f.nivel] }}</dd>
+        </div>
+        <div>
+          <dt>Objetivo visual</dt>
+          <dd>{{ f.objetivoVisual }}</dd>
+        </div>
         <div>
           <dt>Aplicações</dt>
-          <dd><ul>@for (a of f.aplicacoes; track a) {<li>{{ a }}</li>}</ul></dd>
+          <dd>
+            <ul>
+              @for (a of f.aplicacoes; track a) {
+                <li>{{ a }}</li>
+              }
+            </ul>
+          </dd>
         </div>
-        <div><dt>Tecnologias</dt><dd>{{ f.tecnologias.join(', ') }}</dd></div>
-        <div><dt>Dependências</dt><dd>{{ f.dependencias.length ? f.dependencias.join(', ') : 'Nenhuma — só recursos nativos do navegador.' }}</dd></div>
+        <div>
+          <dt>Tecnologias</dt>
+          <dd>{{ f.tecnologias.join(', ') }}</dd>
+        </div>
+        <div>
+          <dt>Dependências</dt>
+          <dd>
+            {{
+              f.dependencias.length
+                ? f.dependencias.join(', ')
+                : 'Nenhuma — só recursos nativos do navegador.'
+            }}
+          </dd>
+        </div>
         <div>
           <dt>Interação</dt>
           <dd>{{ interacoesTexto() }}</dd>
         </div>
-        <div><dt>Compatibilidade</dt><dd>{{ f.compatibilidade }}</dd></div>
-        <div><dt>Responsividade</dt><dd>{{ f.responsividade }}</dd></div>
-        <div><dt>Acessibilidade</dt><dd>{{ f.acessibilidade }}</dd></div>
-        <div><dt>Performance</dt><dd>{{ f.performance }}</dd></div>
+        <div>
+          <dt>Compatibilidade</dt>
+          <dd>{{ f.compatibilidade }}</dd>
+        </div>
+        <div>
+          <dt>Responsividade</dt>
+          <dd>{{ f.responsividade }}</dd>
+        </div>
+        <div>
+          <dt>Acessibilidade</dt>
+          <dd>{{ f.acessibilidade }}</dd>
+        </div>
+        <div>
+          <dt>Performance</dt>
+          <dd>{{ f.performance }}</dd>
+        </div>
         <div>
           <dt>Limitações</dt>
-          <dd><ul>@for (l of f.limitacoes; track l) {<li>{{ l }}</li>}</ul></dd>
+          <dd>
+            <ul>
+              @for (l of f.limitacoes; track l) {
+                <li>{{ l }}</li>
+              }
+            </ul>
+          </dd>
         </div>
         <div>
           <dt>Referências</dt>
           <dd>
             <ul>
               @for (r of f.referencias; track r.url) {
-                <li><a [href]="r.url" target="_blank" rel="noopener noreferrer">{{ r.titulo }}</a></li>
+                <li>
+                  <a [href]="r.url" target="_blank" rel="noopener noreferrer">{{ r.titulo }}</a>
+                </li>
               }
             </ul>
           </dd>
         </div>
-        <div><dt>Tags</dt><dd>{{ f.tags.join(' · ') }}</dd></div>
-        <div><dt>Status</dt><dd>{{ f.status === 'validado' ? 'Validado' : f.status }} em {{ f.validadoEm.split('-').reverse().join('/') }}</dd></div>
+        <div>
+          <dt>Tags</dt>
+          <dd>{{ f.tags.join(' · ') }}</dd>
+        </div>
+        <div>
+          <dt>Status</dt>
+          <dd>
+            {{ f.status === 'validado' ? 'Validado' : f.status }} em
+            {{ f.validadoEm.split('-').reverse().join('/') }}
+          </dd>
+        </div>
       </dl>
     </section>
 
     <nav class="ef__vizinhos" aria-label="Outros efeitos">
       @if (vizinhos().anterior; as a) {
-        <a class="kx-btn kx-btn--ghost" [routerLink]="['/efeitos', a.id]"><kx-icon name="arrow-left" /> {{ a.nomeAmigavel }}</a>
+        <a class="kx-btn kx-btn--ghost" [routerLink]="['/efeitos', a.id]"
+          ><kx-icon name="arrow-left" /> {{ a.nomeAmigavel }}</a
+        >
       } @else {
         <span></span>
       }
       @if (vizinhos().proximo; as p) {
-        <a class="kx-btn kx-btn--ghost" [routerLink]="['/efeitos', p.id]">{{ p.nomeAmigavel }} <kx-icon name="arrow-right" /></a>
+        <a class="kx-btn kx-btn--ghost" [routerLink]="['/efeitos', p.id]"
+          >{{ p.nomeAmigavel }} <kx-icon name="arrow-right"
+        /></a>
       }
     </nav>
   } @else {

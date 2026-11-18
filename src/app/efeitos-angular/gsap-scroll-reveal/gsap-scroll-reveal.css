@@ -1,4 +1,6 @@
-:host { display: block; }
+:host {
+  display: block;
+}
 
 .grade {
   display: grid;
@@ -16,4 +18,7 @@
   background: linear-gradient(160deg, #3b1f5e, #161229);
   border: 1px solid #4b3a76;
 }
-.card h2 { margin: 0; font-size: 1.15rem; }
+.card h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}

@@ -1,6 +1,11 @@
-:host { display: block; }
+:host {
+  display: block;
+}
 
-.zoom-hero { --p: 0; height: 300vh; }
+.zoom-hero {
+  --p: 0;
+  height: 300vh;
+}
 .fixo-hero {
   position: sticky;
   top: 0;
@@ -27,14 +32,25 @@
   display: flex;
   gap: 0.3em;
   margin: 0;
-  font: 800 clamp(2.4rem, 10vw, 7rem) / 1 system-ui, sans-serif;
+  font:
+    800 clamp(2.4rem, 10vw, 7rem) / 1 system-ui,
+    sans-serif;
   letter-spacing: -0.04em;
   mix-blend-mode: difference;
 }
-.lado.esq { translate: calc(var(--p) * -80%) 0; }
-.lado.dir { translate: calc(var(--p) * 80%) 0; }
+.lado.esq {
+  translate: calc(var(--p) * -80%) 0;
+}
+.lado.dir {
+  translate: calc(var(--p) * 80%) 0;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .zoom-hero { --p: 1 !important; height: auto; }
-  .fixo-hero { position: relative; }
+  .zoom-hero {
+    --p: 1 !important;
+    height: auto;
+  }
+  .fixo-hero {
+    position: relative;
+  }
 }

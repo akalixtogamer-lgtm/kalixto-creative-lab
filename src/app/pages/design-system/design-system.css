@@ -36,11 +36,22 @@
   align-items: baseline;
   gap: var(--kx-space-4);
 }
-.ds-t-2xl { font: 700 var(--kx-fs-2xl) var(--kx-font-display); }
-.ds-t-xl { font: 700 var(--kx-fs-xl) var(--kx-font-display); }
-.ds-t-lg { font: 600 var(--kx-fs-lg) var(--kx-font-display); }
-.ds-t-md { font-size: var(--kx-fs-md); }
-.ds-t-sm { font-size: var(--kx-fs-sm); color: var(--kx-text-soft); }
+.ds-t-2xl {
+  font: 700 var(--kx-fs-2xl) var(--kx-font-display);
+}
+.ds-t-xl {
+  font: 700 var(--kx-fs-xl) var(--kx-font-display);
+}
+.ds-t-lg {
+  font: 600 var(--kx-fs-lg) var(--kx-font-display);
+}
+.ds-t-md {
+  font-size: var(--kx-fs-md);
+}
+.ds-t-sm {
+  font-size: var(--kx-fs-sm);
+  color: var(--kx-text-soft);
+}
 
 .linha {
   display: flex;

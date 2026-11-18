@@ -38,6 +38,13 @@ Veja [`figma-bridge/LEIA-ME.md`](../../figma-bridge/LEIA-ME.md).
 Duplicações: o plugin mostra o que já existe e deixa escolher entre **atualizar** as variáveis
 existentes ou **criar cópias** com outro nome.
 
+## Novidades da 1.10
+
+- **Interações de protótipo**: os componentes do construtor chegam com reactions (clique/hover →
+  outra variante, Smart Animate). Testado no Figma real com o menu sanduíche: ícone abre, X fecha.
+- **Enviar seleção para o lab**: selecione um frame desenhado por você e o plugin baixa um
+  `.kcx.json`. No KCX Studio, “Importar do Figma” coloca o componente em “Meus componentes”.
+
 ## Regras do Figma descobertas no teste real
 
 | Regra | Como o KCX trata |
@@ -48,6 +55,7 @@ existentes ou **criar cópias** com outro nome.
 | Paradas de gradiente aceitam `boundVariables.color` | Cada parada recebe o alias da variável |
 | Matriz do gradiente | Conferida visualmente: 90° = esquerda→direita, 180° = cima→baixo, 120° = diagonal para baixo à direita |
 | `TIMING` (segundos) e `EASING` (`CUSTOM_CUBIC_BEZIER`) existem | Tempo e curvas usam esses tipos; se o arquivo recusar, cai para FLOAT/STRING com aviso |
+| `setReactionsAsync` com `CHANGE_TO` funciona em camadas dentro de variantes e na própria variante (hover) | Interações do construtor usam isso |
 | `dashPattern` é **redistribuído por segmento** do vetor (até `[2000,2000]` aparece picotado) | Traço completo = peça sem tracejado; quadro parcial = vetor já cortado no progresso |
 | Coleção já existente com Dark/Light + componente de modo único | O valor é gravado em todos os modos existentes; nenhum modo novo é criado |
 | Padrão de propriedade `TEXT`/`BOOLEAN` aceita alias de variável | O padrão fica ligado à variável (`neon-glow/label`, `neon-glow/glow-enabled`) |

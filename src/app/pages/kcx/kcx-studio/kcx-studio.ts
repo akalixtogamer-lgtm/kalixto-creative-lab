@@ -1,6 +1,8 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { KCX_COMPONENTES, findKcx } from '../../../kcx/componentes';
+import { KCX_COMPONENTES } from '../../../kcx/componentes';
+import { TIPOS_CONSTRUTOR } from '../../../kcx/construtor';
+import { KcxMeusService } from '../kcx-meus.service';
 import { KCX_SCHEMA_VERSION, KcxPacote } from '../../../kcx/kcx.types';
 import { svgEstatico } from '../../../kcx/exportar-kcx';
 import { PlanoFigma, planejarFigma } from '../../../kcx/figma-plano';
@@ -19,6 +21,22 @@ import { baixarArquivo, lerArquivo } from '../kcx-estado.service';
 })
 export class KcxStudio {
   protected readonly versao = KCX_SCHEMA_VERSION;
+  private readonly servicoMeus = inject(KcxMeusService);
+  protected readonly meus = this.servicoMeus.meus;
+  protected readonly totalTipos = TIPOS_CONSTRUTOR.length;
+  protected readonly importacao = signal<{ salvos: string[]; erros: string[] } | null>(null);
+
+  /** Adiciona aos "Meus componentes" um .kcx.json (ex.: enviado pelo Figma Bridge). */
+  protected async importarMeus(e: Event): Promise<void> {
+    const texto = await lerArquivo(e);
+    if (texto === null) return;
+    const r = desserializar(texto);
+    if (!r.ok) {
+      this.importacao.set({ salvos: [], erros: [r.erro] });
+      return;
+    }
+    this.importacao.set(this.servicoMeus.importar(r.pacote));
+  }
   protected readonly cards = KCX_COMPONENTES.map((c) => ({
     comp: c,
     svg: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgEstatico(c, {})),
@@ -35,7 +53,7 @@ export class KcxStudio {
   });
 
   protected conhecido(id: string): boolean {
-    return !!findKcx(id);
+    return !!this.servicoMeus.buscar(id);
   }
 
   protected async validar(e: Event): Promise<void> {

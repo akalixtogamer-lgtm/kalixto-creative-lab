@@ -11,7 +11,9 @@
   list-style: none;
 }
 
-.ef__frame-host { display: block; }
+.ef__frame-host {
+  display: block;
+}
 .ef__frame {
   display: block;
   width: 100%;
@@ -132,7 +134,10 @@
   background: var(--kx-gradient-btn);
   color: #fff;
 }
-.ef__modo-btn:focus-visible { outline: 2px solid var(--kx-ciano); outline-offset: 2px; }
+.ef__modo-btn:focus-visible {
+  outline: 2px solid var(--kx-ciano);
+  outline-offset: 2px;
+}
 
 /* Palco do componente Angular: mesmo fundo do preview isolado */
 .ef__ng {
@@ -144,18 +149,30 @@
   border-radius: var(--kx-radius-md);
   background: #0b0a14;
   color: #f4f2ff;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   overflow: hidden;
 }
 
 .ef__ctrls {
   display: contents;
 }
-.ef__ctrls:disabled ::ng-deep .ctrl { opacity: 0.5; }
+.ef__ctrls:disabled ::ng-deep .ctrl {
+  opacity: 0.5;
+}
 .ef__bloqueio {
   margin: 0 0 var(--kx-space-3);
   color: var(--kx-warning);
   font-size: var(--kx-fs-sm);
 }
-.ef__restaurar { margin-top: var(--kx-space-3); align-self: flex-start; }
-.ef__h-codigo { margin-bottom: var(--kx-space-3); }
+.ef__restaurar {
+  margin-top: var(--kx-space-3);
+  align-self: flex-start;
+}
+.ef__h-codigo {
+  margin-bottom: var(--kx-space-3);
+}

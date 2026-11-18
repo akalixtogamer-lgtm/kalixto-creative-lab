@@ -14,8 +14,19 @@
   overflow: hidden;
   background: radial-gradient(ellipse at 50% 100%, #1f4a2a, #071009 70%);
 }
-.particulas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.campo h1 { position: relative; margin: 0; font-size: clamp(1.8rem, 7vw, 3.4rem); letter-spacing: -0.03em; pointer-events: none; }
+.particulas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.campo h1 {
+  position: relative;
+  margin: 0;
+  font-size: clamp(1.8rem, 7vw, 3.4rem);
+  letter-spacing: -0.03em;
+  pointer-events: none;
+}
 
 .pausar {
   padding: 8px 16px;

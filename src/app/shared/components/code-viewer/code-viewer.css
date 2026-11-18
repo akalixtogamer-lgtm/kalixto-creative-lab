@@ -24,9 +24,15 @@
   border-radius: 50%;
   background: var(--kx-border-strong);
 }
-.cv__dots i:first-child { background: var(--kx-magenta); }
-.cv__dots i:nth-child(2) { background: var(--kx-roxo); }
-.cv__dots i:last-child { background: var(--kx-azul); }
+.cv__dots i:first-child {
+  background: var(--kx-magenta);
+}
+.cv__dots i:nth-child(2) {
+  background: var(--kx-roxo);
+}
+.cv__dots i:last-child {
+  background: var(--kx-azul);
+}
 .cv__titulo {
   min-width: 0;
   overflow: hidden;
@@ -78,13 +84,26 @@
 }
 
 /* Realce de sintaxe (contraste AA sobre o fundo do viewer) */
-.cv__codigo .tk-comentario { color: #8f88b8; font-style: italic; }
-.cv__codigo .tk-texto { color: #7ee7c1; }
+.cv__codigo .tk-comentario {
+  color: #8f88b8;
+  font-style: italic;
+}
+.cv__codigo .tk-texto {
+  color: #7ee7c1;
+}
 .cv__codigo .tk-palavra,
 .cv__codigo .tk-regra,
-.cv__codigo .tk-bloco { color: #ff8be6; }
+.cv__codigo .tk-bloco {
+  color: #ff8be6;
+}
 .cv__codigo .tk-numero,
-.cv__codigo .tk-cor { color: #ffc177; }
+.cv__codigo .tk-cor {
+  color: #ffc177;
+}
 .cv__codigo .tk-propriedade,
-.cv__codigo .tk-atributo { color: #7fd8ff; }
-.cv__codigo .tk-tag { color: #b9a4ff; }
+.cv__codigo .tk-atributo {
+  color: #7fd8ff;
+}
+.cv__codigo .tk-tag {
+  color: #b9a4ff;
+}

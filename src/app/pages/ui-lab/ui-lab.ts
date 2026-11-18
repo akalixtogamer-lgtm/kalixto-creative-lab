@@ -41,7 +41,9 @@ export class UiLab implements OnDestroy {
   protected readonly demos = UI_DEMOS;
   protected readonly bentoAreas = BENTO_LAYOUTS;
 
-  protected readonly atual = computed<LabDemo>(() => UI_DEMOS.find((d) => d.id === this.demo()) ?? UI_DEMOS[0]);
+  protected readonly atual = computed<LabDemo>(
+    () => UI_DEMOS.find((d) => d.id === this.demo()) ?? UI_DEMOS[0],
+  );
   private readonly todosValores = signal<Record<string, Valores>>(
     Object.fromEntries(UI_DEMOS.map((d) => [d.id, valoresPadrao(d)])),
   );
@@ -52,7 +54,10 @@ export class UiLab implements OnDestroy {
   protected readonly divisor = computed(() => {
     const v = this.valores();
     const d = DIVISORES_SVG[String(v['forma'])] ?? DIVISORES_SVG['ondas'];
-    const t = [v['inverter'] === 'true' ? 'scaleY(-1)' : '', v['espelhar'] === 'true' ? 'scaleX(-1)' : '']
+    const t = [
+      v['inverter'] === 'true' ? 'scaleY(-1)' : '',
+      v['espelhar'] === 'true' ? 'scaleX(-1)' : '',
+    ]
       .filter(Boolean)
       .join(' ');
     return { camadas: d.camadas, transformacao: t || null };
@@ -66,9 +71,24 @@ export class UiLab implements OnDestroy {
     { n: 5, titulo: 'Ritmo & Pixel', local: 'Formiga, RJ', img: 'por-do-sol' },
   ];
   protected readonly numeros = [
-    { final: 45, unidade: 'demos', rotulo: 'interativas no lab', d: 'M5,40 L30,32 L55,36 L80,20 L105,24 L130,10 L155,14' },
-    { final: 20.5, unidade: 'km', rotulo: 'de trilha percorrida', d: 'M5,30 C25,10 40,45 60,25 S95,5 115,20 S145,35 155,12' },
-    { final: 950, unidade: 'm', rotulo: 'de subida acumulada', d: 'M5,42 L35,36 L50,38 L75,24 L95,28 L120,12 L155,6' },
+    {
+      final: 45,
+      unidade: 'demos',
+      rotulo: 'interativas no lab',
+      d: 'M5,40 L30,32 L55,36 L80,20 L105,24 L130,10 L155,14',
+    },
+    {
+      final: 20.5,
+      unidade: 'km',
+      rotulo: 'de trilha percorrida',
+      d: 'M5,30 C25,10 40,45 60,25 S95,5 115,20 S145,35 155,12',
+    },
+    {
+      final: 950,
+      unidade: 'm',
+      rotulo: 'de subida acumulada',
+      d: 'M5,42 L35,36 L50,38 L75,24 L95,28 L120,12 L155,6',
+    },
   ];
   protected readonly etapas = ['Ritmo', 'Repetição', 'Lógica', 'Criação'];
   protected readonly palavras = 'CSS · GSAP · SCROLL · SVG · THREE.JS · GLSL · ';

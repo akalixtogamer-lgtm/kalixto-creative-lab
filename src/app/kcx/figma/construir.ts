@@ -27,7 +27,7 @@ import {
 type Figma = any;
 type No = any;
 type Ref = { no: No; prop: string; plano: PlanoNo };
-type Refs = { texto: Ref[]; visivel: Ref[] };
+type Refs = { texto: Ref[]; visivel: Ref[]; nos?: Map<string, No> };
 
 export type ModoDuplicados = 'atualizar' | 'copia';
 
@@ -44,6 +44,8 @@ export interface RelatorioImportacao {
   propriedades: string[];
   /** Instâncias de exemplo. */
   exemplos: string[];
+  /** Camadas que receberam interações de protótipo (nome: quantidade). */
+  interacoes: string[];
   documentacao?: string;
   composicao?: string;
   avisos: string[];
@@ -108,6 +110,7 @@ class Construtor {
     pecas: [],
     propriedades: [],
     exemplos: [],
+    interacoes: [],
     avisos: [],
   };
   private fontePadrao = { family: 'Inter', style: 'Regular' };
@@ -549,11 +552,12 @@ class Construtor {
       no.clipsContent = p.recortar;
     }
     no.name = p.nome;
+    if (p.id) refs.nos?.set(p.id, no);
 
     if (p.tipo === 'frame' && p.autoLayout) {
       no.layoutMode = p.autoLayout.direcao;
       no.primaryAxisAlignItems = 'CENTER';
-      no.counterAxisAlignItems = 'CENTER';
+      no.counterAxisAlignItems = p.autoLayout.alinhar ?? 'CENTER';
       no.itemSpacing = Number(p.autoLayout.espaco.valor);
       no.paddingLeft = no.paddingRight = Number(p.autoLayout.paddingX.valor);
       no.paddingTop = no.paddingBottom = Number(p.autoLayout.paddingY.valor);
@@ -640,6 +644,13 @@ class Construtor {
       } else if (p.autoLayout && filho.texto?.preencher) {
         n.layoutSizingHorizontal = 'FILL';
         n.textAutoResize = 'HEIGHT';
+      } else if (p.autoLayout && filho.encher) {
+        // Em Auto Layout vertical, Fill é a largura; em horizontal, também (cresce no eixo).
+        try {
+          n.layoutSizingHorizontal = 'FILL';
+        } catch {
+          /* nó sem dimensionamento de Auto Layout */
+        }
       }
       if (filho.restricoes) {
         try {
@@ -714,11 +725,12 @@ class Construtor {
     const refsPorVariante: Refs[] = [];
     c.variantes.forEach((v) => {
       const comp = f.createComponent();
-      const refs: Refs = { texto: [], visivel: [] };
+      const refs: Refs = { texto: [], visivel: [], nos: new Map() };
       this.construirNo(v.arvore, comp, false, c.nome, refs);
       comp.name = c.variantes.length > 1 ? v.nome : c.nome;
       variantes.push(comp);
       refsPorVariante.push(refs);
+      this.nosPorVariante.set(`${c.id}|${v.nome}`, { variante: comp, nos: refs.nos! });
     });
     let principal: No;
     if (variantes.length > 1) {
@@ -762,6 +774,57 @@ class Construtor {
     }
     this.rel.componentes.push({ nome: c.nome, id: principal.id, variantes: variantes.length });
     return principal;
+  }
+
+  /** Nós de cada variante (para ligar as interações do protótipo). */
+  private nosPorVariante = new Map<string, { variante: No; nos: Map<string, No> }>();
+
+  /** Interações do protótipo: clique/hover troca para outra variante (Smart Animate). */
+  private async criarInteracoes(c: PlanoComponente): Promise<void> {
+    if (!c.interacoes?.length) return;
+    const porNo = new Map<No, unknown[]>();
+    for (const it of c.interacoes) {
+      const origem = this.nosPorVariante.get(`${c.id}|${it.variante}`);
+      const destino = this.nosPorVariante.get(`${c.id}|${it.destino}`);
+      const no = origem?.nos.get(it.no);
+      if (!origem || !destino || !no) {
+        this.rel.avisos.push(
+          `Interação "${it.no}" em ${it.variante}: camada ou variante não encontrada.`,
+        );
+        continue;
+      }
+      const transition =
+        it.transicao === 'instantanea'
+          ? null
+          : {
+              type: it.transicao === 'dissolver' ? 'DISSOLVE' : 'SMART_ANIMATE',
+              easing: { type: 'EASE_OUT' },
+              duration: it.duracao / 1000,
+            };
+      const lista = porNo.get(no) ?? [];
+      lista.push({
+        trigger: { type: it.gatilho === 'hover' ? 'ON_HOVER' : 'ON_CLICK' },
+        actions: [
+          {
+            type: 'NODE',
+            destinationId: destino.variante.id,
+            navigation: 'CHANGE_TO',
+            transition,
+            preserveScrollPosition: false,
+          },
+        ],
+      });
+      porNo.set(no, lista);
+    }
+    for (const [no, reactions] of porNo) {
+      try {
+        if (typeof no.setReactionsAsync === 'function') await no.setReactionsAsync(reactions);
+        else no.reactions = reactions;
+        this.rel.interacoes.push(`${no.name}: ${reactions.length}`);
+      } catch (e) {
+        this.rel.avisos.push(`Interação em "${no.name}" não foi criada: ${(e as Error).message}`);
+      }
+    }
   }
 
   /** Instância do componente pronta para usar, ao lado da definição. */
@@ -910,6 +973,7 @@ class Construtor {
       const pecas = c.pecas.length ? this.construirPecas(c, x, y) : null;
       const px = pecas ? x + pecas.width + 80 : x;
       const p = this.construirComponente(c, px, y);
+      await this.criarInteracoes(c);
       principais.set(c.id, p);
       criados.push(p);
       if (pecas) criados.push(pecas);

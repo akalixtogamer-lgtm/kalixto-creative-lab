@@ -10,9 +10,15 @@ export const SMOOTH_SCROLL: EffectKit = {
     nomeAmigavel: 'Rolagem suave',
     categoria: 'navegacao',
     subcategoria: 'Rolagem',
-    descricao: 'Compara a rolagem suavizada pela biblioteca Lenis com a rolagem suave nativa do CSS, incluindo os links de âncora.',
-    objetivoVisual: 'Deixar a rolagem com sensação de inércia, comum em sites de portfólio e campanhas.',
-    aplicacoes: ['Sites editoriais e de campanha', 'Páginas com muitas animações de rolagem', 'Menus de âncora'],
+    descricao:
+      'Compara a rolagem suavizada pela biblioteca Lenis com a rolagem suave nativa do CSS, incluindo os links de âncora.',
+    objetivoVisual:
+      'Deixar a rolagem com sensação de inércia, comum em sites de portfólio e campanhas.',
+    aplicacoes: [
+      'Sites editoriais e de campanha',
+      'Páginas com muitas animações de rolagem',
+      'Menus de âncora',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: ['lenis'],
@@ -24,12 +30,19 @@ export const SMOOTH_SCROLL: EffectKit = {
       'Os links de âncora chamam lenis.scrollTo, para que a navegação pelo menu também fique suave.',
       'No modo nativo, só o CSS scroll-behavior: smooth atua: a roda funciona normal e só os saltos de âncora ficam suaves.',
     ],
-    alternativa: 'Só CSS: html { scroll-behavior: smooth; } — sem biblioteca e sem inércia na roda, mas com âncoras suaves e respeitando o sistema.',
-    compatibilidade: 'Lenis 1.3 funciona nos navegadores atuais. scroll-behavior também. Em telas de toque, o Lenis mantém a rolagem nativa por padrão.',
+    alternativa:
+      'Só CSS: html { scroll-behavior: smooth; } — sem biblioteca e sem inércia na roda, mas com âncoras suaves e respeitando o sistema.',
+    compatibilidade:
+      'Lenis 1.3 funciona nos navegadores atuais. scroll-behavior também. Em telas de toque, o Lenis mantém a rolagem nativa por padrão.',
     responsividade: 'Não depende da largura. Em celulares a rolagem por toque continua nativa.',
-    acessibilidade: 'Com prefers-reduced-motion o Lenis não é iniciado e scroll-behavior volta a auto (saltos instantâneos). Teclado (setas, espaço, Page Down) continua com a rolagem nativa. Rolagem suavizada pode atrapalhar algumas pessoas; use com moderação.',
-    performance: 'Lenis roda um laço de requestAnimationFrame enquanto há rolagem pendente. Custo: lenis.min.js tem 18,8 kB minificado (sem gzip).',
-    limitacoes: ['Elementos com rolagem própria dentro da página precisam do atributo data-lenis-prevent.', 'position: sticky e fixed continuam funcionando, mas efeitos ligados à rolagem precisam ouvir os eventos do Lenis para ficarem sincronizados.'],
+    acessibilidade:
+      'Com prefers-reduced-motion o Lenis não é iniciado e scroll-behavior volta a auto (saltos instantâneos). Teclado (setas, espaço, Page Down) continua com a rolagem nativa. Rolagem suavizada pode atrapalhar algumas pessoas; use com moderação.',
+    performance:
+      'Lenis roda um laço de requestAnimationFrame enquanto há rolagem pendente. Custo: lenis.min.js tem 18,8 kB minificado (sem gzip).',
+    limitacoes: [
+      'Elementos com rolagem própria dentro da página precisam do atributo data-lenis-prevent.',
+      'position: sticky e fixed continuam funcionando, mas efeitos ligados à rolagem precisam ouvir os eventos do Lenis para ficarem sincronizados.',
+    ],
     referencias: [MDN.lenis, MDN.scrollBehavior, MDN.reduzir],
     validadoEm: VALIDADO_EM,
     status: 'validado',
@@ -45,8 +58,26 @@ export const SMOOTH_SCROLL: EffectKit = {
       ],
       padrao: 'lenis',
     },
-    { id: 'dur', rotulo: 'duração da suavização', tipo: 'range', min: 0.4, max: 2.4, passo: 0.1, unidade: 's', padrao: 1.2 },
-    { id: 'roda', rotulo: 'força da roda do mouse', tipo: 'range', min: 0.5, max: 2, passo: 0.1, unidade: '×', padrao: 1 },
+    {
+      id: 'dur',
+      rotulo: 'duração da suavização',
+      tipo: 'range',
+      min: 0.4,
+      max: 2.4,
+      passo: 0.1,
+      unidade: 's',
+      padrao: 1.2,
+    },
+    {
+      id: 'roda',
+      rotulo: 'força da roda do mouse',
+      tipo: 'range',
+      min: 0.5,
+      max: 2,
+      passo: 0.1,
+      unidade: '×',
+      padrao: 1,
+    },
   ],
   bibliotecas: ['lenis'],
   gerar: (v) => {
@@ -166,7 +197,10 @@ export class ${nomeClasse('smooth-scroll')} {
 }
 `,
     css: cssAngularPagina(SMOOTH_SCROLL.gerar(v).css)
-      .replace('html { scroll-behavior: smooth; }', ':host { display: block; }\n/* no projeto real, coloque no styles.css global: */\n/* html { scroll-behavior: smooth; } */')
+      .replace(
+        'html { scroll-behavior: smooth; }',
+        ':host { display: block; }\n/* no projeto real, coloque no styles.css global: */\n/* html { scroll-behavior: smooth; } */',
+      )
       .replace(/^:host \{ display: block; \}\n\n/, ''),
   }),
   previewAngular: false,
@@ -186,10 +220,22 @@ export class ${nomeClasse('smooth-scroll')} {
   },
   glossario: [
     { termo: 'new Lenis', explicacao: 'Cria a rolagem suave com as opções escolhidas.' },
-    { termo: 'autoRaf', explicacao: 'O Lenis cuida sozinho do laço de animação (requestAnimationFrame).' },
-    { termo: 'wheelMultiplier', explicacao: 'Quanto cada giro da roda do mouse faz a página andar.' },
+    {
+      termo: 'autoRaf',
+      explicacao: 'O Lenis cuida sozinho do laço de animação (requestAnimationFrame).',
+    },
+    {
+      termo: 'wheelMultiplier',
+      explicacao: 'Quanto cada giro da roda do mouse faz a página andar.',
+    },
     { termo: 'lenis.scrollTo', explicacao: 'Rola suavemente até uma âncora ou posição.' },
-    { termo: 'scroll-behavior: smooth', explicacao: 'Rolagem suave nativa do CSS para saltos de âncora.' },
-    { termo: 'position: sticky', explicacao: 'Mantém o menu grudado no topo enquanto a página rola.' },
+    {
+      termo: 'scroll-behavior: smooth',
+      explicacao: 'Rolagem suave nativa do CSS para saltos de âncora.',
+    },
+    {
+      termo: 'position: sticky',
+      explicacao: 'Mantém o menu grudado no topo enquanto a página rola.',
+    },
   ],
 };

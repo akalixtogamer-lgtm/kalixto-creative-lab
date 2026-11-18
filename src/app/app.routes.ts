@@ -80,7 +80,13 @@ export const routes: Routes = [
       {
         path: 'kcx/compor',
         title: 'Composição KCX · Kalixto Creative Lab',
-        loadComponent: () => import('./pages/kcx/kcx-compositor/kcx-compositor').then((m) => m.KcxCompositor),
+        loadComponent: () =>
+          import('./pages/kcx/kcx-compositor/kcx-compositor').then((m) => m.KcxCompositor),
+      },
+      {
+        path: 'kcx/criar',
+        title: 'Criar componente · KCX Studio · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/kcx/kcx-criar/kcx-criar').then((m) => m.KcxCriar),
       },
       {
         path: 'kcx/:id',

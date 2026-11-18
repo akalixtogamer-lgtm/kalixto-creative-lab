@@ -19,7 +19,8 @@ export interface CenaUI {
 }
 
 const q = (palco: HTMLElement, s: string) => [...palco.querySelectorAll<HTMLElement>(s)];
-const um = <T extends Element = HTMLElement>(palco: HTMLElement, s: string) => palco.querySelector<T>(s)!;
+const um = <T extends Element = HTMLElement>(palco: HTMLElement, s: string) =>
+  palco.querySelector<T>(s)!;
 
 /** Posição do ponteiro de -0.5 a 0.5 em relação ao palco. */
 function mouseRelativo(palco: HTMLElement, e: PointerEvent) {
@@ -28,7 +29,10 @@ function mouseRelativo(palco: HTMLElement, e: PointerEvent) {
 }
 
 const formatar = (n: number, decimal: boolean) =>
-  n.toLocaleString('pt-BR', { minimumFractionDigits: decimal ? 1 : 0, maximumFractionDigits: decimal ? 1 : 0 });
+  n.toLocaleString('pt-BR', {
+    minimumFractionDigits: decimal ? 1 : 0,
+    maximumFractionDigits: decimal ? 1 : 0,
+  });
 
 export const CENAS_UI: Record<string, CenaUI> = {
   'hero-editorial': {
@@ -36,8 +40,16 @@ export const CENAS_UI: Record<string, CenaUI> = {
       const mascara = v['entrada'] === 'mascara';
       gsap
         .timeline({ defaults: { duration: Number(v['dur']), ease: 'power3.out' } })
-        .from(q(palco, '.u-nav__links > span, .u-nav__marca'), { y: -20, opacity: 0, stagger: 0.08 })
-        .from(q(palco, '.u-linha > span'), mascara ? { yPercent: 105, stagger: 0.12 } : { y: 40, opacity: 0, stagger: 0.12 }, '-=0.4')
+        .from(q(palco, '.u-nav__links > span, .u-nav__marca'), {
+          y: -20,
+          opacity: 0,
+          stagger: 0.08,
+        })
+        .from(
+          q(palco, '.u-linha > span'),
+          mascara ? { yPercent: 105, stagger: 0.12 } : { y: 40, opacity: 0, stagger: 0.12 },
+          '-=0.4',
+        )
         .from(q(palco, '.u-divisoria'), { scaleX: 0, transformOrigin: 'left center' }, '-=0.5')
         .from(q(palco, '.u-hero__texto, .u-cta'), { y: 20, opacity: 0, stagger: 0.1 }, '-=0.5')
         .from(q(palco, '.u-scroll'), { opacity: 0 }, '-=0.3');
@@ -87,7 +99,12 @@ export const CENAS_UI: Record<string, CenaUI> = {
     executar: (palco) => {
       gsap
         .timeline()
-        .from(um(palco, '.u-gigante'), { yPercent: 60, opacity: 0, duration: 1.2, ease: 'power3.out' })
+        .from(um(palco, '.u-gigante'), {
+          yPercent: 60,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+        })
         .from(um(palco, '.u-frente'), { yPercent: 30, duration: 1.2, ease: 'power3.out' }, 0);
     },
   },
@@ -126,7 +143,8 @@ export const CENAS_UI: Record<string, CenaUI> = {
         (entradas) =>
           entradas.forEach((e) => {
             e.target.classList.toggle('ativo', e.isIntersecting);
-            if (e.isIntersecting) atual.textContent = String((e.target as HTMLElement).dataset['n']).padStart(2, '0');
+            if (e.isIntersecting)
+              atual.textContent = String((e.target as HTMLElement).dataset['n']).padStart(2, '0');
           }),
         { root: trilho, threshold: 0.6 },
       );
@@ -136,31 +154,54 @@ export const CENAS_UI: Record<string, CenaUI> = {
     executar: (palco) => {
       const trilho = um(palco, '.u-trilho');
       const cards = q(palco, '.u-card');
-      const i = Math.max(0, cards.findIndex((c) => c.classList.contains('ativo')));
+      const i = Math.max(
+        0,
+        cards.findIndex((c) => c.classList.contains('ativo')),
+      );
       const prox = cards[(i + 1) % cards.length];
-      trilho.scrollTo({ left: prox.offsetLeft - (trilho.clientWidth - prox.clientWidth) / 2, behavior: 'smooth' });
+      trilho.scrollTo({
+        left: prox.offsetLeft - (trilho.clientWidth - prox.clientWidth) / 2,
+        behavior: 'smooth',
+      });
     },
   },
 
   numeros: {
     montar: (palco, v) => {
       const decimal = v['formato'] === 'decimal';
-      q(palco, '.u-num__valor').forEach((el) => (el.textContent = formatar(Number(el.dataset['final']), decimal)));
+      q(palco, '.u-num__valor').forEach(
+        (el) => (el.textContent = formatar(Number(el.dataset['final']), decimal)),
+      );
     },
     executar: (palco, v) => {
       const decimal = v['formato'] === 'decimal';
-      const tl = gsap.timeline({ defaults: { duration: Number(v['dur']), ease: String(v['ease']) } });
+      const tl = gsap.timeline({
+        defaults: { duration: Number(v['dur']), ease: String(v['ease']) },
+      });
       tl.from(q(palco, '.u-num__linha'), { drawSVG: '0%' }, 0);
       q(palco, '.u-num__valor').forEach((el) => {
         const contador = { valor: 0 };
-        tl.to(contador, { valor: Number(el.dataset['final']), onUpdate: () => (el.textContent = formatar(contador.valor, decimal)) }, 0);
+        tl.to(
+          contador,
+          {
+            valor: Number(el.dataset['final']),
+            onUpdate: () => (el.textContent = formatar(contador.valor, decimal)),
+          },
+          0,
+        );
       });
     },
   },
 
   bento: {
     executar: (palco) => {
-      gsap.from(q(palco, '.u-bento > *'), { scale: 0.85, opacity: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.5)' });
+      gsap.from(q(palco, '.u-bento > *'), {
+        scale: 0.85,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: 'back.out(1.5)',
+      });
     },
   },
 
@@ -168,8 +209,17 @@ export const CENAS_UI: Record<string, CenaUI> = {
     executar: (palco) => {
       gsap
         .timeline()
-        .from(um(palco, '.u-circulo'), { scale: 0, duration: 0.9, ease: 'expo.out', transformOrigin: '50% 50%' })
-        .from(q(palco, '.u-pcard'), { y: 40, opacity: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out' }, '-=0.5');
+        .from(um(palco, '.u-circulo'), {
+          scale: 0,
+          duration: 0.9,
+          ease: 'expo.out',
+          transformOrigin: '50% 50%',
+        })
+        .from(
+          q(palco, '.u-pcard'),
+          { y: 40, opacity: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out' },
+          '-=0.5',
+        );
     },
   },
 

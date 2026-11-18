@@ -4,10 +4,30 @@
   gap: 24px;
 }
 
-.trilha-passos { display: grid; gap: 12px; width: min(100%, 440px); }
-.contador { margin: 0; color: #c9c3ea; font: 600 13px ui-monospace, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
-.contador strong { color: #ff6a1a; }
-.passos { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.trilha-passos {
+  display: grid;
+  gap: 12px;
+  width: min(100%, 440px);
+}
+.contador {
+  margin: 0;
+  color: #c9c3ea;
+  font:
+    600 13px ui-monospace,
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.contador strong {
+  color: #ff6a1a;
+}
+.passos {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 
 .passo {
   position: relative;
@@ -18,7 +38,9 @@
   border: 1px solid rgb(255 255 255 / 0.1);
   border-radius: 14px;
   background: #15121c;
-  transition: border-color 400ms ease, background 400ms ease;
+  transition:
+    border-color 400ms ease,
+    background 400ms ease;
 }
 .cadeado {
   display: grid;
@@ -28,30 +50,77 @@
   border-radius: 10px;
   background: rgb(255 255 255 / 0.06);
 }
-.cadeado::before { content: '🔒'; font-size: 16px; }
-.num { padding: 2px 8px; border-radius: 6px; background: #f4f2ff; color: #15121c; font: 800 13px ui-monospace, monospace; }
-.texto { display: grid; }
-.texto small { color: #8f88b5; }
+.cadeado::before {
+  content: '🔒';
+  font-size: 16px;
+}
+.num {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f4f2ff;
+  color: #15121c;
+  font:
+    800 13px ui-monospace,
+    monospace;
+}
+.texto {
+  display: grid;
+}
+.texto small {
+  color: #8f88b5;
+}
 
 /* Bloqueado: título escondido, só "?" */
-.passo[data-estado='bloqueado'] .texto { color: transparent; }
-.passo[data-estado='bloqueado'] .texto strong::before { content: '?'; color: #f4f2ff; position: absolute; }
-.passo[data-estado='bloqueado'] .texto small { color: transparent; }
+.passo[data-estado='bloqueado'] .texto {
+  color: transparent;
+}
+.passo[data-estado='bloqueado'] .texto strong::before {
+  content: '?';
+  color: #f4f2ff;
+  position: absolute;
+}
+.passo[data-estado='bloqueado'] .texto small {
+  color: transparent;
+}
 
 /* Tremendo: o cadeado balança antes de abrir */
-.passo.is-tremendo .cadeado { animation: tremer 350ms ease-in-out; }
+.passo.is-tremendo .cadeado {
+  animation: tremer 350ms ease-in-out;
+}
 @keyframes tremer {
-  25% { rotate: -12deg; }
-  50% { rotate: 10deg; }
-  75% { rotate: -6deg; }
+  25% {
+    rotate: -12deg;
+  }
+  50% {
+    rotate: 10deg;
+  }
+  75% {
+    rotate: -6deg;
+  }
 }
 
 /* Livre: ✓, título aparece, selo carimba */
-.passo[data-estado='livre'] { border-color: #ff6a1a; background: color-mix(in srgb, #ff6a1a 10%, #15121c); }
-.passo[data-estado='livre'] .cadeado { background: #ff6a1a; }
-.passo[data-estado='livre'] .cadeado::before { content: '✓'; color: #15121c; font-weight: 800; }
-.passo[data-estado='livre'] .texto { animation: revelar 400ms ease both; }
-@keyframes revelar { from { opacity: 0; translate: 6px 0; } }
+.passo[data-estado='livre'] {
+  border-color: #ff6a1a;
+  background: color-mix(in srgb, #ff6a1a 10%, #15121c);
+}
+.passo[data-estado='livre'] .cadeado {
+  background: #ff6a1a;
+}
+.passo[data-estado='livre'] .cadeado::before {
+  content: '✓';
+  color: #15121c;
+  font-weight: 800;
+}
+.passo[data-estado='livre'] .texto {
+  animation: revelar 400ms ease both;
+}
+@keyframes revelar {
+  from {
+    opacity: 0;
+    translate: 6px 0;
+  }
+}
 .selo {
   position: absolute;
   right: 12px;
@@ -60,16 +129,34 @@
   border-radius: 999px;
   background: #ff6a1a;
   color: #15121c;
-  font: 800 11px ui-monospace, monospace;
+  font:
+    800 11px ui-monospace,
+    monospace;
   letter-spacing: 0.08em;
   opacity: 0;
 }
-.passo[data-estado='livre'] .selo { animation: carimbar 420ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both; }
-@keyframes carimbar {
-  from { opacity: 0; scale: 2; rotate: -18deg; }
-  to { opacity: 1; scale: 1; rotate: 0deg; }
+.passo[data-estado='livre'] .selo {
+  animation: carimbar 420ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both;
 }
-.sr-estado { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@keyframes carimbar {
+  from {
+    opacity: 0;
+    scale: 2;
+    rotate: -18deg;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+.sr-estado {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
 
 .avancar {
   padding: 10px 20px;
@@ -80,9 +167,18 @@
   font: inherit;
   cursor: pointer;
 }
-.avancar:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.avancar:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .passo.is-tremendo .cadeado, .passo[data-estado='livre'] .texto { animation: none; }
-  .passo[data-estado='livre'] .selo { animation: none; opacity: 1; }
+  .passo.is-tremendo .cadeado,
+  .passo[data-estado='livre'] .texto {
+    animation: none;
+  }
+  .passo[data-estado='livre'] .selo {
+    animation: none;
+    opacity: 1;
+  }
 }

@@ -8,7 +8,8 @@ export const CARD_TILT: EffectKit = {
     nomeAmigavel: 'Card que inclina com o mouse',
     categoria: 'cards-imagens',
     subcategoria: 'Cards com profundidade',
-    descricao: 'O card gira em 3D acompanhando a posição do ponteiro, com um reflexo de luz que segue o mouse.',
+    descricao:
+      'O card gira em 3D acompanhando a posição do ponteiro, com um reflexo de luz que segue o mouse.',
     objetivoVisual: 'Dar sensação de objeto físico e profundidade a um card.',
     aplicacoes: ['Cards de produto', 'Cartões de perfil', 'Vitrines de projetos'],
     nivel: 'intermediario',
@@ -22,20 +23,54 @@ export const CARD_TILT: EffectKit = {
       'Esse número multiplicado pela inclinação máxima vira rotateX e rotateY.',
       'As mesmas coordenadas vão para as variáveis --x e --y, usadas no radial-gradient do reflexo.',
     ],
-    alternativa: 'Com GSAP, gsap.to(card, { rotationY, rotationX, duration: 0.4 }) suaviza o movimento sem transition no CSS.',
+    alternativa:
+      'Com GSAP, gsap.to(card, { rotationY, rotationX, duration: 0.4 }) suaviza o movimento sem transition no CSS.',
     compatibilidade: 'transform 3D e Pointer Events funcionam em todos os navegadores atuais.',
-    responsividade: 'Só reage a mouse. Em toque o card fica parado e legível. A largura do card se adapta à tela.',
-    acessibilidade: 'O card recebe foco pelo teclado e mostra um estado de destaque (leve elevação e contorno). A inclinação é decorativa e é desativada com prefers-reduced-motion.',
-    performance: 'Uma leitura de getBoundingClientRect e uma escrita de estilo por quadro, só enquanto o ponteiro está sobre o card.',
-    limitacoes: ['Textos pequenos podem ficar menos nítidos enquanto o card está inclinado.', 'Inclinações acima de 20° dificultam a leitura.'],
+    responsividade:
+      'Só reage a mouse. Em toque o card fica parado e legível. A largura do card se adapta à tela.',
+    acessibilidade:
+      'O card recebe foco pelo teclado e mostra um estado de destaque (leve elevação e contorno). A inclinação é decorativa e é desativada com prefers-reduced-motion.',
+    performance:
+      'Uma leitura de getBoundingClientRect e uma escrita de estilo por quadro, só enquanto o ponteiro está sobre o card.',
+    limitacoes: [
+      'Textos pequenos podem ficar menos nítidos enquanto o card está inclinado.',
+      'Inclinações acima de 20° dificultam a leitura.',
+    ],
     referencias: [MDN.perspective, MDN.transform, MDN.pointer, MDN.reduzir],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'incl', rotulo: 'inclinação máxima', tipo: 'range', min: 2, max: 30, passo: 1, unidade: '°', padrao: 12 },
-    { id: 'persp', rotulo: 'perspectiva', tipo: 'range', min: 300, max: 2000, passo: 50, unidade: 'px', padrao: 800 },
-    { id: 'escala', rotulo: 'escala no hover', tipo: 'range', min: 1, max: 1.1, passo: 0.01, unidade: '', padrao: 1.03 },
+    {
+      id: 'incl',
+      rotulo: 'inclinação máxima',
+      tipo: 'range',
+      min: 2,
+      max: 30,
+      passo: 1,
+      unidade: '°',
+      padrao: 12,
+    },
+    {
+      id: 'persp',
+      rotulo: 'perspectiva',
+      tipo: 'range',
+      min: 300,
+      max: 2000,
+      passo: 50,
+      unidade: 'px',
+      padrao: 800,
+    },
+    {
+      id: 'escala',
+      rotulo: 'escala no hover',
+      tipo: 'range',
+      min: 1,
+      max: 1.1,
+      passo: 0.01,
+      unidade: '',
+      padrao: 1.03,
+    },
     {
       id: 'reflexo',
       rotulo: 'reflexo de luz',
@@ -216,11 +251,26 @@ export class ${nomeClasse('card-tilt')} {
     ],
   },
   glossario: [
-    { termo: 'perspective', explicacao: 'Distância do "olho" até o objeto: menor = 3D mais exagerado.' },
-    { termo: 'rotateX', explicacao: 'Gira o card em volta do eixo horizontal (inclina para cima/baixo).' },
-    { termo: 'rotateY', explicacao: 'Gira o card em volta do eixo vertical (inclina para os lados).' },
-    { termo: 'radial-gradient', explicacao: 'Brilho circular usado como reflexo, centrado em --x e --y.' },
-    { termo: 'pointerleave', explicacao: 'O mouse saiu do card: as rotações são zeradas e ele volta.' },
+    {
+      termo: 'perspective',
+      explicacao: 'Distância do "olho" até o objeto: menor = 3D mais exagerado.',
+    },
+    {
+      termo: 'rotateX',
+      explicacao: 'Gira o card em volta do eixo horizontal (inclina para cima/baixo).',
+    },
+    {
+      termo: 'rotateY',
+      explicacao: 'Gira o card em volta do eixo vertical (inclina para os lados).',
+    },
+    {
+      termo: 'radial-gradient',
+      explicacao: 'Brilho circular usado como reflexo, centrado em --x e --y.',
+    },
+    {
+      termo: 'pointerleave',
+      explicacao: 'O mouse saiu do card: as rotações são zeradas e ele volta.',
+    },
     { termo: 'tabindex="0"', explicacao: 'Permite focar o card pelo teclado.' },
   ],
 };

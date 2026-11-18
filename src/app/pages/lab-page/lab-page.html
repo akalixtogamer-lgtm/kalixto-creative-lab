@@ -1,6 +1,12 @@
 @if (lab(); as lab) {
   <div class="kx-page" [attr.data-acento]="lab.acento">
-    <kx-breadcrumb [itens]="[{ rotulo: 'Dashboard', rota: '/' }, { rotulo: 'Laboratórios' }, { rotulo: lab.titulo }]" />
+    <kx-breadcrumb
+      [itens]="[
+        { rotulo: 'Dashboard', rota: '/' },
+        { rotulo: 'Laboratórios' },
+        { rotulo: lab.titulo },
+      ]"
+    />
 
     <kx-page-header
       [eyebrow]="'Laboratório ' + lab.numero + ' · Fase ' + lab.fase"
@@ -24,13 +30,14 @@
         @if (lab.status === 'bloqueado') {
           <h2 id="aviso-titulo">Laboratório bloqueado</h2>
           <p class="kx-muted">
-            Pela regra do roadmap, as tecnologias avançadas só entram depois que o CSS Playground,
-            o GSAP Studio e o Scroll Lab estiverem funcionais e validados.
+            Pela regra do roadmap, as tecnologias avançadas só entram depois que o CSS Playground, o
+            GSAP Studio e o Scroll Lab estiverem funcionais e validados.
           </p>
         } @else {
           <h2 id="aviso-titulo">Em breve — demos na Fase {{ lab.fase }}</h2>
           <p class="kx-muted">
-            Este laboratório ainda não tem demonstrações interativas. Abaixo está o que ele vai ensinar.
+            Este laboratório ainda não tem demonstrações interativas. Abaixo está o que ele vai
+            ensinar.
           </p>
         }
         @if (labPronto; as pronto) {
@@ -66,7 +73,9 @@
             Ver na biblioteca
           </a>
         } @else {
-          <p class="kx-muted">Os efeitos deste laboratório serão catalogados quando a fase começar.</p>
+          <p class="kx-muted">
+            Os efeitos deste laboratório serão catalogados quando a fase começar.
+          </p>
         }
       </section>
     </div>
@@ -88,7 +97,13 @@
   </div>
 } @else {
   <div class="kx-page">
-    <kx-page-header eyebrow="404" titulo="Laboratório não encontrado" descricao="Esse endereço não corresponde a nenhum laboratório." />
-    <a class="kx-btn kx-btn--primary" routerLink="/" style="align-self: flex-start">Voltar ao Dashboard</a>
+    <kx-page-header
+      eyebrow="404"
+      titulo="Laboratório não encontrado"
+      descricao="Esse endereço não corresponde a nenhum laboratório."
+    />
+    <a class="kx-btn kx-btn--primary" routerLink="/" style="align-self: flex-start"
+      >Voltar ao Dashboard</a
+    >
   </div>
 }

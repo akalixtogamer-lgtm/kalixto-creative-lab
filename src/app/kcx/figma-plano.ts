@@ -170,9 +170,11 @@ export interface PlanoNo {
     espaco: PlanoProp<number>;
     paddingX: PlanoProp<number>;
     paddingY: PlanoProp<number>;
+    alinhar?: 'MIN' | 'CENTER' | 'MAX';
   };
   recortar: boolean;
   absoluto: boolean;
+  encher?: boolean;
   restricoes?: { horizontal: string; vertical: string };
   propriedadeVisivel?: string;
   /** Arco em radianos (arcData do Figma). */
@@ -216,6 +218,21 @@ export interface PlanoComponente {
   codigo: { html: string; css: string; js: string };
   largura: number;
   altura: number;
+  /** Interações de protótipo já resolvidas para nomes de variante. */
+  interacoes?: PlanoInteracao[];
+}
+
+export interface PlanoInteracao {
+  /** Variante onde está o nó clicado. */
+  variante: string;
+  /** Id do nó (como no KCX). */
+  no: string;
+  gatilho: 'clique' | 'hover';
+  /** Variante de destino. */
+  destino: string;
+  transicao: 'smart-animate' | 'dissolver' | 'instantanea';
+  /** Em milissegundos. */
+  duracao: number;
 }
 
 export interface PlanoColecao {
@@ -421,7 +438,9 @@ function resolverRef<T>(
   }
   if (ehRefDerivada(ref)) {
     const v = porId(comp, ref.$derivado);
-    const calc = aplicarOperacoes(v, valores[v.id], ref.transformar, valores, comp.variaveis);
+    const bruto = aplicarOperacoes(v, valores[v.id], ref.transformar, valores, comp.variaveis);
+    // 'mapa' devolve texto: em campos BOOLEAN, "true"/"false" viram boolean (permite negar).
+    const calc = campo.tipo === 'BOOLEAN' ? bruto === true || bruto === 'true' : bruto;
     const valor = (campo.tipo === 'COLOR' ? corFigma(String(calc)) : calc) as T;
     if (!ctx.usarVariaveis || !campo.vinculavel) return { valor };
     const sufixo = difereDaBase(ctx, [v.id, ...idsDeOps(ref.transformar)]) ? ctx.sufixo : '';
@@ -521,6 +540,7 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
     efeitos: [],
     recortar: !!no.recortar,
     absoluto: !!no.absoluto,
+    encher: no.encher || undefined,
     filhos: [],
   };
   const pintura = (f: KcxPreenchimento, rotulo: string, campoCor: Campo): PlanoPaint => {
@@ -712,6 +732,12 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
   }
   if (no.autoLayout) {
     p.autoLayout = {
+      alinhar:
+        no.autoLayout.alinhar === 'inicio'
+          ? 'MIN'
+          : no.autoLayout.alinhar === 'fim'
+            ? 'MAX'
+            : undefined,
       direcao: no.autoLayout.direcao === 'horizontal' ? 'HORIZONTAL' : 'VERTICAL',
       espaco: resolverRef(no.autoLayout.espaco, CAMPOS['gap'], onde('espaço'), ctx)!,
       paddingX: resolverRef(
@@ -885,6 +911,32 @@ export function planejarFigma(
         );
       }
     }
+    // Interações: "no estado A, clicar em X leva ao estado B", para cada combinação de eixos.
+    const interacoes: PlanoInteracao[] = [];
+    for (const it of comp.interacoes ?? []) {
+      const de = comp.estados.find((e) => e.id === it.de);
+      const para = comp.estados.find((e) => e.id === it.para);
+      if (!de || !para) {
+        avisos.push(`${comp.nome}: interação com estado inexistente (${it.de} → ${it.para}).`);
+        continue;
+      }
+      for (const v of variantes.filter((x) => x.propriedades['Estado'] === de.nome)) {
+        const alvo = variantes.find((x) =>
+          Object.entries({ ...v.propriedades, Estado: para.nome }).every(
+            ([k, val]) => x.propriedades[k] === val,
+          ),
+        );
+        if (alvo)
+          interacoes.push({
+            variante: v.nome,
+            no: it.no,
+            gatilho: it.gatilho,
+            destino: alvo.nome,
+            transicao: it.transicao,
+            duracao: it.duracao,
+          });
+      }
+    }
     if (criarComponentes) {
       const f = comp.compatibilidade.figma;
       componentes.push({
@@ -903,6 +955,7 @@ export function planejarFigma(
         codigo: { html: comp.codigo.html, css: comp.codigo.css, js: comp.codigo.js },
         largura: comp.metadados.largura,
         altura: comp.metadados.altura,
+        interacoes: interacoes.length ? interacoes : undefined,
       });
     }
   }

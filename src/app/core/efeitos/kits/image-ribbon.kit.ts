@@ -8,25 +8,44 @@ export const IMAGE_RIBBON: EffectKit = {
     nomeAmigavel: 'Fita 3D de imagens',
     categoria: 'cards-imagens',
     subcategoria: 'Carrosséis e galerias 3D',
-    descricao: 'Uma fita de cards gira em volta de um título, passando por trás e pela frente dele — a galeria em "anel" dos sites de estúdio.',
-    objetivoVisual: 'Mostrar muitos trabalhos de uma vez, com movimento contínuo e profundidade, sem tirar o foco do título.',
-    aplicacoes: ['Heros de portfólio e agência', 'Vitrine de projetos', 'Telas de abertura de eventos'],
+    descricao:
+      'Uma fita de cards gira em volta de um título, passando por trás e pela frente dele — a galeria em "anel" dos sites de estúdio.',
+    objetivoVisual:
+      'Mostrar muitos trabalhos de uma vez, com movimento contínuo e profundidade, sem tirar o foco do título.',
+    aplicacoes: [
+      'Heros de portfólio e agência',
+      'Vitrine de projetos',
+      'Telas de abertura de eventos',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'hover', 'click'],
-    tags: ['carrossel 3d', 'ribbon', 'anel', 'cilindro', 'galeria', 'rotateY', 'translateZ', 'referência em vídeo'],
+    tags: [
+      'carrossel 3d',
+      'ribbon',
+      'anel',
+      'cilindro',
+      'galeria',
+      'rotateY',
+      'translateZ',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Os cards ficam todos no mesmo ponto. Cada um gira rotateY(i × 360° ÷ total) e depois anda translateZ(raio) "para fora": juntos, formam um cilindro.',
       'A .fita inteira gira de 0 a -360° numa animação infinita e linear, então os cards desfilam em volta do centro.',
       'O título está dentro da mesma cena 3D (preserve-3d), no centro do cilindro: os cards da frente passam por cima dele e os de trás passam por baixo.',
       'Uma inclinação (rotateX + rotateZ) na cena tira a fita do horizonte e dá o aspecto de "anel" visto de cima.',
     ],
-    alternativa: 'Em Three.js, planos com texturas posicionados num CylinderGeometry dão curvatura real nas imagens (cada card dobra junto com o anel).',
+    alternativa:
+      'Em Three.js, planos com texturas posicionados num CylinderGeometry dão curvatura real nas imagens (cada card dobra junto com o anel).',
     compatibilidade: 'Transformações 3D e preserve-3d: todos os navegadores atuais.',
-    responsividade: 'O raio e o tamanho dos cards usam min() com a largura da tela, então o anel encolhe no celular.',
-    acessibilidade: 'Movimento automático com mais de 5 s precisa de pausa (WCAG 2.2.2): o botão Pausar para a fita, e o hover também pausa. Com prefers-reduced-motion, a fita fica parada.',
-    performance: 'Só um transform muda por quadro (o da fita); os cards não são recalculados. Aguenta dezenas de cards com imagens.',
+    responsividade:
+      'O raio e o tamanho dos cards usam min() com a largura da tela, então o anel encolhe no celular.',
+    acessibilidade:
+      'Movimento automático com mais de 5 s precisa de pausa (WCAG 2.2.2): o botão Pausar para a fita, e o hover também pausa. Com prefers-reduced-motion, a fita fica parada.',
+    performance:
+      'Só um transform muda por quadro (o da fita); os cards não são recalculados. Aguenta dezenas de cards com imagens.',
     limitacoes: [
       'Os cards são planos: num raio pequeno com muitos cards, as quinas aparecem. Aumente o raio ou diminua a quantidade.',
       'Com imagens reais, use loading="lazy" e tamanhos pequenos — todas ficam no DOM ao mesmo tempo.',
@@ -36,10 +55,46 @@ export const IMAGE_RIBBON: EffectKit = {
     status: 'validado',
   },
   params: [
-    { id: 'quantidade', rotulo: 'quantidade de cards', tipo: 'range', min: 6, max: 16, passo: 1, unidade: '', padrao: 10 },
-    { id: 'raio', rotulo: 'raio do anel', tipo: 'range', min: 160, max: 360, passo: 10, unidade: 'px', padrao: 240 },
-    { id: 'velocidade', rotulo: 'tempo de uma volta', tipo: 'range', min: 8, max: 40, passo: 1, unidade: 's', padrao: 18 },
-    { id: 'inclinacao', rotulo: 'inclinação do anel', tipo: 'range', min: -20, max: 20, passo: 1, unidade: 'deg', padrao: -8 },
+    {
+      id: 'quantidade',
+      rotulo: 'quantidade de cards',
+      tipo: 'range',
+      min: 6,
+      max: 16,
+      passo: 1,
+      unidade: '',
+      padrao: 10,
+    },
+    {
+      id: 'raio',
+      rotulo: 'raio do anel',
+      tipo: 'range',
+      min: 160,
+      max: 360,
+      passo: 10,
+      unidade: 'px',
+      padrao: 240,
+    },
+    {
+      id: 'velocidade',
+      rotulo: 'tempo de uma volta',
+      tipo: 'range',
+      min: 8,
+      max: 40,
+      passo: 1,
+      unidade: 's',
+      padrao: 18,
+    },
+    {
+      id: 'inclinacao',
+      rotulo: 'inclinação do anel',
+      tipo: 'range',
+      min: -20,
+      max: 20,
+      passo: 1,
+      unidade: 'deg',
+      padrao: -8,
+    },
   ],
   gerar: (v) => {
     const total = Number(v['quantidade']);
@@ -189,9 +244,15 @@ export class ${nomeClasse('image-ribbon')} {
     ],
   },
   glossario: [
-    { termo: 'rotateY(calc(var(--i) * 360deg / var(--total)))', explicacao: 'Direção de cada card no círculo.' },
+    {
+      termo: 'rotateY(calc(var(--i) * 360deg / var(--total)))',
+      explicacao: 'Direção de cada card no círculo.',
+    },
     { termo: 'translateZ(', explicacao: 'Leva o card até a borda do cilindro (o raio).' },
     { termo: 'animation-play-state: paused', explicacao: 'Congela o giro no ponto em que está.' },
-    { termo: 'preserve-3d', explicacao: 'Mantém título e cards no mesmo espaço 3D (um passa na frente do outro).' },
+    {
+      termo: 'preserve-3d',
+      explicacao: 'Mantém título e cards no mesmo espaço 3D (um passa na frente do outro).',
+    },
   ],
 };

@@ -14,34 +14,65 @@ export const PRELOADER_COUNTER: EffectKit = {
     nomeAmigavel: 'Tela de carregamento com contador',
     categoria: 'navegacao',
     subcategoria: 'Abertura e carregamento',
-    descricao: 'Um número gigante conta de 0 a 100 com uma barra fina; ao terminar, a tela de carregamento sai (sobe, fecha como cortina ou abre ao meio) e revela o hero.',
-    objetivoVisual: 'Criar expectativa na primeira visita e esconder o carregamento de imagens pesadas, como nos sites de agência premiados.',
+    descricao:
+      'Um número gigante conta de 0 a 100 com uma barra fina; ao terminar, a tela de carregamento sai (sobe, fecha como cortina ou abre ao meio) e revela o hero.',
+    objetivoVisual:
+      'Criar expectativa na primeira visita e esconder o carregamento de imagens pesadas, como nos sites de agência premiados.',
     aplicacoes: ['Portfólios e agências', 'Sites com vídeo ou 3D pesado', 'Lançamentos e eventos'],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['preloader', 'loader', 'contador', 'counter', 'intro', 'carregamento', 'cortina', 'tendência 2026'],
+    tags: [
+      'preloader',
+      'loader',
+      'contador',
+      'counter',
+      'intro',
+      'carregamento',
+      'cortina',
+      'tendência 2026',
+    ],
     explicacao: [
       'O contador não é um setInterval: a cada quadro calculamos o tempo decorrido ÷ duração, passamos por uma curva (ease) e arredondamos para 0–100.',
       'A barra usa o mesmo progresso em scale do eixo X (transform-origin à esquerda), então número e barra andam juntos.',
       'Ao chegar em 100, a classe is-pronto dispara a saída só com CSS: translate (subir), clip-path inset de baixo para cima (cortina) ou do centro para fora (abrir).',
       'O hero tem a sua própria transição de entrada, com um pequeno atraso, para "nascer" logo depois que a tela sai.',
     ],
-    alternativa: 'Num site real, ligue o progresso ao carregamento verdadeiro: Promise.all das imagens/fontes (document.fonts.ready, img.decode()) e use o contador só como mínimo de tempo.',
-    compatibilidade: 'clip-path inset(), propriedades individuais e requestAnimationFrame: todos os navegadores atuais.',
+    alternativa:
+      'Num site real, ligue o progresso ao carregamento verdadeiro: Promise.all das imagens/fontes (document.fonts.ready, img.decode()) e use o contador só como mínimo de tempo.',
+    compatibilidade:
+      'clip-path inset(), propriedades individuais e requestAnimationFrame: todos os navegadores atuais.',
     responsividade: 'O número usa clamp() com vw; a barra ocupa a largura do palco.',
-    acessibilidade: 'O número é decorativo (aria-hidden); uma região role="status" anuncia "Carregando" e depois "Pronto". Com prefers-reduced-motion o contador é pulado e o conteúdo aparece direto. Evite loaders longos: mais de 2–3 s irrita.',
-    performance: 'Um textContent e um transform por quadro durante a contagem; a saída é uma transição CSS.',
+    acessibilidade:
+      'O número é decorativo (aria-hidden); uma região role="status" anuncia "Carregando" e depois "Pronto". Com prefers-reduced-motion o contador é pulado e o conteúdo aparece direto. Evite loaders longos: mais de 2–3 s irrita.',
+    performance:
+      'Um textContent e um transform por quadro durante a contagem; a saída é uma transição CSS.',
     limitacoes: [
       'Um loader "falso" (sem medir carregamento real) só atrasa o site: use com moderação, de preferência só na primeira visita (sessionStorage).',
     ],
-    referencias: [MDN.raf, { titulo: 'MDN — clip-path', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path' }, MDN.reduzir],
+    referencias: [
+      MDN.raf,
+      {
+        titulo: 'MDN — clip-path',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path',
+      },
+      MDN.reduzir,
+    ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'duracao', rotulo: 'tempo de contagem', tipo: 'range', min: 800, max: 4000, passo: 100, unidade: 'ms', padrao: 2000 },
+    {
+      id: 'duracao',
+      rotulo: 'tempo de contagem',
+      tipo: 'range',
+      min: 800,
+      max: 4000,
+      passo: 100,
+      unidade: 'ms',
+      padrao: 2000,
+    },
     {
       id: 'saida',
       rotulo: 'saída da tela',
@@ -248,6 +279,9 @@ export class ${nomeClasse('preloader-counter')} {
     { termo: 'tabular-nums', explicacao: 'Algarismos com largura igual: o número não "pula".' },
     { termo: 'scaleX(var(--p, 0))', explicacao: 'A barra enche junto com o progresso.' },
     { termo: 'role="status"', explicacao: 'Anuncia "Carregando" e "Pronto" ao leitor de tela.' },
-    { termo: 'cubic-bezier(0.76, 0, 0.24, 1)', explicacao: 'Curva forte de entrada e saída para a tela sair com impacto.' },
+    {
+      termo: 'cubic-bezier(0.76, 0, 0.24, 1)',
+      explicacao: 'Curva forte de entrada e saída para a tela sair com impacto.',
+    },
   ],
 };

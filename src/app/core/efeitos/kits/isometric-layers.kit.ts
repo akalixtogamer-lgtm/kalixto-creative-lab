@@ -18,25 +18,44 @@ export const ISOMETRIC_LAYERS: EffectKit = {
     nomeAmigavel: 'Interface isométrica em camadas',
     categoria: 'luz-profundidade',
     subcategoria: 'Camadas 3D e vistas explodidas',
-    descricao: 'Telas em traço fino, empilhadas numa vista isométrica, que se separam no espaço ao passar o mouse ou clicar — a "vista explodida" de um produto digital.',
-    objetivoVisual: 'Explicar que um produto é feito de partes (dados, design, protótipo, deploy) mostrando as camadas se afastando.',
-    aplicacoes: ['Seções "como funciona"', 'Apresentar uma arquitetura ou fluxo', 'Heros de produtos SaaS'],
+    descricao:
+      'Telas em traço fino, empilhadas numa vista isométrica, que se separam no espaço ao passar o mouse ou clicar — a "vista explodida" de um produto digital.',
+    objetivoVisual:
+      'Explicar que um produto é feito de partes (dados, design, protótipo, deploy) mostrando as camadas se afastando.',
+    aplicacoes: [
+      'Seções "como funciona"',
+      'Apresentar uma arquitetura ou fluxo',
+      'Heros de produtos SaaS',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['hover', 'click', 'keyboard'],
-    tags: ['isométrico', 'isometric', 'exploded view', 'vista explodida', 'wireframe', 'camadas', 'preserve-3d', 'referência em vídeo'],
+    tags: [
+      'isométrico',
+      'isometric',
+      'exploded view',
+      'vista explodida',
+      'wireframe',
+      'camadas',
+      'preserve-3d',
+      'referência em vídeo',
+    ],
     explicacao: [
       'A .pilha recebe rotateX + rotateZ(-45deg): é isso que cria a vista isométrica (o "chão" visto de cima, na diagonal).',
       'transform-style: preserve-3d faz as camadas filhas viverem no mesmo espaço 3D da pilha, em vez de serem achatadas.',
       'Cada camada tem a posição --n. Fechada, todas ficam em translateZ(0); aberta, cada uma sobe n × separação pixels — e a transição faz o movimento.',
       'O "traço fino" é só border + gradientes lineares de 1px desenhando as linhas da tela, sem nenhuma imagem.',
     ],
-    alternativa: 'Em SVG, desenhando as telas já em perspectiva isométrica e animando o translate de cada grupo com GSAP; ou em Three.js com planos e EdgesGeometry.',
+    alternativa:
+      'Em SVG, desenhando as telas já em perspectiva isométrica e animando o translate de cada grupo com GSAP; ou em Three.js com planos e EdgesGeometry.',
     compatibilidade: 'Transformações 3D e preserve-3d: todos os navegadores atuais.',
-    responsividade: 'O tamanho da pilha usa min() com a largura da tela; a separação máxima cabe na altura do palco do celular.',
-    acessibilidade: 'O botão "Separar camadas" funciona no teclado e informa o estado com aria-pressed. A pilha tem role="img" e um aria-label que descreve as camadas.',
-    performance: 'Só transform é animado (composição na GPU). Quatro camadas leves; dá para usar dezenas sem custo perceptível.',
+    responsividade:
+      'O tamanho da pilha usa min() com a largura da tela; a separação máxima cabe na altura do palco do celular.',
+    acessibilidade:
+      'O botão "Separar camadas" funciona no teclado e informa o estado com aria-pressed. A pilha tem role="img" e um aria-label que descreve as camadas.',
+    performance:
+      'Só transform é animado (composição na GPU). Quatro camadas leves; dá para usar dezenas sem custo perceptível.',
     limitacoes: [
       'Textos dentro das camadas ficam inclinados (é a estética do efeito), por isso não use texto longo ou essencial dentro delas.',
       'overflow: hidden num ancestral achata o 3D: mantenha o palco sem overflow ou com espaço sobrando.',
@@ -46,8 +65,26 @@ export const ISOMETRIC_LAYERS: EffectKit = {
     status: 'validado',
   },
   params: [
-    { id: 'separacao', rotulo: 'separação das camadas', tipo: 'range', min: 20, max: 120, passo: 5, unidade: 'px', padrao: 60 },
-    { id: 'inclinacao', rotulo: 'inclinação (rotateX)', tipo: 'range', min: 40, max: 70, passo: 1, unidade: 'deg', padrao: 55 },
+    {
+      id: 'separacao',
+      rotulo: 'separação das camadas',
+      tipo: 'range',
+      min: 20,
+      max: 120,
+      passo: 5,
+      unidade: 'px',
+      padrao: 60,
+    },
+    {
+      id: 'inclinacao',
+      rotulo: 'inclinação (rotateX)',
+      tipo: 'range',
+      min: 40,
+      max: 70,
+      passo: 1,
+      unidade: 'deg',
+      padrao: 55,
+    },
     { id: 'traco', rotulo: 'cor do traço', tipo: 'select', opcoes: TRACOS, padrao: '#f4f2ff' },
   ],
   gerar: (v) => {
@@ -165,9 +202,15 @@ export class ${nomeClasse('isometric-layers')} {
     ],
   },
   glossario: [
-    { termo: 'rotateZ(-45deg)', explicacao: 'Gira o plano deitado em 45°, formando a vista isométrica.' },
+    {
+      termo: 'rotateZ(-45deg)',
+      explicacao: 'Gira o plano deitado em 45°, formando a vista isométrica.',
+    },
     { termo: 'preserve-3d', explicacao: 'Mantém as camadas no mesmo espaço 3D da pilha.' },
-    { termo: 'translateZ(calc(var(--n) *', explicacao: 'Afasta cada camada de acordo com a posição dela na pilha.' },
+    {
+      termo: 'translateZ(calc(var(--n) *',
+      explicacao: 'Afasta cada camada de acordo com a posição dela na pilha.',
+    },
     { termo: 'aria-pressed', explicacao: 'Diz ao leitor de tela se a pilha está aberta.' },
   ],
 };

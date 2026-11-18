@@ -8,9 +8,14 @@ export const GLOW_BUTTON: EffectKit = {
     nomeAmigavel: 'Botão com brilho neon',
     categoria: 'luz-profundidade',
     subcategoria: 'Neon e glow',
-    descricao: 'Um contorno luminoso em volta do botão, que pode pulsar e fica mais forte no hover e no foco.',
+    descricao:
+      'Um contorno luminoso em volta do botão, que pode pulsar e fica mais forte no hover e no foco.',
     objetivoVisual: 'Destacar uma ação em interfaces escuras com estética neon.',
-    aplicacoes: ['Chamada principal em fundo escuro', 'Estados "ao vivo" ou "gravando"', 'Interfaces de games e tecnologia'],
+    aplicacoes: [
+      'Chamada principal em fundo escuro',
+      'Estados "ao vivo" ou "gravando"',
+      'Interfaces de games e tecnologia',
+    ],
     nivel: 'iniciante',
     tecnologias: ['HTML', 'CSS'],
     dependencias: [],
@@ -22,19 +27,34 @@ export const GLOW_BUTTON: EffectKit = {
       'No hover e no foco o desfoque aumenta com transition.',
       'Este efeito não usa JavaScript.',
     ],
-    alternativa: 'filter: drop-shadow() segue o formato real do elemento (útil em ícones SVG), mas custa mais para o navegador.',
+    alternativa:
+      'filter: drop-shadow() segue o formato real do elemento (útil em ícones SVG), mas custa mais para o navegador.',
     compatibilidade: 'Todos os navegadores atuais.',
-    responsividade: 'Não depende do tamanho da tela. Em toque, o estado de brilho forte aparece ao tocar (:active).',
-    acessibilidade: 'O texto mantém contraste sobre o fundo do botão. O pulso para quando o sistema pede menos movimento. O foco do teclado tem contorno próprio, além do brilho.',
-    performance: 'Animar box-shadow repinta o botão a cada quadro. Para um botão é leve; evite pulsar dezenas de elementos ao mesmo tempo.',
-    limitacoes: ['Em fundos claros o brilho quase não aparece — o efeito foi pensado para fundos escuros.'],
+    responsividade:
+      'Não depende do tamanho da tela. Em toque, o estado de brilho forte aparece ao tocar (:active).',
+    acessibilidade:
+      'O texto mantém contraste sobre o fundo do botão. O pulso para quando o sistema pede menos movimento. O foco do teclado tem contorno próprio, além do brilho.',
+    performance:
+      'Animar box-shadow repinta o botão a cada quadro. Para um botão é leve; evite pulsar dezenas de elementos ao mesmo tempo.',
+    limitacoes: [
+      'Em fundos claros o brilho quase não aparece — o efeito foi pensado para fundos escuros.',
+    ],
     referencias: [MDN.boxShadow, MDN.animation, MDN.reduzir],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
     { id: 'cor', rotulo: 'cor do brilho', tipo: 'select', opcoes: CORES, padrao: '#22e3ff' },
-    { id: 'brilho', rotulo: 'intensidade', tipo: 'range', min: 4, max: 40, passo: 2, unidade: 'px', padrao: 16 },
+    {
+      id: 'brilho',
+      rotulo: 'intensidade',
+      tipo: 'range',
+      min: 4,
+      max: 40,
+      passo: 2,
+      unidade: 'px',
+      padrao: 16,
+    },
     {
       id: 'pulsar',
       rotulo: 'pulsar',
@@ -45,7 +65,16 @@ export const GLOW_BUTTON: EffectKit = {
       ],
       padrao: 'sim',
     },
-    { id: 'vel', rotulo: 'velocidade do pulso', tipo: 'range', min: 0.6, max: 4, passo: 0.2, unidade: 's', padrao: 2 },
+    {
+      id: 'vel',
+      rotulo: 'velocidade do pulso',
+      tipo: 'range',
+      min: 0.6,
+      max: 4,
+      passo: 0.2,
+      unidade: 's',
+      padrao: 2,
+    },
   ],
   gerar: (v) => {
     const c = String(v['cor']);

@@ -128,3 +128,21 @@
 .kcxs__ok p {
   margin: 0 0 var(--kx-space-2);
 }
+
+.kcxs__criar {
+  display: grid;
+  gap: var(--kx-space-3);
+  padding: var(--kx-space-5, 24px);
+  border-radius: var(--kx-radius-lg, 16px);
+}
+
+.kcxs__criar-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+}
+
+.kcxs__ok-linha {
+  margin: 0;
+  color: #3ddc97;
+}

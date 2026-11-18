@@ -21,16 +21,27 @@
 
     <div class="cl__acoes">
       @if (editando()) {
-        <button type="button" class="kx-btn kx-btn--primary" (click)="aplicar()"><kx-icon name="play" /> Executar no preview</button>
+        <button type="button" class="kx-btn kx-btn--primary" (click)="aplicar()">
+          <kx-icon name="play" /> Executar no preview
+        </button>
         <button type="button" class="kx-btn kx-btn--ghost" (click)="cancelar()">Cancelar</button>
       } @else {
-        <button type="button" class="kx-btn kx-btn--ghost" (click)="comecarEdicao()">Editar código</button>
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="comecarEdicao()">
+          Editar código
+        </button>
       }
       @if (editado()) {
-        <button type="button" class="kx-btn kx-btn--ghost" [attr.aria-pressed]="verDiff()" (click)="verDiff.set(!verDiff())">
+        <button
+          type="button"
+          class="kx-btn kx-btn--ghost"
+          [attr.aria-pressed]="verDiff()"
+          (click)="verDiff.set(!verDiff())"
+        >
           Comparar com o original
         </button>
-        <button type="button" class="kx-btn kx-btn--ghost" (click)="voltarAoOriginal()"><kx-icon name="reset" /> Restaurar original</button>
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="voltarAoOriginal()">
+          <kx-icon name="reset" /> Restaurar original
+        </button>
       }
     </div>
   </div>
@@ -39,14 +50,20 @@
     <p class="cl__libs">
       Antes do <code>script.js</code>, este efeito carrega:
       @for (b of bibliotecas(); track b.id; let ultimo = $last) {
-        <a [href]="b.licencaUrl" target="_blank" rel="noopener noreferrer">{{ b.nome }} {{ b.versao }}</a>@if (!ultimo) {<span>, </span>}
+        <a [href]="b.licencaUrl" target="_blank" rel="noopener noreferrer"
+          >{{ b.nome }} {{ b.versao }}</a
+        >
+        @if (!ultimo) {
+          <span>, </span>
+        }
       }
       — no preview e no .html único elas vão embutidas; no .zip, na pasta <code>vendor/</code>.
     </p>
   }
   @if (editado() && !editando()) {
     <p class="cl__aviso" role="status">
-      O preview está rodando o <strong>seu código editado</strong>. Os controles voltam a valer quando você clicar em Restaurar original.
+      O preview está rodando o <strong>seu código editado</strong>. Os controles voltam a valer
+      quando você clicar em Restaurar original.
     </p>
   }
   @if (erro()) {
@@ -66,12 +83,25 @@
         (input)="digitar($any($event.target).value)"
         (keydown)="teclaEditor($event)"
       ></textarea>
-      <p class="kx-muted cl__dica">Tab insere dois espaços · Esc sai do editor · o código roda isolado, sem acesso a esta página nem à internet.</p>
+      <p class="kx-muted cl__dica">
+        Tab insere dois espaços · Esc sai do editor · o código roda isolado, sem acesso a esta
+        página nem à internet.
+      </p>
     } @else if (verDiff() && editado() && abaAtual().editavel) {
-      <p class="kx-muted cl__dica">{{ totalAlteracoes() }} linha(s) diferente(s) em {{ nomeArquivo() }}.</p>
-      <pre class="cl__diff" tabindex="0" aria-label="Diferenças em relação ao código original"><code>@for (l of diff(); track $index) {<span class="cl__dl" [class.is-add]="l.tipo === 'adicionada'" [class.is-del]="l.tipo === 'removida'"><span class="cl__sinal" aria-hidden="true">{{ l.tipo === 'adicionada' ? '+' : l.tipo === 'removida' ? '−' : ' ' }}</span><span class="sr-only">{{ l.tipo === 'adicionada' ? 'adicionada: ' : l.tipo === 'removida' ? 'removida: ' : '' }}</span>{{ l.texto || ' ' }}</span>}</code></pre>
+      <p class="kx-muted cl__dica">
+        {{ totalAlteracoes() }} linha(s) diferente(s) em {{ nomeArquivo() }}.
+      </p>
+      <pre
+        class="cl__diff"
+        tabindex="0"
+        aria-label="Diferenças em relação ao código original"
+      ><code>@for (l of diff(); track $index) {<span class="cl__dl" [class.is-add]="l.tipo === 'adicionada'" [class.is-del]="l.tipo === 'removida'"><span class="cl__sinal" aria-hidden="true">{{ l.tipo === 'adicionada' ? '+' : l.tipo === 'removida' ? '−' : ' ' }}</span><span class="sr-only">{{ l.tipo === 'adicionada' ? 'adicionada: ' : l.tipo === 'removida' ? 'removida: ' : '' }}</span>{{ l.texto || ' ' }}</span>}</code></pre>
     } @else {
-      <kx-code-viewer [codigo]="texto()" [linguagem]="abaAtual().linguagem" [titulo]="nomeArquivo()" />
+      <kx-code-viewer
+        [codigo]="texto()"
+        [linguagem]="abaAtual().linguagem"
+        [titulo]="nomeArquivo()"
+      />
     }
   </div>
 </div>

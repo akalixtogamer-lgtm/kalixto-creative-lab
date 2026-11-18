@@ -16,34 +16,69 @@ export const TEXT_SCRAMBLE: EffectKit = {
     nomeAmigavel: 'Texto embaralhado (decodificar)',
     categoria: 'tipografia',
     subcategoria: 'Texto que se transforma',
-    descricao: 'As letras viram caracteres aleatórios e vão "decodificando" da esquerda para a direita até formar o texto — no título ao carregar e nos links do menu ao passar o mouse.',
-    objetivoVisual: 'Dar um ar tecnológico, de terminal ou de "hacker", a títulos e menus, com uma microinteração que recompensa o hover.',
-    aplicacoes: ['Menus de portfólios dev', 'Títulos de landing pages de tecnologia', 'Telas de abertura e loaders'],
+    descricao:
+      'As letras viram caracteres aleatórios e vão "decodificando" da esquerda para a direita até formar o texto — no título ao carregar e nos links do menu ao passar o mouse.',
+    objetivoVisual:
+      'Dar um ar tecnológico, de terminal ou de "hacker", a títulos e menus, com uma microinteração que recompensa o hover.',
+    aplicacoes: [
+      'Menus de portfólios dev',
+      'Títulos de landing pages de tecnologia',
+      'Telas de abertura e loaders',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'hover', 'keyboard', 'click'],
-    tags: ['scramble', 'decode', 'embaralhar', 'glitch', 'terminal', 'hacker', 'menu', 'tendência 2026'],
+    tags: [
+      'scramble',
+      'decode',
+      'embaralhar',
+      'glitch',
+      'terminal',
+      'hacker',
+      'menu',
+      'tendência 2026',
+    ],
     explicacao: [
       'O texto verdadeiro fica guardado no aria-label. Dentro do elemento há um <span> aria-hidden, que é o que muda na tela.',
       'A cada quadro, calcula-se o progresso (tempo decorrido ÷ duração). As letras com posição menor que progresso × tamanho já mostram o caractere certo; as demais mostram um caractere sorteado do conjunto.',
       'Espaços nunca são sorteados, para as palavras manterem o formato. A fonte monoespaçada evita que o texto "pule" de largura enquanto embaralha.',
     ],
-    alternativa: 'GSAP tem o plugin ScrambleText (gratuito desde 2025), com opções de velocidade, caracteres e revelação por palavra.',
+    alternativa:
+      'GSAP tem o plugin ScrambleText (gratuito desde 2025), com opções de velocidade, caracteres e revelação por palavra.',
     compatibilidade: 'requestAnimationFrame e performance.now(): todos os navegadores atuais.',
-    responsividade: 'Funciona em qualquer tamanho; no toque, o menu embaralha no foco (toque/teclado) em vez do hover.',
-    acessibilidade: 'O leitor de tela lê o aria-label (texto correto), nunca os caracteres sorteados. Com prefers-reduced-motion o texto aparece direto, sem embaralhar.',
-    performance: 'Só troca o textContent de um span por quadro, durante no máximo a duração escolhida. Custo desprezível.',
+    responsividade:
+      'Funciona em qualquer tamanho; no toque, o menu embaralha no foco (toque/teclado) em vez do hover.',
+    acessibilidade:
+      'O leitor de tela lê o aria-label (texto correto), nunca os caracteres sorteados. Com prefers-reduced-motion o texto aparece direto, sem embaralhar.',
+    performance:
+      'Só troca o textContent de um span por quadro, durante no máximo a duração escolhida. Custo desprezível.',
     limitacoes: [
       'Com fontes proporcionais o texto treme de largura; use monoespaçada ou fixe a largura do elemento.',
       'Em textos longos (parágrafos) o efeito cansa: reserve para títulos curtos e itens de menu.',
     ],
-    referencias: [MDN.raf, { titulo: 'GSAP — ScrambleTextPlugin', url: 'https://gsap.com/docs/v3/Plugins/ScrambleTextPlugin/' }, MDN.reduzir],
+    referencias: [
+      MDN.raf,
+      {
+        titulo: 'GSAP — ScrambleTextPlugin',
+        url: 'https://gsap.com/docs/v3/Plugins/ScrambleTextPlugin/',
+      },
+      MDN.reduzir,
+    ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'duracao', rotulo: 'duração', tipo: 'range', min: 400, max: 2500, passo: 100, unidade: 'ms', padrao: 1200 },
+    {
+      id: 'duracao',
+      rotulo: 'duração',
+      tipo: 'range',
+      min: 400,
+      max: 2500,
+      passo: 100,
+      unidade: 'ms',
+      padrao: 1200,
+    },
     {
       id: 'caracteres',
       rotulo: 'caracteres sorteados',
@@ -55,18 +90,29 @@ export const TEXT_SCRAMBLE: EffectKit = {
       ],
       padrao: 'simbolos',
     },
-    { id: 'cor', rotulo: 'cor do destaque', tipo: 'select', opcoes: [
-      { valor: '#c6ff3d', rotulo: 'Lima' },
-      { valor: '#22e3ff', rotulo: 'Ciano' },
-      { valor: '#ff2bd6', rotulo: 'Magenta' },
-    ], padrao: '#c6ff3d' },
+    {
+      id: 'cor',
+      rotulo: 'cor do destaque',
+      tipo: 'select',
+      opcoes: [
+        { valor: '#c6ff3d', rotulo: 'Lima' },
+        { valor: '#22e3ff', rotulo: 'Ciano' },
+        { valor: '#ff2bd6', rotulo: 'Magenta' },
+      ],
+      padrao: '#c6ff3d',
+    },
   ],
   gerar: (v) => {
     const chars = CONJUNTOS[String(v['caracteres'])];
     return {
       html: `<h1 class="embaralhar titulo-codigo" aria-label="${TEXTOS[0]}"><span aria-hidden="true">${TEXTOS[0]}</span></h1>
 <nav class="menu-codigo" aria-label="Menu de exemplo">
-${TEXTOS.slice(1).map((t) => `  <a class="embaralhar" href="#" aria-label="${t}"><span aria-hidden="true">${t}</span></a>`).join('\n')}
+${TEXTOS.slice(1)
+  .map(
+    (t) =>
+      `  <a class="embaralhar" href="#" aria-label="${t}"><span aria-hidden="true">${t}</span></a>`,
+  )
+  .join('\n')}
 </nav>
 <button class="repetir" type="button">Repetir título</button>`,
       css: `${cssPalco()}
@@ -219,6 +265,9 @@ export class ${nomeClasse('text-scramble')} {
     { termo: 'performance.now()', explicacao: 'Relógio preciso usado para calcular o progresso.' },
     { termo: 'Math.random()', explicacao: 'Sorteia o caractere das letras ainda não decifradas.' },
     { termo: 'aria-label', explicacao: 'Guarda o texto real para o leitor de tela.' },
-    { termo: 'cancelAnimationFrame', explicacao: 'Interrompe a animação anterior antes de começar outra.' },
+    {
+      termo: 'cancelAnimationFrame',
+      explicacao: 'Interrompe a animação anterior antes de começar outra.',
+    },
   ],
 };

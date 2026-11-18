@@ -13,8 +13,12 @@ import { Component, booleanAttribute, computed, input } from '@angular/core';
   template: `
     <img
       src="brand/kalixto-logo-256.webp"
-      srcset="brand/kalixto-logo-64.webp 64w, brand/kalixto-logo-128.webp 128w,
-              brand/kalixto-logo-256.webp 256w, brand/kalixto-logo-512.webp 512w"
+      srcset="
+        brand/kalixto-logo-64.webp   64w,
+        brand/kalixto-logo-128.webp 128w,
+        brand/kalixto-logo-256.webp 256w,
+        brand/kalixto-logo-512.webp 512w
+      "
       [attr.sizes]="tamanho() + 'px'"
       [width]="tamanho()"
       [height]="tamanho()"
@@ -30,7 +34,9 @@ import { Component, booleanAttribute, computed, input } from '@angular/core';
       width: var(--logo-size);
       height: var(--logo-size);
       border-radius: 50%;
-      box-shadow: 0 0 0 1px rgb(255 43 214 / 0.45), 0 0 calc(var(--logo-size) * 0.35) rgb(255 43 214 / 0.35);
+      box-shadow:
+        0 0 0 1px rgb(255 43 214 / 0.45),
+        0 0 calc(var(--logo-size) * 0.35) rgb(255 43 214 / 0.35);
     }
     img {
       width: 100%;

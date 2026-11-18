@@ -14,27 +14,49 @@ export const RIPPLE_HALO: EffectKit = {
     nomeAmigavel: 'Halo de anéis que pulsam',
     categoria: 'backgrounds',
     subcategoria: 'Brilhos e auras',
-    descricao: 'Anéis de luz iridescente nascem atrás de um objeto e se expandem em ondas, como um halo ou a vibração de um som — o objeto parece "especial".',
+    descricao:
+      'Anéis de luz iridescente nascem atrás de um objeto e se expandem em ondas, como um halo ou a vibração de um som — o objeto parece "especial".',
     objetivoVisual: 'Destacar um produto, ícone ou personagem no centro da cena com uma aura viva.',
-    aplicacoes: ['Produto em destaque no hero', 'Ícone de conquista ou prêmio', 'Botão de gravar/ouvir em apps de áudio'],
+    aplicacoes: [
+      'Produto em destaque no hero',
+      'Ícone de conquista ou prêmio',
+      'Botão de gravar/ouvir em apps de áudio',
+    ],
     nivel: 'iniciante',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['halo', 'ripple', 'ondas', 'anéis', 'aura', 'iridescente', 'conic-gradient', 'referência em vídeo'],
+    tags: [
+      'halo',
+      'ripple',
+      'ondas',
+      'anéis',
+      'aura',
+      'iridescente',
+      'conic-gradient',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Cada anel é um círculo com fundo conic-gradient (as cores do arco-íris girando em volta) e uma máscara que deixa só a borda: radial-gradient transparente no meio.',
       'Todos os anéis usam a mesma animação, "expandir": crescem de 0,4 a 1,6 e desaparecem. O atraso de cada um é negativo e espaçado, então sempre há anéis em fases diferentes.',
       'O resultado é uma onda contínua saindo do centro, sem nenhum JavaScript para a animação — o JS só pausa.',
     ],
-    alternativa: 'Em canvas, círculos com strokeStyle e globalAlpha decrescente; em SVG, <circle> com <animate> no r e no opacity.',
-    compatibilidade: 'conic-gradient, mask-image e animações: todos os navegadores atuais (com -webkit-mask-image).',
+    alternativa:
+      'Em canvas, círculos com strokeStyle e globalAlpha decrescente; em SVG, <circle> com <animate> no r e no opacity.',
+    compatibilidade:
+      'conic-gradient, mask-image e animações: todos os navegadores atuais (com -webkit-mask-image).',
     responsividade: 'Tamanho dos anéis em % do palco; o objeto central escala junto.',
-    acessibilidade: 'Decorativo (aria-hidden). Movimento infinito com botão Pausar (WCAG 2.2.2). Com prefers-reduced-motion, os anéis ficam parados em tamanhos diferentes.',
+    acessibilidade:
+      'Decorativo (aria-hidden). Movimento infinito com botão Pausar (WCAG 2.2.2). Com prefers-reduced-motion, os anéis ficam parados em tamanhos diferentes.',
     performance: 'Só transform e opacity animados; 2 a 6 anéis são leves até em celulares.',
-    limitacoes: ['Anéis muito grandes com mask e gradiente cônico pedem mais pintura; mantenha o palco do tamanho da área de destaque.'],
+    limitacoes: [
+      'Anéis muito grandes com mask e gradiente cônico pedem mais pintura; mantenha o palco do tamanho da área de destaque.',
+    ],
     referencias: [
-      { titulo: 'MDN — conic-gradient()', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/conic-gradient' },
+      {
+        titulo: 'MDN — conic-gradient()',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/conic-gradient',
+      },
       MDN.mask,
       MDN.wcagMovimento,
     ],
@@ -42,8 +64,26 @@ export const RIPPLE_HALO: EffectKit = {
     status: 'validado',
   },
   params: [
-    { id: 'aneis', rotulo: 'número de anéis', tipo: 'range', min: 2, max: 6, passo: 1, unidade: '', padrao: 4 },
-    { id: 'duracao', rotulo: 'tempo de uma onda', tipo: 'range', min: 2, max: 8, passo: 0.5, unidade: 's', padrao: 4 },
+    {
+      id: 'aneis',
+      rotulo: 'número de anéis',
+      tipo: 'range',
+      min: 2,
+      max: 6,
+      passo: 1,
+      unidade: '',
+      padrao: 4,
+    },
+    {
+      id: 'duracao',
+      rotulo: 'tempo de uma onda',
+      tipo: 'range',
+      min: 2,
+      max: 8,
+      passo: 0.5,
+      unidade: 's',
+      padrao: 4,
+    },
     {
       id: 'brilho',
       rotulo: 'cor do halo',
@@ -59,7 +99,10 @@ export const RIPPLE_HALO: EffectKit = {
   gerar: (v) => {
     const n = Number(v['aneis']);
     const dur = Number(v['duracao']);
-    const aneis = Array.from({ length: n }, (_, i) => `    <span class="anel" style="--i: ${i}"></span>`).join('\n');
+    const aneis = Array.from(
+      { length: n },
+      (_, i) => `    <span class="anel" style="--i: ${i}"></span>`,
+    ).join('\n');
     return {
       html: `<section class="palco-halo">
   <div class="halo" aria-hidden="true">
@@ -175,9 +218,15 @@ export class ${nomeClasse('ripple-halo')} {
     ],
   },
   glossario: [
-    { termo: 'conic-gradient', explicacao: 'Cores girando em volta do centro: o brilho iridescente.' },
+    {
+      termo: 'conic-gradient',
+      explicacao: 'Cores girando em volta do centro: o brilho iridescente.',
+    },
     { termo: 'mask-image', explicacao: 'Deixa só a faixa do anel visível.' },
-    { termo: 'animation-play-state: paused', explicacao: 'Congela os anéis quando a pessoa pausa.' },
+    {
+      termo: 'animation-play-state: paused',
+      explicacao: 'Congela os anéis quando a pessoa pausa.',
+    },
     { termo: 'calc(var(--i) * -', explicacao: 'Atraso negativo de cada anel, espaçando as ondas.' },
   ],
 };

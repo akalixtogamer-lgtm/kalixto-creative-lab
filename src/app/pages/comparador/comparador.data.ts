@@ -11,20 +11,76 @@ export interface Tecnologia {
 }
 
 export const TECNOLOGIAS: Tecnologia[] = [
-  { nome: 'CSS', labId: 'css', melhorPara: 'Hover, transições de estado, microinterações simples', curva: 1, controle: 2, peso: '0 kB (nativo)', quandoEvitar: 'Sequências longas e animações que dependem de lógica' },
-  { nome: 'GSAP', labId: 'gsap', melhorPara: 'Sequências, timelines e controle fino (pausar, voltar, acelerar)', curva: 2, controle: 5, peso: '~25 kB', quandoEvitar: 'Um único hover simples, que o CSS resolve' },
-  { nome: 'ScrollTrigger', labId: 'scroll', melhorPara: 'Animações ligadas à rolagem: pin, parallax, storytelling', curva: 3, controle: 5, peso: '~15 kB (plugin)', quandoEvitar: 'Páginas curtas sem narrativa — vira enfeite' },
-  { nome: 'SVG', labId: 'svg', melhorPara: 'Ícones, ilustrações, traços que se desenham e morphing', curva: 3, controle: 4, peso: '0 kB (nativo) + plugins', quandoEvitar: 'Fotos e cenas muito detalhadas' },
-  { nome: 'Three.js', labId: 'three', melhorPara: 'Objetos e cenas 3D interativas no navegador', curva: 4, controle: 5, peso: '~150 kB', quandoEvitar: 'Quando um efeito 2D já transmite a ideia' },
-  { nome: 'WebGL / GLSL', labId: 'webgl', melhorPara: 'Efeitos de pixel: ruído, distorção, transições com shader', curva: 5, controle: 5, peso: 'depende (Three.js ajuda)', quandoEvitar: 'Projetos sem tempo para testar desempenho em celulares' },
+  {
+    nome: 'CSS',
+    labId: 'css',
+    melhorPara: 'Hover, transições de estado, microinterações simples',
+    curva: 1,
+    controle: 2,
+    peso: '0 kB (nativo)',
+    quandoEvitar: 'Sequências longas e animações que dependem de lógica',
+  },
+  {
+    nome: 'GSAP',
+    labId: 'gsap',
+    melhorPara: 'Sequências, timelines e controle fino (pausar, voltar, acelerar)',
+    curva: 2,
+    controle: 5,
+    peso: '~25 kB',
+    quandoEvitar: 'Um único hover simples, que o CSS resolve',
+  },
+  {
+    nome: 'ScrollTrigger',
+    labId: 'scroll',
+    melhorPara: 'Animações ligadas à rolagem: pin, parallax, storytelling',
+    curva: 3,
+    controle: 5,
+    peso: '~15 kB (plugin)',
+    quandoEvitar: 'Páginas curtas sem narrativa — vira enfeite',
+  },
+  {
+    nome: 'SVG',
+    labId: 'svg',
+    melhorPara: 'Ícones, ilustrações, traços que se desenham e morphing',
+    curva: 3,
+    controle: 4,
+    peso: '0 kB (nativo) + plugins',
+    quandoEvitar: 'Fotos e cenas muito detalhadas',
+  },
+  {
+    nome: 'Three.js',
+    labId: 'three',
+    melhorPara: 'Objetos e cenas 3D interativas no navegador',
+    curva: 4,
+    controle: 5,
+    peso: '~150 kB',
+    quandoEvitar: 'Quando um efeito 2D já transmite a ideia',
+  },
+  {
+    nome: 'WebGL / GLSL',
+    labId: 'webgl',
+    melhorPara: 'Efeitos de pixel: ruído, distorção, transições com shader',
+    curva: 5,
+    controle: 5,
+    peso: 'depende (Three.js ajuda)',
+    quandoEvitar: 'Projetos sem tempo para testar desempenho em celulares',
+  },
 ];
 
 export type EfeitoId = 'entrada' | 'pulso' | 'sequencia';
 
 export const EFEITOS_COMPARADOS: { id: EfeitoId; nome: string; descricao: string }[] = [
-  { id: 'entrada', nome: 'Entrada (fade + subir)', descricao: 'O elemento aparece subindo 40px em 0,8 s.' },
+  {
+    id: 'entrada',
+    nome: 'Entrada (fade + subir)',
+    descricao: 'O elemento aparece subindo 40px em 0,8 s.',
+  },
   { id: 'pulso', nome: 'Pulso 3 vezes', descricao: 'Cresce 20% e volta, três vezes seguidas.' },
-  { id: 'sequencia', nome: 'Sequência de 3', descricao: 'Três bolinhas andam uma depois da outra.' },
+  {
+    id: 'sequencia',
+    nome: 'Sequência de 3',
+    descricao: 'Três bolinhas andam uma depois da outra.',
+  },
 ];
 
 /** Código de cada efeito em cada tecnologia. */

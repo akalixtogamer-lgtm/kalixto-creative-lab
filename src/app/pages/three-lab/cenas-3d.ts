@@ -46,17 +46,26 @@ function chao(p: Palco3D, y = -1.4): void {
 /** Posição do ponteiro em -1…1 relativa ao canvas. */
 function ponteiroNormalizado(canvas: HTMLCanvasElement, e: PointerEvent): THREE.Vector2 {
   const r = canvas.getBoundingClientRect();
-  return new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  return new THREE.Vector2(
+    ((e.clientX - r.left) / r.width) * 2 - 1,
+    -((e.clientY - r.top) / r.height) * 2 + 1,
+  );
 }
 
 function geometria(forma: string): THREE.BufferGeometry {
   switch (forma) {
-    case 'esfera': return new THREE.SphereGeometry(1.1, 48, 32);
-    case 'toro': return new THREE.TorusGeometry(1, 0.38, 24, 96);
-    case 'no': return new THREE.TorusKnotGeometry(0.8, 0.28, 160, 24);
-    case 'icosaedro': return new THREE.IcosahedronGeometry(1.2, 0);
-    case 'cone': return new THREE.ConeGeometry(1, 1.8, 48);
-    default: return new THREE.BoxGeometry(1.6, 1.6, 1.6);
+    case 'esfera':
+      return new THREE.SphereGeometry(1.1, 48, 32);
+    case 'toro':
+      return new THREE.TorusGeometry(1, 0.38, 24, 96);
+    case 'no':
+      return new THREE.TorusKnotGeometry(0.8, 0.28, 160, 24);
+    case 'icosaedro':
+      return new THREE.IcosahedronGeometry(1.2, 0);
+    case 'cone':
+      return new THREE.ConeGeometry(1, 1.8, 48);
+    default:
+      return new THREE.BoxGeometry(1.6, 1.6, 1.6);
   }
 }
 
@@ -98,7 +107,11 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
   geometria: (p) => {
     luzesPadrao(p);
     chao(p);
-    const material = new THREE.MeshStandardMaterial({ color: '#8b5cf6', metalness: 0.3, roughness: 0.35 });
+    const material = new THREE.MeshStandardMaterial({
+      color: '#8b5cf6',
+      metalness: 0.3,
+      roughness: 0.35,
+    });
     const forma = new THREE.Mesh(geometria('cubo'), material);
     p.cena.add(forma);
     let vel = 1;
@@ -119,7 +132,11 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
       },
       executar: () => {
         gsap.to(forma.rotation, { y: `+=${Math.PI * 2}`, duration: 1.2, ease: 'power3.inOut' });
-        gsap.fromTo(forma.scale, { x: 0.8, y: 0.8, z: 0.8 }, { x: 1, y: 1, z: 1, duration: 1.2, ease: 'elastic.out(1, 0.4)' });
+        gsap.fromTo(
+          forma.scale,
+          { x: 0.8, y: 0.8, z: 0.8 },
+          { x: 1, y: 1, z: 1, duration: 1.2, ease: 'elastic.out(1, 0.4)' },
+        );
       },
       destruir: () => gsap.killTweensOf([forma.rotation, forma.scale]),
     };
@@ -147,7 +164,11 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
         p.camera.updateProjectionMatrix();
         const dir = p.camera.position.clone().setY(0).normalize();
         if (dir.lengthSq() === 0) dir.set(0, 0, 1);
-        p.camera.position.set(dir.x * Number(v['dist']), Number(v['alt']), dir.z * Number(v['dist']));
+        p.camera.position.set(
+          dir.x * Number(v['dist']),
+          Number(v['alt']),
+          dir.z * Number(v['dist']),
+        );
         p.camera.lookAt(0, 0, 0);
       },
       executar: (v) => {
@@ -176,7 +197,10 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
     sol.position.set(3, 5, 2);
     const lampada = new THREE.PointLight('#ff2bd6', 2, 10, 1.2);
     lampada.position.set(-1.5, 1.2, 1.5);
-    const bulbo = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 8), new THREE.MeshBasicMaterial({ color: '#ff2bd6' }));
+    const bulbo = new THREE.Mesh(
+      new THREE.SphereGeometry(0.08, 16, 8),
+      new THREE.MeshBasicMaterial({ color: '#ff2bd6' }),
+    );
     lampada.add(bulbo);
     const mat = new THREE.MeshStandardMaterial({ color: '#c9c3e6', roughness: 0.45 });
     const objetos = [
@@ -226,11 +250,15 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
           tipo = String(v['tipo']);
           (esfera.material as THREE.Material).dispose();
           esfera.material =
-            tipo === 'basic' ? new THREE.MeshBasicMaterial()
-            : tipo === 'lambert' ? new THREE.MeshLambertMaterial()
-            : tipo === 'phong' ? new THREE.MeshPhongMaterial({ shininess: 80 })
-            : tipo === 'normal' ? new THREE.MeshNormalMaterial()
-            : new THREE.MeshStandardMaterial();
+            tipo === 'basic'
+              ? new THREE.MeshBasicMaterial()
+              : tipo === 'lambert'
+                ? new THREE.MeshLambertMaterial()
+                : tipo === 'phong'
+                  ? new THREE.MeshPhongMaterial({ shininess: 80 })
+                  : tipo === 'normal'
+                    ? new THREE.MeshNormalMaterial()
+                    : new THREE.MeshStandardMaterial();
         }
         const m = esfera.material;
         if ('color' in m && m.color instanceof THREE.Color) m.color.set(cor);
@@ -248,7 +276,10 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
 
   texturas: (p) => {
     luzesPadrao(p);
-    const cubo = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshStandardMaterial({ roughness: 0.6 }));
+    const cubo = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 2, 2),
+      new THREE.MeshStandardMaterial({ roughness: 0.6 }),
+    );
     p.cena.add(cubo);
     p.aCadaQuadro((d) => (cubo.rotation.y += d * 0.3));
     let padrao = '';
@@ -269,7 +300,9 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
           padrao = String(v['padrao']);
           textura?.dispose();
           if (padrao === 'logo') {
-            textura = new THREE.TextureLoader().load('brand/kalixto-logo-512.webp', () => repetir(rep));
+            textura = new THREE.TextureLoader().load('brand/kalixto-logo-512.webp', () =>
+              repetir(rep),
+            );
             textura.colorSpace = THREE.SRGBColorSpace;
           } else {
             textura = texturaCanvas(padrao);
@@ -307,9 +340,14 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
         tl = gsap
           .timeline()
           .to(cubo.scale, { x: 1.25, y: 0.7, z: 1.25, duration: d * 0.15 })
-          .to(cubo.position, { y: chaoY + Number(v['altura']), duration: d * 0.35, ease: 'power2.out' })
+          .to(cubo.position, {
+            y: chaoY + Number(v['altura']),
+            duration: d * 0.35,
+            ease: 'power2.out',
+          })
           .to(cubo.scale, { x: 0.85, y: 1.25, z: 0.85, duration: d * 0.2 }, '<');
-        if (v['giro'] === 'sim') tl.to(cubo.rotation, { y: `+=${Math.PI * 2}`, duration: d * 0.6 }, '<');
+        if (v['giro'] === 'sim')
+          tl.to(cubo.rotation, { y: `+=${Math.PI * 2}`, duration: d * 0.6 }, '<');
         tl.to(cubo.position, { y: chaoY, duration: d * 0.35, ease: 'power2.in' })
           .to(cubo.scale, { x: 1.3, y: 0.65, z: 1.3, duration: d * 0.08 })
           .to(cubo.scale, { x: 1, y: 1, z: 1, duration: d * 0.25, ease: 'elastic.out(1, 0.4)' });
@@ -370,14 +408,22 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
     const destacar = (alvo: THREE.Mesh | undefined) => {
       if (alvo === atual) return;
       if (atual) {
-        (atual.material as THREE.MeshStandardMaterial).color.set(atual.userData['clicado'] ? '#2ee59d' : ROXO_ESCURO);
+        (atual.material as THREE.MeshStandardMaterial).color.set(
+          atual.userData['clicado'] ? '#2ee59d' : ROXO_ESCURO,
+        );
         gsap.to(atual.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
       }
       atual = alvo;
       p.canvas.style.cursor = alvo ? 'pointer' : '';
       if (alvo) {
         (alvo.material as THREE.MeshStandardMaterial).color.set(cor);
-        gsap.to(alvo.scale, { x: escala, y: escala, z: escala, duration: 0.3, ease: 'back.out(2)' });
+        gsap.to(alvo.scale, {
+          x: escala,
+          y: escala,
+          z: escala,
+          duration: 0.3,
+          ease: 'back.out(2)',
+        });
       }
     };
     const testar = (e: PointerEvent) => {
@@ -389,7 +435,12 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
       const alvo = testar(e);
       if (!alvo) return;
       alvo.userData['clicado'] = !alvo.userData['clicado'];
-      gsap.to(alvo.rotation, { x: `+=${Math.PI / 2}`, y: `+=${Math.PI / 2}`, duration: 0.5, ease: 'back.out(1.6)' });
+      gsap.to(alvo.rotation, {
+        x: `+=${Math.PI / 2}`,
+        y: `+=${Math.PI / 2}`,
+        duration: 0.5,
+        ease: 'back.out(1.6)',
+      });
     };
     const sair = () => destacar(undefined);
     p.canvas.addEventListener('pointermove', mover);
@@ -434,7 +485,9 @@ export const CENAS_3D: Record<string, (p: Palco3D) => Cena3D> = {
         const caixa = new THREE.Box3().setFromObject(modelo);
         const tamanho = caixa.getSize(new THREE.Vector3()).length() || 1;
         const centro = caixa.getCenter(new THREE.Vector3());
-        modelo.position.sub(centro).add(new THREE.Vector3(0, caixa.getSize(new THREE.Vector3()).y / 2, 0));
+        modelo.position
+          .sub(centro)
+          .add(new THREE.Vector3(0, caixa.getSize(new THREE.Vector3()).y / 2, 0));
         const base = new THREE.Group();
         base.add(modelo);
         base.scale.setScalar(4 / tamanho);

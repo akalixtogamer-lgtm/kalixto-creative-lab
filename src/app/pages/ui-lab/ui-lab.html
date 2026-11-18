@@ -4,7 +4,9 @@
   [atual]="atual()"
   [valores]="valores()"
   [codigo]="codigo()"
-  [linguagem]="atual().id === 'divisores-svg' || atual().id === 'mascara-formas' ? 'SVG + CSS' : 'CSS + JS'"
+  [linguagem]="
+    atual().id === 'divisores-svg' || atual().id === 'mascara-formas' ? 'SVG + CSS' : 'CSS + JS'
+  "
   (executar)="executar()"
   (reiniciar)="reiniciar()"
   (mudou)="alterar($event.param, $event.valor)"
@@ -18,16 +20,22 @@
           <img class="u-fundo" src="ilustracoes/paisagem-noite.svg" alt="" />
           <nav class="u-nav" aria-label="Menu de exemplo">
             <span class="u-nav__marca">KALIXTO</span>
-            <span class="u-nav__links"><span class="ativo">Labs</span><span>Trilha</span><span>Sobre</span></span>
+            <span class="u-nav__links"
+              ><span class="ativo">Labs</span><span>Trilha</span><span>Sobre</span></span
+            >
           </nav>
           <div class="u-hero__conteudo">
             <h3 class="u-hero__titulo">
               <span class="u-linha"><span>Movimento</span></span>
-              <span class="u-linha"><span>além do <em>código.</em></span></span>
+              <span class="u-linha"
+                ><span>além do <em>código.</em></span></span
+              >
             </h3>
             <span class="u-divisoria"></span>
             <p class="u-hero__texto">Da dança à tela: experiências que se movem com intenção.</p>
-            <button type="button" class="u-cta"><span class="u-cta__circulo" aria-hidden="true">→</span> Ver os laboratórios</button>
+            <button type="button" class="u-cta">
+              <span class="u-cta__circulo" aria-hidden="true">→</span> Ver os laboratórios
+            </button>
           </div>
           <span class="u-scroll" aria-hidden="true"><small>SCROLL</small><i></i></span>
         </div>
@@ -40,7 +48,13 @@
           <span class="u-esfera u-esfera--1" data-profundidade="0.5"></span>
           <span class="u-esfera u-esfera--2" data-profundidade="1.4"></span>
           <span class="u-esfera u-esfera--3" data-profundidade="2.2"></span>
-          <svg class="u-orbita__svg" viewBox="0 0 600 360" data-profundidade="0.8" role="img" aria-label="Portal com um anel orbital">
+          <svg
+            class="u-orbita__svg"
+            viewBox="0 0 600 360"
+            data-profundidade="0.8"
+            role="img"
+            aria-label="Portal com um anel orbital"
+          >
             <defs>
               <linearGradient id="u-portal" x1="0" x2="1">
                 <stop offset="0" stop-color="#2a2050" />
@@ -48,11 +62,25 @@
                 <stop offset="1" stop-color="#1d1650" />
               </linearGradient>
             </defs>
-            <path class="u-portal" d="M250,330 L250,140 A50,50 0 0 1 350,140 L350,330 Z" fill="url(#u-portal)" />
-            <path d="M262,330 L262,145 A38,38 0 0 1 338,145 L338,330 Z" fill="#ff2bd6" opacity="0.35" />
+            <path
+              class="u-portal"
+              d="M250,330 L250,140 A50,50 0 0 1 350,140 L350,330 Z"
+              fill="url(#u-portal)"
+            />
+            <path
+              d="M262,330 L262,145 A38,38 0 0 1 338,145 L338,330 Z"
+              fill="#ff2bd6"
+              opacity="0.35"
+            />
             <g [attr.transform]="'rotate(' + valores()['inclinacao'] + ' 300 190)'">
-              <path class="u-trilha" d="M110,190 A190,55 0 1,0 490,190 A190,55 0 1,0 110,190" fill="none"
-                stroke="#f5f3ff" stroke-width="1.5" opacity="0.7" />
+              <path
+                class="u-trilha"
+                d="M110,190 A190,55 0 1,0 490,190 A190,55 0 1,0 110,190"
+                fill="none"
+                stroke="#f5f3ff"
+                stroke-width="1.5"
+                opacity="0.7"
+              />
             </g>
             <circle class="u-planeta" r="14" fill="#f5c46b" />
           </svg>
@@ -61,7 +89,11 @@
 
       <!-- 3 · Texto atrás do objeto -->
       @case ('texto-profundidade') {
-        <div class="u-prof" [style.--tamanho.px]="valores()['tamanho']" [style.--sobre-n]="+valores()['sobreposicao'] / 100">
+        <div
+          class="u-prof"
+          [style.--tamanho.px]="valores()['tamanho']"
+          [style.--sobre-n]="+valores()['sobreposicao'] / 100"
+        >
           <img class="u-fundo" src="ilustracoes/paisagem-aurora.svg" alt="" />
           <div class="u-prof__grupo">
             <p class="u-prof__sup">LABORATÓRIO DE CRIAÇÃO</p>
@@ -76,7 +108,10 @@
         <div class="u-capa">
           <div class="u-capa__texto">
             <h3>Ritmo de verão</h3>
-            <p>A luz atravessa as formas. O movimento nasce no recorte — e a imagem só aparece onde a forma deixa.</p>
+            <p>
+              A luz atravessa as formas. O movimento nasce no recorte — e a imagem só aparece onde a
+              forma deixa.
+            </p>
           </div>
           <div class="u-mascara"></div>
         </div>
@@ -87,8 +122,14 @@
         <div class="u-divs">
           <section class="u-divs__cima">
             <strong>Seção de cima</strong>
-            <svg class="u-divs__svg" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"
-              [style.height.px]="valores()['altura']" [style.transform]="divisor().transformacao">
+            <svg
+              class="u-divs__svg"
+              viewBox="0 0 1000 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              [style.height.px]="valores()['altura']"
+              [style.transform]="divisor().transformacao"
+            >
               @for (c of divisor().camadas; track $index) {
                 <path [attr.d]="c.d" [attr.opacity]="c.opacidade < 1 ? c.opacidade : null" />
               }
@@ -100,8 +141,12 @@
 
       <!-- 6 · Carrossel de vidro -->
       @case ('carrossel-vidro') {
-        <div class="u-carrossel" [style.--blur.px]="valores()['blur']" [style.--espaco.px]="valores()['espaco']"
-          [style.--escala]="valores()['escala']">
+        <div
+          class="u-carrossel"
+          [style.--blur.px]="valores()['blur']"
+          [style.--espaco.px]="valores()['espaco']"
+          [style.--escala]="valores()['escala']"
+        >
           <img class="u-fundo" src="ilustracoes/paisagem-oceano.svg" alt="" />
           <div class="u-trilho" tabindex="0" aria-label="Carrossel de roteiros (role para o lado)">
             @for (c of cards; track c.n) {
@@ -114,7 +159,9 @@
               </article>
             }
           </div>
-          <p class="u-pag"><span class="u-pag__atual">01</span><i></i><span>0{{ cards.length }}</span></p>
+          <p class="u-pag">
+            <span class="u-pag__atual">01</span><i></i><span>0{{ cards.length }}</span>
+          </p>
         </div>
       }
 
@@ -127,7 +174,9 @@
                 <path class="u-num__linha" [attr.d]="n.d" />
               </svg>
               <p class="u-num__grande">
-                <span class="u-num__valor" [attr.data-final]="n.final">{{ n.final }}</span><sup>{{ n.unidade }}</sup>
+                <span class="u-num__valor" [attr.data-final]="n.final">{{ n.final }}</span><sup>{{
+                  n.unidade
+                }}</sup>
               </p>
               <small>{{ n.rotulo }}</small>
             </div>
@@ -137,33 +186,56 @@
 
       <!-- 8 · Tipografia vazada -->
       @case ('tipografia-vazada') {
-        <div class="u-tipo" [class]="'u-tipo u-tipo--' + valores()['estilo']"
-          [style.--espessura.px]="valores()['espessura']" [style.--tamanho.px]="valores()['tamanho']">
-          <h3 tabindex="0"><span class="u-tipo__a">CRIAR</span> <span class="u-tipo__b">MOVER</span></h3>
+        <div
+          class="u-tipo"
+          [class]="'u-tipo u-tipo--' + valores()['estilo']"
+          [style.--espessura.px]="valores()['espessura']"
+          [style.--tamanho.px]="valores()['tamanho']"
+        >
+          <h3 tabindex="0">
+            <span class="u-tipo__a">CRIAR</span> <span class="u-tipo__b">MOVER</span>
+          </h3>
         </div>
       }
 
       <!-- 9 · Bento -->
       @case ('bento') {
-        <div class="u-bento" [style.grid-template-areas]="bentoAreas[valores()['layout']]"
-          [style.--gap.px]="valores()['gap']" [style.--raio.px]="valores()['raio']">
-          <div class="b-a u-bento__img"><img src="ilustracoes/paisagem-noite.svg" alt="" /><strong>Labs</strong></div>
-          <div class="b-b u-bento__destaque"><strong>45</strong><small>demos interativas</small></div>
+        <div
+          class="u-bento"
+          [style.grid-template-areas]="bentoAreas[valores()['layout']]"
+          [style.--gap.px]="valores()['gap']"
+          [style.--raio.px]="valores()['raio']"
+        >
+          <div class="b-a u-bento__img">
+            <img src="ilustracoes/paisagem-noite.svg" alt="" /><strong>Labs</strong>
+          </div>
+          <div class="b-b u-bento__destaque">
+            <strong>45</strong><small>demos interativas</small>
+          </div>
           <div class="b-c u-bento__img"><img src="ilustracoes/paisagem-aurora.svg" alt="" /></div>
-          <div class="b-d u-bento__texto"><strong>Aprender fazendo</strong><small>Ajuste, execute, copie.</small></div>
+          <div class="b-d u-bento__texto">
+            <strong>Aprender fazendo</strong><small>Ajuste, execute, copie.</small>
+          </div>
           <div class="b-e u-bento__claro"><strong>GLSL</strong></div>
         </div>
       }
 
       <!-- 10 · Cards com profundidade -->
       @case ('cards-profundidade') {
-        <div class="u-profcards" [style.--prof.px]="valores()['profundidade']" [style.--raio.px]="valores()['raio']"
-          [style.--cor]="valores()['cor']">
+        <div
+          class="u-profcards"
+          [style.--prof.px]="valores()['profundidade']"
+          [style.--raio.px]="valores()['raio']"
+          [style.--cor]="valores()['cor']"
+        >
           <span class="u-circulo" aria-hidden="true"></span>
           <h3>Do ritmo à criação</h3>
           <ol class="u-pcards">
             @for (e of etapas; track e; let i = $index) {
-              <li class="u-pcard"><span class="u-pcard__n">{{ i + 1 }}</span><strong>{{ e }}</strong></li>
+              <li class="u-pcard">
+                <span class="u-pcard__n">{{ i + 1 }}</span
+                ><strong>{{ e }}</strong>
+              </li>
             }
           </ol>
         </div>
@@ -171,8 +243,12 @@
 
       <!-- 11 · Grão de filme -->
       @case ('grao-filme') {
-        <div class="u-filme" [class.animado]="valores()['animado'] === 'true'"
-          [style.--grao]="valores()['grao']" [style.--vinheta]="valores()['vinheta']">
+        <div
+          class="u-filme"
+          [class.animado]="valores()['animado'] === 'true'"
+          [style.--grao]="valores()['grao']"
+          [style.--vinheta]="valores()['vinheta']"
+        >
           <img class="u-fundo" src="ilustracoes/paisagem-por-do-sol.svg" alt="" />
           <div class="u-filme__texto">
             <small>CAPÍTULO 01</small>
@@ -195,13 +271,23 @@
 
       <!-- 13 · Marquee -->
       @case ('marquee') {
-        <div class="u-marquee" [class.pausa]="valores()['pausa'] === 'true'"
-          [style.--vel]="valores()['vel'] + 's'" [style.--incl]="valores()['inclinacao'] + 'deg'">
+        <div
+          class="u-marquee"
+          [class.pausa]="valores()['pausa'] === 'true'"
+          [style.--vel]="valores()['vel'] + 's'"
+          [style.--incl]="valores()['inclinacao'] + 'deg'"
+        >
           <div class="u-faixa">
-            <div class="u-faixa__trilho"><span>{{ palavras }}</span><span aria-hidden="true">{{ palavras }}</span></div>
+            <div class="u-faixa__trilho">
+              <span>{{ palavras }}</span
+              ><span aria-hidden="true">{{ palavras }}</span>
+            </div>
           </div>
           <div class="u-faixa u-faixa--reversa">
-            <div class="u-faixa__trilho"><span>APRENDER · EXPERIMENTAR · CONSTRUIR · </span><span aria-hidden="true">APRENDER · EXPERIMENTAR · CONSTRUIR · </span></div>
+            <div class="u-faixa__trilho">
+              <span>APRENDER · EXPERIMENTAR · CONSTRUIR · </span
+              ><span aria-hidden="true">APRENDER · EXPERIMENTAR · CONSTRUIR · </span>
+            </div>
           </div>
         </div>
       }

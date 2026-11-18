@@ -24,7 +24,9 @@ export class Exercicios {
 
   protected readonly labs = LABS.filter((l) => EXERCICIOS.some((q) => q.labId === l.id));
   protected readonly labAtual = computed(() => findLab(this.lab()) ?? this.labs[0]);
-  protected readonly questoes = computed(() => EXERCICIOS.filter((q) => q.labId === this.labAtual().id));
+  protected readonly questoes = computed(() =>
+    EXERCICIOS.filter((q) => q.labId === this.labAtual().id),
+  );
   /** Alternativa clicada nesta visita (para destacar a escolhida). */
   protected readonly escolhas = signal<Record<string, number>>({});
 
@@ -55,7 +57,9 @@ export class Exercicios {
   refazer(): void {
     const ids = this.questoes().map((q) => q.id);
     this.progresso.refazer(ids);
-    this.escolhas.update((e) => Object.fromEntries(Object.entries(e).filter(([k]) => !ids.includes(k))));
+    this.escolhas.update((e) =>
+      Object.fromEntries(Object.entries(e).filter(([k]) => !ids.includes(k))),
+    );
   }
 
   protected respondida(q: Questao): boolean {

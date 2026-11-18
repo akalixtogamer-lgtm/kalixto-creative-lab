@@ -88,11 +88,27 @@ describe('Efeitos · registro e fichas', () => {
     describe(f.id, () => {
       it('ficha completa (nenhum campo obrigatório vazio)', () => {
         const textos = [
-          f.nomeTecnico, f.nomeAmigavel, f.subcategoria, f.descricao, f.objetivoVisual,
-          f.alternativa, f.compatibilidade, f.responsividade, f.acessibilidade, f.performance,
+          f.nomeTecnico,
+          f.nomeAmigavel,
+          f.subcategoria,
+          f.descricao,
+          f.objetivoVisual,
+          f.alternativa,
+          f.compatibilidade,
+          f.responsividade,
+          f.acessibilidade,
+          f.performance,
         ];
         for (const t of textos) expect(t.trim().length).toBeGreaterThan(3);
-        for (const l of [f.aplicacoes, f.tecnologias, f.interacoes, f.tags, f.explicacao, f.limitacoes, f.referencias]) {
+        for (const l of [
+          f.aplicacoes,
+          f.tecnologias,
+          f.interacoes,
+          f.tags,
+          f.explicacao,
+          f.limitacoes,
+          f.referencias,
+        ]) {
           expect(l.length).toBeGreaterThan(0);
         }
         expect(CATEGORIAS.some((c) => c.id === f.categoria)).toBe(true);
@@ -127,7 +143,9 @@ describe('Efeitos · registro e fichas', () => {
         for (const p of kit.params) {
           const outro =
             p.tipo === 'range'
-              ? p.padrao === p.max ? p.min : p.max
+              ? p.padrao === p.max
+                ? p.min
+                : p.max
               : p.opcoes.find((o) => o.valor !== p.padrao)!.valor;
           // controles que só aparecem com outra opção ligada (ex.: velocidade do pulso)
           const alterado = JSON.stringify(kit.gerar({ ...base, [p.id]: outro }));
@@ -202,7 +220,9 @@ describe('Efeitos · páginas', () => {
 
   it('a Biblioteca lista kits e demos e filtra por categoria da URL', async () => {
     await harness.navigateByUrl('/biblioteca');
-    expect(harness.routeNativeElement?.textContent).toContain(`${CATALOGO.length} efeito(s) encontrado(s)`);
+    expect(harness.routeNativeElement?.textContent).toContain(
+      `${CATALOGO.length} efeito(s) encontrado(s)`,
+    );
     await harness.navigateByUrl('/biblioteca?categoria=tipografia');
     const total = CATALOGO.filter((i) => i.categoria === 'tipografia').length;
     expect(harness.routeNativeElement?.textContent).toContain(`${total} efeito(s) encontrado(s)`);

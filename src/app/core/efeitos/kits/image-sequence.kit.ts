@@ -50,41 +50,93 @@ export const IMAGE_SEQUENCE: EffectKit = {
     nomeAmigavel: 'Sequência de quadros no scroll',
     categoria: 'scroll',
     subcategoria: 'Scrollytelling cinematográfico',
-    descricao: 'Um "vídeo" que anda para frente e para trás com a rolagem: cada posição do scroll mostra um quadro diferente num canvas fixo na tela.',
-    objetivoVisual: 'Contar a história de um produto como num comercial, com o usuário no controle do tempo — o efeito dos sites "cinematográficos".',
-    aplicacoes: ['Lançamento de produto (giro 360°, explosão de peças)', 'Heros de marcas de café, bebidas, tênis', 'Storytelling de marca'],
+    descricao:
+      'Um "vídeo" que anda para frente e para trás com a rolagem: cada posição do scroll mostra um quadro diferente num canvas fixo na tela.',
+    objetivoVisual:
+      'Contar a história de um produto como num comercial, com o usuário no controle do tempo — o efeito dos sites "cinematográficos".',
+    aplicacoes: [
+      'Lançamento de produto (giro 360°, explosão de peças)',
+      'Heros de marcas de café, bebidas, tênis',
+      'Storytelling de marca',
+    ],
     nivel: 'avancado',
     tecnologias: ['HTML', 'CSS', 'JavaScript', 'Canvas'],
     dependencias: [],
     interacoes: ['scroll'],
-    tags: ['image sequence', 'sequência de quadros', 'canvas', 'scrollytelling', 'apple', 'cinematográfico', 'sticky', 'referência em vídeo'],
+    tags: [
+      'image sequence',
+      'sequência de quadros',
+      'canvas',
+      'scrollytelling',
+      'apple',
+      'cinematográfico',
+      'sticky',
+      'referência em vídeo',
+    ],
     explicacao: [
       'A seção é bem alta (várias telas) e o canvas fica preso no meio dela com position: sticky. Rolar a seção = avançar o "vídeo".',
       'O progresso é (quanto já rolou dentro da seção) ÷ (altura da seção − altura da tela), de 0 a 1. Multiplicado pelo número de quadros, vira o índice do quadro.',
       'Os quadros são preparados antes (aqui, desenhados em canvas fora da tela; num site real, imagens carregadas com new Image()). Na rolagem só acontece drawImage — rápido.',
       'A suavização aproxima o quadro atual do quadro-alvo aos poucos (interpolação), escondendo o "degrau" entre quadros quando o scroll é brusco.',
     ],
-    alternativa: 'Com GSAP: ScrollTrigger com scrub e pin animando um objeto { frame: 0 → n } e desenhando no onUpdate. Ou um <video> com currentTime ligado ao scroll (mais leve de baixar, mas trava em muitos navegadores).',
+    alternativa:
+      'Com GSAP: ScrollTrigger com scrub e pin animando um objeto { frame: 0 → n } e desenhando no onUpdate. Ou um <video> com currentTime ligado ao scroll (mais leve de baixar, mas trava em muitos navegadores).',
     compatibilidade: 'Canvas 2D e position: sticky: todos os navegadores atuais.',
-    responsividade: 'O canvas tem tamanho interno fixo e escala pelo CSS (width: min(92vw, 720px)). No celular, use uma sequência com menos quadros e imagens menores.',
-    acessibilidade: 'O canvas tem role="img" e aria-label descrevendo a cena. O movimento só acontece quando a pessoa rola (não é automático); com prefers-reduced-motion a suavização é desligada.',
-    performance: 'Pré-desenhar os quadros custa memória (largura × altura × 4 bytes cada). 60 quadros de 640×400 ≈ 60 MB: em sites reais use 720p, WebP/AVIF e carregue a sequência sob demanda.',
+    responsividade:
+      'O canvas tem tamanho interno fixo e escala pelo CSS (width: min(92vw, 720px)). No celular, use uma sequência com menos quadros e imagens menores.',
+    acessibilidade:
+      'O canvas tem role="img" e aria-label descrevendo a cena. O movimento só acontece quando a pessoa rola (não é automático); com prefers-reduced-motion a suavização é desligada.',
+    performance:
+      'Pré-desenhar os quadros custa memória (largura × altura × 4 bytes cada). 60 quadros de 640×400 ≈ 60 MB: em sites reais use 720p, WebP/AVIF e carregue a sequência sob demanda.',
     limitacoes: [
       'Sequências reais pesam muitos megabytes; carregue só quando a seção estiver perto (IntersectionObserver) e mostre o primeiro quadro como pôster.',
       'Quadros demais não aumentam a fluidez além da taxa do scroll: 60 a 150 quadros costumam bastar.',
     ],
     referencias: [
-      { titulo: 'MDN — CanvasRenderingContext2D.drawImage()', url: 'https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage' },
-      { titulo: 'MDN — position: sticky', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/position' },
+      {
+        titulo: 'MDN — CanvasRenderingContext2D.drawImage()',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage',
+      },
+      {
+        titulo: 'MDN — position: sticky',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/position',
+      },
       MDN.scrollTrigger,
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'quadros', rotulo: 'número de quadros', tipo: 'range', min: 24, max: 120, passo: 12, unidade: '', padrao: 60 },
-    { id: 'altura', rotulo: 'altura da seção', tipo: 'range', min: 200, max: 600, passo: 50, unidade: 'vh', padrao: 400 },
-    { id: 'suavizar', rotulo: 'suavização', tipo: 'range', min: 0.05, max: 1, passo: 0.05, unidade: '', padrao: 0.2 },
+    {
+      id: 'quadros',
+      rotulo: 'número de quadros',
+      tipo: 'range',
+      min: 24,
+      max: 120,
+      passo: 12,
+      unidade: '',
+      padrao: 60,
+    },
+    {
+      id: 'altura',
+      rotulo: 'altura da seção',
+      tipo: 'range',
+      min: 200,
+      max: 600,
+      passo: 50,
+      unidade: 'vh',
+      padrao: 400,
+    },
+    {
+      id: 'suavizar',
+      rotulo: 'suavização',
+      tipo: 'range',
+      min: 0.05,
+      max: 1,
+      passo: 0.05,
+      unidade: '',
+      padrao: 0.2,
+    },
   ],
   gerar: (v) => ({
     html: `<section class="intro"><p>Role para baixo ↓</p></section>
@@ -235,9 +287,15 @@ ${DESENHAR.replace('function desenharQuadro(ctx, w, h, t)', 'function desenharQu
     ],
   },
   glossario: [
-    { termo: 'position: sticky', explicacao: 'Prende o canvas na tela enquanto a seção alta passa.' },
+    {
+      termo: 'position: sticky',
+      explicacao: 'Prende o canvas na tela enquanto a seção alta passa.',
+    },
     { termo: 'drawImage', explicacao: 'Copia um quadro já pronto para o canvas visível.' },
-    { termo: 'getBoundingClientRect', explicacao: 'Posição da seção na tela — base do cálculo do progresso.' },
+    {
+      termo: 'getBoundingClientRect',
+      explicacao: 'Posição da seção na tela — base do cálculo do progresso.',
+    },
     { termo: 'requestAnimationFrame', explicacao: 'Executa o desenho uma vez por quadro de tela.' },
   ],
 };

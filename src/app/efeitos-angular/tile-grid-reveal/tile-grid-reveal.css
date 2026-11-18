@@ -29,16 +29,24 @@
   transition: filter 900ms ease;
 }
 @keyframes acender {
-  from { opacity: 0; scale: 0.4; }
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
 }
 /* rastro do mouse: acende na hora, apaga devagar */
-.celula:hover { filter: brightness(2.2); transition: none; }
+.celula:hover {
+  filter: brightness(2.2);
+  transition: none;
+}
 
 .mosaico-palco h1 {
   position: absolute;
   margin: 0;
   padding: 0 24px;
-  font: 800 clamp(1.8rem, 7vw, 3.6rem) / 1 system-ui, sans-serif;
+  font:
+    800 clamp(1.8rem, 7vw, 3.6rem) / 1 system-ui,
+    sans-serif;
   letter-spacing: -0.03em;
   text-align: center;
   text-shadow: 0 4px 30px rgb(0 0 0 / 0.8);
@@ -55,5 +63,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .celula { animation: none; transition: none; }
+  .celula {
+    animation: none;
+    transition: none;
+  }
 }

@@ -13,7 +13,12 @@
     "
   />
 
-  <form class="gl__busca kx-glass" role="search" aria-label="Buscar no glossário" (submit)="$event.preventDefault()">
+  <form
+    class="gl__busca kx-glass"
+    role="search"
+    aria-label="Buscar no glossário"
+    (submit)="$event.preventDefault()"
+  >
     <label class="gl__campo">
       <span class="kx-muted">Buscar</span>
       <input
@@ -41,14 +46,18 @@
 
   <nav class="gl__letras" aria-label="Índice de letras">
     @for (l of letras(); track l.letra) {
-      <button type="button" class="gl__letra" [disabled]="!l.ativa" (click)="irPara(l.letra)">{{ l.letra }}</button>
+      <button type="button" class="gl__letra" [disabled]="!l.ativa" (click)="irPara(l.letra)">
+        {{ l.letra }}
+      </button>
     }
   </nav>
 
   <div class="gl__resultado">
     <p class="kx-muted" aria-live="polite">{{ encontrados().length }} item(ns) encontrado(s)</p>
     @if (busca() || tipo() !== 'todos') {
-      <button type="button" class="kx-btn kx-btn--ghost" (click)="limpar()"><kx-icon name="reset" /> Limpar</button>
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="limpar()">
+        <kx-icon name="reset" /> Limpar
+      </button>
     }
   </div>
 
@@ -61,7 +70,9 @@
         @for (e of g.itens; track e.chave) {
           <div class="gl__item" [attr.data-tipo]="e.tipo">
             <dt>
-              <span class="gl__nome" [class.gl__nome--codigo]="e.tipo === 'termo'">{{ e.nome }}</span>
+              <span class="gl__nome" [class.gl__nome--codigo]="e.tipo === 'termo'">{{
+                e.nome
+              }}</span>
               <span class="gl__selo">{{ tipoRotulo[e.tipo] }}</span>
             </dt>
             <dd>
@@ -74,7 +85,8 @@
                 @for (l of e.links; track $index) {
                   <li>
                     <a [routerLink]="l.rota" [queryParams]="l.query" [fragment]="l.fragmento">
-                      {{ e.tipo === 'termo' ? 'Ver em ' + l.rotulo : l.rotulo }} <kx-icon name="arrow-right" />
+                      {{ e.tipo === 'termo' ? 'Ver em ' + l.rotulo : l.rotulo }}
+                      <kx-icon name="arrow-right" />
                     </a>
                   </li>
                 }

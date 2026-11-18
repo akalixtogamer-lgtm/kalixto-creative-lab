@@ -29,36 +29,67 @@ export const GLITCH_TEXT: EffectKit = {
     nomeAmigavel: 'Texto com glitch RGB',
     categoria: 'experimental',
     subcategoria: 'Glitch e distorção',
-    descricao: 'O título "falha" como um sinal de TV: fatias horizontais se deslocam e a cor se separa em vermelho e ciano por instantes.',
-    objetivoVisual: 'Dar impacto, tensão ou estética digital/retrô a um título curto — uma "virada" de narrativa.',
-    aplicacoes: ['Títulos de campanha e lançamento', 'Sites de música, games e moda', 'Páginas 404 e telas de erro'],
+    descricao:
+      'O título "falha" como um sinal de TV: fatias horizontais se deslocam e a cor se separa em vermelho e ciano por instantes.',
+    objetivoVisual:
+      'Dar impacto, tensão ou estética digital/retrô a um título curto — uma "virada" de narrativa.',
+    aplicacoes: [
+      'Títulos de campanha e lançamento',
+      'Sites de música, games e moda',
+      'Páginas 404 e telas de erro',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS'],
     dependencias: [],
     interacoes: ['autoplay', 'hover', 'keyboard'],
-    tags: ['glitch', 'rgb split', 'chromatic aberration', 'falha', 'clip-path', 'pseudo-elemento', 'referência em vídeo'],
+    tags: [
+      'glitch',
+      'rgb split',
+      'chromatic aberration',
+      'falha',
+      'clip-path',
+      'pseudo-elemento',
+      'referência em vídeo',
+    ],
     explicacao: [
       'O texto é copiado duas vezes pelo CSS, nos pseudo-elementos ::before e ::after, lendo o atributo data-texto (content: attr(data-texto)).',
       'Cada cópia tem uma cor (vermelho e ciano) e fica exatamente sobre o texto original — invisível enquanto está parada.',
       'A animação, com steps(1), troca de uma vez entre "quadros": em cada um, clip-path: inset() mostra só uma fatia da cópia e translate a desloca alguns pixels. Isso é a "falha".',
       'Como a maior parte dos quadros mostra a fatia vazia (inset 100%), o glitch acontece em rajadas curtas.',
     ],
-    alternativa: 'Com SVG: feColorMatrix separando canais + feOffset; com WebGL: um shader que desloca os canais R, G e B em faixas aleatórias (muito usado em transições de imagem).',
-    compatibilidade: 'clip-path inset(), attr() em content e animações: todos os navegadores atuais.',
+    alternativa:
+      'Com SVG: feColorMatrix separando canais + feOffset; com WebGL: um shader que desloca os canais R, G e B em faixas aleatórias (muito usado em transições de imagem).',
+    compatibilidade:
+      'clip-path inset(), attr() em content e animações: todos os navegadores atuais.',
     responsividade: 'O texto usa clamp(); o deslocamento é em px e continua sutil no celular.',
-    acessibilidade: 'O leitor de tela lê só o h1 (os pseudo-elementos de attr() não duplicam o conteúdo na maioria dos leitores, e o h1 tem aria-label). O efeito não pisca a tela toda (WCAG 2.3.1), mas com prefers-reduced-motion ele é desligado.',
+    acessibilidade:
+      'O leitor de tela lê só o h1 (os pseudo-elementos de attr() não duplicam o conteúdo na maioria dos leitores, e o h1 tem aria-label). O efeito não pisca a tela toda (WCAG 2.3.1), mas com prefers-reduced-motion ele é desligado.',
     performance: 'Só clip-path e translate nos pseudo-elementos; sem JavaScript.',
-    limitacoes: ['Funciona em textos de uma linha (white-space: nowrap); em várias linhas, as fatias cortam linhas diferentes de forma estranha.'],
+    limitacoes: [
+      'Funciona em textos de uma linha (white-space: nowrap); em várias linhas, as fatias cortam linhas diferentes de forma estranha.',
+    ],
     referencias: [
       { titulo: 'MDN — attr()', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/attr' },
-      { titulo: 'MDN — clip-path', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path' },
+      {
+        titulo: 'MDN — clip-path',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path',
+      },
       MDN.reduzir,
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'intensidade', rotulo: 'deslocamento', tipo: 'range', min: 1, max: 10, passo: 1, unidade: 'px', padrao: 4 },
+    {
+      id: 'intensidade',
+      rotulo: 'deslocamento',
+      tipo: 'range',
+      min: 1,
+      max: 10,
+      passo: 1,
+      unidade: 'px',
+      padrao: 4,
+    },
     {
       id: 'gatilho',
       rotulo: 'quando falha',
@@ -177,9 +208,15 @@ export class ${nomeClasse('glitch-text')} {
     ],
   },
   glossario: [
-    { termo: 'attr(data-texto)', explicacao: 'O pseudo-elemento copia o texto do atributo data-texto.' },
+    {
+      termo: 'attr(data-texto)',
+      explicacao: 'O pseudo-elemento copia o texto do atributo data-texto.',
+    },
     { termo: 'clip-path: inset(', explicacao: 'Mostra só uma fatia horizontal da cópia.' },
     { termo: 'steps(1)', explicacao: 'Troca os quadros da falha de uma vez, sem transição.' },
-    { termo: 'mix-blend-mode: screen', explicacao: 'Soma as cores das cópias, como canais de uma tela.' },
+    {
+      termo: 'mix-blend-mode: screen',
+      explicacao: 'Soma as cores das cópias, como canais de uma tela.',
+    },
   ],
 };

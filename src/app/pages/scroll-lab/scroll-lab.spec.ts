@@ -11,7 +11,9 @@ describe('Scroll Lab', () => {
   const codigo = () => el().querySelector('.cv__codigo')?.textContent ?? '';
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
@@ -54,7 +56,9 @@ describe('Scroll Lab', () => {
 
 describe('Scroll Lab · Navbar ao rolar', () => {
   it('mostra navbar e hero, e o código muda para o modo "esconde"', async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/labs/scroll?demo=navbar');
     const el = harness.routeNativeElement as HTMLElement;

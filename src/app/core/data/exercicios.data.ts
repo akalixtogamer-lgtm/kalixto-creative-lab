@@ -33,13 +33,19 @@ export const EXERCICIOS: Questao[] = [
       'Não há diferença',
     ],
     correta: 1,
-    explicacao: 'A transition anima a passagem entre dois estados. A animação com @keyframes começa sozinha e pode repetir.',
+    explicacao:
+      'A transition anima a passagem entre dois estados. A animação com @keyframes começa sozinha e pode repetir.',
   },
   {
     id: 'css-3',
     labId: 'css',
     pergunta: 'Para um card 3D parecer ter profundidade, onde vai a propriedade perspective?',
-    alternativas: ['No próprio card', 'No elemento pai (a cena)', 'No body sempre', 'Em qualquer filho'],
+    alternativas: [
+      'No próprio card',
+      'No elemento pai (a cena)',
+      'No body sempre',
+      'Em qualquer filho',
+    ],
     correta: 1,
     explicacao: 'perspective no pai define a distância do "olho" até a cena onde os filhos giram.',
   },
@@ -54,7 +60,8 @@ export const EXERCICIOS: Questao[] = [
       'Precisa de JavaScript',
     ],
     correta: 0,
-    explicacao: 'O navegador interpola ponto a ponto, então início e fim precisam ter o mesmo número de vértices.',
+    explicacao:
+      'O navegador interpola ponto a ponto, então início e fim precisam ter o mesmo número de vértices.',
   },
   // ---------- GSAP ----------
   {
@@ -63,7 +70,8 @@ export const EXERCICIOS: Questao[] = [
     pergunta: 'Qual método começa nos valores informados e volta ao estado atual do elemento?',
     alternativas: ['gsap.to()', 'gsap.from()', 'gsap.set()', 'gsap.timeline()'],
     correta: 1,
-    explicacao: 'from() é ideal para entradas: o elemento já está no lugar e o GSAP o traz "de fora".',
+    explicacao:
+      'from() é ideal para entradas: o elemento já está no lugar e o GSAP o traz "de fora".',
   },
   {
     id: 'gsap-2',
@@ -81,7 +89,8 @@ export const EXERCICIOS: Questao[] = [
   {
     id: 'gsap-3',
     labId: 'gsap',
-    pergunta: 'Para uma entrada na tela parecer natural, qual tipo de ease costuma funcionar melhor?',
+    pergunta:
+      'Para uma entrada na tela parecer natural, qual tipo de ease costuma funcionar melhor?',
     alternativas: ['.in', '.out', 'none', 'steps(1)'],
     correta: 1,
     explicacao: '.out começa rápido e desacelera no final, como um objeto que chega e para.',
@@ -142,9 +151,15 @@ export const EXERCICIOS: Questao[] = [
     id: 'svg-1',
     labId: 'svg',
     pergunta: 'Quais propriedades fazem o truque de "desenhar" um traço SVG?',
-    alternativas: ['fill e stroke', 'stroke-dasharray e stroke-dashoffset', 'viewBox e preserveAspectRatio', 'width e height'],
+    alternativas: [
+      'fill e stroke',
+      'stroke-dasharray e stroke-dashoffset',
+      'viewBox e preserveAspectRatio',
+      'width e height',
+    ],
     correta: 1,
-    explicacao: 'Um traço do tamanho do caminho, deslocado até sumir; animando o deslocamento, ele aparece.',
+    explicacao:
+      'Um traço do tamanho do caminho, deslocado até sumir; animando o deslocamento, ele aparece.',
   },
   {
     id: 'svg-2',
@@ -167,9 +182,15 @@ export const EXERCICIOS: Questao[] = [
     id: 'three-1',
     labId: 'three',
     pergunta: 'Quais são os três ingredientes mínimos de uma cena Three.js?',
-    alternativas: ['Cena, câmera e renderizador', 'Canvas, CSS e HTML', 'Luz, sombra e textura', 'Mesh, shader e GLSL'],
+    alternativas: [
+      'Cena, câmera e renderizador',
+      'Canvas, CSS e HTML',
+      'Luz, sombra e textura',
+      'Mesh, shader e GLSL',
+    ],
     correta: 0,
-    explicacao: 'A cena guarda os objetos, a câmera define o ponto de vista e o renderizador desenha.',
+    explicacao:
+      'A cena guarda os objetos, a câmera define o ponto de vista e o renderizador desenha.',
   },
   {
     id: 'three-2',
@@ -183,7 +204,12 @@ export const EXERCICIOS: Questao[] = [
     id: 'three-3',
     labId: 'three',
     pergunta: 'Qual material NÃO reage à luz da cena?',
-    alternativas: ['MeshStandardMaterial', 'MeshPhongMaterial', 'MeshBasicMaterial', 'MeshPhysicalMaterial'],
+    alternativas: [
+      'MeshStandardMaterial',
+      'MeshPhongMaterial',
+      'MeshBasicMaterial',
+      'MeshPhysicalMaterial',
+    ],
     correta: 2,
     explicacao: 'MeshBasicMaterial pinta a cor "chapada", sem considerar luzes.',
   },
@@ -193,14 +219,20 @@ export const EXERCICIOS: Questao[] = [
     pergunta: 'Para saber em qual objeto o mouse está, usamos…',
     alternativas: ['OrbitControls', 'Raycaster', 'Clock', 'AnimationMixer'],
     correta: 1,
-    explicacao: 'O Raycaster lança um "raio" da câmera pela posição do mouse e lista o que ele atravessa.',
+    explicacao:
+      'O Raycaster lança um "raio" da câmera pela posição do mouse e lista o que ele atravessa.',
   },
   // ---------- WebGL / GLSL ----------
   {
     id: 'webgl-1',
     labId: 'webgl',
     pergunta: 'O que o fragment shader calcula?',
-    alternativas: ['A posição de cada vértice', 'A cor de cada pixel', 'A física da cena', 'O tamanho do canvas'],
+    alternativas: [
+      'A posição de cada vértice',
+      'A cor de cada pixel',
+      'A física da cena',
+      'O tamanho do canvas',
+    ],
     correta: 1,
     explicacao: 'O fragment shader roda para cada pixel e devolve a cor em gl_FragColor.',
   },
@@ -208,9 +240,15 @@ export const EXERCICIOS: Questao[] = [
     id: 'webgl-2',
     labId: 'webgl',
     pergunta: 'Como enviar um valor do JavaScript (ex.: o tempo) para o shader?',
-    alternativas: ['Com uma variável global', 'Com um uniform', 'Com console.log', 'Com uma classe CSS'],
+    alternativas: [
+      'Com uma variável global',
+      'Com um uniform',
+      'Com console.log',
+      'Com uma classe CSS',
+    ],
     correta: 1,
-    explicacao: 'Uniforms são valores iguais para todos os pixels/vértices, atualizados pelo JavaScript.',
+    explicacao:
+      'Uniforms são valores iguais para todos os pixels/vértices, atualizados pelo JavaScript.',
   },
   {
     id: 'webgl-3',
@@ -223,7 +261,8 @@ export const EXERCICIOS: Questao[] = [
       'O índice de cada vértice',
     ],
     correta: 1,
-    explicacao: 'UV (0,0) é um canto da superfície e (1,1) o oposto — ótimo para gradientes e texturas.',
+    explicacao:
+      'UV (0,0) é um canto da superfície e (1,1) o oposto — ótimo para gradientes e texturas.',
   },
   {
     id: 'webgl-4',
@@ -245,7 +284,8 @@ export const EXERCICIOS: Questao[] = [
       'Trocar a cor automaticamente',
     ],
     correta: 0,
-    explicacao: 'Sem manter a proporção, o SVG largo e baixo ocupa a largura toda da seção, em qualquer tela.',
+    explicacao:
+      'Sem manter a proporção, o SVG largo e baixo ocupa a largura toda da seção, em qualquer tela.',
   },
   {
     id: 'ui-2',
@@ -258,7 +298,8 @@ export const EXERCICIOS: Questao[] = [
       'Colocar o texto dentro de um <canvas>',
     ],
     correta: 1,
-    explicacao: 'A camada da frente, com fundo transparente, cobre a base das letras e cria a profundidade.',
+    explicacao:
+      'A camada da frente, com fundo transparente, cobre a base das letras e cria a profundidade.',
   },
   {
     id: 'ui-3',
@@ -266,7 +307,8 @@ export const EXERCICIOS: Questao[] = [
     pergunta: 'Qual propriedade faz um carrossel horizontal "encaixar" em cada card?',
     alternativas: ['overflow: hidden', 'scroll-snap-type', 'position: sticky', 'backdrop-filter'],
     correta: 1,
-    explicacao: 'scroll-snap-type no trilho + scroll-snap-align nos cards fazem a rolagem parar em cada um.',
+    explicacao:
+      'scroll-snap-type no trilho + scroll-snap-align nos cards fazem a rolagem parar em cada um.',
   },
   {
     id: 'ui-4',
@@ -279,6 +321,7 @@ export const EXERCICIOS: Questao[] = [
       'Porque desliga o mouse do sistema',
     ],
     correta: 1,
-    explicacao: 'O mouse dispara dezenas de eventos por segundo; quickTo só atualiza o destino da animação existente.',
+    explicacao:
+      'O mouse dispara dezenas de eventos por segundo; quickTo só atualiza o destino da animação existente.',
   },
 ];

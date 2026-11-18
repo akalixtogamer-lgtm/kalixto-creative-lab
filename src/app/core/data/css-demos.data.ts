@@ -75,12 +75,36 @@ export const CSS_DEMOS: CssDemo[] = [
     dica: 'Prefira animar transform e opacity: são as propriedades mais leves para o navegador.',
     acao: 'Alternar estado',
     instrucao: 'Clique em “Alternar estado” e depois mude a duração e a curva.',
-    presets: [{ nome: 'Rápido e seco', valores: { dur: 200, ease: 'linear' } }, { nome: 'Elástico', valores: { dur: 900, ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)' } }],
-    desafio: { enunciado: 'Faça a caixa percorrer 200px em 1200ms com a curva ease-in-out.', meta: { dist: 200, dur: 1200, ease: 'ease-in-out' } },
+    presets: [
+      { nome: 'Rápido e seco', valores: { dur: 200, ease: 'linear' } },
+      { nome: 'Elástico', valores: { dur: 900, ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)' } },
+    ],
+    desafio: {
+      enunciado: 'Faça a caixa percorrer 200px em 1200ms com a curva ease-in-out.',
+      meta: { dist: 200, dur: 1200, ease: 'ease-in-out' },
+    },
     params: [
-      { id: 'dur', rotulo: 'Duração', tipo: 'range', min: 100, max: 2000, passo: 50, unidade: 'ms', padrao: 600 },
+      {
+        id: 'dur',
+        rotulo: 'Duração',
+        tipo: 'range',
+        min: 100,
+        max: 2000,
+        passo: 50,
+        unidade: 'ms',
+        padrao: 600,
+      },
       { id: 'ease', rotulo: 'Curva (easing)', tipo: 'select', opcoes: EASINGS, padrao: 'ease' },
-      { id: 'dist', rotulo: 'Distância', tipo: 'range', min: 0, max: 200, passo: 10, unidade: 'px', padrao: 140 },
+      {
+        id: 'dist',
+        rotulo: 'Distância',
+        tipo: 'range',
+        min: 0,
+        max: 200,
+        passo: 10,
+        unidade: 'px',
+        padrao: 140,
+      },
     ],
     codigo: (v) => `.caixa {
   transition:
@@ -110,8 +134,14 @@ export const CSS_DEMOS: CssDemo[] = [
     dica: 'Use animation-iteration-count: infinite com moderação — movimento constante cansa a leitura.',
     acao: 'Executar animação',
     instrucao: 'Escolha uma animação e clique em “Executar animação”.',
-    presets: [{ nome: 'Alerta', valores: { anim: 'tremer', dur: 400, rep: '3' } }, { nome: 'Carregando', valores: { anim: 'girar', dur: 800, rep: 'infinite' } }],
-    desafio: { enunciado: 'Crie um botão que quica 3 vezes em 600ms cada.', meta: { anim: 'quicar', dur: 600, rep: '3' } },
+    presets: [
+      { nome: 'Alerta', valores: { anim: 'tremer', dur: 400, rep: '3' } },
+      { nome: 'Carregando', valores: { anim: 'girar', dur: 800, rep: 'infinite' } },
+    ],
+    desafio: {
+      enunciado: 'Crie um botão que quica 3 vezes em 600ms cada.',
+      meta: { anim: 'quicar', dur: 600, rep: '3' },
+    },
     params: [
       {
         id: 'anim',
@@ -125,7 +155,16 @@ export const CSS_DEMOS: CssDemo[] = [
         ],
         padrao: 'pulsar',
       },
-      { id: 'dur', rotulo: 'Duração', tipo: 'range', min: 200, max: 3000, passo: 100, unidade: 'ms', padrao: 1000 },
+      {
+        id: 'dur',
+        rotulo: 'Duração',
+        tipo: 'range',
+        min: 200,
+        max: 3000,
+        passo: 100,
+        unidade: 'ms',
+        padrao: 1000,
+      },
       {
         id: 'rep',
         rotulo: 'Repetições',
@@ -159,14 +198,65 @@ export const CSS_DEMOS: CssDemo[] = [
     dica: 'Para centralizar algo com position: absolute, use translate(-50%, -50%).',
     acao: 'Valores aleatórios',
     instrucao: 'Arraste os controles — o resultado muda em tempo real.',
-    presets: [{ nome: 'Carta jogada', valores: { tx: 80, ty: -30, rot: 25, esc: 1.2, skew: 0 } }, { nome: 'Itálico', valores: { tx: 0, ty: 0, rot: 0, esc: 1, skew: -20 } }],
-    desafio: { enunciado: 'Deixe o quadrado de cabeça para baixo (180deg) e com o dobro do tamanho.', meta: { rot: 180, esc: 2 } },
+    presets: [
+      { nome: 'Carta jogada', valores: { tx: 80, ty: -30, rot: 25, esc: 1.2, skew: 0 } },
+      { nome: 'Itálico', valores: { tx: 0, ty: 0, rot: 0, esc: 1, skew: -20 } },
+    ],
+    desafio: {
+      enunciado: 'Deixe o quadrado de cabeça para baixo (180deg) e com o dobro do tamanho.',
+      meta: { rot: 180, esc: 2 },
+    },
     params: [
-      { id: 'tx', rotulo: 'translateX', tipo: 'range', min: -120, max: 120, passo: 5, unidade: 'px', padrao: 0 },
-      { id: 'ty', rotulo: 'translateY', tipo: 'range', min: -60, max: 60, passo: 5, unidade: 'px', padrao: 0 },
-      { id: 'rot', rotulo: 'rotate', tipo: 'range', min: -180, max: 180, passo: 5, unidade: 'deg', padrao: 0 },
-      { id: 'esc', rotulo: 'scale', tipo: 'range', min: 0.3, max: 2, passo: 0.1, unidade: '', padrao: 1 },
-      { id: 'skew', rotulo: 'skewX', tipo: 'range', min: -45, max: 45, passo: 5, unidade: 'deg', padrao: 0 },
+      {
+        id: 'tx',
+        rotulo: 'translateX',
+        tipo: 'range',
+        min: -120,
+        max: 120,
+        passo: 5,
+        unidade: 'px',
+        padrao: 0,
+      },
+      {
+        id: 'ty',
+        rotulo: 'translateY',
+        tipo: 'range',
+        min: -60,
+        max: 60,
+        passo: 5,
+        unidade: 'px',
+        padrao: 0,
+      },
+      {
+        id: 'rot',
+        rotulo: 'rotate',
+        tipo: 'range',
+        min: -180,
+        max: 180,
+        passo: 5,
+        unidade: 'deg',
+        padrao: 0,
+      },
+      {
+        id: 'esc',
+        rotulo: 'scale',
+        tipo: 'range',
+        min: 0.3,
+        max: 2,
+        passo: 0.1,
+        unidade: '',
+        padrao: 1,
+      },
+      {
+        id: 'skew',
+        rotulo: 'skewX',
+        tipo: 'range',
+        min: -45,
+        max: 45,
+        passo: 5,
+        unidade: 'deg',
+        padrao: 0,
+      },
     ],
     codigo: (v) => `.caixa {
   transform:
@@ -192,7 +282,10 @@ export const CSS_DEMOS: CssDemo[] = [
     acao: 'Simular hover',
     instrucao: 'Passe o mouse no botão (ou clique em “Simular hover” no celular).',
     presets: [{ nome: 'Neon lento', valores: { estilo: 'brilho', dur: 600 } }],
-    desafio: { enunciado: 'Monte um botão de preenchimento que reage em 150ms.', meta: { estilo: 'preencher', dur: 150 } },
+    desafio: {
+      enunciado: 'Monte um botão de preenchimento que reage em 150ms.',
+      meta: { estilo: 'preencher', dur: 150 },
+    },
     params: [
       {
         id: 'estilo',
@@ -205,7 +298,16 @@ export const CSS_DEMOS: CssDemo[] = [
         ],
         padrao: 'levantar',
       },
-      { id: 'dur', rotulo: 'Duração', tipo: 'range', min: 100, max: 1000, passo: 50, unidade: 'ms', padrao: 250 },
+      {
+        id: 'dur',
+        rotulo: 'Duração',
+        tipo: 'range',
+        min: 100,
+        max: 1000,
+        passo: 50,
+        unidade: 'ms',
+        padrao: 250,
+      },
     ],
     codigo: (v) => {
       const regras: Record<string, string> = {
@@ -246,12 +348,45 @@ ${regras[String(v['estilo'])]}
     dica: 'Durações longas (3 s ou mais) parecem mais naturais para flutuação.',
     acao: 'Pausar / retomar',
     instrucao: 'Ajuste altura, ritmo e inclinação. O botão pausa o movimento.',
-    presets: [{ nome: 'Bolha calma', valores: { amp: 10, dur: 5, rot: 0 } }, { nome: 'Balão agitado', valores: { amp: 36, dur: 1.5, rot: 12 } }],
-    desafio: { enunciado: 'Faça a bolha subir 30px, sem inclinar, num ciclo de 4s.', meta: { amp: 30, rot: 0, dur: 4 } },
+    presets: [
+      { nome: 'Bolha calma', valores: { amp: 10, dur: 5, rot: 0 } },
+      { nome: 'Balão agitado', valores: { amp: 36, dur: 1.5, rot: 12 } },
+    ],
+    desafio: {
+      enunciado: 'Faça a bolha subir 30px, sem inclinar, num ciclo de 4s.',
+      meta: { amp: 30, rot: 0, dur: 4 },
+    },
     params: [
-      { id: 'amp', rotulo: 'Altura', tipo: 'range', min: 4, max: 40, passo: 2, unidade: 'px', padrao: 16 },
-      { id: 'dur', rotulo: 'Duração', tipo: 'range', min: 1, max: 8, passo: 0.5, unidade: 's', padrao: 3 },
-      { id: 'rot', rotulo: 'Inclinação', tipo: 'range', min: 0, max: 15, passo: 1, unidade: 'deg', padrao: 4 },
+      {
+        id: 'amp',
+        rotulo: 'Altura',
+        tipo: 'range',
+        min: 4,
+        max: 40,
+        passo: 2,
+        unidade: 'px',
+        padrao: 16,
+      },
+      {
+        id: 'dur',
+        rotulo: 'Duração',
+        tipo: 'range',
+        min: 1,
+        max: 8,
+        passo: 0.5,
+        unidade: 's',
+        padrao: 3,
+      },
+      {
+        id: 'rot',
+        rotulo: 'Inclinação',
+        tipo: 'range',
+        min: 0,
+        max: 15,
+        passo: 1,
+        unidade: 'deg',
+        padrao: 4,
+      },
     ],
     codigo: (v) => `@keyframes flutuar {
   from { transform: translateY(0) rotate(0deg); }
@@ -277,12 +412,45 @@ ${regras[String(v['estilo'])]}
     dica: 'Um perspective entre 600px e 1200px costuma parecer natural na tela.',
     acao: 'Virar card',
     instrucao: 'Incline o card nos controles e clique em “Virar card”.',
-    presets: [{ nome: 'Exagerado', valores: { persp: 300, rx: 25, ry: -40 } }, { nome: 'Frontal', valores: { persp: 1000, rx: 0, ry: 0 } }],
-    desafio: { enunciado: 'Deixe o card reto (rotateX e rotateY em 0) e vire para o verso.', meta: { rx: 0, ry: 0 } },
+    presets: [
+      { nome: 'Exagerado', valores: { persp: 300, rx: 25, ry: -40 } },
+      { nome: 'Frontal', valores: { persp: 1000, rx: 0, ry: 0 } },
+    ],
+    desafio: {
+      enunciado: 'Deixe o card reto (rotateX e rotateY em 0) e vire para o verso.',
+      meta: { rx: 0, ry: 0 },
+    },
     params: [
-      { id: 'persp', rotulo: 'perspective', tipo: 'range', min: 200, max: 2000, passo: 50, unidade: 'px', padrao: 800 },
-      { id: 'rx', rotulo: 'rotateX', tipo: 'range', min: -60, max: 60, passo: 5, unidade: 'deg', padrao: 10 },
-      { id: 'ry', rotulo: 'rotateY', tipo: 'range', min: -60, max: 60, passo: 5, unidade: 'deg', padrao: -20 },
+      {
+        id: 'persp',
+        rotulo: 'perspective',
+        tipo: 'range',
+        min: 200,
+        max: 2000,
+        passo: 50,
+        unidade: 'px',
+        padrao: 800,
+      },
+      {
+        id: 'rx',
+        rotulo: 'rotateX',
+        tipo: 'range',
+        min: -60,
+        max: 60,
+        passo: 5,
+        unidade: 'deg',
+        padrao: 10,
+      },
+      {
+        id: 'ry',
+        rotulo: 'rotateY',
+        tipo: 'range',
+        min: -60,
+        max: 60,
+        passo: 5,
+        unidade: 'deg',
+        padrao: -20,
+      },
     ],
     codigo: (v) => `.cena {
   perspective: ${v['persp']}px;
@@ -321,7 +489,10 @@ ${regras[String(v['estilo'])]}
     acao: 'Revelar / esconder',
     instrucao: 'Escolha a forma e clique em “Revelar / esconder”.',
     presets: [{ nome: 'Cortina rápida', valores: { forma: 'cortina', dur: 400 } }],
-    desafio: { enunciado: 'Revele o conteúdo com um losango em 1500ms.', meta: { forma: 'losango', dur: 1500 } },
+    desafio: {
+      enunciado: 'Revele o conteúdo com um losango em 1500ms.',
+      meta: { forma: 'losango', dur: 1500 },
+    },
     params: [
       {
         id: 'forma',
@@ -335,7 +506,16 @@ ${regras[String(v['estilo'])]}
         ],
         padrao: 'circulo',
       },
-      { id: 'dur', rotulo: 'Duração', tipo: 'range', min: 200, max: 2000, passo: 100, unidade: 'ms', padrao: 800 },
+      {
+        id: 'dur',
+        rotulo: 'Duração',
+        tipo: 'range',
+        min: 200,
+        max: 2000,
+        passo: 100,
+        unidade: 'ms',
+        padrao: 800,
+      },
     ],
     codigo: (v) => {
       const f = CLIP_FORMAS[String(v['forma'])];
@@ -364,11 +544,35 @@ ${regras[String(v['estilo'])]}
     dica: 'Microinterações devem ser curtas (150 a 400 ms) para não atrasar o usuário.',
     acao: 'Curtir',
     instrucao: 'Clique no coração e no interruptor — eles também respondem direto.',
-    presets: [{ nome: 'Pop discreto', valores: { dur: 200, esc: 1.15 } }, { nome: 'Pop exagerado', valores: { dur: 600, esc: 1.8 } }],
-    desafio: { enunciado: 'Configure um curtir com pop de 1.5x em 250ms.', meta: { esc: 1.5, dur: 250 } },
+    presets: [
+      { nome: 'Pop discreto', valores: { dur: 200, esc: 1.15 } },
+      { nome: 'Pop exagerado', valores: { dur: 600, esc: 1.8 } },
+    ],
+    desafio: {
+      enunciado: 'Configure um curtir com pop de 1.5x em 250ms.',
+      meta: { esc: 1.5, dur: 250 },
+    },
     params: [
-      { id: 'dur', rotulo: 'Duração', tipo: 'range', min: 150, max: 800, passo: 50, unidade: 'ms', padrao: 300 },
-      { id: 'esc', rotulo: 'Tamanho do pop', tipo: 'range', min: 1.1, max: 1.8, passo: 0.05, unidade: '', padrao: 1.35 },
+      {
+        id: 'dur',
+        rotulo: 'Duração',
+        tipo: 'range',
+        min: 150,
+        max: 800,
+        passo: 50,
+        unidade: 'ms',
+        padrao: 300,
+      },
+      {
+        id: 'esc',
+        rotulo: 'Tamanho do pop',
+        tipo: 'range',
+        min: 1.1,
+        max: 1.8,
+        passo: 0.05,
+        unidade: '',
+        padrao: 1.35,
+      },
     ],
     codigo: (v) => `@keyframes pop {
   50% { transform: scale(${v['esc']}); }
@@ -425,7 +629,16 @@ ${regras[String(v['estilo'])]}
         ],
         padrao: 'diagonal',
       },
-      { id: 'altura', rotulo: 'Altura da borda', tipo: 'range', min: 20, max: 120, passo: 10, unidade: 'px', padrao: 60 },
+      {
+        id: 'altura',
+        rotulo: 'Altura da borda',
+        tipo: 'range',
+        min: 20,
+        max: 120,
+        passo: 10,
+        unidade: 'px',
+        padrao: 60,
+      },
       {
         id: 'lado',
         rotulo: 'Direção',
@@ -474,7 +687,10 @@ export function estiloDivisor(v: Valores): Record<string, string> {
       };
     case 'curva':
       return inv
-        ? { ...base, mask: `radial-gradient(ellipse 70% ${h}px at 50% 0, transparent 98%, #000 100%)` }
+        ? {
+            ...base,
+            mask: `radial-gradient(ellipse 70% ${h}px at 50% 0, transparent 98%, #000 100%)`,
+          }
         : { ...base, 'border-radius': `50% 50% 0 0 / ${h}px ${h}px 0 0` };
     case 'zigzag': {
       const dentes = 12;
@@ -495,4 +711,3 @@ export function estiloDivisor(v: Valores): Record<string, string> {
     }
   }
 }
-

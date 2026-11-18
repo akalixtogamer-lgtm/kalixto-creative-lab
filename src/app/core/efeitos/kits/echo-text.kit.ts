@@ -11,24 +11,43 @@ export const ECHO_TEXT: EffectKit = {
     nomeAmigavel: 'Texto com eco',
     categoria: 'tipografia',
     subcategoria: 'Texto que se transforma',
-    descricao: 'O título chega acompanhado de "ecos" — cópias empilhadas e cada vez mais transparentes — que deslizam e se juntam numa palavra só, sobre uma aura de luz.',
-    objetivoVisual: 'Dar peso e ritmo a uma informação-chave (um preço, um título de oferta), como um rastro de movimento congelado.',
-    aplicacoes: ['Preço e oferta em proposta comercial', 'Títulos de seção', 'Abertura de vídeos e apresentações'],
+    descricao:
+      'O título chega acompanhado de "ecos" — cópias empilhadas e cada vez mais transparentes — que deslizam e se juntam numa palavra só, sobre uma aura de luz.',
+    objetivoVisual:
+      'Dar peso e ritmo a uma informação-chave (um preço, um título de oferta), como um rastro de movimento congelado.',
+    aplicacoes: [
+      'Preço e oferta em proposta comercial',
+      'Títulos de seção',
+      'Abertura de vídeos e apresentações',
+    ],
     nivel: 'iniciante',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'hover', 'click'],
-    tags: ['echo', 'eco', 'trail', 'rastro', 'texto repetido', 'stagger', 'aura', 'referência em vídeo'],
+    tags: [
+      'echo',
+      'eco',
+      'trail',
+      'rastro',
+      'texto repetido',
+      'stagger',
+      'aura',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Atrás do texto real há várias cópias (aria-hidden), todas na mesma posição. Cada cópia sabe o seu número (--i).',
       'Elas começam deslocadas para baixo (i × distância) e transparentes em degraus; a animação traz todas para a posição do texto real, com atraso maior para as de trás.',
       'No hover o eco "solta" de novo e volta, numa transição — a palavra parece vibrar com o rastro.',
       'A aura atrás é um radial-gradient desfocado que pulsa devagar.',
     ],
-    alternativa: 'Só com text-shadow (várias sombras deslocadas) dá um eco parado e barato; com GSAP, uma timeline com stagger nas cópias permite eco para cima, para os lados ou em leque.',
-    compatibilidade: 'Animações CSS, variáveis em calc() e filter: blur(): todos os navegadores atuais.',
-    responsividade: 'O texto usa clamp(); a distância do eco é em px e continua proporcional no celular.',
-    acessibilidade: 'Só o texto real é lido; os ecos são aria-hidden. Com prefers-reduced-motion os ecos ficam escondidos e a aura não pulsa.',
+    alternativa:
+      'Só com text-shadow (várias sombras deslocadas) dá um eco parado e barato; com GSAP, uma timeline com stagger nas cópias permite eco para cima, para os lados ou em leque.',
+    compatibilidade:
+      'Animações CSS, variáveis em calc() e filter: blur(): todos os navegadores atuais.',
+    responsividade:
+      'O texto usa clamp(); a distância do eco é em px e continua proporcional no celular.',
+    acessibilidade:
+      'Só o texto real é lido; os ecos são aria-hidden. Com prefers-reduced-motion os ecos ficam escondidos e a aura não pulsa.',
     performance: 'Só transform e opacity nas cópias; a aura pulsa com scale (composição na GPU).',
     limitacoes: ['Muitas cópias de um texto grande pesam na pintura; até 6–8 ecos é o ideal.'],
     referencias: [MDN.animation, MDN.animationDelay, MDN.reduzir],
@@ -36,14 +55,44 @@ export const ECHO_TEXT: EffectKit = {
     status: 'validado',
   },
   params: [
-    { id: 'copias', rotulo: 'número de ecos', tipo: 'range', min: 2, max: 8, passo: 1, unidade: '', padrao: 4 },
-    { id: 'distancia', rotulo: 'distância entre ecos', tipo: 'range', min: 4, max: 30, passo: 2, unidade: 'px', padrao: 14 },
-    { id: 'duracao', rotulo: 'duração', tipo: 'range', min: 400, max: 2000, passo: 100, unidade: 'ms', padrao: 900 },
+    {
+      id: 'copias',
+      rotulo: 'número de ecos',
+      tipo: 'range',
+      min: 2,
+      max: 8,
+      passo: 1,
+      unidade: '',
+      padrao: 4,
+    },
+    {
+      id: 'distancia',
+      rotulo: 'distância entre ecos',
+      tipo: 'range',
+      min: 4,
+      max: 30,
+      passo: 2,
+      unidade: 'px',
+      padrao: 14,
+    },
+    {
+      id: 'duracao',
+      rotulo: 'duração',
+      tipo: 'range',
+      min: 400,
+      max: 2000,
+      passo: 100,
+      unidade: 'ms',
+      padrao: 900,
+    },
   ],
   gerar: (v) => {
     const n = Number(v['copias']);
     const ecos = (texto: string) =>
-      Array.from({ length: n }, (_, i) => `<span class="eco" aria-hidden="true" style="--i: ${i + 1}">${texto}</span>`).join('');
+      Array.from(
+        { length: n },
+        (_, i) => `<span class="eco" aria-hidden="true" style="--i: ${i + 1}">${texto}</span>`,
+      ).join('');
     return {
       html: `<section class="oferta">
   <div class="aura" aria-hidden="true"></div>

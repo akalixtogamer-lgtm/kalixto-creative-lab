@@ -104,6 +104,18 @@ export class NoMock {
   setRangeBoundVariable(_i: number, _f: number, campo: string, v: any): void {
     this.boundVariables[campo] = { type: 'VARIABLE_ALIAS', id: v.id };
   }
+  /** Exportação de vetores (Figma: exportAsync({ format: 'SVG_STRING' })). */
+  async exportAsync(_op?: unknown): Promise<string> {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" onload="x()"><path d="M0 0L24 24"/><script>alert(1)</script></svg>';
+  }
+  /** Interações do protótipo (Figma: setReactionsAsync). */
+  reactions: any[] = [];
+  async setReactionsAsync(r: any[]): Promise<void> {
+    for (const x of r)
+      for (const a of x.actions)
+        if (a.type === 'NODE' && !a.destinationId) throw new Error('destinationId ausente');
+    this.reactions = r;
+  }
   remove(): void {
     if (this.parent) this.parent.children = this.parent.children.filter((c) => c !== this);
     this.parent = null;

@@ -7,6 +7,31 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.10.0-rc.1] — 2026-11-18 · KCX — Construtor de componentes e Figma → Studio
+
+### Adicionado
+- **Construtor no KCX Studio** (`/kcx/criar`): escolha o tipo, dê os nomes dos botões, links, abas e
+  slides, escolha a animação, as cores e o arredondamento, com preview ao vivo do código de verdade.
+  **16 tipos**: navbar (vira menu sanduíche abaixo de 720 px), menu sanduíche, menu lateral (gaveta),
+  abas, tab bar de app, botão, card de foto, card de vídeo, carrossel, acordeão (FAQ), card de preço,
+  modal (`<dialog>`), aviso (toast), formulário, hero e rodapé — cada um com 3 ou 4 animações.
+- **Meus componentes**: o que você cria fica salvo no navegador e abre no mesmo editor (variáveis,
+  presets, código, Angular, exportação). “Editar no construtor” reabre a configuração; “Excluir” remove.
+- **Interações de protótipo no Figma**: o plugin cria as reactions — clicar no ícone abre o menu,
+  as setas passam o slide, a aba troca, o modal abre e fecha, o hover troca a variante — com Smart
+  Animate. Testado no Figma real (menu sanduíche: 0 vínculos recusados, 2 interações).
+- **Figma → Studio**: botão “Enviar seleção para o lab” no plugin. O frame desenhado vira `.kcx.json`
+  com estrutura, cores (com o nome das variáveis do Figma), textos, arredondamentos, espaçamentos e
+  vetores (SVG limpo). No Studio: “Importar do Figma” e, no editor, a variável **Animação**
+  (entrada, hover ou contínua) e **Elementos em sequência**.
+- Auto Layout: frames podem ocupar a largura do pai (`encher`) e alinhar no eixo cruzado (`alinhar`).
+- Preview KCX aceita imagens e vídeos por `https:` (cards de foto e vídeo).
+
+### Limitações honestas
+- Abrir/fechar (menus, modal, acordeão) existe nos tipos do construtor; um desenho importado do Figma
+  recebe animações de entrada, hover ou contínuas.
+- Imagens e vídeos não vão para o Figma pelo plugin: a camada fica pronta para você arrastar a foto.
+
 ## [1.9.0-rc.1] — 2026-11-18 · KCX — Kalixto Component Exchange
 
 ### Adicionado

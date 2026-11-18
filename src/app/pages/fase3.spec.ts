@@ -11,18 +11,24 @@ describe('Fase 3', () => {
   let harness: RouterTestingHarness;
   const el = () => harness.routeNativeElement as HTMLElement;
   const botao = (texto: string) =>
-    [...el().querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent?.includes(texto))!;
+    [...el().querySelectorAll<HTMLButtonElement>('button')].find((b) =>
+      b.textContent?.includes(texto),
+    )!;
 
   beforeEach(async () => {
     localStorage.clear();
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
   describe('SVG Lab', () => {
     it.each(SVG_DEMOS.map((d) => d.id))('abre a demo "%s"', async (id) => {
       await harness.navigateByUrl(`/labs/svg?demo=${id}`);
-      expect(el().querySelector('#demo-titulo')?.textContent).toContain(SVG_DEMOS.find((d) => d.id === id)!.titulo);
+      expect(el().querySelector('#demo-titulo')?.textContent).toContain(
+        SVG_DEMOS.find((d) => d.id === id)!.titulo,
+      );
       expect(el().querySelector('.palco svg')).toBeTruthy();
     });
   });
@@ -90,7 +96,9 @@ describe('Fase 3', () => {
     it('corrige a resposta e mostra a explicação', async () => {
       await harness.navigateByUrl('/exercicios?lab=css');
       const q = EXERCICIOS.find((x) => x.labId === 'css')!;
-      const alternativas = el().querySelectorAll<HTMLButtonElement>('.questao')[0].querySelectorAll('.alternativa');
+      const alternativas = el()
+        .querySelectorAll<HTMLButtonElement>('.questao')[0]
+        .querySelectorAll('.alternativa');
       (alternativas[q.correta] as HTMLButtonElement).click();
       harness.detectChanges();
       expect(el().textContent).toContain('Correto!');

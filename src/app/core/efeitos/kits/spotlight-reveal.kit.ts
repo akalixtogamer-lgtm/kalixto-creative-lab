@@ -8,8 +8,10 @@ export const SPOTLIGHT_REVEAL: EffectKit = {
     nomeAmigavel: 'Lanterna que revela',
     categoria: 'cursor',
     subcategoria: 'Máscaras guiadas pelo ponteiro',
-    descricao: 'Uma camada escura cobre o conteúdo e o ponteiro abre um círculo de luz, como uma lanterna.',
-    objetivoVisual: 'Criar descoberta e curiosidade: o usuário explora a área para ver o que está escondido.',
+    descricao:
+      'Uma camada escura cobre o conteúdo e o ponteiro abre um círculo de luz, como uma lanterna.',
+    objetivoVisual:
+      'Criar descoberta e curiosidade: o usuário explora a área para ver o que está escondido.',
     aplicacoes: ['Heros interativos', 'Revelação de produto', 'Easter eggs e jogos'],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
@@ -22,20 +24,53 @@ export const SPOTLIGHT_REVEAL: EffectKit = {
       'A distância entre as duas paradas do gradiente (raio e raio + borda) define se a borda da luz é dura ou suave.',
       'O botão "Acender tudo" remove a camada: é a alternativa para teclado e para quem não usa ponteiro.',
     ],
-    alternativa: 'clip-path: circle(R at x y) recorta com borda dura e funciona em ainda mais navegadores; mask-image permite borda suave.',
-    compatibilidade: 'mask-image sem prefixo: Chrome e Edge 120+, Firefox 53+, Safari 15.4+. O CSS inclui -webkit-mask-image para navegadores mais antigos baseados em Chromium.',
+    alternativa:
+      'clip-path: circle(R at x y) recorta com borda dura e funciona em ainda mais navegadores; mask-image permite borda suave.',
+    compatibilidade:
+      'mask-image sem prefixo: Chrome e Edge 120+, Firefox 53+, Safari 15.4+. O CSS inclui -webkit-mask-image para navegadores mais antigos baseados em Chromium.',
     responsividade: 'Funciona com toque: o círculo segue o dedo enquanto ele desliza sobre a área.',
-    acessibilidade: 'O texto escondido está no HTML e é lido normalmente pelo leitor de tela (a camada é decorativa, aria-hidden). O botão Acender tudo dá acesso visual sem ponteiro. Não há movimento automático.',
-    performance: 'Cada movimento troca duas variáveis CSS (uma vez por quadro, com requestAnimationFrame); o navegador repinta só a camada da máscara.',
-    limitacoes: ['A camada escura cobre o conteúdo: links embaixo dela não recebem clique, a menos que a camada tenha pointer-events: none (como aqui).'],
+    acessibilidade:
+      'O texto escondido está no HTML e é lido normalmente pelo leitor de tela (a camada é decorativa, aria-hidden). O botão Acender tudo dá acesso visual sem ponteiro. Não há movimento automático.',
+    performance:
+      'Cada movimento troca duas variáveis CSS (uma vez por quadro, com requestAnimationFrame); o navegador repinta só a camada da máscara.',
+    limitacoes: [
+      'A camada escura cobre o conteúdo: links embaixo dela não recebem clique, a menos que a camada tenha pointer-events: none (como aqui).',
+    ],
     referencias: [MDN.mask, MDN.pointer, MDN.raf],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'raio', rotulo: 'raio da luz', tipo: 'range', min: 40, max: 240, passo: 10, unidade: 'px', padrao: 110 },
-    { id: 'borda', rotulo: 'suavidade da borda', tipo: 'range', min: 0, max: 120, passo: 5, unidade: 'px', padrao: 40 },
-    { id: 'escuro', rotulo: 'escuridão', tipo: 'range', min: 0.6, max: 1, passo: 0.02, unidade: '', padrao: 0.94 },
+    {
+      id: 'raio',
+      rotulo: 'raio da luz',
+      tipo: 'range',
+      min: 40,
+      max: 240,
+      passo: 10,
+      unidade: 'px',
+      padrao: 110,
+    },
+    {
+      id: 'borda',
+      rotulo: 'suavidade da borda',
+      tipo: 'range',
+      min: 0,
+      max: 120,
+      passo: 5,
+      unidade: 'px',
+      padrao: 40,
+    },
+    {
+      id: 'escuro',
+      rotulo: 'escuridão',
+      tipo: 'range',
+      min: 0.6,
+      max: 1,
+      passo: 0.02,
+      unidade: '',
+      padrao: 0.94,
+    },
   ],
   gerar: (v) => {
     const raio = Number(v['raio']);
@@ -175,10 +210,19 @@ export class ${nomeClasse('spotlight-reveal')} {
     ],
   },
   glossario: [
-    { termo: 'mask-image', explicacao: 'Imagem que define o que aparece (opaco) e o que some (transparente).' },
-    { termo: 'radial-gradient(circle at var(--x) var(--y)', explicacao: 'Círculo de luz centrado na posição do ponteiro.' },
+    {
+      termo: 'mask-image',
+      explicacao: 'Imagem que define o que aparece (opaco) e o que some (transparente).',
+    },
+    {
+      termo: 'radial-gradient(circle at var(--x) var(--y)',
+      explicacao: 'Círculo de luz centrado na posição do ponteiro.',
+    },
     { termo: 'touch-action: none', explicacao: 'O toque move a luz em vez de rolar a página.' },
     { termo: 'pointer-events: none', explicacao: 'A camada escura não bloqueia cliques.' },
-    { termo: 'aria-pressed', explicacao: 'Informa ao leitor de tela se o botão Acender tudo está ligado.' },
+    {
+      termo: 'aria-pressed',
+      explicacao: 'Informa ao leitor de tela se o botão Acender tudo está ligado.',
+    },
   ],
 };

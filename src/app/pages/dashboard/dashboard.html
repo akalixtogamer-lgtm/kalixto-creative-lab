@@ -3,11 +3,16 @@
   <header class="hero kx-glass">
     <div class="hero__logo"><kx-logo [tamanho]="220" descritiva /></div>
     <p class="kx-eyebrow">
-      {{ roadmapCompleto ? 'Roadmap completo · 6 fases prontas para avaliação' : 'Fase ' + faseAtual.numero + ' · ' + faseAtual.titulo }}
+      {{
+        roadmapCompleto
+          ? 'Roadmap completo · 6 fases prontas para avaliação'
+          : 'Fase ' + faseAtual.numero + ' · ' + faseAtual.titulo
+      }}
     </p>
     <h1 class="kx-title"><span class="kx-gradient-text">KALIXTO</span> CREATIVE LAB</h1>
     <p class="kx-lead">
-      Um laboratório para aprender Creative Development mexendo: ajuste, execute, veja o código e entenda.
+      Um laboratório para aprender Creative Development mexendo: ajuste, execute, veja o código e
+      entenda.
     </p>
     <div class="hero__actions">
       @if (primeiroDisponivel; as lab) {
@@ -21,7 +26,9 @@
       @for (s of stats; track s.rotulo) {
         <div>
           <dt class="sr-only">{{ s.rotulo }}</dt>
-          <dd><strong>{{ s.valor }}</strong> <span>{{ s.rotulo }}</span></dd>
+          <dd>
+            <strong>{{ s.valor }}</strong> <span>{{ s.rotulo }}</span>
+          </dd>
         </div>
       }
     </dl>
@@ -32,17 +39,29 @@
     <div class="meu__texto">
       <h2 id="meu-titulo" class="kx-section-title">Seu progresso</h2>
       <p class="kx-muted">
-        {{ meuProgresso().feitas }} de {{ meuProgresso().total }} demos executadas · ★ {{ meuProgresso().desafios }} desafios
+        {{ meuProgresso().feitas }} de {{ meuProgresso().total }} demos executadas · ★
+        {{ meuProgresso().desafios }} desafios
       </p>
-      <div class="kx-progress meu__barra" role="progressbar" [attr.aria-valuenow]="meuProgresso().pct"
-        aria-valuemin="0" aria-valuemax="100" aria-label="Progresso geral">
+      <div
+        class="kx-progress meu__barra"
+        role="progressbar"
+        [attr.aria-valuenow]="meuProgresso().pct"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-label="Progresso geral"
+      >
         <span [style.width.%]="meuProgresso().pct"></span>
       </div>
     </div>
     <div class="meu__acoes">
       @if (meuProgresso().proxima; as p) {
-        <a class="kx-btn kx-btn--primary" [routerLink]="['/labs', p.lab]" [queryParams]="{ demo: p.demo.id }">
-          <kx-icon name="play" /> {{ meuProgresso().feitas ? 'Continuar' : 'Começar' }}: {{ p.demo.topico }}
+        <a
+          class="kx-btn kx-btn--primary"
+          [routerLink]="['/labs', p.lab]"
+          [queryParams]="{ demo: p.demo.id }"
+        >
+          <kx-icon name="play" /> {{ meuProgresso().feitas ? 'Continuar' : 'Começar' }}:
+          {{ p.demo.topico }}
         </a>
       }
       <a class="kx-btn kx-btn--ghost" routerLink="/trilha">Ver trilha</a>
@@ -82,8 +101,14 @@
           <h3 class="kx-card__title">{{ lab.titulo }}</h3>
           <p class="kx-muted">{{ lab.resumo }}</p>
           <div class="card-prog">
-            <div class="kx-progress" role="progressbar" [attr.aria-valuenow]="prog.pct" aria-valuemin="0" aria-valuemax="100"
-              [attr.aria-label]="'Progresso de ' + lab.titulo">
+            <div
+              class="kx-progress"
+              role="progressbar"
+              [attr.aria-valuenow]="prog.pct"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-label]="'Progresso de ' + lab.titulo"
+            >
               <span [style.width.%]="prog.pct"></span>
             </div>
             <small class="kx-muted">{{ prog.feitos }} de {{ prog.total }} demos</small>
@@ -104,7 +129,11 @@
     <h2 id="futuro" class="kx-section-title">Laboratórios avançados · Fases 3 a 5</h2>
     <div class="kx-grid">
       @for (lab of labsFuturos; track lab.id) {
-        <a class="kx-card is-futuro" [routerLink]="['/labs', lab.id]" [attr.data-acento]="lab.acento">
+        <a
+          class="kx-card is-futuro"
+          [routerLink]="['/labs', lab.id]"
+          [attr.data-acento]="lab.acento"
+        >
           <span class="kx-card__num">LAB {{ lab.numero }} · Fase {{ lab.fase }}</span>
           <h3 class="kx-card__title">{{ lab.titulo }}</h3>
           <p class="kx-muted">{{ lab.resumo }}</p>

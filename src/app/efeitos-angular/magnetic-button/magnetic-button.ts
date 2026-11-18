@@ -10,8 +10,8 @@ import { Component, ElementRef, signal, viewChild } from '@angular/core';
   },
 })
 export class MagneticButton {
-  private readonly forca = 0.4;    // fração da distância que o botão anda
-  private readonly alcance = 80;   // px além da borda do botão
+  private readonly forca = 0.4; // fração da distância que o botão anda
+  private readonly alcance = 80; // px além da borda do botão
   private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)');
   private readonly botao = viewChild.required<ElementRef<HTMLButtonElement>>('botao');
   private quadro = 0;

@@ -15,8 +15,10 @@ export const STICKY_STACK: EffectKit = {
     nomeAmigavel: 'Cards empilhados no scroll',
     categoria: 'scroll',
     subcategoria: 'Seções presas (sticky)',
-    descricao: 'Ao rolar, cada card gruda no topo e o próximo sobe por cima dele, enquanto o de baixo encolhe e escurece — formando uma pilha.',
-    objetivoVisual: 'Apresentar etapas, serviços ou cases um de cada vez, com sensação de profundidade e progresso.',
+    descricao:
+      'Ao rolar, cada card gruda no topo e o próximo sobe por cima dele, enquanto o de baixo encolhe e escurece — formando uma pilha.',
+    objetivoVisual:
+      'Apresentar etapas, serviços ou cases um de cada vez, com sensação de profundidade e progresso.',
     aplicacoes: ['Etapas de um processo', 'Serviços de uma agência', 'Cases e depoimentos'],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
@@ -28,17 +30,24 @@ export const STICKY_STACK: EffectKit = {
       'O JavaScript só faz o "encolher": para cada card, mede a distância do próximo card até o ponto onde ele vai grudar. Quanto mais perto, menor e mais escuro fica o de baixo.',
       'Esse progresso (0 a 1) vira scale e brightness por propriedades individuais, atualizadas uma vez por quadro.',
     ],
-    alternativa: 'Com CSS scroll-driven animations: cada card dentro de um "trilho" com view-timeline e animation-range, sem JavaScript (Chrome/Edge; Safari 26+). Com GSAP: ScrollTrigger com pin e scrub em cada card.',
-    compatibilidade: 'position: sticky e a propriedade individual scale: todos os navegadores atuais.',
+    alternativa:
+      'Com CSS scroll-driven animations: cada card dentro de um "trilho" com view-timeline e animation-range, sem JavaScript (Chrome/Edge; Safari 26+). Com GSAP: ScrollTrigger com pin e scrub em cada card.',
+    compatibilidade:
+      'position: sticky e a propriedade individual scale: todos os navegadores atuais.',
     responsividade: 'Alturas em vh e largura limitada; funciona igual no celular.',
-    acessibilidade: 'Os cards são conteúdo normal, na ordem de leitura. Com prefers-reduced-motion eles continuam empilhando (é a rolagem do usuário), mas não encolhem.',
-    performance: 'Um getBoundingClientRect por card a cada quadro de rolagem; escala e filtro são compostos na GPU.',
+    acessibilidade:
+      'Os cards são conteúdo normal, na ordem de leitura. Com prefers-reduced-motion eles continuam empilhando (é a rolagem do usuário), mas não encolhem.',
+    performance:
+      'Um getBoundingClientRect por card a cada quadro de rolagem; escala e filtro são compostos na GPU.',
     limitacoes: [
       'sticky não funciona se algum ancestral tiver overflow: hidden/auto.',
       'O último card precisa de espaço depois dele (margem) para a pilha terminar antes da próxima seção.',
     ],
     referencias: [
-      { titulo: 'MDN — position: sticky', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/position' },
+      {
+        titulo: 'MDN — position: sticky',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/position',
+      },
       MDN.scrollTimeline,
       MDN.reduzir,
     ],
@@ -46,18 +55,47 @@ export const STICKY_STACK: EffectKit = {
     status: 'validado',
   },
   params: [
-    { id: 'deslocamento', rotulo: 'degrau entre cards', tipo: 'range', min: 0, max: 40, passo: 4, unidade: 'px', padrao: 24 },
-    { id: 'encolher', rotulo: 'tamanho do card de baixo', tipo: 'range', min: 0.8, max: 1, passo: 0.02, unidade: '×', padrao: 0.9 },
-    { id: 'raio', rotulo: 'arredondamento', tipo: 'range', min: 0, max: 40, passo: 4, unidade: 'px', padrao: 24 },
+    {
+      id: 'deslocamento',
+      rotulo: 'degrau entre cards',
+      tipo: 'range',
+      min: 0,
+      max: 40,
+      passo: 4,
+      unidade: 'px',
+      padrao: 24,
+    },
+    {
+      id: 'encolher',
+      rotulo: 'tamanho do card de baixo',
+      tipo: 'range',
+      min: 0.8,
+      max: 1,
+      passo: 0.02,
+      unidade: '×',
+      padrao: 0.9,
+    },
+    {
+      id: 'raio',
+      rotulo: 'arredondamento',
+      tipo: 'range',
+      min: 0,
+      max: 40,
+      passo: 4,
+      unidade: 'px',
+      padrao: 24,
+    },
   ],
   gerar: (v) => ({
     html: `<section class="intro"><p>Role para baixo ↓</p></section>
 
 <section class="pilha-cards">
-${CARDS.map((c, i) => `  <article class="card-pilha" style="--i: ${i}; --fundo: ${c.cor}">
+${CARDS.map(
+  (c, i) => `  <article class="card-pilha" style="--i: ${i}; --fundo: ${c.cor}">
     <span>0${i + 1}</span>
     <h2>${c.titulo}</h2>
-  </article>`).join('\n')}
+  </article>`,
+).join('\n')}
 </section>
 
 <section class="fim"><p>Fim da página</p></section>`,
@@ -121,7 +159,11 @@ atualizar();`,
   styleUrl: './sticky-stack.css',
 })
 export class ${nomeClasse('sticky-stack')} {
-  protected readonly cards = ${JSON.stringify(CARDS).replace(/"(\w+)":/g, '$1: ').replace(/"/g, "'").replace(/,(\w)/g, ', $1').replace(/},{/g, '}, {')};
+  protected readonly cards = ${JSON.stringify(CARDS)
+    .replace(/"(\w+)":/g, '$1: ')
+    .replace(/"/g, "'")
+    .replace(/,(\w)/g, ', $1')
+    .replace(/},{/g, '}, {')};
   private readonly elementos = viewChildren<ElementRef<HTMLElement>>('card');
   private readonly encolher = ${v['encolher']};
   private readonly degrau = ${v['deslocamento']};
@@ -182,7 +224,10 @@ export class ${nomeClasse('sticky-stack')} {
   },
   glossario: [
     { termo: 'position: sticky', explicacao: 'O card gruda no topo enquanto o contêiner passa.' },
-    { termo: 'top: calc(12vh + var(--i) *', explicacao: 'Cada card gruda um degrau abaixo do anterior.' },
+    {
+      termo: 'top: calc(12vh + var(--i) *',
+      explicacao: 'Cada card gruda um degrau abaixo do anterior.',
+    },
     { termo: 'transform-origin: center top', explicacao: 'Encolhe a partir da borda de cima.' },
     { termo: 'passive: true', explicacao: 'Avisa que o ouvinte de rolagem não bloqueia o scroll.' },
   ],

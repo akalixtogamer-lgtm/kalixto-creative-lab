@@ -1,8 +1,15 @@
 <div class="pilha" role="img" [attr.aria-label]="descricao" [class.is-aberta]="aberta()">
   @for (nome of camadas; track nome; let n = $index) {
-    <div class="camada" [style.--n]="n"><span>{{ nome }}</span></div>
+    <div class="camada" [style.--n]="n">
+      <span>{{ nome }}</span>
+    </div>
   }
 </div>
-<button class="separar" type="button" [attr.aria-pressed]="aberta()" (click)="aberta.set(!aberta())">
+<button
+  class="separar"
+  type="button"
+  [attr.aria-pressed]="aberta()"
+  (click)="aberta.set(!aberta())"
+>
   {{ aberta() ? 'Juntar camadas' : 'Separar camadas' }}
 </button>

@@ -1,13 +1,23 @@
 <svg class="filtros" width="0" height="0" aria-hidden="true">
   <filter id="gooey">
     <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="borrado" />
-    <feColorMatrix in="borrado" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" />
+    <feColorMatrix
+      in="borrado"
+      mode="matrix"
+      values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9"
+    />
   </filter>
 </svg>
 <section #papel class="papel" (pointerdown)="pingar($event, papel)">
   <div class="tinta" aria-hidden="true">
     @for (g of gotas; track $index) {
-      <span class="gota" [style.--dx.%]="g.dx" [style.--dy.%]="g.dy" [style.--s.px]="g.s" [style.--i]="$index"></span>
+      <span
+        class="gota"
+        [style.--dx.%]="g.dx"
+        [style.--dy.%]="g.dy"
+        [style.--s.px]="g.s"
+        [style.--i]="$index"
+      ></span>
     }
     @for (p of pingos(); track p.id) {
       <span class="gota pingo" [style.--x]="p.x" [style.--y]="p.y" [style.--s]="p.s"></span>

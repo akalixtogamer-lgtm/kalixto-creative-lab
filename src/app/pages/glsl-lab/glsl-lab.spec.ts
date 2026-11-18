@@ -12,7 +12,9 @@ describe('WebGL & GLSL', () => {
   const codigo = () => el().querySelector('.cv__codigo')?.textContent ?? '';
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
@@ -23,15 +25,18 @@ describe('WebGL & GLSL', () => {
     expect(codigo()).toContain('gl_FragColor');
   });
 
-  it.each(GLSL_DEMOS.map((d) => d.id))('demo "%s": todo uniform usado pelos controles existe no shader', (id) => {
-    const s = SHADERS[id];
-    const demo = GLSL_DEMOS.find((d) => d.id === id)!;
-    const fonte = s.vertex + s.fragment;
-    for (const nome of Object.keys(s.uniforms(valoresPadrao(demo)))) {
-      expect(fonte, `uniform ${nome} em ${id}`).toContain(`uniform `);
-      expect(fonte).toMatch(new RegExp(`uniform \\w+ ${nome};`));
-    }
-  });
+  it.each(GLSL_DEMOS.map((d) => d.id))(
+    'demo "%s": todo uniform usado pelos controles existe no shader',
+    (id) => {
+      const s = SHADERS[id];
+      const demo = GLSL_DEMOS.find((d) => d.id === id)!;
+      const fonte = s.vertex + s.fragment;
+      for (const nome of Object.keys(s.uniforms(valoresPadrao(demo)))) {
+        expect(fonte, `uniform ${nome} em ${id}`).toContain(`uniform `);
+        expect(fonte).toMatch(new RegExp(`uniform \\w+ ${nome};`));
+      }
+    },
+  );
 
   it('o código do Code Viewer acompanha o controle', async () => {
     await harness.navigateByUrl('/labs/webgl?demo=glsl');

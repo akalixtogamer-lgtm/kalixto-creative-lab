@@ -21,12 +21,27 @@
   font-size: clamp(1.6rem, 6vw, 2.8rem);
   font-weight: 700;
   letter-spacing: -0.03em;
-  transition: color 300ms ease, padding 300ms ease;
+  transition:
+    color 300ms ease,
+    padding 300ms ease;
 }
-.projetos a small { font-size: 14px; font-weight: 400; color: #8f88b5; }
-.projetos:hover a { color: #4a4466; }
-.projetos a:hover, .projetos a:focus-visible { color: #f4f2ff; padding-left: 16px; }
-.projetos a:focus-visible { outline: 2px solid #22e3ff; outline-offset: 2px; }
+.projetos a small {
+  font-size: 14px;
+  font-weight: 400;
+  color: #8f88b5;
+}
+.projetos:hover a {
+  color: #4a4466;
+}
+.projetos a:hover,
+.projetos a:focus-visible {
+  color: #f4f2ff;
+  padding-left: 16px;
+}
+.projetos a:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 2px;
+}
 
 /* Uma prévia só, presa à tela, que segue o ponteiro */
 .previa {
@@ -42,10 +57,18 @@
   pointer-events: none;
   opacity: 0;
   scale: 0.8;
-  transition: opacity 250ms ease, scale 250ms ease;
+  transition:
+    opacity 250ms ease,
+    scale 250ms ease;
 }
-.previa.is-visivel { opacity: 1; scale: 1; }
+.previa.is-visivel {
+  opacity: 1;
+  scale: 1;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .previa, .projetos a { transition: none; }
+  .previa,
+  .projetos a {
+    transition: none;
+  }
 }

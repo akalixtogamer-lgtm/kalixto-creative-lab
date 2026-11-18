@@ -15,34 +15,82 @@ export const HOVER_IMAGE_LIST: EffectKit = {
     nomeAmigavel: 'Lista com imagem que segue o cursor',
     categoria: 'cursor',
     subcategoria: 'Prévia flutuante',
-    descricao: 'Uma lista de projetos em texto grande; ao passar o mouse numa linha, a imagem daquele projeto aparece flutuando junto ao cursor, com atraso suave e inclinação pela velocidade.',
-    objetivoVisual: 'Manter a página limpa e tipográfica, mas dar uma prévia visual imediata de cada trabalho — padrão clássico de portfólios premiados.',
-    aplicacoes: ['Lista de projetos de portfólio', 'Cardápio com foto do prato', 'Lista de artistas, eventos ou produtos'],
+    descricao:
+      'Uma lista de projetos em texto grande; ao passar o mouse numa linha, a imagem daquele projeto aparece flutuando junto ao cursor, com atraso suave e inclinação pela velocidade.',
+    objetivoVisual:
+      'Manter a página limpa e tipográfica, mas dar uma prévia visual imediata de cada trabalho — padrão clássico de portfólios premiados.',
+    aplicacoes: [
+      'Lista de projetos de portfólio',
+      'Cardápio com foto do prato',
+      'Lista de artistas, eventos ou produtos',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['mouse', 'hover', 'keyboard'],
-    tags: ['hover reveal', 'imagem flutuante', 'lista de projetos', 'portfólio', 'cursor', 'lerp', 'tendência 2026'],
+    tags: [
+      'hover reveal',
+      'imagem flutuante',
+      'lista de projetos',
+      'portfólio',
+      'cursor',
+      'lerp',
+      'tendência 2026',
+    ],
     explicacao: [
       'Existe uma única "prévia" fixa na página. Entrar numa linha troca o fundo dela pelo do projeto e a mostra; sair da lista a esconde.',
       'A posição segue o mouse com interpolação: a cada quadro a prévia anda uma fração (atraso) da distância até o cursor. Fração pequena = movimento preguiçoso e elegante.',
       'A inclinação vem da velocidade horizontal (diferença entre o alvo e a posição atual), limitada ao ângulo máximo — ela "balança" ao mover rápido.',
       'No teclado, o foco num link mostra a prévia ao lado da linha, sem depender do mouse.',
     ],
-    alternativa: 'Com GSAP: gsap.quickTo(previa, "x", { duration: 0.6, ease: "power3" }) faz a interpolação em uma linha. Em WebGL, a imagem pode ainda deformar com a velocidade (efeito "rgb shift").',
-    compatibilidade: 'Pointer events e propriedades individuais (translate, rotate): todos os navegadores atuais.',
-    responsividade: 'Em telas de toque não há hover: a prévia só aparece com ponteiro do tipo mouse (pointerType), e os links continuam funcionando normalmente.',
-    acessibilidade: 'A prévia é decorativa (aria-hidden); o conteúdo está nos links. Foco por teclado mostra a prévia. Com prefers-reduced-motion não há atraso nem inclinação.',
-    performance: 'Um loop de requestAnimationFrame que para sozinho quando a prévia alcança o cursor; só translate e rotate mudam.',
-    limitacoes: ['Com imagens reais, pré-carregue todas (new Image()) para a troca não piscar no primeiro hover.'],
+    alternativa:
+      'Com GSAP: gsap.quickTo(previa, "x", { duration: 0.6, ease: "power3" }) faz a interpolação em uma linha. Em WebGL, a imagem pode ainda deformar com a velocidade (efeito "rgb shift").',
+    compatibilidade:
+      'Pointer events e propriedades individuais (translate, rotate): todos os navegadores atuais.',
+    responsividade:
+      'Em telas de toque não há hover: a prévia só aparece com ponteiro do tipo mouse (pointerType), e os links continuam funcionando normalmente.',
+    acessibilidade:
+      'A prévia é decorativa (aria-hidden); o conteúdo está nos links. Foco por teclado mostra a prévia. Com prefers-reduced-motion não há atraso nem inclinação.',
+    performance:
+      'Um loop de requestAnimationFrame que para sozinho quando a prévia alcança o cursor; só translate e rotate mudam.',
+    limitacoes: [
+      'Com imagens reais, pré-carregue todas (new Image()) para a troca não piscar no primeiro hover.',
+    ],
     referencias: [MDN.pointer, MDN.raf, MDN.pointerMedia],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'atraso', rotulo: 'suavidade do movimento', tipo: 'range', min: 0.05, max: 0.5, passo: 0.05, unidade: '', padrao: 0.15 },
-    { id: 'inclinacao', rotulo: 'inclinação máxima', tipo: 'range', min: 0, max: 20, passo: 2, unidade: 'deg', padrao: 8 },
-    { id: 'tamanho', rotulo: 'tamanho da prévia', tipo: 'range', min: 140, max: 300, passo: 20, unidade: 'px', padrao: 200 },
+    {
+      id: 'atraso',
+      rotulo: 'suavidade do movimento',
+      tipo: 'range',
+      min: 0.05,
+      max: 0.5,
+      passo: 0.05,
+      unidade: '',
+      padrao: 0.15,
+    },
+    {
+      id: 'inclinacao',
+      rotulo: 'inclinação máxima',
+      tipo: 'range',
+      min: 0,
+      max: 20,
+      passo: 2,
+      unidade: 'deg',
+      padrao: 8,
+    },
+    {
+      id: 'tamanho',
+      rotulo: 'tamanho da prévia',
+      tipo: 'range',
+      min: 140,
+      max: 300,
+      passo: 20,
+      unidade: 'px',
+      padrao: 200,
+    },
   ],
   gerar: (v) => ({
     html: `<ul class="projetos">
@@ -160,7 +208,10 @@ interface Projeto {
   styleUrl: './hover-image-list.css',
 })
 export class ${nomeClasse('hover-image-list')} {
-  protected readonly projetos: Projeto[] = ${JSON.stringify(PROJETOS, null, 2).replace(/\n/g, '\n  ').replace(/"(\w+)":/g, '$1:').replace(/"/g, "'")};
+  protected readonly projetos: Projeto[] = ${JSON.stringify(PROJETOS, null, 2)
+    .replace(/\n/g, '\n  ')
+    .replace(/"(\w+)":/g, '$1:')
+    .replace(/"/g, "'")};
   private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   private readonly atraso = this.reduzir ? 1 : ${v['atraso']};
   private readonly inclinacao = this.reduzir ? 0 : ${v['inclinacao']};
@@ -251,7 +302,10 @@ export class ${nomeClasse('hover-image-list')} {
   glossario: [
     { termo: 'pointerType', explicacao: 'Diferencia mouse, caneta e toque.' },
     { termo: 'position: fixed', explicacao: 'A prévia usa as coordenadas da janela.' },
-    { termo: 'dataset.fundo', explicacao: 'Lê a imagem/fundo guardado no atributo data-fundo do link.' },
+    {
+      termo: 'dataset.fundo',
+      explicacao: 'Lê a imagem/fundo guardado no atributo data-fundo do link.',
+    },
     { termo: 'requestAnimationFrame', explicacao: 'Move a prévia uma vez por quadro de tela.' },
   ],
 };

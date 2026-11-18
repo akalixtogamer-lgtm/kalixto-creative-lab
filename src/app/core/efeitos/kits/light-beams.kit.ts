@@ -15,38 +15,84 @@ export const LIGHT_BEAMS: EffectKit = {
     nomeAmigavel: 'Feixes de luz de palco',
     categoria: 'luz-profundidade',
     subcategoria: 'Luz volumétrica',
-    descricao: 'Refletores no alto do palco lançam feixes de luz que varrem a cena devagar, se cruzando sobre um card de vidro no centro.',
-    objetivoVisual: 'Criar clima de show, lançamento ou "momento de destaque" para um depoimento, um número ou uma oferta.',
-    aplicacoes: ['Destaque de depoimento ou case', 'Páginas de eventos, shows e dança', 'Lançamentos de produto'],
+    descricao:
+      'Refletores no alto do palco lançam feixes de luz que varrem a cena devagar, se cruzando sobre um card de vidro no centro.',
+    objetivoVisual:
+      'Criar clima de show, lançamento ou "momento de destaque" para um depoimento, um número ou uma oferta.',
+    aplicacoes: [
+      'Destaque de depoimento ou case',
+      'Páginas de eventos, shows e dança',
+      'Lançamentos de produto',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['spotlight', 'refletor', 'feixe de luz', 'palco', 'conic-gradient', 'mix-blend-mode', 'show', 'referência em vídeo'],
+    tags: [
+      'spotlight',
+      'refletor',
+      'feixe de luz',
+      'palco',
+      'conic-gradient',
+      'mix-blend-mode',
+      'show',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Cada feixe é um retângulo alto e estreito, preso pelo topo (transform-origin: top center), com um gradiente que vai da cor da luz até transparente.',
       'clip-path em forma de trapézio deixa o feixe fino no refletor e largo embaixo; filter: blur() suaviza a borda como luz no ar.',
       'Cada feixe balança (rotate) para um lado e para o outro, com duração e atraso diferentes — por isso eles se cruzam em momentos variados.',
       'mix-blend-mode: screen soma as luzes: onde dois feixes se cruzam, a área fica mais clara, como na vida real.',
     ],
-    alternativa: 'Em Three.js, SpotLight com um cone de material aditivo (ou o plugin de luz volumétrica) dá feixes com perspectiva e poeira de verdade.',
-    compatibilidade: 'clip-path polygon(), filter: blur() e mix-blend-mode: todos os navegadores atuais.',
-    responsividade: 'Feixes posicionados em % da largura; o card central usa clamp() e quebra o texto no celular.',
-    acessibilidade: 'Feixes decorativos (aria-hidden). Movimento infinito com botão Pausar (WCAG 2.2.2). Com prefers-reduced-motion os feixes ficam parados.',
-    performance: 'blur grande em elementos que giram custa: poucos feixes (até 6) e área do palco limitada.',
-    limitacoes: ['blur muito alto em telas grandes pode pesar em celulares simples; reduza o blur ou use imagens PNG dos feixes.'],
+    alternativa:
+      'Em Three.js, SpotLight com um cone de material aditivo (ou o plugin de luz volumétrica) dá feixes com perspectiva e poeira de verdade.',
+    compatibilidade:
+      'clip-path polygon(), filter: blur() e mix-blend-mode: todos os navegadores atuais.',
+    responsividade:
+      'Feixes posicionados em % da largura; o card central usa clamp() e quebra o texto no celular.',
+    acessibilidade:
+      'Feixes decorativos (aria-hidden). Movimento infinito com botão Pausar (WCAG 2.2.2). Com prefers-reduced-motion os feixes ficam parados.',
+    performance:
+      'blur grande em elementos que giram custa: poucos feixes (até 6) e área do palco limitada.',
+    limitacoes: [
+      'blur muito alto em telas grandes pode pesar em celulares simples; reduza o blur ou use imagens PNG dos feixes.',
+    ],
     referencias: [
-      { titulo: 'MDN — clip-path', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path' },
-      { titulo: 'MDN — mix-blend-mode', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode' },
+      {
+        titulo: 'MDN — clip-path',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path',
+      },
+      {
+        titulo: 'MDN — mix-blend-mode',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode',
+      },
       MDN.wcagMovimento,
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'feixes', rotulo: 'número de feixes', tipo: 'range', min: 2, max: 6, passo: 1, unidade: '', padrao: 4 },
+    {
+      id: 'feixes',
+      rotulo: 'número de feixes',
+      tipo: 'range',
+      min: 2,
+      max: 6,
+      passo: 1,
+      unidade: '',
+      padrao: 4,
+    },
     { id: 'cor', rotulo: 'cor da luz', tipo: 'select', opcoes: LUZES, padrao: '196 181 253' },
-    { id: 'velocidade', rotulo: 'tempo de uma varredura', tipo: 'range', min: 3, max: 12, passo: 1, unidade: 's', padrao: 6 },
+    {
+      id: 'velocidade',
+      rotulo: 'tempo de uma varredura',
+      tipo: 'range',
+      min: 3,
+      max: 12,
+      passo: 1,
+      unidade: 's',
+      padrao: 6,
+    },
   ],
   gerar: (v) => {
     const n = Number(v['feixes']);
@@ -186,9 +232,15 @@ export class ${nomeClasse('light-beams')} {
     ],
   },
   glossario: [
-    { termo: 'transform-origin: top center', explicacao: 'O feixe gira a partir do refletor, no topo.' },
+    {
+      termo: 'transform-origin: top center',
+      explicacao: 'O feixe gira a partir do refletor, no topo.',
+    },
     { termo: 'clip-path: polygon(', explicacao: 'Recorta o feixe em forma de trapézio.' },
     { termo: 'mix-blend-mode: screen', explicacao: 'Soma as luzes onde os feixes se cruzam.' },
-    { termo: 'animation-play-state: paused', explicacao: 'Congela os feixes quando a pessoa pausa.' },
+    {
+      termo: 'animation-play-state: paused',
+      explicacao: 'Congela os feixes quando a pessoa pausa.',
+    },
   ],
 };

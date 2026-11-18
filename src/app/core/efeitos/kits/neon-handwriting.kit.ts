@@ -19,41 +19,85 @@ export const NEON_HANDWRITING: EffectKit = {
     nomeAmigavel: 'Escrita neon à mão',
     categoria: 'tipografia',
     subcategoria: 'Texto desenhado e letreiros',
-    descricao: 'Uma palavra em letra cursiva é "escrita" traço a traço e depois acende como um letreiro de neon, com uma leve oscilação de luz.',
-    objetivoVisual: 'Dar ênfase emocional a uma palavra-chave, como a palavra manuscrita em destaque no meio de uma frase.',
-    aplicacoes: ['Palavra de destaque num título', 'Assinaturas e logos manuscritos', 'Letreiros de eventos e bares'],
+    descricao:
+      'Uma palavra em letra cursiva é "escrita" traço a traço e depois acende como um letreiro de neon, com uma leve oscilação de luz.',
+    objetivoVisual:
+      'Dar ênfase emocional a uma palavra-chave, como a palavra manuscrita em destaque no meio de uma frase.',
+    aplicacoes: [
+      'Palavra de destaque num título',
+      'Assinaturas e logos manuscritos',
+      'Letreiros de eventos e bares',
+    ],
     nivel: 'intermediario',
     tecnologias: ['SVG', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['neon', 'glow', 'handwriting', 'manuscrito', 'stroke-dashoffset', 'letreiro', 'svg text', 'referência em vídeo'],
+    tags: [
+      'neon',
+      'glow',
+      'handwriting',
+      'manuscrito',
+      'stroke-dashoffset',
+      'letreiro',
+      'svg text',
+      'referência em vídeo',
+    ],
     explicacao: [
       'O texto é um <text> de SVG com contorno (stroke). stroke-dasharray transforma o contorno em um traço gigante seguido de um vazio do mesmo tamanho.',
       'Começando com stroke-dashoffset igual ao tamanho do traço, nada aparece; animando até 0, o contorno é "desenhado" na tela.',
       'Quando a escrita termina, uma segunda animação acende o preenchimento (fill-opacity) e duas drop-shadow da mesma cor fazem o brilho do neon.',
       'A terceira animação, infinita, baixa a opacidade em instantes irregulares: é a oscilação típica de um letreiro de neon de verdade.',
     ],
-    alternativa: 'Para uma escrita realmente "à mão", converta a palavra em <path> (no Figma ou Illustrator) e use pathLength="1" — o traço segue a ordem em que a letra é desenhada.',
-    compatibilidade: 'stroke-dasharray em <text> e filter: drop-shadow() em SVG: todos os navegadores atuais. A fonte cursiva depende do sistema (Segoe Script no Windows, Snell Roundhand no macOS/iOS).',
-    responsividade: 'O SVG usa viewBox, então a palavra escala com a largura do palco sem perder nitidez.',
-    acessibilidade: 'O SVG tem role="img" e aria-label com a palavra. A oscilação é sutil (sem flashes acima de 3 por segundo) e some com prefers-reduced-motion, que mostra o letreiro já aceso.',
-    performance: 'drop-shadow é recalculado a cada quadro da oscilação. Num letreiro pequeno é leve; em textos enormes, prefira oscilar só o brilho de uma camada separada.',
+    alternativa:
+      'Para uma escrita realmente "à mão", converta a palavra em <path> (no Figma ou Illustrator) e use pathLength="1" — o traço segue a ordem em que a letra é desenhada.',
+    compatibilidade:
+      'stroke-dasharray em <text> e filter: drop-shadow() em SVG: todos os navegadores atuais. A fonte cursiva depende do sistema (Segoe Script no Windows, Snell Roundhand no macOS/iOS).',
+    responsividade:
+      'O SVG usa viewBox, então a palavra escala com a largura do palco sem perder nitidez.',
+    acessibilidade:
+      'O SVG tem role="img" e aria-label com a palavra. A oscilação é sutil (sem flashes acima de 3 por segundo) e some com prefers-reduced-motion, que mostra o letreiro já aceso.',
+    performance:
+      'drop-shadow é recalculado a cada quadro da oscilação. Num letreiro pequeno é leve; em textos enormes, prefira oscilar só o brilho de uma camada separada.',
     limitacoes: [
       'Num <text>, o traço é desenhado no contorno de cada letra ao mesmo tempo, não na ordem da escrita. Para ordem real, use path (veja a alternativa).',
       'O tamanho do traço (stroke-dasharray) precisa ser maior que o contorno da palavra; palavras mais longas pedem um valor maior.',
     ],
     referencias: [
-      { titulo: 'MDN — stroke-dashoffset', url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset' },
-      { titulo: 'MDN — filter: drop-shadow()', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow' },
+      {
+        titulo: 'MDN — stroke-dashoffset',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset',
+      },
+      {
+        titulo: 'MDN — filter: drop-shadow()',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow',
+      },
       MDN.reduzir,
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'duracao', rotulo: 'tempo da escrita', tipo: 'range', min: 800, max: 4000, passo: 100, unidade: 'ms', padrao: 2200 },
+    {
+      id: 'duracao',
+      rotulo: 'tempo da escrita',
+      tipo: 'range',
+      min: 800,
+      max: 4000,
+      passo: 100,
+      unidade: 'ms',
+      padrao: 2200,
+    },
     { id: 'cor', rotulo: 'cor do neon', tipo: 'select', opcoes: NEONS, padrao: '#ff2e3e' },
-    { id: 'brilho', rotulo: 'intensidade do brilho', tipo: 'range', min: 0, max: 24, passo: 2, unidade: 'px', padrao: 10 },
+    {
+      id: 'brilho',
+      rotulo: 'intensidade do brilho',
+      tipo: 'range',
+      min: 0,
+      max: 24,
+      passo: 2,
+      unidade: 'px',
+      padrao: 10,
+    },
   ],
   gerar: (v) => {
     const dur = Number(v['duracao']);
@@ -131,8 +175,14 @@ document.querySelector('.repetir').addEventListener('click', () => {
   },
   glossario: [
     { termo: 'stroke-dasharray', explicacao: 'Transforma o contorno das letras em traço + vazio.' },
-    { termo: 'stroke-dashoffset', explicacao: 'Desloca o traço; animar até 0 "desenha" a palavra.' },
-    { termo: 'drop-shadow', explicacao: 'Sombra que segue a forma das letras — aqui, colorida, vira brilho.' },
+    {
+      termo: 'stroke-dashoffset',
+      explicacao: 'Desloca o traço; animar até 0 "desenha" a palavra.',
+    },
+    {
+      termo: 'drop-shadow',
+      explicacao: 'Sombra que segue a forma das letras — aqui, colorida, vira brilho.',
+    },
     { termo: 'fill-opacity', explicacao: 'Transparência só do preenchimento das letras.' },
   ],
 };

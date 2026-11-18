@@ -8,36 +8,90 @@ export const SCROLL_ZOOM_HERO: EffectKit = {
     nomeAmigavel: 'Hero que abre no scroll',
     categoria: 'scroll',
     subcategoria: 'Scrollytelling cinematográfico',
-    descricao: 'Uma imagem pequena e arredondada no meio do título cresce até ocupar a tela inteira enquanto as palavras do título se afastam para os lados.',
-    objetivoVisual: 'Transformar a abertura do site numa "entrada de cena": do título para a imagem, com o usuário no controle.',
-    aplicacoes: ['Abertura de portfólio e agência', 'Lançamento de produto', 'Páginas de eventos e filmes'],
+    descricao:
+      'Uma imagem pequena e arredondada no meio do título cresce até ocupar a tela inteira enquanto as palavras do título se afastam para os lados.',
+    objetivoVisual:
+      'Transformar a abertura do site numa "entrada de cena": do título para a imagem, com o usuário no controle.',
+    aplicacoes: [
+      'Abertura de portfólio e agência',
+      'Lançamento de produto',
+      'Páginas de eventos e filmes',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['scroll'],
-    tags: ['zoom', 'hero', 'scroll', 'tela cheia', 'scale', 'sticky', 'scrollytelling', 'tendência 2026'],
+    tags: [
+      'zoom',
+      'hero',
+      'scroll',
+      'tela cheia',
+      'scale',
+      'sticky',
+      'scrollytelling',
+      'tendência 2026',
+    ],
     explicacao: [
       'A seção é alta e o conteúdo fica preso (sticky) na tela enquanto ela passa — é a "trilha" da animação.',
       'O JavaScript só calcula UM número: --p, o progresso de 0 a 1 da rolagem dentro da seção, e grava na seção.',
       'Todo o resto é CSS: scale da moldura, arredondamento e afastamento das palavras são calc() em cima de --p. Mudar o desenho não exige mexer no JS.',
     ],
-    alternativa: 'Sem JS: animation-timeline: view() na seção com animation-range: contain (Chrome/Edge; Safari 26+), usando @supports com esta versão como reserva. Com GSAP: ScrollTrigger com scrub e pin.',
-    compatibilidade: 'position: sticky, variáveis CSS em calc() e propriedades individuais (scale, translate): todos os navegadores atuais.',
-    responsividade: 'A moldura usa vw/vh e as palavras clamp(); o afastamento é em % da largura da palavra, então funciona em qualquer tela.',
-    acessibilidade: 'O título é texto real, legível em qualquer ponto da animação. A animação só acontece com a rolagem; com prefers-reduced-motion a seção mostra o estado final, sem zoom.',
-    performance: 'Uma escrita de variável por quadro; scale e translate são compostos na GPU, sem refazer layout.',
+    alternativa:
+      'Sem JS: animation-timeline: view() na seção com animation-range: contain (Chrome/Edge; Safari 26+), usando @supports com esta versão como reserva. Com GSAP: ScrollTrigger com scrub e pin.',
+    compatibilidade:
+      'position: sticky, variáveis CSS em calc() e propriedades individuais (scale, translate): todos os navegadores atuais.',
+    responsividade:
+      'A moldura usa vw/vh e as palavras clamp(); o afastamento é em % da largura da palavra, então funciona em qualquer tela.',
+    acessibilidade:
+      'O título é texto real, legível em qualquer ponto da animação. A animação só acontece com a rolagem; com prefers-reduced-motion a seção mostra o estado final, sem zoom.',
+    performance:
+      'Uma escrita de variável por quadro; scale e translate são compostos na GPU, sem refazer layout.',
     limitacoes: [
       'border-radius em elemento com scale também escala: o arredondamento é calculado já compensando o tamanho.',
       'Use uma imagem com resolução de tela cheia: ela começa pequena, mas termina grande.',
     ],
-    referencias: [MDN.scrollTimeline, { titulo: 'MDN — scale (propriedade)', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/scale' }, MDN.reduzir],
+    referencias: [
+      MDN.scrollTimeline,
+      {
+        titulo: 'MDN — scale (propriedade)',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/scale',
+      },
+      MDN.reduzir,
+    ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'inicio', rotulo: 'tamanho inicial da imagem', tipo: 'range', min: 0.2, max: 0.7, passo: 0.05, unidade: '×', padrao: 0.35 },
-    { id: 'altura', rotulo: 'altura da seção', tipo: 'range', min: 200, max: 500, passo: 50, unidade: 'vh', padrao: 300 },
-    { id: 'afastar', rotulo: 'afastamento das palavras', tipo: 'range', min: 0, max: 120, passo: 10, unidade: '%', padrao: 80 },
+    {
+      id: 'inicio',
+      rotulo: 'tamanho inicial da imagem',
+      tipo: 'range',
+      min: 0.2,
+      max: 0.7,
+      passo: 0.05,
+      unidade: '×',
+      padrao: 0.35,
+    },
+    {
+      id: 'altura',
+      rotulo: 'altura da seção',
+      tipo: 'range',
+      min: 200,
+      max: 500,
+      passo: 50,
+      unidade: 'vh',
+      padrao: 300,
+    },
+    {
+      id: 'afastar',
+      rotulo: 'afastamento das palavras',
+      tipo: 'range',
+      min: 0,
+      max: 120,
+      passo: 10,
+      unidade: '%',
+      padrao: 80,
+    },
   ],
   gerar: (v) => {
     const s0 = Number(v['inicio']);

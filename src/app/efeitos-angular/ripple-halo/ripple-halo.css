@@ -14,8 +14,15 @@
   overflow: hidden;
   background: linear-gradient(180deg, #1f6fff, #3f8cff);
 }
-.halo, .objeto { grid-area: 1 / 1; }
-.halo { position: relative; width: 60%; aspect-ratio: 1; }
+.halo,
+.objeto {
+  grid-area: 1 / 1;
+}
+.halo {
+  position: relative;
+  width: 60%;
+  aspect-ratio: 1;
+}
 
 /* Um anel: gradiente cônico com o meio vazado pela máscara */
 .anel {
@@ -26,14 +33,24 @@
   -webkit-mask-image: radial-gradient(circle, transparent 62%, #000 64%, #000 70%, transparent 72%);
   mask-image: radial-gradient(circle, transparent 62%, #000 64%, #000 70%, transparent 72%);
   opacity: 0;
-  animation: expandir 4s ease-out calc(var(--i) * -1.00s) infinite;
+  animation: expandir 4s ease-out calc(var(--i) * -1s) infinite;
 }
 @keyframes expandir {
-  0% { scale: 0.4; opacity: 0; }
-  20% { opacity: 0.9; }
-  100% { scale: 1.6; opacity: 0; }
+  0% {
+    scale: 0.4;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    scale: 1.6;
+    opacity: 0;
+  }
 }
-.palco-halo.is-pausado .anel { animation-play-state: paused; }
+.palco-halo.is-pausado .anel {
+  animation-play-state: paused;
+}
 
 /* O objeto em destaque */
 .objeto {
@@ -56,5 +73,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .anel { animation: none; opacity: 0.5; scale: calc(0.7 + var(--i) * 0.25); }
+  .anel {
+    animation: none;
+    opacity: 0.5;
+    scale: calc(0.7 + var(--i) * 0.25);
+  }
 }

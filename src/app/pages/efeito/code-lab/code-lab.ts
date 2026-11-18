@@ -152,7 +152,9 @@ export class CodeLab {
     const r = this.rascunho();
     const grande = (['html', 'css', 'js'] as const).find((k) => r[k].length > LIMITE_EDICAO);
     if (grande) {
-      this.erro.set(`O arquivo ${grande.toUpperCase()} passou de ${LIMITE_EDICAO.toLocaleString('pt-BR')} caracteres.`);
+      this.erro.set(
+        `O arquivo ${grande.toUpperCase()} passou de ${LIMITE_EDICAO.toLocaleString('pt-BR')} caracteres.`,
+      );
       return;
     }
     this.erro.set('');

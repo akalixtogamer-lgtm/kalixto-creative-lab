@@ -10,10 +10,14 @@ describe('CSS Playground', () => {
   const el = () => harness.routeNativeElement as HTMLElement;
   const codigo = () => el().querySelector('.cv__codigo')?.textContent ?? '';
   const botao = (texto: string) =>
-    [...el().querySelectorAll('button')].find((b) => b.textContent?.includes(texto)) as HTMLButtonElement;
+    [...el().querySelectorAll('button')].find((b) =>
+      b.textContent?.includes(texto),
+    ) as HTMLButtonElement;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
@@ -88,7 +92,9 @@ describe('CSS Playground', () => {
 
 describe('CSS Playground · Divisores de seção', () => {
   it('aplica no palco o mesmo CSS mostrado no código', async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/labs/css?demo=divisores');
     const el = harness.routeNativeElement as HTMLElement;
@@ -98,6 +104,8 @@ describe('CSS Playground · Divisores de seção', () => {
     harness.detectChanges();
     const baixo = el.querySelector<HTMLElement>('.d-div__baixo')!;
     expect(baixo.style.marginTop).toBe('-60px');
-    expect(el.querySelector('.cv__codigo')?.textContent).toContain('polygon(0 60px, 50% 0, 100% 60px');
+    expect(el.querySelector('.cv__codigo')?.textContent).toContain(
+      'polygon(0 60px, 50% 0, 100% 60px',
+    );
   });
 });

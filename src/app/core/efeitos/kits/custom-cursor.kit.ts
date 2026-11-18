@@ -8,7 +8,8 @@ export const CUSTOM_CURSOR: EffectKit = {
     nomeAmigavel: 'Cursor personalizado',
     categoria: 'cursor',
     subcategoria: 'Cursores',
-    descricao: 'Um ponto acompanha o mouse na hora e um anel vem atrás com atraso; o anel cresce sobre links e botões.',
+    descricao:
+      'Um ponto acompanha o mouse na hora e um anel vem atrás com atraso; o anel cresce sobre links e botões.',
     objetivoVisual: 'Dar identidade à navegação e destacar o que é clicável.',
     aplicacoes: ['Portfólios e sites autorais', 'Galerias e vitrines', 'Experiências interativas'],
     nivel: 'intermediario',
@@ -22,19 +23,45 @@ export const CUSTOM_CURSOR: EffectKit = {
       'Quando o ponteiro entra num link ou botão (pointerover com closest), o anel ganha a classe is-sobre e cresce.',
       '@media (pointer: fine) só ativa o cursor personalizado em mouse e trackpad; em telas de toque nada muda.',
     ],
-    alternativa: 'cursor: url(icone.svg) 8 8, auto troca o cursor nativo por uma imagem, sem JavaScript — mas sem atraso nem animação.',
-    compatibilidade: 'Pointer Events, requestAnimationFrame e @media (pointer) funcionam em todos os navegadores atuais.',
-    responsividade: 'Só existe em dispositivos com ponteiro fino. Em celulares e tablets o elemento fica escondido.',
-    acessibilidade: 'O cursor é decorativo (aria-hidden). Por padrão o cursor nativo continua visível; escondê-lo é opcional. Com prefers-reduced-motion o anel acompanha sem atraso. O foco do teclado tem contorno próprio e não depende do cursor.',
-    performance: 'Um laço de requestAnimationFrame que para quando o anel alcança o ponteiro. Só transform é alterada.',
-    limitacoes: ['Esconder o cursor nativo pode confundir quem tem baixa visão; prefira manter.', 'mix-blend-mode: difference muda a cor do cursor conforme o fundo, o que pode reduzir o contraste em fundos médios.'],
+    alternativa:
+      'cursor: url(icone.svg) 8 8, auto troca o cursor nativo por uma imagem, sem JavaScript — mas sem atraso nem animação.',
+    compatibilidade:
+      'Pointer Events, requestAnimationFrame e @media (pointer) funcionam em todos os navegadores atuais.',
+    responsividade:
+      'Só existe em dispositivos com ponteiro fino. Em celulares e tablets o elemento fica escondido.',
+    acessibilidade:
+      'O cursor é decorativo (aria-hidden). Por padrão o cursor nativo continua visível; escondê-lo é opcional. Com prefers-reduced-motion o anel acompanha sem atraso. O foco do teclado tem contorno próprio e não depende do cursor.',
+    performance:
+      'Um laço de requestAnimationFrame que para quando o anel alcança o ponteiro. Só transform é alterada.',
+    limitacoes: [
+      'Esconder o cursor nativo pode confundir quem tem baixa visão; prefira manter.',
+      'mix-blend-mode: difference muda a cor do cursor conforme o fundo, o que pode reduzir o contraste em fundos médios.',
+    ],
     referencias: [MDN.pointer, MDN.raf, MDN.pointerMedia, MDN.cursor],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'suave', rotulo: 'suavidade do anel', tipo: 'range', min: 0.05, max: 0.5, passo: 0.01, unidade: '', padrao: 0.15 },
-    { id: 'anel', rotulo: 'tamanho do anel', tipo: 'range', min: 20, max: 80, passo: 2, unidade: 'px', padrao: 36 },
+    {
+      id: 'suave',
+      rotulo: 'suavidade do anel',
+      tipo: 'range',
+      min: 0.05,
+      max: 0.5,
+      passo: 0.01,
+      unidade: '',
+      padrao: 0.15,
+    },
+    {
+      id: 'anel',
+      rotulo: 'tamanho do anel',
+      tipo: 'range',
+      min: 20,
+      max: 80,
+      passo: 2,
+      unidade: 'px',
+      padrao: 36,
+    },
     { id: 'cor', rotulo: 'cor', tipo: 'select', opcoes: CORES, padrao: '#22e3ff' },
     {
       id: 'mistura',
@@ -239,11 +266,20 @@ export class ${nomeClasse('custom-cursor')} {
     ],
   },
   glossario: [
-    { termo: 'pointer: fine', explicacao: 'Media query que identifica mouse e trackpad (ponteiro preciso).' },
+    {
+      termo: 'pointer: fine',
+      explicacao: 'Media query que identifica mouse e trackpad (ponteiro preciso).',
+    },
     { termo: 'pointer-events: none', explicacao: 'O cursor desenhado nunca bloqueia cliques.' },
     { termo: 'SUAVIDADE', explicacao: 'Fração da distância que o anel anda por quadro (lerp).' },
-    { termo: 'closest', explicacao: 'Procura o link ou botão mais próximo do elemento sob o mouse.' },
+    {
+      termo: 'closest',
+      explicacao: 'Procura o link ou botão mais próximo do elemento sob o mouse.',
+    },
     { termo: 'mix-blend-mode', explicacao: 'Como o cursor se mistura com as cores de trás.' },
-    { termo: 'requestAnimationFrame', explicacao: 'Atualiza o anel a cada quadro até alcançar o mouse.' },
+    {
+      termo: 'requestAnimationFrame',
+      explicacao: 'Atualiza o anel a cada quadro até alcançar o mouse.',
+    },
   ],
 };

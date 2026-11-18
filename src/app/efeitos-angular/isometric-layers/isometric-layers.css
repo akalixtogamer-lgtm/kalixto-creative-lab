@@ -54,8 +54,13 @@
   font: inherit;
   cursor: pointer;
 }
-.separar:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.separar:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .camada { transition: none; }
+  .camada {
+    transition: none;
+  }
 }

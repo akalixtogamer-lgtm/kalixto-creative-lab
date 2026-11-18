@@ -7,7 +7,7 @@ import Lenis from 'lenis';
   styleUrl: './smooth-scroll.css',
 })
 export class SmoothScroll {
-  protected readonly secoes = ["Experimente", "Entenda", "Codifique", "Crie"];
+  protected readonly secoes = ['Experimente', 'Entenda', 'Codifique', 'Crie'];
   private lenis?: Lenis;
 
   constructor() {

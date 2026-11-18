@@ -20,37 +20,91 @@ export const ROOM_3D: EffectKit = {
     nomeAmigavel: 'Sala 3D',
     categoria: '3d-webgl',
     subcategoria: 'Espaços 3D só com CSS',
-    descricao: 'Um corredor de concreto com luzes no teto e um vídeo na parede do fundo, feito com 5 divs em CSS 3D. O olhar acompanha o mouse e o botão "Entrar" leva a câmera para dentro.',
-    objetivoVisual: 'Criar a sensação de galeria ou showroom: o conteúdo principal é "exposto" numa sala, com profundidade real.',
-    aplicacoes: ['Case em destaque de portfólio', 'Lançamento de vídeo ou campanha', 'Galerias e exposições virtuais'],
+    descricao:
+      'Um corredor de concreto com luzes no teto e um vídeo na parede do fundo, feito com 5 divs em CSS 3D. O olhar acompanha o mouse e o botão "Entrar" leva a câmera para dentro.',
+    objetivoVisual:
+      'Criar a sensação de galeria ou showroom: o conteúdo principal é "exposto" numa sala, com profundidade real.',
+    aplicacoes: [
+      'Case em destaque de portfólio',
+      'Lançamento de vídeo ou campanha',
+      'Galerias e exposições virtuais',
+    ],
     nivel: 'avancado',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['mouse', 'click', 'keyboard'],
-    tags: ['sala 3d', 'room', 'corredor', 'perspective', 'perspective-origin', 'css 3d', 'showroom', 'referência em vídeo'],
+    tags: [
+      'sala 3d',
+      'room',
+      'corredor',
+      'perspective',
+      'perspective-origin',
+      'css 3d',
+      'showroom',
+      'referência em vídeo',
+    ],
     explicacao: [
       'A sala é uma caixa sem a parede da frente. O fundo é empurrado para trás com translateZ(−profundidade).',
       'As paredes laterais, o teto e o chão são dobrados a partir das bordas: transform-origin na borda + rotateY(±90°) ou rotateX(±90°). Cada uma tem largura (ou altura) igual à profundidade, então encontra o fundo exatamente.',
       'perspective no palco é a distância da câmera; perspective-origin é para onde ela olha. Mexer em perspective-origin com o mouse dá a sensação de virar a cabeça dentro da sala.',
       '"Entrar" move a sala inteira em direção à câmera (translateZ positivo), como um dolly de cinema.',
     ],
-    alternativa: 'Em Three.js, BoxGeometry com side: BackSide e um VideoTexture na face do fundo; dá luz, sombra e reflexo de verdade no chão.',
-    compatibilidade: 'Transformações 3D, preserve-3d e perspective-origin: todos os navegadores atuais.',
-    responsividade: 'O palco mantém 16:10 e as paredes usam % para a largura/altura; só a profundidade é em px (ajustável).',
-    acessibilidade: 'O botão "Entrar na sala" funciona no teclado e informa o estado com aria-pressed. A sala tem role="img" e descrição. Com prefers-reduced-motion, a entrada é instantânea e a "tela" não anima.',
-    performance: 'Cinco camadas com gradientes; perspective-origin muda a cada movimento (uma vez por quadro). Leve até em celulares.',
+    alternativa:
+      'Em Three.js, BoxGeometry com side: BackSide e um VideoTexture na face do fundo; dá luz, sombra e reflexo de verdade no chão.',
+    compatibilidade:
+      'Transformações 3D, preserve-3d e perspective-origin: todos os navegadores atuais.',
+    responsividade:
+      'O palco mantém 16:10 e as paredes usam % para a largura/altura; só a profundidade é em px (ajustável).',
+    acessibilidade:
+      'O botão "Entrar na sala" funciona no teclado e informa o estado com aria-pressed. A sala tem role="img" e descrição. Com prefers-reduced-motion, a entrada é instantânea e a "tela" não anima.',
+    performance:
+      'Cinco camadas com gradientes; perspective-origin muda a cada movimento (uma vez por quadro). Leve até em celulares.',
     limitacoes: [
       'Se a câmera avançar além da parede do fundo, as paredes somem ou invertem: o avanço máximo deve ser menor que a profundidade + perspective.',
       'Vídeo real na tela: use <video muted playsinline loop> e pause quando a sala sair da tela.',
     ],
-    referencias: [MDN.perspective, { titulo: 'MDN — perspective-origin', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/perspective-origin' }, MDN.transform],
+    referencias: [
+      MDN.perspective,
+      {
+        titulo: 'MDN — perspective-origin',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/perspective-origin',
+      },
+      MDN.transform,
+    ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'profundidade', rotulo: 'profundidade da sala', tipo: 'range', min: 300, max: 900, passo: 50, unidade: 'px', padrao: 600 },
-    { id: 'perspectiva', rotulo: 'distância da câmera', tipo: 'range', min: 300, max: 1200, passo: 50, unidade: 'px', padrao: 500 },
-    { id: 'avanco', rotulo: 'quanto entra', tipo: 'range', min: 100, max: 500, passo: 20, unidade: 'px', padrao: 300 },
+    {
+      id: 'profundidade',
+      rotulo: 'profundidade da sala',
+      tipo: 'range',
+      min: 300,
+      max: 900,
+      passo: 50,
+      unidade: 'px',
+      padrao: 600,
+    },
+    {
+      id: 'perspectiva',
+      rotulo: 'distância da câmera',
+      tipo: 'range',
+      min: 300,
+      max: 1200,
+      passo: 50,
+      unidade: 'px',
+      padrao: 500,
+    },
+    {
+      id: 'avanco',
+      rotulo: 'quanto entra',
+      tipo: 'range',
+      min: 100,
+      max: 500,
+      passo: 20,
+      unidade: 'px',
+      padrao: 300,
+    },
   ],
   gerar: (v) => {
     const d = Number(v['profundidade']);
@@ -224,8 +278,14 @@ export class ${nomeClasse('room-3d')} {
     ],
   },
   glossario: [
-    { termo: 'perspective-origin: var(--px) var(--py)', explicacao: 'Para onde a câmera olha (segue o mouse).' },
-    { termo: 'transform-origin: left center', explicacao: 'A parede gira a partir da borda, como uma aba.' },
+    {
+      termo: 'perspective-origin: var(--px) var(--py)',
+      explicacao: 'Para onde a câmera olha (segue o mouse).',
+    },
+    {
+      termo: 'transform-origin: left center',
+      explicacao: 'A parede gira a partir da borda, como uma aba.',
+    },
     { termo: 'rotateY(90deg)', explicacao: 'Dobra a parede lateral para dentro da cena.' },
     { termo: 'translateZ(-', explicacao: 'Empurra a parede do fundo para longe.' },
   ],

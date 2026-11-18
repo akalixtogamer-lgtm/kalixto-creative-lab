@@ -27,14 +27,36 @@
   opacity: 0.55;
   animation: pulsar 4s ease-in-out infinite alternate;
 }
-@keyframes pulsar { to { scale: 1.15; opacity: 0.75; } }
+@keyframes pulsar {
+  to {
+    scale: 1.15;
+    opacity: 0.75;
+  }
+}
 
 /* Texto real + ecos na mesma célula */
-.ecoar { position: relative; display: grid; margin: 0; }
-.ecoar > span { grid-area: 1 / 1; }
-.ecoar h2, h2.ecoar { font-size: clamp(1.8rem, 7vw, 3rem); font-weight: 600; }
-.preco { font-size: clamp(2.8rem, 12vw, 5.5rem); font-weight: 800; letter-spacing: -0.04em; }
-.real { position: relative; z-index: 1; }
+.ecoar {
+  position: relative;
+  display: grid;
+  margin: 0;
+}
+.ecoar > span {
+  grid-area: 1 / 1;
+}
+.ecoar h2,
+h2.ecoar {
+  font-size: clamp(1.8rem, 7vw, 3rem);
+  font-weight: 600;
+}
+.preco {
+  font-size: clamp(2.8rem, 12vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.real {
+  position: relative;
+  z-index: 1;
+}
 
 /* Cada eco começa i × distância abaixo e mais transparente, e se junta ao texto */
 .eco {
@@ -44,8 +66,14 @@
   transition: translate 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 @keyframes juntar {
-  from { translate: 0 calc(var(--i) * 14px); opacity: calc(0.7 - var(--i) * 0.08); }
-  to { translate: 0 0; opacity: 0; }
+  from {
+    translate: 0 calc(var(--i) * 14px);
+    opacity: calc(0.7 - var(--i) * 0.08);
+  }
+  to {
+    translate: 0 0;
+    opacity: 0;
+  }
 }
 /* hover: o eco "solta" de novo, parado */
 .ecoar:hover .eco {
@@ -65,6 +93,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .eco { display: none; }
-  .aura { animation: none; }
+  .eco {
+    display: none;
+  }
+  .aura {
+    animation: none;
+  }
 }

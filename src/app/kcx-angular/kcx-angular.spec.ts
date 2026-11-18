@@ -17,7 +17,8 @@ describe('KCX · componentes Angular', () => {
       await f.whenStable();
       const host = f.nativeElement as HTMLElement;
       const padrao = resolverSaidas(c.variaveis);
-      for (const [k, v] of Object.entries(padrao.cssVars)) expect(host.style.getPropertyValue(k), `${c.id} ${k}`).toBe(v);
+      for (const [k, v] of Object.entries(padrao.cssVars))
+        expect(host.style.getPropertyValue(k), `${c.id} ${k}`).toBe(v);
 
       // Muda uma cor e um número pelo input: o elemento recebe o valor novo.
       const cor = c.variaveis.find((v) => v.tipo === 'color')!;
@@ -27,18 +28,22 @@ describe('KCX · componentes Angular', () => {
       f.detectChanges();
       await f.whenStable();
       const esperado = resolverSaidas(c.variaveis, { [cor.id]: '#123456', [num.id]: num.max! });
-      for (const [k, v] of Object.entries(esperado.cssVars)) expect(host.style.getPropertyValue(k), `${c.id} ${k}`).toBe(v);
+      for (const [k, v] of Object.entries(esperado.cssVars))
+        expect(host.style.getPropertyValue(k), `${c.id} ${k}`).toBe(v);
 
       // Textos vinculados (rótulo/título) seguem o input.
-      const texto = c.variaveis.find((v) => v.tipo === 'string' && v.vinculos[0].alvo.tipo === 'texto');
+      const texto = c.variaveis.find(
+        (v) => v.tipo === 'string' && v.vinculos[0].alvo.tipo === 'texto',
+      );
       if (texto && texto.vinculos[0].alvo.tipo === 'texto') {
         f.componentRef.setInput(texto.id, 'Texto do teste');
         f.detectChanges();
         await f.whenStable();
         TestBed.tick();
-        expect(host.querySelector(texto.vinculos[0].alvo.seletor)!.textContent).toBe('Texto do teste');
+        expect(host.querySelector(texto.vinculos[0].alvo.seletor)!.textContent).toBe(
+          'Texto do teste',
+        );
       }
     });
   }
-
 });

@@ -21,36 +21,82 @@ export const DEVICE_SWITCHER: EffectKit = {
     nomeAmigavel: 'Troca de dispositivo (computador, tablet, celular)',
     categoria: 'microinteracoes',
     subcategoria: 'Controles segmentados',
-    descricao: 'Um controle segmentado com indicador deslizante troca a moldura da prévia entre computador, tablet e celular; a moldura se transforma suavemente e o conteúdo se reorganiza.',
-    objetivoVisual: 'Provar que um site é responsivo, de forma visual e interativa — o cliente "vê" o celular sem precisar abrir no celular.',
-    aplicacoes: ['Apresentação de site para cliente', 'Portfólio e estudos de caso', 'Ferramentas de prévia e editores'],
+    descricao:
+      'Um controle segmentado com indicador deslizante troca a moldura da prévia entre computador, tablet e celular; a moldura se transforma suavemente e o conteúdo se reorganiza.',
+    objetivoVisual:
+      'Provar que um site é responsivo, de forma visual e interativa — o cliente "vê" o celular sem precisar abrir no celular.',
+    aplicacoes: [
+      'Apresentação de site para cliente',
+      'Portfólio e estudos de caso',
+      'Ferramentas de prévia e editores',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['click', 'keyboard'],
-    tags: ['responsivo', 'device', 'dispositivo', 'segmented control', 'controle segmentado', 'indicador deslizante', 'container queries', 'referência em vídeo'],
+    tags: [
+      'responsivo',
+      'device',
+      'dispositivo',
+      'segmented control',
+      'controle segmentado',
+      'indicador deslizante',
+      'container queries',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Cada opção do controle é um botão com aria-pressed. Ao clicar, o JS mede a posição e a largura do botão e move o indicador para lá (translate + width com transição).',
       'A moldura recebe as medidas do dispositivo em variáveis (--largura, --proporcao, --raio) e as transições fazem ela "virar" outro aparelho.',
       'O conteúdo dentro da moldura usa container queries (@container): quando a moldura fica estreita, a grade passa de 3 para 2 colunas (tablet) e 1 (celular) — é o mesmo site se adaptando, não uma imagem trocada.',
     ],
-    alternativa: 'Para mostrar o site real, coloque um <iframe> dentro da moldura; com View Transitions, a troca de layout do conteúdo também ganha animação automática.',
-    compatibilidade: 'Container queries e aspect-ratio animado: Chrome/Edge 105+, Firefox 110+, Safari 16+.',
-    responsividade: 'A própria moldura é relativa ao palco; no celular a prévia de "computador" ocupa a largura toda.',
-    acessibilidade: 'Os botões são um grupo (role="group") com aria-pressed e funcionam no teclado. Com prefers-reduced-motion a troca é instantânea.',
-    performance: 'Transicionar width e aspect-ratio refaz o layout da moldura (só ela). Para dezenas de molduras, prefira scale.',
-    limitacoes: ['aspect-ratio animado interpola entre proporções; em navegadores antigos a troca acontece sem transição.'],
+    alternativa:
+      'Para mostrar o site real, coloque um <iframe> dentro da moldura; com View Transitions, a troca de layout do conteúdo também ganha animação automática.',
+    compatibilidade:
+      'Container queries e aspect-ratio animado: Chrome/Edge 105+, Firefox 110+, Safari 16+.',
+    responsividade:
+      'A própria moldura é relativa ao palco; no celular a prévia de "computador" ocupa a largura toda.',
+    acessibilidade:
+      'Os botões são um grupo (role="group") com aria-pressed e funcionam no teclado. Com prefers-reduced-motion a troca é instantânea.',
+    performance:
+      'Transicionar width e aspect-ratio refaz o layout da moldura (só ela). Para dezenas de molduras, prefira scale.',
+    limitacoes: [
+      'aspect-ratio animado interpola entre proporções; em navegadores antigos a troca acontece sem transição.',
+    ],
     referencias: [
-      { titulo: 'MDN — CSS container queries', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries' },
-      { titulo: 'MDN — aria-pressed', url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-pressed' },
-      { titulo: 'MDN — prefers-reduced-motion', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion' },
+      {
+        titulo: 'MDN — CSS container queries',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries',
+      },
+      {
+        titulo: 'MDN — aria-pressed',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-pressed',
+      },
+      {
+        titulo: 'MDN — prefers-reduced-motion',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion',
+      },
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'duracao', rotulo: 'duração da troca', tipo: 'range', min: 300, max: 1200, passo: 50, unidade: 'ms', padrao: 600 },
-    { id: 'easing', rotulo: 'curva (easing)', tipo: 'select', opcoes: EASINGS, padrao: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+    {
+      id: 'duracao',
+      rotulo: 'duração da troca',
+      tipo: 'range',
+      min: 300,
+      max: 1200,
+      passo: 50,
+      unidade: 'ms',
+      padrao: 600,
+    },
+    {
+      id: 'easing',
+      rotulo: 'curva (easing)',
+      tipo: 'select',
+      opcoes: EASINGS,
+      padrao: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    },
     {
       id: 'indicador',
       rotulo: 'estilo do indicador',
@@ -192,7 +238,10 @@ interface Dispositivo {
   styleUrl: './device-switcher.css',
 })
 export class ${nomeClasse('device-switcher')} {
-  protected readonly dispositivos: Dispositivo[] = ${JSON.stringify(DISPOSITIVOS, null, 2).replace(/\n/g, '\n  ').replace(/"(\w+)":/g, '$1:').replace(/"/g, "'")};
+  protected readonly dispositivos: Dispositivo[] = ${JSON.stringify(DISPOSITIVOS, null, 2)
+    .replace(/\n/g, '\n  ')
+    .replace(/"(\w+)":/g, '$1:')
+    .replace(/"/g, "'")};
   private readonly botoes = viewChildren<ElementRef<HTMLButtonElement>>('opcao');
 
   protected readonly atual = signal(this.dispositivos[0]);
@@ -251,7 +300,10 @@ export class ${nomeClasse('device-switcher')} {
     ],
   },
   glossario: [
-    { termo: 'container-type: inline-size', explicacao: 'A moldura vira um contêiner que o conteúdo consegue "medir".' },
+    {
+      termo: 'container-type: inline-size',
+      explicacao: 'A moldura vira um contêiner que o conteúdo consegue "medir".',
+    },
     { termo: '@container', explicacao: 'Regra que muda o layout conforme a largura da moldura.' },
     { termo: 'offsetLeft', explicacao: 'Posição do botão, usada para mover o indicador.' },
     { termo: 'aria-pressed', explicacao: 'Marca qual dispositivo está selecionado.' },

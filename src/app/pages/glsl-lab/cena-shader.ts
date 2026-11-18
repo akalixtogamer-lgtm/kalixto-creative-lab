@@ -68,7 +68,11 @@ export function montarShader(p: Palco3D, def: ShaderDemo, v: Valores): CenaShade
   }
   if (def.texturas?.includes('listras')) uniforms['uTexturaB'] = { value: texturaListras() };
 
-  const material = new THREE.ShaderMaterial({ vertexShader: def.vertex, fragmentShader: def.fragment, uniforms });
+  const material = new THREE.ShaderMaterial({
+    vertexShader: def.vertex,
+    fragmentShader: def.fragment,
+    uniforms,
+  });
 
   let malha: THREE.Mesh;
   if (def.modo === '2d') {
@@ -92,7 +96,10 @@ export function montarShader(p: Palco3D, def: ShaderDemo, v: Valores): CenaShade
 
   const mover = (e: PointerEvent) => {
     const r = p.canvas.getBoundingClientRect();
-    (uniforms['uMouse'].value as THREE.Vector2).set((e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height);
+    (uniforms['uMouse'].value as THREE.Vector2).set(
+      (e.clientX - r.left) / r.width,
+      1 - (e.clientY - r.top) / r.height,
+    );
   };
   p.canvas.addEventListener('pointermove', mover);
 

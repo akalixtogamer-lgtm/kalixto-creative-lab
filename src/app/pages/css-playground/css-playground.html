@@ -17,14 +17,22 @@
           <div class="d-trans" [class.ativo]="ativo()"></div>
         }
         @case ('keyframes') {
-          <div class="d-key" [class]="ativo() ? 'd-key d-key--' + valores()['anim'] : 'd-key'"></div>
+          <div
+            class="d-key"
+            [class]="ativo() ? 'd-key d-key--' + valores()['anim'] : 'd-key'"
+          ></div>
         }
         @case ('transform') {
           <div class="d-tf-ghost" aria-hidden="true"></div>
           <div class="d-tf">K</div>
         }
         @case ('hover') {
-          <button type="button" class="d-hover" [class]="'d-hover d-hover--' + valores()['estilo']" [class.forcar]="ativo()">
+          <button
+            type="button"
+            class="d-hover"
+            [class]="'d-hover d-hover--' + valores()['estilo']"
+            [class.forcar]="ativo()"
+          >
             Passe o mouse
           </button>
         }
@@ -46,7 +54,9 @@
           <div class="d-clip-base">Conteúdo escondido</div>
           <div
             class="d-clip"
-            [style.clip-path]="ativo() ? clipFormas[valores()['forma']].para : clipFormas[valores()['forma']].de"
+            [style.clip-path]="
+              ativo() ? clipFormas[valores()['forma']].para : clipFormas[valores()['forma']].de
+            "
           >
             <strong>Revelado!</strong>
           </div>
@@ -73,7 +83,9 @@
               (click)="curtir()"
             >
               <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
-                <path d="M12 21s-7.5-4.6-9.5-9.2C1 8.3 3.3 4.5 7 4.5c2 0 3.7 1.1 5 3 1.3-1.9 3-3 5-3 3.7 0 6 3.8 4.5 7.3C19.5 16.4 12 21 12 21z" />
+                <path
+                  d="M12 21s-7.5-4.6-9.5-9.2C1 8.3 3.3 4.5 7 4.5c2 0 3.7 1.1 5 3 1.3-1.9 3-3 5-3 3.7 0 6 3.8 4.5 7.3C19.5 16.4 12 21 12 21z"
+                />
               </svg>
               <span>{{ ativo() ? 129 : 128 }} curtidas</span>
             </button>

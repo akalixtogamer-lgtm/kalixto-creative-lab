@@ -14,7 +14,11 @@
   overflow: hidden;
   background: radial-gradient(ellipse at 50% 110%, #2a1f5c, #07060f 70%);
 }
-.luzes { position: absolute; inset: 0; mix-blend-mode: screen; }
+.luzes {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+}
 
 /* Um feixe: preso no topo, estreito no refletor e largo embaixo */
 .feixe {
@@ -24,17 +28,28 @@
   width: 34%;
   height: 130%;
   margin-left: -17%;
-  background: linear-gradient(180deg, rgb(196 181 253 / 0.85), rgb(196 181 253 / 0.15) 70%, transparent);
+  background: linear-gradient(
+    180deg,
+    rgb(196 181 253 / 0.85),
+    rgb(196 181 253 / 0.15) 70%,
+    transparent
+  );
   clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
   filter: blur(6px);
   transform-origin: top center;
   animation: varrer 6s ease-in-out calc(var(--i) * -1.7s) infinite alternate;
 }
 @keyframes varrer {
-  from { rotate: -24deg; }
-  to { rotate: 24deg; }
+  from {
+    rotate: -24deg;
+  }
+  to {
+    rotate: 24deg;
+  }
 }
-.palco-show.is-pausado .feixe { animation-play-state: paused; }
+.palco-show.is-pausado .feixe {
+  animation-play-state: paused;
+}
 
 /* Card de vidro no centro */
 .card-vidro {
@@ -49,8 +64,13 @@
   backdrop-filter: blur(10px);
   text-align: center;
 }
-.card-vidro p { margin: 0; color: #e7e3ff; }
-.card-vidro strong { font-size: clamp(1.6rem, 6vw, 2.4rem); }
+.card-vidro p {
+  margin: 0;
+  color: #e7e3ff;
+}
+.card-vidro strong {
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+}
 
 .pausar {
   padding: 8px 16px;
@@ -63,5 +83,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .feixe { animation: none; rotate: calc((var(--i) - 1.5) * 10deg); }
+  .feixe {
+    animation: none;
+    rotate: calc((var(--i) - 1.5) * 10deg);
+  }
 }

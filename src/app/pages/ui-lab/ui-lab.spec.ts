@@ -17,7 +17,9 @@ describe('Interface Lab', () => {
   };
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
@@ -29,7 +31,9 @@ describe('Interface Lab', () => {
 
   it.each(UI_DEMOS.map((d) => d.id))('abre a demo "%s"', async (id) => {
     await harness.navigateByUrl(`/labs/ui?demo=${id}`);
-    expect(el().querySelector('#demo-titulo')?.textContent).toContain(UI_DEMOS.find((d) => d.id === id)!.titulo);
+    expect(el().querySelector('#demo-titulo')?.textContent).toContain(
+      UI_DEMOS.find((d) => d.id === id)!.titulo,
+    );
     expect(el().querySelector('.palco')?.children.length).toBeGreaterThan(0);
   });
 
@@ -53,7 +57,9 @@ describe('Interface Lab', () => {
   it('bento: trocar o layout muda as áreas da grade', async () => {
     await harness.navigateByUrl('/labs/ui?demo=bento');
     escolher('layout', 'mosaico');
-    expect(el().querySelector<HTMLElement>('.u-bento')!.style.gridTemplateAreas).toContain('"a b c"');
+    expect(el().querySelector<HTMLElement>('.u-bento')!.style.gridTemplateAreas).toContain(
+      '"a b c"',
+    );
   });
 
   it('tipografia: o código acompanha o estilo', async () => {

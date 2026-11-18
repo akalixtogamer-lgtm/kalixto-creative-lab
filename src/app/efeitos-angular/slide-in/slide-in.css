@@ -18,14 +18,29 @@
 }
 
 @keyframes slide-in {
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Sem deslocamento para quem prefere menos movimento */
 @media (prefers-reduced-motion: reduce) {
-  .slide-in { animation-name: aparecer; }
-  @keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+  .slide-in {
+    animation-name: aparecer;
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 .repetir {
@@ -37,4 +52,7 @@
   font: inherit;
   cursor: pointer;
 }
-.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.repetir:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}

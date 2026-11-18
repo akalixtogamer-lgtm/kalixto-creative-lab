@@ -6,7 +6,12 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
   styleUrl: './rotating-headline.css',
 })
 export class RotatingHeadline {
-  protected readonly frases = ['O mundo pode esperar.', 'Dias que começam sem pressa.', 'Sinta o lugar. Viva o agora.', 'Fique mais um instante.'];
+  protected readonly frases = [
+    'O mundo pode esperar.',
+    'Dias que começam sem pressa.',
+    'Sinta o lugar. Viva o agora.',
+    'Fique mais um instante.',
+  ];
   private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   private readonly tempo = 3500;
 
@@ -23,9 +28,12 @@ export class RotatingHeadline {
   private proxima(): void {
     if (this.pausado()) return;
     this.saindo.set(true);
-    setTimeout(() => {
-      this.atual.update((i) => (i + 1) % this.frases.length);
-      this.saindo.set(false);
-    }, this.reduzir ? 0 : 600);
+    setTimeout(
+      () => {
+        this.atual.update((i) => (i + 1) % this.frases.length);
+        this.saindo.set(false);
+      },
+      this.reduzir ? 0 : 600,
+    );
   }
 }

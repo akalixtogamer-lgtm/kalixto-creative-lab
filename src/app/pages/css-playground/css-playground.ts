@@ -26,7 +26,6 @@ import { LabLayout } from '../../shared/components/lab-layout/lab-layout';
   styleUrl: './css-playground.css',
 })
 export class CssPlayground {
-
   /** Query param ?demo= (withComponentInputBinding). */
   readonly demo = input<string>();
 

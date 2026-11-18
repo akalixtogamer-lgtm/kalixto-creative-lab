@@ -24,40 +24,88 @@ export const GOOEY_INK: EffectKit = {
     nomeAmigavel: 'Mancha de tinta viva',
     categoria: 'svg-geometria',
     subcategoria: 'Filtros e formas líquidas',
-    descricao: 'Gotas de tinta que se juntam e se separam como líquido atrás de um título gigante; cada clique pinga uma gota nova que se espalha.',
-    objetivoVisual: 'Dar uma identidade orgânica e "de ateliê" ao hero, com o texto invertendo de cor sobre a tinta.',
-    aplicacoes: ['Heros de estúdios criativos', 'Marcas de arte, tinta, café', 'Telas de abertura interativas'],
+    descricao:
+      'Gotas de tinta que se juntam e se separam como líquido atrás de um título gigante; cada clique pinga uma gota nova que se espalha.',
+    objetivoVisual:
+      'Dar uma identidade orgânica e "de ateliê" ao hero, com o texto invertendo de cor sobre a tinta.',
+    aplicacoes: [
+      'Heros de estúdios criativos',
+      'Marcas de arte, tinta, café',
+      'Telas de abertura interativas',
+    ],
     nivel: 'intermediario',
     tecnologias: ['SVG', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click', 'touch'],
-    tags: ['gooey', 'metaball', 'tinta', 'ink', 'blob', 'líquido', 'feColorMatrix', 'mix-blend-mode', 'referência em vídeo'],
+    tags: [
+      'gooey',
+      'metaball',
+      'tinta',
+      'ink',
+      'blob',
+      'líquido',
+      'feColorMatrix',
+      'mix-blend-mode',
+      'referência em vídeo',
+    ],
     explicacao: [
       'As gotas são círculos comuns que se movem devagar. O "efeito líquido" vem de um filtro SVG aplicado ao grupo inteiro.',
       'Primeiro feGaussianBlur borra tudo, e os círculos próximos se misturam numa névoa só. Depois feColorMatrix aumenta muito o contraste do canal alfa: o que era meio transparente vira sólido e a borda volta a ficar nítida.',
       'Resultado: onde dois círculos se aproximam, nasce uma "ponte" de tinta entre eles — é a técnica do metaball.',
       'O título usa mix-blend-mode: difference. Sobre o papel claro ele fica escuro; sobre a tinta escura ele fica claro, sem precisar de duas camadas de texto.',
     ],
-    alternativa: 'Em WebGL, um shader de metaballs (soma de campos 1/d²) dá bordas perfeitas e milhares de gotas. Em CSS puro, filter: blur() + contrast() no contêiner imita o efeito, mas só com fundo sólido.',
-    compatibilidade: 'Filtros SVG referenciados por CSS (filter: url(#…)) e mix-blend-mode: todos os navegadores atuais.',
-    responsividade: 'Posições em % do palco e tamanho das gotas fixo; no celular as gotas ocupam mais área relativa, o que reforça a mancha.',
-    acessibilidade: 'O título é texto real. A tinta é decorativa (aria-hidden). Com prefers-reduced-motion as gotas ficam paradas e o clique ainda pinga gotas, sem a animação de espalhar.',
-    performance: 'Filtros SVG são calculados na CPU em vários navegadores: mantenha a área filtrada pequena (só o palco) e poucas gotas (até ~12).',
+    alternativa:
+      'Em WebGL, um shader de metaballs (soma de campos 1/d²) dá bordas perfeitas e milhares de gotas. Em CSS puro, filter: blur() + contrast() no contêiner imita o efeito, mas só com fundo sólido.',
+    compatibilidade:
+      'Filtros SVG referenciados por CSS (filter: url(#…)) e mix-blend-mode: todos os navegadores atuais.',
+    responsividade:
+      'Posições em % do palco e tamanho das gotas fixo; no celular as gotas ocupam mais área relativa, o que reforça a mancha.',
+    acessibilidade:
+      'O título é texto real. A tinta é decorativa (aria-hidden). Com prefers-reduced-motion as gotas ficam paradas e o clique ainda pinga gotas, sem a animação de espalhar.',
+    performance:
+      'Filtros SVG são calculados na CPU em vários navegadores: mantenha a área filtrada pequena (só o palco) e poucas gotas (até ~12).',
     limitacoes: [
       'O filtro "come" um pouco a borda das gotas: a forma final é menor que o círculo original. Aumente o tamanho para compensar.',
       'O contraste no alfa funciona com fundo transparente; não coloque um fundo dentro do grupo filtrado.',
     ],
     referencias: [
-      { titulo: 'MDN — <feColorMatrix>', url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feColorMatrix' },
-      { titulo: 'MDN — <feGaussianBlur>', url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feGaussianBlur' },
-      { titulo: 'MDN — mix-blend-mode', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode' },
+      {
+        titulo: 'MDN — <feColorMatrix>',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feColorMatrix',
+      },
+      {
+        titulo: 'MDN — <feGaussianBlur>',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feGaussianBlur',
+      },
+      {
+        titulo: 'MDN — mix-blend-mode',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode',
+      },
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'gotas', rotulo: 'número de gotas', tipo: 'range', min: 3, max: 9, passo: 1, unidade: '', padrao: 6 },
-    { id: 'viscosidade', rotulo: 'viscosidade (desfoque)', tipo: 'range', min: 6, max: 20, passo: 1, unidade: '', padrao: 12 },
+    {
+      id: 'gotas',
+      rotulo: 'número de gotas',
+      tipo: 'range',
+      min: 3,
+      max: 9,
+      passo: 1,
+      unidade: '',
+      padrao: 6,
+    },
+    {
+      id: 'viscosidade',
+      rotulo: 'viscosidade (desfoque)',
+      tipo: 'range',
+      min: 6,
+      max: 20,
+      passo: 1,
+      unidade: '',
+      padrao: 12,
+    },
     { id: 'cor', rotulo: 'cor da tinta', tipo: 'select', opcoes: TINTAS, padrao: '#111111' },
   ],
   gerar: (v) => {
@@ -176,9 +224,9 @@ interface Pingo {
 })
 export class ${nomeClasse('gooey-ink')} {
   protected readonly gotas = ${JSON.stringify(gotas(Number(v['gotas'])))
-      .replace(/"(\w+)":/g, '$1: ')
-      .replace(/},{/g, '}, {')
-      .replace(/,(\w)/g, ', $1')};
+    .replace(/"(\w+)":/g, '$1: ')
+    .replace(/},{/g, '}, {')
+    .replace(/,(\w)/g, ', $1')};
   protected readonly pingos = signal<Pingo[]>([]);
   private proximo = 0;
 

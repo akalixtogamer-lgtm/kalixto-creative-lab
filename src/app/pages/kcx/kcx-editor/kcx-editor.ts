@@ -9,9 +9,9 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { findKcx, KCX_COMPONENTES } from '../../../kcx/componentes';
+import { KcxMeusService } from '../kcx-meus.service';
 import { montarDocumentoKcx } from '../../../kcx/documento';
 import { KcxCodigo, KcxValor } from '../../../kcx/kcx.types';
 import { Valores, resolverSaidas, valoresPadrao } from '../../../kcx/resolver';
@@ -58,7 +58,22 @@ export class KcxEditor {
   private readonly estado = inject(KcxEstadoService);
   private readonly title = inject(Title);
 
-  protected readonly comp = computed(() => findKcx(this.id()));
+  private readonly meus = inject(KcxMeusService);
+  private readonly router = inject(Router);
+  protected readonly comp = computed(() => this.meus.buscar(this.id()));
+  /** Criado pela pessoa (construtor ou Figma): pode reabrir no construtor e excluir. */
+  protected readonly ehMeu = computed(() => this.meus.ehMeu(this.id()));
+  protected readonly doConstrutor = computed(
+    () => this.comp()?.origemCriacao?.tipo === 'construtor',
+  );
+
+  protected excluir(): void {
+    const c = this.comp();
+    if (!c || !confirm(`Excluir "${c.nome}" dos seus componentes? Isso não pode ser desfeito.`))
+      return;
+    this.meus.remover(c.id);
+    void this.router.navigateByUrl('/kcx');
+  }
   protected readonly nivelRotulo = NIVEL_ROTULO;
 
   /** Valores atuais das variáveis (salvos no navegador). */
@@ -134,8 +149,9 @@ export class KcxEditor {
   private readonly previewAntes = viewChild<KcxPreview>('previewAntes');
 
   protected readonly vizinhos = computed(() => {
-    const i = KCX_COMPONENTES.findIndex((c) => c.id === this.id());
-    return { anterior: KCX_COMPONENTES[i - 1], proximo: KCX_COMPONENTES[i + 1] };
+    const todos = this.meus.todos();
+    const i = todos.findIndex((c) => c.id === this.id());
+    return { anterior: todos[i - 1], proximo: todos[i + 1] };
   });
 
   protected readonly migalhas = computed<Migalha[]>(() => [

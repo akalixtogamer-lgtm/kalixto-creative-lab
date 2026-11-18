@@ -3,6 +3,15 @@
  * (iframe sandbox) e para o arquivo exportado.
  */
 import { CSP_PREVIEW } from '../core/efeitos/sandbox';
+
+/**
+ * CSP dos documentos KCX: igual à dos kits, mas aceita imagens e vídeos por
+ * https (cards de foto e vídeo). Continua sem fetch, sem fontes externas e sem iframes.
+ */
+export const CSP_KCX = CSP_PREVIEW.replace(
+  'img-src data:',
+  'img-src data: https: blob:; media-src data: https: blob:',
+);
 import { KcxCodigo, KcxComponente } from './kcx.types';
 import { Saidas, Valores, blocoRoot, resolverSaidas } from './resolver';
 import { RUNTIME_PREVIEW, runtimeStandalone } from './runtime';
@@ -73,7 +82,7 @@ export function montarDocumentoKcx(
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="${CSP_PREVIEW}">
+<meta http-equiv="Content-Security-Policy" content="${CSP_KCX}">
 <title>${t} · KCX · Kalixto Creative Lab</title>
 <style>
 ${proteger(cssCompleto(comp, valores, codigo), 'style')}

@@ -4,8 +4,12 @@
   gap: 24px;
 }
 
-.vitrine { text-align: center; }
-.vitrine a { color: #22e3ff; }
+.vitrine {
+  text-align: center;
+}
+.vitrine a {
+  color: #22e3ff;
+}
 .vitrine button {
   margin-top: 12px;
   padding: 12px 24px;
@@ -16,10 +20,15 @@
   font: inherit;
 }
 .vitrine a:focus-visible,
-.vitrine button:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.vitrine button:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 /* O efeito: só para mouse e trackpad */
-.cursor { display: none; }
+.cursor {
+  display: none;
+}
 
 @media (pointer: fine) {
   .cursor {
@@ -51,8 +60,20 @@
     border: 2px solid #22e3ff;
   }
   .cursor.is-ativo .cursor__ponto,
-  .cursor.is-ativo .cursor__anel { opacity: 1; }
-  .cursor.is-sobre .cursor__anel { scale: 1.8; background: #22e3ff22; }
-  .cursor__ponto { transition: opacity 200ms ease; }
-  .cursor__anel { transition: opacity 200ms ease, scale 250ms ease, background 250ms ease; }
+  .cursor.is-ativo .cursor__anel {
+    opacity: 1;
+  }
+  .cursor.is-sobre .cursor__anel {
+    scale: 1.8;
+    background: #22e3ff22;
+  }
+  .cursor__ponto {
+    transition: opacity 200ms ease;
+  }
+  .cursor__anel {
+    transition:
+      opacity 200ms ease,
+      scale 250ms ease,
+      background 250ms ease;
+  }
 }

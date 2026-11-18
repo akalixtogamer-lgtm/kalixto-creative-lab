@@ -1,5 +1,7 @@
 /* SVG Motion — KCX (os valores chegam como custom properties no elemento kcx-svg-motion) */
-kcx-svg-motion { display: contents; }
+kcx-svg-motion {
+  display: contents;
+}
 
 /* SVG Motion — controlado pelas variáveis KCX */
 .kcx-svg-motion {
@@ -9,7 +11,11 @@ kcx-svg-motion { display: contents; }
   max-width: 100%;
 }
 
-.kcx-svg-motion svg { position: absolute; inset: 0; overflow: visible; }
+.kcx-svg-motion svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
 
 .kcx-svg-motion path {
   fill: none;
@@ -19,13 +25,17 @@ kcx-svg-motion { display: contents; }
   stroke-linejoin: round;
 }
 
-.kcx-svg-motion__trilha { opacity: var(--kcx-svg-motion-trail); }
+.kcx-svg-motion__trilha {
+  opacity: var(--kcx-svg-motion-trail);
+}
 
 .kcx-svg-motion__linha {
   stroke-dasharray: 1;
   stroke-dashoffset: var(--kcx-svg-motion-offset);
-  animation: var(--kcx-svg-motion-anim-linha) calc(var(--kcx-svg-motion-duration) / var(--kcx-svg-motion-speed)) var(--kcx-svg-motion-easing) var(--kcx-svg-motion-delay)
-    var(--kcx-svg-motion-iterations) var(--kcx-svg-motion-direction) both;
+  animation: var(--kcx-svg-motion-anim-linha)
+    calc(var(--kcx-svg-motion-duration) / var(--kcx-svg-motion-speed)) var(--kcx-svg-motion-easing)
+    var(--kcx-svg-motion-delay) var(--kcx-svg-motion-iterations) var(--kcx-svg-motion-direction)
+    both;
 }
 
 .kcx-svg-motion__ponto {
@@ -40,21 +50,33 @@ kcx-svg-motion { display: contents; }
   offset-path: var(--kcx-svg-motion-path);
   offset-distance: var(--kcx-svg-motion-distance);
   offset-rotate: 0deg;
-  animation: var(--kcx-svg-motion-anim-ponto) calc(var(--kcx-svg-motion-duration) / var(--kcx-svg-motion-speed)) var(--kcx-svg-motion-easing) var(--kcx-svg-motion-delay)
-    var(--kcx-svg-motion-iterations) var(--kcx-svg-motion-direction) both;
+  animation: var(--kcx-svg-motion-anim-ponto)
+    calc(var(--kcx-svg-motion-duration) / var(--kcx-svg-motion-speed)) var(--kcx-svg-motion-easing)
+    var(--kcx-svg-motion-delay) var(--kcx-svg-motion-iterations) var(--kcx-svg-motion-direction)
+    both;
 }
 
 @keyframes kcx-svg-motion-desenhar {
-  from { stroke-dashoffset: 1; }
-  to   { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes kcx-svg-motion-percorrer {
-  from { offset-distance: 0%; }
-  to   { offset-distance: 100%; }
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .kcx-svg-motion__linha,
-  .kcx-svg-motion__ponto { animation: none; }
+  .kcx-svg-motion__ponto {
+    animation: none;
+  }
 }

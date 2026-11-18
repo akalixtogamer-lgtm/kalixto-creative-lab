@@ -8,7 +8,8 @@
  * A validação e o plano vêm do MESMO código usado pelo laboratório
  * (src/app/kcx), então o que o lab promete é o que o plugin faz.
  */
-import { desserializar } from '../../src/app/kcx/serializar';
+import { criarPacote, desserializar, serializar } from '../../src/app/kcx/serializar';
+import { lerSelecao } from '../../src/app/kcx/figma/ler-selecao';
 import { planejarFigma } from '../../src/app/kcx/figma-plano';
 import { KcxModoExportacao } from '../../src/app/kcx/kcx.types';
 import {
@@ -22,6 +23,7 @@ type Mensagem =
   | { tipo: 'analisar'; texto: string; modo?: KcxModoExportacao }
   | { tipo: 'importar'; texto: string; modo?: KcxModoExportacao; duplicados: ModoDuplicados }
   | { tipo: 'exportar-alteracoes' }
+  | { tipo: 'enviar-selecao' }
   | { tipo: 'fechar' };
 
 figma.showUI(__html__, { width: 460, height: 660, themeColors: true, title: 'KCX · Figma Bridge' });
@@ -101,6 +103,24 @@ figma.ui.onmessage = async (msg: Mensagem) => {
       const r = await lerAlteracoes(figma, sel);
       if ('erro' in r) return responder({ tipo: 'erro', erro: r.erro });
       responder({ tipo: 'alteracoes', arquivo: r.arquivo, ignoradas: r.ignoradas });
+    }
+    if (msg.tipo === 'enviar-selecao') {
+      const sel = figma.currentPage.selection[0];
+      if (!sel)
+        return responder({
+          tipo: 'erro',
+          erro: 'Selecione um frame, componente ou instância para enviar ao lab.',
+        });
+      const comp = await lerSelecao(figma, sel);
+      const pacote = criarPacote([comp], { modo: 'completo' });
+      responder({
+        tipo: 'selecao',
+        id: comp.id,
+        nome: comp.nome,
+        texto: serializar(pacote),
+        variaveis: comp.variaveis.length,
+        avisos: comp.compatibilidade.figma.parcial,
+      });
     }
     if (msg.tipo === 'fechar') figma.closePlugin();
   } catch (e) {

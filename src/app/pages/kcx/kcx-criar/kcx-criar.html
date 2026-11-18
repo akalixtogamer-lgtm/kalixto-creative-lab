@@ -1,0 +1,265 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Construtor</p>
+    <h1 class="kx-title">Criar componente</h1>
+    <p class="kx-lead">
+      Escolha o tipo, dê os nomes dos botões e itens, escolha a animação e as cores. Sai pronto em
+      CSS + Angular e vai para o Figma com variantes e interações de protótipo.
+    </p>
+  </header>
+
+  <section class="kx-section" aria-labelledby="kcxc-tipo">
+    <h2 id="kcxc-tipo" class="kx-section-title">1. Tipo</h2>
+    @for (cat of categorias; track cat.id) {
+      <h3 class="kcxc__cat">{{ cat.nome }}</h3>
+      <div class="kcxc__tipos" role="radiogroup" [attr.aria-label]="cat.nome">
+        @for (t of cat.tipos; track t.id) {
+          <button
+            type="button"
+            role="radio"
+            class="kcxc__tipo kx-glass"
+            [attr.aria-checked]="def().id === t.id"
+            [disabled]="!!de()"
+            (click)="escolherTipo(t)"
+          >
+            <strong>{{ t.nome }}</strong>
+            <span class="kx-muted">{{ t.descricao }}</span>
+            <span class="kx-chip">{{ t.uso }}</span>
+          </button>
+        }
+      </div>
+    }
+  </section>
+
+  <div class="kcxc__grade">
+    <form class="kcxc__form" (submit)="$event.preventDefault(); salvar()">
+      <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-nomes">
+        <h2 id="kcxc-nomes" class="kcxc__titulo">2. Nomes</h2>
+        <label class="kcxc__campo">
+          <span>Nome do componente</span>
+          <input
+            type="text"
+            maxlength="60"
+            required
+            [value]="cfg().nome"
+            (input)="mudar('nome', valor($event))"
+          />
+          <small class="kx-muted"
+            >ID: <code>{{ idFinal() }}</code> · classe <code>.kcx-{{ idFinal() }}</code></small
+          >
+        </label>
+        @for (t of def().textos; track t.id) {
+          <label class="kcxc__campo">
+            <span>{{ t.rotulo }}</span>
+            <input
+              type="text"
+              maxlength="120"
+              [value]="cfg().textos[t.id] ?? ''"
+              (input)="mudarTexto(t.id, valor($event))"
+            />
+          </label>
+        }
+        @if (def().itens; as d) {
+          <fieldset class="kcxc__itens">
+            <legend>{{ d.rotulo }}s ({{ cfg().itens.length }} de {{ d.min }}–{{ d.max }})</legend>
+            @for (item of cfg().itens; track $index; let i = $index) {
+              <div class="kcxc__item">
+                <input
+                  type="text"
+                  maxlength="60"
+                  [attr.aria-label]="d.rotulo + ' ' + (i + 1)"
+                  [value]="item"
+                  (input)="mudarItem(i, valor($event))"
+                />
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--ghost"
+                  [disabled]="i === 0"
+                  (click)="moverItem(i, -1)"
+                  [attr.aria-label]="'Subir ' + item"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--ghost"
+                  [disabled]="i === cfg().itens.length - 1"
+                  (click)="moverItem(i, 1)"
+                  [attr.aria-label]="'Descer ' + item"
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--ghost"
+                  [disabled]="cfg().itens.length <= d.min"
+                  (click)="removerItem(i)"
+                  [attr.aria-label]="'Remover ' + item"
+                >
+                  ×
+                </button>
+              </div>
+            }
+            <button
+              type="button"
+              class="kx-btn kx-btn--ghost"
+              [disabled]="cfg().itens.length >= d.max"
+              (click)="adicionarItem()"
+            >
+              + {{ d.rotulo }}
+            </button>
+          </fieldset>
+        }
+      </section>
+
+      <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-anim">
+        <h2 id="kcxc-anim" class="kcxc__titulo">3. Animação</h2>
+        <div class="kcxc__anims" role="radiogroup" aria-labelledby="kcxc-anim">
+          @for (a of def().animacoes; track a.id) {
+            <label class="kcxc__anim">
+              <input
+                type="radio"
+                name="animacao"
+                [value]="a.id"
+                [checked]="cfg().animacao === a.id"
+                (change)="mudar('animacao', a.id)"
+              />
+              <span
+                ><strong>{{ a.nome }}</strong
+                ><small class="kx-muted">{{ a.descricao }}</small></span
+              >
+            </label>
+          }
+        </div>
+      </section>
+
+      <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-cores">
+        <h2 id="kcxc-cores" class="kcxc__titulo">4. Cores e formato</h2>
+        <div class="kcxc__cores">
+          <label
+            ><input
+              type="color"
+              [value]="cfg().cores.primaria"
+              (input)="mudarCor('primaria', valor($event))"
+            />
+            Principal</label
+          >
+          <label
+            ><input
+              type="color"
+              [value]="cfg().cores.fundo"
+              (input)="mudarCor('fundo', valor($event))"
+            />
+            Fundo</label
+          >
+          <label
+            ><input
+              type="color"
+              [value]="cfg().cores.superficie"
+              (input)="mudarCor('superficie', valor($event))"
+            />
+            Superfície</label
+          >
+          <label
+            ><input
+              type="color"
+              [value]="cfg().cores.texto"
+              (input)="mudarCor('texto', valor($event))"
+            />
+            Texto</label
+          >
+        </div>
+        <label class="kcxc__campo">
+          <span>Arredondamento: {{ cfg().raio }} px</span>
+          <input
+            type="range"
+            min="0"
+            max="40"
+            [value]="cfg().raio"
+            (input)="mudar('raio', +valor($event))"
+          />
+        </label>
+        @if (def().midia; as tipoMidia) {
+          <label class="kcxc__campo">
+            <span>{{
+              tipoMidia === 'video'
+                ? 'Vídeo (endereço https://… .mp4 ou .webm)'
+                : 'Imagem (endereço https://… ou envie um arquivo)'
+            }}</span>
+            <input
+              type="url"
+              [value]="cfg().midia?.startsWith('data:') ? '(imagem enviada)' : (cfg().midia ?? '')"
+              (change)="mudar('midia', valor($event))"
+              placeholder="https://"
+            />
+          </label>
+          @if (tipoMidia === 'imagem') {
+            <label class="kx-btn kx-btn--ghost kcxc__arquivo">
+              <kx-icon name="upload" /> Enviar imagem
+              <input type="file" accept="image/*" (change)="enviarMidia($event)" />
+            </label>
+          }
+          @if (avisoImagem()) {
+            <p class="kcxc__erro" role="alert">{{ avisoImagem() }}</p>
+          }
+          <small class="kx-muted"
+            >Fica no componente. No Figma, a camada de imagem é um retângulo nativo: arraste a foto
+            para ela.</small
+          >
+        }
+      </section>
+
+      @if (erros().length) {
+        <ul class="kcxc__erro" role="alert">
+          @for (e of erros(); track e) {
+            <li>{{ e }}</li>
+          }
+        </ul>
+      }
+      <div class="kcxc__acoes">
+        <button type="submit" class="kx-btn kx-btn--primary" [disabled]="!resultado().comp">
+          <kx-icon name="kcx" />
+          {{ original() ? 'Salvar alterações' : 'Salvar e abrir no editor' }}
+        </button>
+        <a class="kx-btn kx-btn--ghost" routerLink="/kcx">Cancelar</a>
+      </div>
+    </form>
+
+    <aside class="kcxc__lado" aria-label="Resultado">
+      @if (resultado().erro; as erro) {
+        <p class="kcxc__erro" role="alert">{{ erro }}</p>
+      }
+      @if (resultado().comp) {
+        <kx-kcx-preview
+          [documento]="documento()"
+          [saidas]="saidas()"
+          [titulo]="'Preview: ' + cfg().nome"
+          altura="clamp(320px, 52vh, 520px)"
+        />
+        <p class="kx-muted kcxc__dica">
+          O preview é o código de verdade: clique, passe o mouse e use o teclado nele.
+        </p>
+      }
+      @if (figma(); as f) {
+        <div class="kx-glass kcxc__bloco">
+          <h2 class="kcxc__titulo">No Figma</h2>
+          <ul class="kcxc__chips">
+            <li class="kx-chip">
+              {{ f.variantes.length }} variante{{ f.variantes.length > 1 ? 's' : '' }}
+            </li>
+            <li class="kx-chip">
+              {{ f.interacoes }} interaç{{ f.interacoes === 1 ? 'ão' : 'ões' }} de protótipo
+            </li>
+            <li class="kx-chip">{{ f.variaveis }} variáveis</li>
+          </ul>
+          <p class="kx-muted">Variantes: {{ f.variantes.join(' · ') }}</p>
+          <ul class="kcxc__lista">
+            @for (e of f.editavel; track e) {
+              <li>{{ e }}</li>
+            }
+          </ul>
+        </div>
+      }
+    </aside>
+  </div>
+</div>

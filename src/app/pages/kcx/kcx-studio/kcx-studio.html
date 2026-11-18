@@ -18,6 +18,62 @@
     </ol>
   </header>
 
+  <section class="kx-section kcxs__criar kx-glass" aria-labelledby="kcxs-criar">
+    <div>
+      <h2 id="kcxs-criar" class="kx-section-title">Crie o seu</h2>
+      <p class="kx-muted">
+        {{ totalTipos }} tipos para tela, site e app: navbar, menu sanduíche, menu lateral, modal,
+        carrossel, cards de foto e vídeo, abas, acordeão, aviso, formulário, hero, rodapé, tab bar,
+        botão e card de preço. Você dá os nomes, escolhe a animação e as cores.
+      </p>
+    </div>
+    <div class="kcxs__criar-acoes">
+      <a class="kx-btn kx-btn--primary" routerLink="/kcx/criar"
+        ><kx-icon name="kcx" /> Criar componente</a
+      >
+      <label class="kx-btn kx-btn--ghost kcxs__arquivo">
+        <kx-icon name="upload" /> Importar do Figma (.kcx.json)
+        <input type="file" accept=".json,application/json" (change)="importarMeus($event)" />
+      </label>
+    </div>
+    @if (importacao(); as r) {
+      <p [class]="r.erros.length ? 'kcxs__erro' : 'kcxs__ok-linha'" role="status">
+        @if (r.salvos.length) {
+          {{ r.salvos.length }} componente(s) adicionado(s) aos seus.
+        }
+        @for (e of r.erros; track e) {
+          {{ e }}
+        }
+      </p>
+    }
+  </section>
+
+  @if (meus().length) {
+    <section class="kx-section" aria-labelledby="kcxs-meus">
+      <h2 id="kcxs-meus" class="kx-section-title">Meus componentes</h2>
+      <div class="kcxs__cards">
+        @for (c of meus(); track c.id) {
+          <article class="kcxs__card kx-glass">
+            <h3>{{ c.nome }}</h3>
+            <p class="kx-muted">{{ c.descricao }}</p>
+            <ul class="kcxs__chips">
+              <li class="kx-chip">
+                {{ c.origemCriacao?.tipo === 'figma' ? 'Do Figma' : 'Construtor' }}
+              </li>
+              <li class="kx-chip">{{ c.variaveis.length }} variáveis</li>
+              <li class="kx-chip">
+                {{ c.estados.length }} variante{{ c.estados.length > 1 ? 's' : '' }}
+              </li>
+            </ul>
+            <a class="kx-btn kx-btn--primary" [routerLink]="['/kcx', c.id]"
+              >Abrir editor <kx-icon name="arrow-right"
+            /></a>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
   <section class="kx-section" aria-labelledby="kcxs-comp">
     <h2 id="kcxs-comp" class="kx-section-title">Componentes de referência</h2>
     <div class="kcxs__cards">

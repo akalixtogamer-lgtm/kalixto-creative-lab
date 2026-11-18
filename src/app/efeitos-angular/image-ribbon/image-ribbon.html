@@ -8,6 +8,11 @@
   </div>
   <h1 class="titulo">Criamos<br />rápido</h1>
 </div>
-<button class="pausar" type="button" [attr.aria-pressed]="pausada()" (click)="pausada.set(!pausada())">
+<button
+  class="pausar"
+  type="button"
+  [attr.aria-pressed]="pausada()"
+  (click)="pausada.set(!pausada())"
+>
   {{ pausada() ? 'Continuar' : 'Pausar' }}
 </button>

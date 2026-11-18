@@ -88,7 +88,9 @@ function entradasDeEfeitos(): EntradaGlossario[] {
         { rotulo: 'Testar', rota: ['/efeitos', f.id] },
         { rotulo: 'Ver e copiar o código', rota: ['/efeitos', f.id], fragmento: 'ef-codigo' },
       ],
-      busca: normalizar([f.nomeAmigavel, f.nomeTecnico, f.descricao, categoria, ...f.tags].join(' ')),
+      busca: normalizar(
+        [f.nomeAmigavel, f.nomeTecnico, f.descricao, categoria, ...f.tags].join(' '),
+      ),
     };
   });
 }
@@ -103,7 +105,13 @@ function entradasDeDemos(): EntradaGlossario[] {
       detalhe: e.descricao,
       origem: `${lab} · ${e.topico}`,
       letra: letraDe(e.nome),
-      links: [{ rotulo: 'Testar e copiar o código', rota: ['/labs', e.labId], query: { demo: e.demoId ?? '' } }],
+      links: [
+        {
+          rotulo: 'Testar e copiar o código',
+          rota: ['/labs', e.labId],
+          query: { demo: e.demoId ?? '' },
+        },
+      ],
       busca: normalizar([e.nome, e.descricao, lab, e.topico].join(' ')),
     };
   });
@@ -133,7 +141,9 @@ function entradasDeTermos(): EntradaGlossario[] {
       query: { arquivo: arquivoDoTermo(k, t.termo) },
       fragmento: 'ef-codigo',
     })),
-    busca: normalizar([t.termo, t.explicacao, ...t.kits.map((k) => k.ficha.nomeAmigavel)].join(' ')),
+    busca: normalizar(
+      [t.termo, t.explicacao, ...t.kits.map((k) => k.ficha.nomeAmigavel)].join(' '),
+    ),
   }));
 }
 
@@ -142,4 +152,7 @@ export const GLOSSARIO: EntradaGlossario[] = [
   ...entradasDeEfeitos(),
   ...entradasDeDemos(),
   ...entradasDeTermos(),
-].sort((a, b) => chaveOrdem(a.nome).localeCompare(chaveOrdem(b.nome), 'pt-BR') || a.tipo.localeCompare(b.tipo));
+].sort(
+  (a, b) =>
+    chaveOrdem(a.nome).localeCompare(chaveOrdem(b.nome), 'pt-BR') || a.tipo.localeCompare(b.tipo),
+);

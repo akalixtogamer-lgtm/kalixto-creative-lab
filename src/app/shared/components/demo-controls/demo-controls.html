@@ -18,7 +18,11 @@
         (input)="emitir(p, $any($event.target).value)"
       />
     } @else {
-      <select class="ctrl__select" [id]="prefixo() + '-' + p.id" (change)="emitir(p, $any($event.target).value)">
+      <select
+        class="ctrl__select"
+        [id]="prefixo() + '-' + p.id"
+        (change)="emitir(p, $any($event.target).value)"
+      >
         @for (o of p.opcoes; track o.valor) {
           <option [value]="o.valor" [selected]="o.valor === valores()[p.id]">{{ o.rotulo }}</option>
         }

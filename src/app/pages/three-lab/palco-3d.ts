@@ -72,9 +72,10 @@ export function criarPalco3D(container: HTMLElement): Palco3D {
   ajustar();
 
   // Pausa o laço quando o palco sai da tela (economiza bateria)
-  const io = 'IntersectionObserver' in window
-    ? new IntersectionObserver(([e]) => (visivel = e.isIntersecting))
-    : undefined;
+  const io =
+    'IntersectionObserver' in window
+      ? new IntersectionObserver(([e]) => (visivel = e.isIntersecting))
+      : undefined;
   io?.observe(container);
 
   renderer.setAnimationLoop((agora: number) => {

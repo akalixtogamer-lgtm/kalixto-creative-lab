@@ -17,7 +17,8 @@ export const LAYERED_PARALLAX: EffectKit = {
     nomeAmigavel: 'Parallax em camadas',
     categoria: 'scroll',
     subcategoria: 'Parallax',
-    descricao: 'As camadas de uma cena se movem em velocidades diferentes durante a rolagem, criando profundidade.',
+    descricao:
+      'As camadas de uma cena se movem em velocidades diferentes durante a rolagem, criando profundidade.',
     objetivoVisual: 'Dar sensação de espaço e profundidade a um hero ilustrado.',
     aplicacoes: ['Heros ilustrados', 'Abertura de campanhas', 'Storytelling visual'],
     nivel: 'intermediario',
@@ -31,18 +32,34 @@ export const LAYERED_PARALLAX: EffectKit = {
       'requestAnimationFrame junta várias rolagens num só cálculo por quadro.',
       'As montanhas são polígonos feitos com clip-path, e o sol é um radial-gradient — a cena não usa imagens.',
     ],
-    alternativa: 'Com GSAP ScrollTrigger: gsap.to(camada, { yPercent: 40, scrollTrigger: { scrub: true } }) — veja a demo "Camadas em velocidades diferentes" no Scroll Lab.',
+    alternativa:
+      'Com GSAP ScrollTrigger: gsap.to(camada, { yPercent: 40, scrollTrigger: { scrub: true } }) — veja a demo "Camadas em velocidades diferentes" no Scroll Lab.',
     compatibilidade: 'Todos os navegadores atuais.',
-    responsividade: 'As camadas usam porcentagens e vw, então a cena se adapta à largura. Em telas pequenas, intensidades menores ficam melhores.',
-    acessibilidade: 'Parallax pode causar desconforto em pessoas com distúrbios vestibulares: com prefers-reduced-motion o script não move nada e a cena fica estática. O título é texto real.',
-    performance: 'Uma escrita de transform por camada por quadro, só enquanto a página rola, com listener passivo. Nenhuma leitura de layout dentro do quadro.',
-    limitacoes: ['Só funciona bem perto do topo da página: a cena calcula a partir de scrollY total.', 'Intensidade alta pode deixar vãos aparecendo na base da cena.'],
+    responsividade:
+      'As camadas usam porcentagens e vw, então a cena se adapta à largura. Em telas pequenas, intensidades menores ficam melhores.',
+    acessibilidade:
+      'Parallax pode causar desconforto em pessoas com distúrbios vestibulares: com prefers-reduced-motion o script não move nada e a cena fica estática. O título é texto real.',
+    performance:
+      'Uma escrita de transform por camada por quadro, só enquanto a página rola, com listener passivo. Nenhuma leitura de layout dentro do quadro.',
+    limitacoes: [
+      'Só funciona bem perto do topo da página: a cena calcula a partir de scrollY total.',
+      'Intensidade alta pode deixar vãos aparecendo na base da cena.',
+    ],
     referencias: [MDN.transform, MDN.raf, MDN.reduzir, MDN.wcagMovimento],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'intens', rotulo: 'intensidade', tipo: 'range', min: 0.1, max: 1.5, passo: 0.1, unidade: '×', padrao: 1 },
+    {
+      id: 'intens',
+      rotulo: 'intensidade',
+      tipo: 'range',
+      min: 0.1,
+      max: 1.5,
+      passo: 0.1,
+      unidade: '×',
+      padrao: 1,
+    },
     {
       id: 'sentido',
       rotulo: 'sentido',
@@ -53,7 +70,16 @@ export const LAYERED_PARALLAX: EffectKit = {
       ],
       padrao: '1',
     },
-    { id: 'altura', rotulo: 'altura da cena', tipo: 'range', min: 60, max: 100, passo: 5, unidade: 'vh', padrao: 90 },
+    {
+      id: 'altura',
+      rotulo: 'altura da cena',
+      tipo: 'range',
+      min: 60,
+      max: 100,
+      passo: 5,
+      unidade: 'vh',
+      padrao: 90,
+    },
   ],
   gerar: (v) => ({
     html: `<section class="cena">
@@ -177,11 +203,17 @@ ${CAMADAS.map((c) => `    { classe: '${c.classe}', velocidade: ${c.vel} },`).joi
     ],
   },
   glossario: [
-    { termo: 'data-velocidade', explicacao: 'Quanto cada camada fica para trás em relação à rolagem.' },
+    {
+      termo: 'data-velocidade',
+      explicacao: 'Quanto cada camada fica para trás em relação à rolagem.',
+    },
     { termo: 'scrollY', explicacao: 'Quantos pixels a página já rolou.' },
     { termo: 'translateY', explicacao: 'Move a camada na vertical sem mexer no layout.' },
     { termo: 'clip-path: polygon', explicacao: 'Recorta a camada no formato de montanha.' },
-    { termo: 'will-change', explicacao: 'Avisa o navegador que a camada vai se mover, para prepará-la na GPU.' },
+    {
+      termo: 'will-change',
+      explicacao: 'Avisa o navegador que a camada vai se mover, para prepará-la na GPU.',
+    },
     { termo: 'prefers-reduced-motion', explicacao: 'Com essa preferência, a cena fica parada.' },
   ],
 };

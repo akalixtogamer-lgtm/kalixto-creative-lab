@@ -1,11 +1,20 @@
 <section class="trilha-passos">
-  <p class="contador" aria-live="polite">Desbloqueado <strong>{{ livres() }}</strong>/{{ passos.length }}</p>
+  <p class="contador" aria-live="polite">
+    Desbloqueado <strong>{{ livres() }}</strong>/{{ passos.length }}
+  </p>
   <ol class="passos">
     @for (p of passos; track p.titulo; let i = $index) {
-      <li class="passo" [attr.data-estado]="i < livres() ? 'livre' : 'bloqueado'" [class.is-tremendo]="tremendo() === i">
+      <li
+        class="passo"
+        [attr.data-estado]="i < livres() ? 'livre' : 'bloqueado'"
+        [class.is-tremendo]="tremendo() === i"
+      >
         <span class="cadeado" aria-hidden="true"></span>
         <span class="num">0{{ i + 1 }}</span>
-        <span class="texto"><strong>{{ p.titulo }}</strong><small>{{ p.detalhe }}</small></span>
+        <span class="texto"
+          ><strong>{{ p.titulo }}</strong
+          ><small>{{ p.detalhe }}</small></span
+        >
         <span class="sr-estado">{{ i < livres() ? 'concluída' : 'bloqueada' }}</span>
         <span class="selo" aria-hidden="true">FEITO</span>
       </li>

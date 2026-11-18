@@ -8,7 +8,8 @@ export const MAGNETIC_BUTTON: EffectKit = {
     nomeAmigavel: 'Botão magnético',
     categoria: 'cursor',
     subcategoria: 'Elementos magnéticos',
-    descricao: 'Quando o ponteiro se aproxima, o botão é "puxado" na direção dele e volta ao lugar quando o ponteiro se afasta.',
+    descricao:
+      'Quando o ponteiro se aproxima, o botão é "puxado" na direção dele e volta ao lugar quando o ponteiro se afasta.',
     objetivoVisual: 'Dar personalidade e sensação tátil a uma ação importante.',
     aplicacoes: ['Botão principal de um hero', 'Links de contato', 'Ícones de redes sociais'],
     nivel: 'intermediario',
@@ -22,20 +23,55 @@ export const MAGNETIC_BUTTON: EffectKit = {
       'Fora do raio, o transform é limpo e a transition do CSS faz o botão voltar suavemente.',
       'requestAnimationFrame agrupa as atualizações a no máximo uma por quadro, evitando trabalho desnecessário.',
     ],
-    alternativa: 'GSAP: gsap.quickTo(botao, "x", { duration: 0.4 }) cria uma função que segue o ponteiro com suavização — usado na demo do Interface Lab.',
-    compatibilidade: 'Pointer Events e requestAnimationFrame funcionam em todos os navegadores atuais.',
-    responsividade: 'Só reage a mouse (pointerType "mouse"). Em toque o botão funciona normalmente, sem o efeito.',
-    acessibilidade: 'O efeito é decorativo: o botão continua sendo um <button> comum, com foco visível pelo teclado. Com prefers-reduced-motion o movimento é desativado.',
-    performance: 'Uma leitura de getBoundingClientRect e uma escrita de transform por quadro, só enquanto o ponteiro se move.',
-    limitacoes: ['Força muito alta faz o botão "fugir" do clique.', 'Em páginas com rolagem, o cálculo usa a posição na tela, então continua correto ao rolar.'],
+    alternativa:
+      'GSAP: gsap.quickTo(botao, "x", { duration: 0.4 }) cria uma função que segue o ponteiro com suavização — usado na demo do Interface Lab.',
+    compatibilidade:
+      'Pointer Events e requestAnimationFrame funcionam em todos os navegadores atuais.',
+    responsividade:
+      'Só reage a mouse (pointerType "mouse"). Em toque o botão funciona normalmente, sem o efeito.',
+    acessibilidade:
+      'O efeito é decorativo: o botão continua sendo um <button> comum, com foco visível pelo teclado. Com prefers-reduced-motion o movimento é desativado.',
+    performance:
+      'Uma leitura de getBoundingClientRect e uma escrita de transform por quadro, só enquanto o ponteiro se move.',
+    limitacoes: [
+      'Força muito alta faz o botão "fugir" do clique.',
+      'Em páginas com rolagem, o cálculo usa a posição na tela, então continua correto ao rolar.',
+    ],
     referencias: [MDN.pointer, MDN.raf, MDN.transform, MDN.reduzir],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'forca', rotulo: 'força', tipo: 'range', min: 0.1, max: 1, passo: 0.05, unidade: '', padrao: 0.4 },
-    { id: 'alcance', rotulo: 'raio de alcance', tipo: 'range', min: 20, max: 200, passo: 10, unidade: 'px', padrao: 80 },
-    { id: 'volta', rotulo: 'tempo de retorno', tipo: 'range', min: 100, max: 1200, passo: 50, unidade: 'ms', padrao: 500 },
+    {
+      id: 'forca',
+      rotulo: 'força',
+      tipo: 'range',
+      min: 0.1,
+      max: 1,
+      passo: 0.05,
+      unidade: '',
+      padrao: 0.4,
+    },
+    {
+      id: 'alcance',
+      rotulo: 'raio de alcance',
+      tipo: 'range',
+      min: 20,
+      max: 200,
+      passo: 10,
+      unidade: 'px',
+      padrao: 80,
+    },
+    {
+      id: 'volta',
+      rotulo: 'tempo de retorno',
+      tipo: 'range',
+      min: 100,
+      max: 1200,
+      passo: 50,
+      unidade: 'ms',
+      padrao: 500,
+    },
   ],
   gerar: (v) => ({
     html: `<button class="magnetico" type="button">Aproxime o mouse</button>`,
@@ -167,10 +203,22 @@ export class ${nomeClasse('magnetic-button')} {
   },
   glossario: [
     { termo: 'pointermove', explicacao: 'Evento disparado quando o ponteiro se move.' },
-    { termo: 'pointerType', explicacao: 'Tipo de ponteiro (mouse, touch, pen) — o efeito só roda com mouse.' },
+    {
+      termo: 'pointerType',
+      explicacao: 'Tipo de ponteiro (mouse, touch, pen) — o efeito só roda com mouse.',
+    },
     { termo: 'getBoundingClientRect', explicacao: 'Posição e tamanho do botão na tela.' },
-    { termo: 'Math.hypot', explicacao: 'Distância em linha reta entre o mouse e o centro do botão.' },
-    { termo: 'requestAnimationFrame', explicacao: 'Agenda a atualização para o próximo quadro de desenho.' },
-    { termo: 'is-atraindo', explicacao: 'Classe que deixa a transition rápida enquanto o botão segue o mouse.' },
+    {
+      termo: 'Math.hypot',
+      explicacao: 'Distância em linha reta entre o mouse e o centro do botão.',
+    },
+    {
+      termo: 'requestAnimationFrame',
+      explicacao: 'Agenda a atualização para o próximo quadro de desenho.',
+    },
+    {
+      termo: 'is-atraindo',
+      explicacao: 'Classe que deixa a transition rápida enquanto o botão segue o mouse.',
+    },
   ],
 };

@@ -1,5 +1,15 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { CSS_REPETIR, EASINGS, MDN, VALIDADO_EM, cssAngular, cssPalco, htmlRepetir, jsRepetir, tsRepetir } from './_base';
+import {
+  CSS_REPETIR,
+  EASINGS,
+  MDN,
+  VALIDADO_EM,
+  cssAngular,
+  cssPalco,
+  htmlRepetir,
+  jsRepetir,
+  tsRepetir,
+} from './_base';
 
 const ORIGEM: Record<string, (d: number) => string> = {
   baixo: (d) => `translateY(${d}px)`,
@@ -29,12 +39,17 @@ export const SLIDE_IN: EffectKit = {
       'Distâncias curtas (16 a 40 px) parecem mais elegantes; distâncias longas chamam mais atenção.',
       'Com redução de movimento, o deslocamento é removido e fica só o fade.',
     ],
-    alternativa: 'GSAP: gsap.from(el, { y: 40, opacity: 0, duration: 0.7 }) — útil quando a entrada depende de rolagem (ScrollTrigger).',
+    alternativa:
+      'GSAP: gsap.from(el, { y: 40, opacity: 0, duration: 0.7 }) — útil quando a entrada depende de rolagem (ScrollTrigger).',
     compatibilidade: 'Todos os navegadores atuais.',
-    responsividade: 'Em telas estreitas, prefira distâncias menores ou o eixo vertical, para não gerar rolagem horizontal durante a entrada.',
-    acessibilidade: 'Respeita prefers-reduced-motion: sem deslocamento, só a opacidade. O elemento está no HTML desde o início.',
+    responsividade:
+      'Em telas estreitas, prefira distâncias menores ou o eixo vertical, para não gerar rolagem horizontal durante a entrada.',
+    acessibilidade:
+      'Respeita prefers-reduced-motion: sem deslocamento, só a opacidade. O elemento está no HTML desde o início.',
     performance: 'transform e opacity são animadas pelo compositor, sem recalcular layout.',
-    limitacoes: ['Entradas pela lateral podem gerar barra de rolagem horizontal se o contêiner não tiver overflow controlado.'],
+    limitacoes: [
+      'Entradas pela lateral podem gerar barra de rolagem horizontal se o contêiner não tiver overflow controlado.',
+    ],
     referencias: [MDN.transform, MDN.keyframes, MDN.reduzir],
     validadoEm: VALIDADO_EM,
     status: 'validado',
@@ -52,9 +67,33 @@ export const SLIDE_IN: EffectKit = {
       ],
       padrao: 'baixo',
     },
-    { id: 'dist', rotulo: 'distância', tipo: 'range', min: 8, max: 200, passo: 4, unidade: 'px', padrao: 40 },
-    { id: 'dur', rotulo: 'duração', tipo: 'range', min: 100, max: 2000, passo: 50, unidade: 'ms', padrao: 700 },
-    { id: 'easing', rotulo: 'curva (easing)', tipo: 'select', opcoes: EASINGS, padrao: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+    {
+      id: 'dist',
+      rotulo: 'distância',
+      tipo: 'range',
+      min: 8,
+      max: 200,
+      passo: 4,
+      unidade: 'px',
+      padrao: 40,
+    },
+    {
+      id: 'dur',
+      rotulo: 'duração',
+      tipo: 'range',
+      min: 100,
+      max: 2000,
+      passo: 50,
+      unidade: 'ms',
+      padrao: 700,
+    },
+    {
+      id: 'easing',
+      rotulo: 'curva (easing)',
+      tipo: 'select',
+      opcoes: EASINGS,
+      padrao: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    },
   ],
   gerar: (v) => ({
     html: `<div class="cartao slide-in">Slide in</div>
@@ -106,10 +145,22 @@ ${CSS_REPETIR}`,
     ],
   },
   glossario: [
-    { termo: 'translate', explicacao: 'Desloca o elemento no eixo X (horizontal) ou Y (vertical) sem mexer no layout.' },
-    { termo: 'transform', explicacao: 'Propriedade que move, gira ou escala o elemento visualmente.' },
+    {
+      termo: 'translate',
+      explicacao: 'Desloca o elemento no eixo X (horizontal) ou Y (vertical) sem mexer no layout.',
+    },
+    {
+      termo: 'transform',
+      explicacao: 'Propriedade que move, gira ou escala o elemento visualmente.',
+    },
     { termo: 'cubic-bezier', explicacao: 'Curva personalizada de aceleração da animação.' },
-    { termo: 'overflow: hidden', explicacao: 'Esconde o que passar da borda do palco, evitando barra de rolagem lateral.' },
-    { termo: 'animation-name', explicacao: 'Troca qual @keyframes a animação usa (aqui, só o fade).' },
+    {
+      termo: 'overflow: hidden',
+      explicacao: 'Esconde o que passar da borda do palco, evitando barra de rolagem lateral.',
+    },
+    {
+      termo: 'animation-name',
+      explicacao: 'Troca qual @keyframes a animação usa (aqui, só o fade).',
+    },
   ],
 };

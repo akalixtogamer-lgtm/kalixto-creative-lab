@@ -56,8 +56,14 @@
   width: 40px;
   height: 40px;
 }
-.g-circulo { border-radius: 50%; background: var(--kx-magenta); }
-.g-quadrado { border-radius: 8px; background: var(--kx-roxo); }
+.g-circulo {
+  border-radius: 50%;
+  background: var(--kx-magenta);
+}
+.g-quadrado {
+  border-radius: 8px;
+  background: var(--kx-roxo);
+}
 .g-triangulo {
   background: var(--kx-ciano);
   clip-path: polygon(50% 0, 100% 100%, 0 100%);

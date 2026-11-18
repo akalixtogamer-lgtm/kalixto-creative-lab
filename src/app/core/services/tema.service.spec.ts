@@ -27,5 +27,4 @@ describe('Tema claro / escuro', () => {
     f.detectChanges();
     expect(botao.getAttribute('aria-label')).not.toBe(antes);
   });
-
 });

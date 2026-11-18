@@ -24,11 +24,17 @@
     destaque 260ms steps(1) calc(var(--i) * 260ms);
 }
 @keyframes entrar {
-  from { opacity: 0; transform: scale(0.55) translateY(0.25em); }
+  from {
+    opacity: 0;
+    transform: scale(0.55) translateY(0.25em);
+  }
 }
 /* sem fill-mode: ao terminar, a cor volta ao normal */
 @keyframes destaque {
-  0%, 100% { color: #ff2e3e; }
+  0%,
+  100% {
+    color: #ff2e3e;
+  }
 }
 
 .repetir {
@@ -40,8 +46,13 @@
   font: inherit;
   cursor: pointer;
 }
-.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.repetir:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .palavra { animation: none; }
+  .palavra {
+    animation: none;
+  }
 }

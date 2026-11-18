@@ -61,11 +61,20 @@ export const CENAS: Record<string, Cena> = {
           markers: bool(v['markers']),
         },
       })
-      .from(q(palco, '.s-barra-fill'), { scaleX: 0, stagger: 0.3, transformOrigin: 'left center', ease: 'none' });
+      .from(q(palco, '.s-barra-fill'), {
+        scaleX: 0,
+        stagger: 0.3,
+        transformOrigin: 'left center',
+        ease: 'none',
+      });
   },
 
   parallax: (palco, scroller, v) => {
-    for (const [seletor, id] of [['.s-fundo', 'fundo'], ['.s-meio', 'meio'], ['.s-frente', 'frente']]) {
+    for (const [seletor, id] of [
+      ['.s-fundo', 'fundo'],
+      ['.s-meio', 'meio'],
+      ['.s-frente', 'frente'],
+    ]) {
       gsap.to(q(palco, seletor), {
         yPercent: Number(v[id]),
         ease: 'none',
@@ -159,7 +168,8 @@ CENAS['navbar'] = (palco, scroller, v) => {
       scroller,
       start: 0,
       end: 'max',
-      onUpdate: (self) => nav.classList.toggle('escondida', self.direction === 1 && self.scroll() > 200),
+      onUpdate: (self) =>
+        nav.classList.toggle('escondida', self.direction === 1 && self.scroll() > 200),
     });
   }
   // gsap.context só desfaz o que o GSAP criou: limpamos as classes na saída
@@ -176,7 +186,13 @@ CENAS['capitulos'] = (palco, scroller, v) => {
       scaleY: 1,
       ease: 'none',
       transformOrigin: 'top center',
-      scrollTrigger: { trigger: lista, scroller, start: 'top center', end: 'bottom center', scrub: scrub(v) },
+      scrollTrigger: {
+        trigger: lista,
+        scroller,
+        start: 'top center',
+        end: 'bottom center',
+        scrub: scrub(v),
+      },
     },
   );
   const caps = q(palco, '.s-cap-item');
@@ -190,8 +206,10 @@ CENAS['capitulos'] = (palco, scroller, v) => {
     });
     const img = cap.querySelector('img');
     const st = { trigger: cap, scroller, start: 'top bottom', end: 'bottom top', scrub: true };
-    if (img && v['imagem'] === 'zoom') gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: st });
-    if (img && v['imagem'] === 'parallax') gsap.fromTo(img, { yPercent: -12 }, { yPercent: 12, ease: 'none', scrollTrigger: st });
+    if (img && v['imagem'] === 'zoom')
+      gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: st });
+    if (img && v['imagem'] === 'parallax')
+      gsap.fromTo(img, { yPercent: -12 }, { yPercent: 12, ease: 'none', scrollTrigger: st });
   });
   return () => caps.forEach((c) => c.classList.remove('ativo'));
 };
@@ -200,7 +218,11 @@ CENAS['capitulos'] = (palco, scroller, v) => {
 export function rolarAteOFim(scroller: HTMLElement): gsap.core.Tween {
   const fim = scroller.scrollHeight - scroller.clientHeight;
   const duracao = Math.min(6, Math.max(2.5, fim / 400));
-  return gsap.fromTo(scroller, { scrollTop: 0 }, { scrollTop: fim, duration: duracao, ease: 'power1.inOut' });
+  return gsap.fromTo(
+    scroller,
+    { scrollTop: 0 },
+    { scrollTop: fim, duration: duracao, ease: 'power1.inOut' },
+  );
 }
 
 export { ScrollTrigger };

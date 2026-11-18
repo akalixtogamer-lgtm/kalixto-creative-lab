@@ -39,7 +39,9 @@ export class GlslLab implements OnDestroy {
   protected readonly demos = GLSL_DEMOS;
   protected readonly suportado = temWebGL();
 
-  protected readonly atual = computed<LabDemo>(() => GLSL_DEMOS.find((d) => d.id === this.demo()) ?? GLSL_DEMOS[0]);
+  protected readonly atual = computed<LabDemo>(
+    () => GLSL_DEMOS.find((d) => d.id === this.demo()) ?? GLSL_DEMOS[0],
+  );
   private readonly todosValores = signal<Record<string, Valores>>(
     Object.fromEntries(GLSL_DEMOS.map((d) => [d.id, valoresPadrao(d)])),
   );

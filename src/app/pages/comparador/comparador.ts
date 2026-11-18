@@ -72,16 +72,26 @@ export class Comparador implements OnDestroy {
       );
     } else if (ef === 'pulso' && caixa) {
       this.animacoes.push(
-        caixa.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }, { transform: 'scale(1)' }], {
-          duration: 500,
-          iterations: 3,
-          easing: 'ease-in-out',
-        }),
+        caixa.animate(
+          [{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }, { transform: 'scale(1)' }],
+          {
+            duration: 500,
+            iterations: 3,
+            easing: 'ease-in-out',
+          },
+        ),
       );
     } else if (ef === 'sequencia') {
       const passo = [{ transform: 'translateX(0)' }, { transform: 'translateX(120px)' }];
       bolas.forEach((b, i) =>
-        this.animacoes.push(b.animate(passo, { duration: 500, delay: i * 500, fill: 'forwards', easing: 'ease-in-out' })),
+        this.animacoes.push(
+          b.animate(passo, {
+            duration: 500,
+            delay: i * 500,
+            fill: 'forwards',
+            easing: 'ease-in-out',
+          }),
+        ),
       );
     }
   }
@@ -91,8 +101,16 @@ export class Comparador implements OnDestroy {
     if (!palco) return;
     const ef = this.efeito();
     this.ctx = gsap.context(() => {
-      if (ef === 'entrada') gsap.from('.cmp-caixa', { opacity: 0, y: 40, duration: 0.8, ease: 'power2.out' });
-      if (ef === 'pulso') gsap.to('.cmp-caixa', { scale: 1.2, duration: 0.25, repeat: 5, yoyo: true, ease: 'sine.inOut' });
+      if (ef === 'entrada')
+        gsap.from('.cmp-caixa', { opacity: 0, y: 40, duration: 0.8, ease: 'power2.out' });
+      if (ef === 'pulso')
+        gsap.to('.cmp-caixa', {
+          scale: 1.2,
+          duration: 0.25,
+          repeat: 5,
+          yoyo: true,
+          ease: 'sine.inOut',
+        });
       if (ef === 'sequencia') {
         gsap
           .timeline()

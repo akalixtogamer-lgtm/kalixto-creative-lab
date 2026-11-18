@@ -110,6 +110,10 @@
     const { r, g, b, a } = lerCor(c);
     return { r: arredondar(r / 255), g: arredondar(g / 255), b: arredondar(b / 255), a };
   }
+  function corDeFigma(c) {
+    var _a;
+    return corHex({ r: c.r * 255, g: c.g * 255, b: c.b * 255, a: (_a = c.a) != null ? _a : 1 });
+  }
 
   // src/app/kcx/svg-caminho.ts
   function amostrar(d, passos = 32) {
@@ -255,6 +259,10 @@
   }
 
   // src/app/kcx/resolver.ts
+  var NUMERICOS = /* @__PURE__ */ new Set(["number", "float", "dimension", "time"]);
+  function ehNumerico(v) {
+    return NUMERICOS.has(v.tipo);
+  }
   function ehGradiente(x) {
     const g = x;
     return !!g && typeof g === "object" && typeof g.angulo === "number" && Array.isArray(g.paradas) && g.paradas.length >= 2 && g.paradas.every(
@@ -305,47 +313,59 @@
     }
     return e;
   }
+  function normalizarValor(v, valor) {
+    if (ehNumerico(v)) {
+      let n = typeof valor === "string" && valor.trim() !== "" ? Number(valor) : valor;
+      if (typeof n !== "number" || !Number.isFinite(n)) return v.padrao;
+      if (v.min !== void 0) n = Math.max(v.min, n);
+      if (v.max !== void 0) n = Math.min(v.max, n);
+      if (v.tipo === "number") n = Math.round(n);
+      return arredondar(n);
+    }
+    if (v.tipo === "boolean" && (valor === "true" || valor === "false")) return valor === "true";
+    return validarValor(v, valor).length ? v.padrao : valor;
+  }
   function comoNumero(x, id) {
     if (typeof x !== "number") throw new Error(`KCX: a opera\xE7\xE3o em "${id}" precisa de n\xFAmero.`);
     return x;
   }
-  function aplicarOperacoes(variavel, valor, ops = [], valores = {}, todas = []) {
+  function aplicarOperacoes(variavel2, valor, ops = [], valores = {}, todas = []) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
     let x = valor;
-    let unidade = (_a = variavel.unidade) != null ? _a : "";
+    let unidade = (_a = variavel2.unidade) != null ? _a : "";
     for (const o of ops) {
       switch (o.op) {
         case "multiplicar":
-          x = comoNumero(x, variavel.id) * o.fator;
+          x = comoNumero(x, variavel2.id) * o.fator;
           break;
         case "somar":
-          x = comoNumero(x, variavel.id) + o.valor;
+          x = comoNumero(x, variavel2.id) + o.valor;
           break;
         case "mapear": {
-          const n = comoNumero(x, variavel.id);
+          const n = comoNumero(x, variavel2.id);
           const [a, b] = o.de;
           const [c, d] = o.para;
           x = b === a ? c : c + (n - a) * (d - c) / (b - a);
           break;
         }
         case "limitar": {
-          let n = comoNumero(x, variavel.id);
+          let n = comoNumero(x, variavel2.id);
           if (o.min !== void 0) n = Math.max(o.min, n);
           if (o.max !== void 0) n = Math.min(o.max, n);
           x = n;
           break;
         }
         case "arredondar":
-          x = arredondar(comoNumero(x, variavel.id), o.casas);
+          x = arredondar(comoNumero(x, variavel2.id), o.casas);
           break;
         case "dividir": {
-          const n = comoNumero(x, variavel.id);
+          const n = comoNumero(x, variavel2.id);
           x = n === 0 ? o.numerador : o.numerador / n;
           break;
         }
         case "multiplicarPorVariavel": {
           const outra = (_c = valores[o.variavel]) != null ? _c : (_b = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _b.valor;
-          x = comoNumero(x, variavel.id) * comoNumero(outra, o.variavel);
+          x = comoNumero(x, variavel2.id) * comoNumero(outra, o.variavel);
           break;
         }
         case "dividirPorVariavel": {
@@ -353,31 +373,31 @@
             (_e = valores[o.variavel]) != null ? _e : (_d = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _d.valor,
             o.variavel
           );
-          x = outra === 0 ? 0 : comoNumero(x, variavel.id) / outra;
+          x = outra === 0 ? 0 : comoNumero(x, variavel2.id) / outra;
           break;
         }
         case "somarVariavel": {
           const outra = (_g = valores[o.variavel]) != null ? _g : (_f = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _f.valor;
-          x = comoNumero(x, variavel.id) + o.fator * comoNumero(outra, o.variavel);
+          x = comoNumero(x, variavel2.id) + o.fator * comoNumero(outra, o.variavel);
           break;
         }
         case "alpha": {
           if (typeof x !== "string")
-            throw new Error(`KCX: alpha em "${variavel.id}" precisa de cor.`);
+            throw new Error(`KCX: alpha em "${variavel2.id}" precisa de cor.`);
           const a = o.variavel ? (_i = valores[o.variavel]) != null ? _i : (_h = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _h.valor : o.valor;
-          x = comAlpha(x, comoNumero(a != null ? a : 1, (_j = o.variavel) != null ? _j : variavel.id));
+          x = comAlpha(x, comoNumero(a != null ? a : 1, (_j = o.variavel) != null ? _j : variavel2.id));
           break;
         }
         case "converter":
           if (!conversivel(unidade, o.para))
-            throw new Error(`KCX: "${variavel.id}" n\xE3o converte ${unidade} \u2192 ${o.para}.`);
-          x = converter(comoNumero(x, variavel.id), unidade, o.para);
+            throw new Error(`KCX: "${variavel2.id}" n\xE3o converte ${unidade} \u2192 ${o.para}.`);
+          x = converter(comoNumero(x, variavel2.id), unidade, o.para);
           unidade = o.para;
           break;
         case "mapa": {
           const chave = String(x);
           if (!(chave in o.valores))
-            throw new Error(`KCX: "${variavel.id}" sem mapa para "${chave}".`);
+            throw new Error(`KCX: "${variavel2.id}" sem mapa para "${chave}".`);
           x = o.valores[chave];
           break;
         }
@@ -386,7 +406,7 @@
           const forma = String((_l = valores[o.variavel]) != null ? _l : (_k = todas.find((t2) => t2.id === o.variavel)) == null ? void 0 : _k.valor);
           const d = o.caminhos[forma];
           if (!d) throw new Error(`KCX: caminho "${forma}" n\xE3o encontrado.`);
-          const t = comoNumero(x, variavel.id);
+          const t = comoNumero(x, variavel2.id);
           x = o.op === "tracoNoCaminho" ? comprimento(d) * t : pontoEm(d, t)[o.eixo] + ((_m = o.somar) != null ? _m : 0);
           break;
         }
@@ -755,6 +775,50 @@
   }
 
   // src/app/kcx/serializar.ts
+  var ORIGEM_LAB = { ferramenta: "Kalixto Creative Lab", versao: "1.10.0-rc.1" };
+  function clonar(x) {
+    return JSON.parse(JSON.stringify(x));
+  }
+  function criarPacote(componentes, opcoes = {}) {
+    var _a, _b, _c, _d, _e, _f, _g;
+    const agora = ((_a = opcoes.agora) != null ? _a : /* @__PURE__ */ new Date()).toISOString();
+    const comps = componentes.map((c) => {
+      var _a2, _b2;
+      const copia = clonar(c);
+      const vals = (_b2 = (_a2 = opcoes.valores) == null ? void 0 : _a2[c.id]) != null ? _b2 : {};
+      copia.variaveis = copia.variaveis.map(
+        (v) => v.id in vals ? __spreadProps(__spreadValues({}, v), { valor: normalizarValor(v, vals[v.id]) }) : v
+      );
+      return copia;
+    });
+    const deps = /* @__PURE__ */ new Map();
+    comps.forEach((c) => c.dependencias.forEach((d) => deps.set(d.nome, d)));
+    return __spreadProps(__spreadValues({
+      formato: KCX_FORMATO,
+      schemaVersion: KCX_SCHEMA_VERSION,
+      id: (_b = opcoes.id) != null ? _b : comps.length === 1 ? comps[0].id : "composicao",
+      versao: (_c = opcoes.versao) != null ? _c : comps.length === 1 ? comps[0].versao : "1.0.0",
+      nome: (_d = opcoes.nome) != null ? _d : comps.length === 1 ? comps[0].nome : "Composi\xE7\xE3o KCX",
+      criadoEm: agora,
+      origem: __spreadValues({}, ORIGEM_LAB),
+      exportacao: __spreadValues({
+        modo: (_e = opcoes.modo) != null ? _e : "completo"
+      }, opcoes.presetAplicado ? { presetAplicado: opcoes.presetAplicado } : {}),
+      componentes: comps
+    }, opcoes.composicao ? { composicao: clonar(opcoes.composicao) } : {}), {
+      dependencias: [...deps.values()],
+      historico: (_g = opcoes.historico) != null ? _g : [
+        {
+          versao: (_f = opcoes.versao) != null ? _f : "1.0.0",
+          data: agora.slice(0, 10),
+          descricao: "Exportado do Kalixto Creative Lab."
+        }
+      ]
+    });
+  }
+  function serializar(p) {
+    return JSON.stringify(p, null, 2) + "\n";
+  }
   var MIGRACOES = {};
   function migrar(bruto) {
     let p = bruto;
@@ -784,6 +848,616 @@
       };
     }
     return { ok: true, pacote: migrado, validacao };
+  }
+
+  // src/app/kcx/componentes/_base.ts
+  var LICENCA_MIT = {
+    spdx: "MIT",
+    usoComercial: true,
+    modificacao: true,
+    redistribuicao: true,
+    autor: "Wallace Toledo (dev-Kalixto) \u2014 Kalixto Creative Lab"
+  };
+  function variavel(v) {
+    return __spreadProps(__spreadValues({ exportavel: true }, v), { valor: v.padrao });
+  }
+  var EASINGS_KCX = [
+    { valor: "suave", rotulo: "suave (expo out)" },
+    { valor: "elastico", rotulo: "el\xE1stico (back out)" },
+    { valor: "ease-in-out", rotulo: "ease-in-out" },
+    { valor: "linear", rotulo: "linear" }
+  ];
+  var MAPA_EASING = {
+    suave: "cubic-bezier(0.22, 1, 0.36, 1)",
+    elastico: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+    "ease-in-out": "ease-in-out",
+    linear: "linear"
+  };
+
+  // src/app/kcx/figma/ler-selecao.ts
+  var kebab = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "componente";
+  var camel = (s) => {
+    const k = kebab(s).replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
+    return /^[a-z]/.test(k) ? k : `v${k}`;
+  };
+  var esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  function limparSvg(svg) {
+    return svg.replace(/<script[\s\S]*?<\/script>/gi, "").replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*')/gi, "").replace(/(href\s*=\s*["'])\s*javascript:[^"']*/gi, "$1#").replace(/<\?xml[^>]*>/g, "").trim();
+  }
+  var PESO = {
+    thin: 100,
+    extralight: 200,
+    light: 300,
+    regular: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+    extrabold: 800,
+    black: 900
+  };
+  var peso = (estilo) => {
+    var _a;
+    return (_a = PESO[estilo.toLowerCase().replace(/[\s-]|italic/g, "")]) != null ? _a : 400;
+  };
+  var ALINHA = {
+    MIN: "flex-start",
+    CENTER: "center",
+    MAX: "flex-end",
+    SPACE_BETWEEN: "space-between",
+    BASELINE: "baseline"
+  };
+  var ANIMACOES = [
+    { valor: "nenhuma", rotulo: "Nenhuma" },
+    { valor: "entrada-subir", rotulo: "Entrada: sobe" },
+    { valor: "entrada-fade", rotulo: "Entrada: aparece" },
+    { valor: "entrada-zoom", rotulo: "Entrada: zoom" },
+    { valor: "entrada-desfoque", rotulo: "Entrada: sai do desfoque" },
+    { valor: "hover-elevar", rotulo: "Hover: sobe com sombra" },
+    { valor: "hover-brilho", rotulo: "Hover: brilho" },
+    { valor: "hover-crescer", rotulo: "Hover: cresce" },
+    { valor: "pulsar", rotulo: "Cont\xEDnua: pulsa" },
+    { valor: "flutuar", rotulo: "Cont\xEDnua: flutua" }
+  ];
+  async function lerSelecao(figma2, selecionado, op = {}) {
+    var _a, _b, _c, _d, _e;
+    let raiz = selecionado;
+    const avisos = [];
+    if (raiz.type === "COMPONENT_SET") {
+      avisos.push(
+        `\u201C${raiz.name}\u201D tem ${raiz.children.length} variantes; foi importada a variante padr\xE3o.`
+      );
+      raiz = (_a = raiz.defaultVariant) != null ? _a : raiz.children[0];
+    }
+    const pai = selecionado.parent;
+    const nome = (pai == null ? void 0 : pai.type) === "COMPONENT_SET" ? `${pai.name} \u2014 ${String(selecionado.name).split(",").map((p) => p.split("=").pop().trim()).join(" ")}` : String(selecionado.name || "Componente do Figma");
+    const id = (_b = op.id) != null ? _b : kebab(nome);
+    const P = `--kcx-${id}`;
+    const C = `kcx-${id}`;
+    const vars = [];
+    const porCor = /* @__PURE__ */ new Map();
+    const porRaio = /* @__PURE__ */ new Map();
+    const porEspaco = /* @__PURE__ */ new Map();
+    const nomesVar = /* @__PURE__ */ new Map();
+    const ids = /* @__PURE__ */ new Set();
+    let contador = 0;
+    const css = [];
+    const idUnico = (base) => {
+      let x = base;
+      let n = 2;
+      while (ids.has(x)) x = `${base}${n++}`;
+      ids.add(x);
+      return x;
+    };
+    const nomeLigado = async (alias) => {
+      var _a2;
+      if (!(alias == null ? void 0 : alias.id) || !((_a2 = figma2 == null ? void 0 : figma2.variables) == null ? void 0 : _a2.getVariableByIdAsync)) return void 0;
+      if (nomesVar.has(alias.id)) return nomesVar.get(alias.id);
+      try {
+        const v2 = await figma2.variables.getVariableByIdAsync(alias.id);
+        const n = (v2 == null ? void 0 : v2.name) ? String(v2.name).split("/").pop() : void 0;
+        if (n) nomesVar.set(alias.id, n);
+        return n;
+      } catch (e) {
+        return void 0;
+      }
+    };
+    const corVar = async (cor, opacidade = 1, alias) => {
+      var _a2;
+      const hex = corDeFigma({ r: cor.r, g: cor.g, b: cor.b, a: ((_a2 = cor.a) != null ? _a2 : 1) * opacidade });
+      const existente = porCor.get(hex);
+      if (existente) return existente;
+      const ligado = await nomeLigado(alias);
+      const vid = idUnico(
+        ligado ? camel(/^cor\b/i.test(ligado) ? ligado : `cor ${ligado}`) : `cor${porCor.size + 1}`
+      );
+      porCor.set(hex, vid);
+      vars.push(
+        variavel({
+          id: vid,
+          nome: ligado ? /^cor\b/i.test(ligado) ? ligado : `Cor ${ligado}` : `Cor ${porCor.size}`,
+          tipo: "color",
+          padrao: hex,
+          descricao: ligado ? `Vinda da vari\xE1vel \u201C${ligado}\u201D do Figma.` : "Cor lida do Figma.",
+          grupo: "colors",
+          secao: "aparencia",
+          vinculos: [{ propriedade: "cor", alvo: { tipo: "css-var", nome: `${P}-${kebab(vid)}` } }]
+        })
+      );
+      return vid;
+    };
+    const dimVar = (mapa, valor, prefixo, rotulo) => {
+      const r2 = Math.round(valor * 100) / 100;
+      const existente = mapa.get(r2);
+      if (existente) return existente;
+      const vid = idUnico(`${prefixo}${mapa.size + 1}`);
+      mapa.set(r2, vid);
+      vars.push(
+        variavel({
+          id: vid,
+          nome: `${rotulo} ${mapa.size}`,
+          tipo: "dimension",
+          padrao: r2,
+          min: 0,
+          max: Math.max(64, Math.ceil(r2 * 3)),
+          passo: 1,
+          unidade: "px",
+          descricao: `${rotulo} lido do Figma (${r2} px).`,
+          grupo: prefixo === "raio" ? "dimensions" : "spacing",
+          secao: "aparencia",
+          vinculos: [
+            {
+              propriedade: rotulo.toLowerCase(),
+              alvo: { tipo: "css-var", nome: `${P}-${kebab(vid)}` },
+              unidadeSaida: "px"
+            }
+          ]
+        })
+      );
+      return vid;
+    };
+    const v = (vid) => `var(${P}-${kebab(vid)})`;
+    const pinturas = async (no) => {
+      var _a2, _b2, _c2, _d2, _e2, _f;
+      const saida = { css: [], kcx: [] };
+      const fills = Array.isArray(no.fills) ? no.fills.filter((f) => f.visible !== false) : [];
+      for (const f of [...fills].reverse()) {
+        if (f.type === "SOLID") {
+          const vid = await corVar(f.color, (_a2 = f.opacity) != null ? _a2 : 1, (_b2 = f.boundVariables) == null ? void 0 : _b2.color);
+          saida.css.push(v(vid));
+          saida.kcx.unshift({ tipo: "solido", cor: { $var: vid } });
+        } else if (f.type === "GRADIENT_LINEAR" || f.type === "GRADIENT_RADIAL" || f.type === "GRADIENT_ANGULAR") {
+          const paradas = [];
+          for (const s of (_c2 = f.gradientStops) != null ? _c2 : [])
+            paradas.push({
+              posicao: s.position,
+              cor: {
+                $var: await corVar(s.color, (_d2 = f.opacity) != null ? _d2 : 1, (_e2 = s.boundVariables) == null ? void 0 : _e2.color)
+              }
+            });
+          const m = (_f = f.gradientTransform) != null ? _f : [
+            [1, 0, 0],
+            [0, 1, 0]
+          ];
+          const angulo = Math.round(Math.atan2(m[0][1], m[0][0]) * 180 / Math.PI + 90);
+          const lista = paradas.map((p) => `${v(p.cor.$var)} ${Math.round(p.posicao * 100)}%`).join(", ");
+          saida.css.push(
+            f.type === "GRADIENT_RADIAL" ? `radial-gradient(circle, ${lista})` : f.type === "GRADIENT_ANGULAR" ? `conic-gradient(from ${angulo}deg, ${lista})` : `linear-gradient(${angulo}deg, ${lista})`
+          );
+          saida.kcx.unshift({
+            tipo: f.type === "GRADIENT_ANGULAR" ? "gradiente-conico" : "gradiente-linear",
+            angulo,
+            paradas
+          });
+        } else if (f.type === "IMAGE") {
+          avisos.push(
+            `\u201C${no.name}\u201D: imagem do Figma n\xE3o \xE9 exportada; ficou um fundo neutro (troque no c\xF3digo).`
+          );
+          saida.css.push("linear-gradient(135deg, #3a3357, #1a1530)");
+        }
+      }
+      return saida;
+    };
+    const sombras = async (no) => {
+      var _a2, _b2, _c2, _d2, _e2, _f, _g;
+      const r2 = { css: [], filtro: [], fundo: [] };
+      for (const e of Array.isArray(no.effects) ? no.effects : []) {
+        if (e.visible === false) continue;
+        if (e.type === "DROP_SHADOW" || e.type === "INNER_SHADOW") {
+          const vid = await corVar(e.color, 1, (_a2 = e.boundVariables) == null ? void 0 : _a2.color);
+          r2.css.push(
+            `${e.type === "INNER_SHADOW" ? "inset " : ""}${(_c2 = (_b2 = e.offset) == null ? void 0 : _b2.x) != null ? _c2 : 0}px ${(_e2 = (_d2 = e.offset) == null ? void 0 : _d2.y) != null ? _e2 : 0}px ${(_f = e.radius) != null ? _f : 0}px ${(_g = e.spread) != null ? _g : 0}px ${v(vid)}`
+          );
+        } else if (e.type === "LAYER_BLUR") r2.filtro.push(`blur(${e.radius}px)`);
+        else if (e.type === "BACKGROUND_BLUR") r2.fundo.push(`blur(${e.radius}px)`);
+      }
+      return r2;
+    };
+    const converter2 = async (no, paiAutoLayout, primeiro) => {
+      var _a2, _b2, _c2, _d2, _e2, _f, _g, _h, _i, _j, _k, _l;
+      if (no.visible === false) return null;
+      const n = ++contador;
+      const cls = primeiro ? C : `${C}__n${n}`;
+      const nid = idUnico(primeiro ? "raiz" : `n${n}-${kebab(no.name).slice(0, 20)}`);
+      const regras = [];
+      const kcx = { id: nid, nome: String(no.name || `Camada ${n}`), tipo: "frame" };
+      const ehTexto2 = no.type === "TEXT";
+      const ehVetor = ["VECTOR", "BOOLEAN_OPERATION", "STAR", "POLYGON", "LINE"].includes(no.type);
+      const al = no.layoutMode && no.layoutMode !== "NONE" ? no.layoutMode : null;
+      if (paiAutoLayout === null && !primeiro)
+        regras.push(
+          "position: absolute",
+          `left: ${Math.round(no.x)}px`,
+          `top: ${Math.round(no.y)}px`
+        );
+      if (paiAutoLayout !== null && no.layoutPositioning === "ABSOLUTE")
+        regras.push(
+          "position: absolute",
+          `left: ${Math.round(no.x)}px`,
+          `top: ${Math.round(no.y)}px`
+        );
+      const sh = (_a2 = no.layoutSizingHorizontal) != null ? _a2 : "FIXED";
+      const sv = (_b2 = no.layoutSizingVertical) != null ? _b2 : "FIXED";
+      if (!ehTexto2 || no.textAutoResize === "NONE" || no.textAutoResize === "HEIGHT") {
+        if (sh === "FILL")
+          regras.push(paiAutoLayout === "HORIZONTAL" ? "flex: 1 1 0" : "align-self: stretch");
+        else if (sh === "FIXED" || !al) regras.push(`width: ${Math.round(no.width)}px`);
+      }
+      if (!ehTexto2 || no.textAutoResize === "NONE") {
+        if (sv === "FILL")
+          regras.push(paiAutoLayout === "VERTICAL" ? "flex: 1 1 0" : "align-self: stretch");
+        else if (sv === "FIXED" || !al) regras.push(`height: ${Math.round(no.height)}px`);
+      }
+      if (primeiro) regras.push("max-width: 100%");
+      if (typeof no.opacity === "number" && no.opacity < 1) {
+        regras.push(`opacity: ${Math.round(no.opacity * 100) / 100}`);
+        kcx.opacidade = Math.round(no.opacity * 100) / 100;
+      }
+      if (no.rotation) regras.push(`rotate: ${-Math.round(no.rotation)}deg`);
+      if (!ehTexto2) {
+        kcx.largura = Math.round(no.width);
+        kcx.altura = Math.round(no.height);
+      }
+      if (paiAutoLayout === null && !primeiro) {
+        kcx.x = Math.round(no.x);
+        kcx.y = Math.round(no.y);
+      }
+      if (ehVetor) {
+        let svg = "";
+        try {
+          svg = limparSvg(String(await no.exportAsync({ format: "SVG_STRING" })));
+        } catch (e) {
+          avisos.push(`\u201C${no.name}\u201D: vetor n\xE3o exportado.`);
+        }
+        css.push(`.${cls} { ${regras.join("; ")}; display: block; }`);
+        kcx.tipo = "svg";
+        kcx.svg = svg || '<svg xmlns="http://www.w3.org/2000/svg"/>';
+        delete kcx.largura;
+        delete kcx.altura;
+        return { html: svg.replace("<svg", `<svg class="${cls}" aria-hidden="true"`), kcx };
+      }
+      if (ehTexto2) {
+        const tid = idUnico(camel(`texto ${no.name}`));
+        const conteudo = String((_c2 = no.characters) != null ? _c2 : "");
+        vars.push(
+          variavel({
+            id: tid,
+            nome: `Texto: ${no.name}`,
+            tipo: "string",
+            padrao: conteudo,
+            descricao: "Texto lido do Figma.",
+            grupo: "components",
+            secao: "aparencia",
+            vinculos: [{ propriedade: "Texto", alvo: { tipo: "texto", seletor: `.${cls}` } }]
+          })
+        );
+        const fonte = no.fontName && typeof no.fontName === "object" ? no.fontName : { family: "Inter", style: "Regular" };
+        const tamanho = typeof no.fontSize === "number" ? no.fontSize : 16;
+        const p2 = await pinturas(no);
+        regras.push(
+          `font-family: '${String(fonte.family).replace(/'/g, "")}', Inter, system-ui, sans-serif`,
+          `font-size: ${tamanho}px`,
+          `font-weight: ${peso(String(fonte.style))}`,
+          "margin: 0"
+        );
+        if (/italic/i.test(String(fonte.style))) regras.push("font-style: italic");
+        if (p2.css.length)
+          regras.push(
+            p2.css[0].includes("gradient") ? `background: ${p2.css[0]}; -webkit-background-clip: text; background-clip: text; color: transparent` : `color: ${p2.css[0]}`
+          );
+        if (no.letterSpacing && typeof no.letterSpacing === "object" && no.letterSpacing.value)
+          regras.push(
+            `letter-spacing: ${no.letterSpacing.unit === "PERCENT" ? `${no.letterSpacing.value / 100}em` : `${no.letterSpacing.value}px`}`
+          );
+        if (no.lineHeight && typeof no.lineHeight === "object" && no.lineHeight.unit !== "AUTO")
+          regras.push(
+            `line-height: ${no.lineHeight.unit === "PERCENT" ? no.lineHeight.value / 100 : `${no.lineHeight.value}px`}`
+          );
+        if (no.textAlignHorizontal && no.textAlignHorizontal !== "LEFT")
+          regras.push(
+            `text-align: ${String(no.textAlignHorizontal).toLowerCase().replace("justified", "justify")}`
+          );
+        if (no.textCase === "UPPER") regras.push("text-transform: uppercase");
+        if (no.textCase === "LOWER") regras.push("text-transform: lowercase");
+        css.push(`.${cls} { ${regras.join("; ")}; }`);
+        kcx.tipo = "texto";
+        kcx.preenchimentos = p2.kcx.length ? [p2.kcx[0]] : [{ tipo: "solido", cor: "#000000" }];
+        kcx.texto = {
+          conteudo: { $var: tid },
+          tamanho,
+          familia: String(fonte.family),
+          estilo: String(fonte.style),
+          alinhamento: no.textAlignHorizontal === "CENTER" ? "centro" : no.textAlignHorizontal === "RIGHT" ? "direita" : void 0,
+          caixaAlta: no.textCase === "UPPER" || void 0,
+          preencher: sh === "FILL" || void 0,
+          propriedade: String(no.name)
+        };
+        if (sh === "FILL") kcx.encher = true;
+        return { html: `<p class="${cls}">${esc(conteudo)}</p>`, kcx };
+      }
+      if (no.type === "ELLIPSE") {
+        kcx.tipo = "elipse";
+        regras.push("border-radius: 50%");
+      } else if (no.type === "RECTANGLE") kcx.tipo = "retangulo";
+      const p = await pinturas(no);
+      if (p.css.length) regras.push(`background: ${p.css.join(", ")}`);
+      kcx.preenchimentos = p.kcx;
+      if (no.type !== "ELLIPSE" && typeof no.cornerRadius === "number" && no.cornerRadius > 0) {
+        const rid = dimVar(porRaio, no.cornerRadius, "raio", "Arredondamento");
+        regras.push(`border-radius: ${v(rid)}`);
+        kcx.raio = { $var: rid };
+      } else if (no.type !== "ELLIPSE" && [no.topLeftRadius, no.topRightRadius, no.bottomRightRadius, no.bottomLeftRadius].some(
+        (x) => x > 0
+      )) {
+        regras.push(
+          `border-radius: ${[no.topLeftRadius, no.topRightRadius, no.bottomRightRadius, no.bottomLeftRadius].map((x) => `${x != null ? x : 0}px`).join(" ")}`
+        );
+      }
+      const tracos = Array.isArray(no.strokes) ? no.strokes.filter((s2) => s2.visible !== false && s2.type === "SOLID") : [];
+      if (tracos.length && no.strokeWeight > 0) {
+        const vid = await corVar(
+          tracos[0].color,
+          (_d2 = tracos[0].opacity) != null ? _d2 : 1,
+          (_e2 = tracos[0].boundVariables) == null ? void 0 : _e2.color
+        );
+        regras.push(
+          no.strokeAlign === "OUTSIDE" ? `outline: ${no.strokeWeight}px solid ${v(vid)}` : `box-shadow: inset 0 0 0 ${no.strokeWeight}px ${v(vid)}`
+        );
+        kcx.traco = { cor: { $var: vid }, espessura: no.strokeWeight };
+      }
+      const s = await sombras(no);
+      const insetBorda = regras.find((r2) => r2.startsWith("box-shadow: inset"));
+      if (s.css.length) {
+        if (insetBorda) regras.splice(regras.indexOf(insetBorda), 1);
+        regras.push(
+          `box-shadow: ${[insetBorda == null ? void 0 : insetBorda.replace("box-shadow: ", ""), ...s.css].filter(Boolean).join(", ")}`
+        );
+      }
+      if (s.filtro.length) regras.push(`filter: ${s.filtro.join(" ")}`);
+      if (s.fundo.length) regras.push(`backdrop-filter: ${s.fundo.join(" ")}`);
+      if (no.clipsContent) {
+        regras.push("overflow: hidden");
+        kcx.recortar = true;
+      }
+      if (al) {
+        const gap = (_f = no.itemSpacing) != null ? _f : 0;
+        const gid = gap > 0 ? dimVar(porEspaco, gap, "espaco", "Espa\xE7amento") : null;
+        const px = (_g = no.paddingLeft) != null ? _g : 0;
+        const py = (_h = no.paddingTop) != null ? _h : 0;
+        const pxid = px > 0 ? dimVar(porEspaco, px, "espaco", "Espa\xE7amento") : null;
+        const pyid = py > 0 ? dimVar(porEspaco, py, "espaco", "Espa\xE7amento") : null;
+        regras.push(
+          "display: flex",
+          `flex-direction: ${al === "HORIZONTAL" ? "row" : "column"}`,
+          `justify-content: ${(_i = ALINHA[no.primaryAxisAlignItems]) != null ? _i : "flex-start"}`,
+          `align-items: ${(_j = ALINHA[no.counterAxisAlignItems]) != null ? _j : "flex-start"}`,
+          `gap: ${gid ? v(gid) : "0"}`,
+          `padding: ${pyid ? v(pyid) : "0"} ${no.paddingRight === px ? pxid ? v(pxid) : "0" : `${(_k = no.paddingRight) != null ? _k : 0}px`} ${no.paddingBottom === py ? pyid ? v(pyid) : "0" : `${(_l = no.paddingBottom) != null ? _l : 0}px`} ${pxid ? v(pxid) : "0"}`
+        );
+        if (no.layoutWrap === "WRAP") regras.push("flex-wrap: wrap");
+        kcx.autoLayout = {
+          direcao: al === "HORIZONTAL" ? "horizontal" : "vertical",
+          espaco: gid ? { $var: gid } : 0,
+          paddingX: pxid ? { $var: pxid } : 0,
+          paddingY: pyid ? { $var: pyid } : 0
+        };
+        if (sh !== "FIXED") delete kcx.largura;
+        if (sv !== "FIXED") delete kcx.altura;
+      } else if (Array.isArray(no.children) && no.children.length) regras.push("position: relative");
+      if (sh === "FILL") kcx.encher = true;
+      css.push(`.${cls} { ${regras.join("; ")}; }`);
+      const filhos = [];
+      kcx.filhos = [];
+      let i = 0;
+      for (const f of Array.isArray(no.children) ? no.children : []) {
+        const r2 = await converter2(f, al, false);
+        if (!r2) continue;
+        filhos.push(primeiro ? r2.html.replace(/^<(\w+)/, `<$1 style="--i:${i++}"`) : r2.html);
+        kcx.filhos.push(r2.kcx);
+      }
+      if (!kcx.filhos.length) delete kcx.filhos;
+      const html2 = filhos.length ? `<div class="${cls}">
+${filhos.map((h) => "  " + h).join("\n")}
+</div>` : `<div class="${cls}"></div>`;
+      return { html: html2, kcx };
+    };
+    const r = await converter2(raiz, null, true);
+    if (!r) throw new Error("A camada selecionada est\xE1 oculta.");
+    const destaque = porCor.values().next().value;
+    const corDestaque = destaque ? v(destaque) : "rgb(255 255 255 / .6)";
+    vars.push(
+      variavel({
+        id: "animacao",
+        nome: "Anima\xE7\xE3o",
+        tipo: "enum",
+        padrao: "entrada-subir",
+        opcoes: ANIMACOES,
+        descricao: "Escolha a anima\xE7\xE3o do componente: entrada, hover ou cont\xEDnua.",
+        grupo: "motion",
+        secao: "animacao",
+        vinculos: [
+          {
+            propriedade: "data-animacao na raiz",
+            alvo: { tipo: "atributo", seletor: `.${C}`, atributo: "data-animacao" }
+          }
+        ]
+      }),
+      variavel({
+        id: "emSequencia",
+        nome: "Elementos em sequ\xEAncia",
+        tipo: "boolean",
+        padrao: false,
+        descricao: "Na entrada, cada elemento de dentro aparece um depois do outro.",
+        grupo: "motion",
+        secao: "animacao",
+        vinculos: [
+          {
+            propriedade: "data-sequencia na raiz",
+            alvo: { tipo: "atributo", seletor: `.${C}`, atributo: "data-sequencia" },
+            transformar: [{ op: "mapa", valores: { true: "true", false: "false" } }]
+          }
+        ]
+      }),
+      variavel({
+        id: "duracao",
+        nome: "Dura\xE7\xE3o",
+        tipo: "time",
+        padrao: 500,
+        min: 100,
+        max: 3e3,
+        passo: 50,
+        unidade: "ms",
+        descricao: "Tempo da anima\xE7\xE3o.",
+        grupo: "motion",
+        secao: "animacao",
+        vinculos: [
+          {
+            propriedade: "animation/transition-duration",
+            alvo: { tipo: "css-var", nome: `${P}-duracao` },
+            unidadeSaida: "ms"
+          }
+        ]
+      }),
+      variavel({
+        id: "easing",
+        nome: "Curva",
+        tipo: "enum",
+        padrao: "suave",
+        opcoes: EASINGS_KCX,
+        descricao: "Acelera\xE7\xE3o do movimento.",
+        grupo: "motion",
+        secao: "animacao",
+        vinculos: [
+          {
+            propriedade: "timing-function",
+            alvo: { tipo: "css-var", nome: `${P}-easing` },
+            transformar: [{ op: "mapa", valores: MAPA_EASING }]
+          }
+        ]
+      })
+    );
+    const D = `var(${P}-duracao)`;
+    const E = `var(${P}-easing)`;
+    const entrada = (nomeAnim) => `.${C}[data-animacao="entrada-${nomeAnim}"]:not([data-sequencia="true"]), .${C}[data-animacao="entrada-${nomeAnim}"][data-sequencia="true"] > * { animation: ${C}-${nomeAnim} ${D} ${E} both; }`;
+    const cssAnim = `
+/* Anima\xE7\xF5es (escolha na vari\xE1vel "Anima\xE7\xE3o" do KCX Studio) */
+.${C} { transition: transform ${D} ${E}, box-shadow ${D} ${E}, filter ${D} ${E}; }
+${entrada("subir")}
+${entrada("fade")}
+${entrada("zoom")}
+${entrada("desfoque")}
+.${C}[data-sequencia="true"] > * { animation-delay: calc(var(--i, 0) * ${D} * .25) !important; }
+@keyframes ${C}-subir { from { opacity: 0; transform: translateY(24px); } }
+@keyframes ${C}-fade { from { opacity: 0; } }
+@keyframes ${C}-zoom { from { opacity: 0; transform: scale(.85); } }
+@keyframes ${C}-desfoque { from { opacity: 0; filter: blur(12px); } }
+.${C}[data-animacao="hover-elevar"]:hover { transform: translateY(-6px); box-shadow: 0 16px 32px color-mix(in srgb, ${corDestaque} 45%, transparent); }
+.${C}[data-animacao="hover-brilho"]:hover { box-shadow: 0 0 28px color-mix(in srgb, ${corDestaque} 70%, transparent); filter: brightness(1.08); }
+.${C}[data-animacao="hover-crescer"]:hover { transform: scale(1.04); }
+.${C}[data-animacao="pulsar"] { animation: ${C}-pulsar calc(${D} * 4) ease-in-out infinite; }
+.${C}[data-animacao="flutuar"] { animation: ${C}-flutuar calc(${D} * 6) ease-in-out infinite; }
+@keyframes ${C}-pulsar { 50% { transform: scale(1.04); } }
+@keyframes ${C}-flutuar { 50% { transform: translateY(-8px); } }
+@media (prefers-reduced-motion: reduce) { .${C}, .${C} * { animation: none !important; transition-duration: 1ms !important; } }`;
+    const hoje = ((_c = op.agora) != null ? _c : /* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    const html = r.html.replace(
+      `class="${C}"`,
+      `class="${C}" data-animacao="entrada-subir" data-sequencia="false"`
+    );
+    return {
+      id,
+      nome,
+      categoria: "figma",
+      descricao: `Importado do Figma (\u201C${nome}\u201D).${avisos.length ? " " + avisos.join(" ") : ""}`,
+      tecnologia: ["HTML", "CSS", "SVG", "Angular"],
+      versao: "1.0.0",
+      licenca: LICENCA_MIT,
+      metadados: {
+        autor: "Importado do Figma pelo Figma Bridge",
+        tags: ["figma", "importado"],
+        criadoEm: hoje,
+        atualizadoEm: hoje,
+        largura: Math.round((_d = raiz.width) != null ? _d : 320),
+        altura: Math.round((_e = raiz.height) != null ? _e : 200)
+      },
+      variaveis: vars,
+      codigo: {
+        html,
+        css: `/* ${nome} \u2014 importado do Figma pelo Kalixto Creative Lab (KCX) */
+.${C}, .${C} * { box-sizing: border-box; }
+${css.join("\n")}
+${cssAnim}`,
+        js: "// Sem JavaScript: as anima\xE7\xF5es s\xE3o CSS."
+      },
+      estados: [
+        {
+          id: "padrao",
+          nome: "Padr\xE3o",
+          gatilho: "padrao",
+          descricao: "Como estava no Figma.",
+          valores: {}
+        }
+      ],
+      presets: [
+        {
+          id: "entrada",
+          nome: "Entrada em sequ\xEAncia",
+          valores: { animacao: "entrada-subir", emSequencia: true }
+        },
+        { id: "hover", nome: "Hover com sombra", valores: { animacao: "hover-elevar" } },
+        { id: "flutuar", nome: "Flutuando", valores: { animacao: "flutuar", duracao: 800 } }
+      ],
+      dependencias: [],
+      estrutura: r.kcx,
+      animacoes: [
+        {
+          id: "animacao",
+          nome: "Anima\xE7\xE3o escolhida no Studio",
+          tecnica: "css-keyframes",
+          variaveis: ["animacao", "emSequencia", "duracao", "easing"],
+          figma: "documental",
+          nivel: 2,
+          descricao: "Entradas, hover e anima\xE7\xF5es cont\xEDnuas em CSS, escolhidas pela vari\xE1vel \u201CAnima\xE7\xE3o\u201D."
+        }
+      ],
+      compatibilidade: {
+        navegadores: "Chrome, Edge, Firefox e Safari atuais.",
+        reducedMotion: true,
+        figma: {
+          nivel: 2,
+          editavel: [
+            "Estrutura, cores, textos, arredondamentos e espa\xE7amentos do desenho original",
+            "Ao reexportar para o Figma, tudo volta ligado a vari\xE1veis"
+          ],
+          parcial: avisos,
+          naoSuportado: ["A anima\xE7\xE3o escolhida no Studio (fica no c\xF3digo)"],
+          limitacoes: [
+            "Imagens do Figma n\xE3o s\xE3o exportadas pelo plugin; troque no c\xF3digo ou no Figma.",
+            "S\xF3 a variante padr\xE3o de um conjunto de variantes \xE9 importada."
+          ]
+        }
+      },
+      origemCriacao: { tipo: "figma" }
+    };
   }
 
   // src/app/kcx/figma-plano.ts
@@ -830,7 +1504,7 @@
     effects: "KCX \xB7 Effects",
     components: "KCX \xB7 Components"
   };
-  var kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
+  var kebab2 = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
   function tipoFigma(v) {
     if (v.tipo === "color") return "COLOR";
     if (v.tipo === "boolean") return "BOOLEAN";
@@ -932,7 +1606,7 @@
       const valor = v.tipo === "color" ? corFigma(String(atual)) : atual;
       if (!ctx.usarVariaveis || !campo.vinculavel || !v.exportavel) return { valor };
       const sufixo = difereDaBase(ctx, [v.id]) ? ctx.sufixo : "";
-      const nome = nomeVar(comp.id, sufixo, kebab(v.id));
+      const nome = nomeVar(comp.id, sufixo, kebab2(v.id));
       ctx.registrar(
         {
           nome,
@@ -958,7 +1632,8 @@
     }
     if (ehRefDerivada(ref)) {
       const v = porId(comp, ref.$derivado);
-      const calc = aplicarOperacoes(v, valores[v.id], ref.transformar, valores, comp.variaveis);
+      const bruto = aplicarOperacoes(v, valores[v.id], ref.transformar, valores, comp.variaveis);
+      const calc = campo.tipo === "BOOLEAN" ? bruto === true || bruto === "true" : bruto;
       const valor = campo.tipo === "COLOR" ? corFigma(String(calc)) : calc;
       if (!ctx.usarVariaveis || !campo.vinculavel) return { valor };
       const sufixo = difereDaBase(ctx, [v.id, ...idsDeOps(ref.transformar)]) ? ctx.sufixo : "";
@@ -1036,6 +1711,7 @@
       efeitos: [],
       recortar: !!no.recortar,
       absoluto: !!no.absoluto,
+      encher: no.encher || void 0,
       filhos: []
     };
     const pintura = (f, rotulo, campoCor) => {
@@ -1066,7 +1742,7 @@
           const cor = corFigma(s.cor);
           if (!ctx.usarVariaveis) return { posicao: s.posicao, cor: { valor: cor } };
           const sufixo = difereDaBase(ctx, [v.id]) ? ctx.sufixo : "";
-          const nome = nomeVar(ctx.comp.id, sufixo, `${kebab(v.id)}/stop-${j + 1}`);
+          const nome = nomeVar(ctx.comp.id, sufixo, `${kebab2(v.id)}/stop-${j + 1}`);
           ctx.registrar(
             {
               nome,
@@ -1218,6 +1894,7 @@
     }
     if (no.autoLayout) {
       p.autoLayout = {
+        alinhar: no.autoLayout.alinhar === "inicio" ? "MIN" : no.autoLayout.alinhar === "fim" ? "MAX" : void 0,
         direcao: no.autoLayout.direcao === "horizontal" ? "HORIZONTAL" : "VERTICAL",
         espaco: resolverRef(no.autoLayout.espaco, CAMPOS["gap"], onde("espa\xE7o"), ctx),
         paddingX: resolverRef(
@@ -1282,7 +1959,7 @@
     }));
   }
   function planejarFigma(pacote, modo = pacote.exportacao.modo) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     const usarVariaveis = modo !== "visual";
     const criarComponentes = modo !== "variaveis";
     const vars = /* @__PURE__ */ new Map();
@@ -1355,7 +2032,7 @@
           const valoresDoc = tipoDoc === "TIMING" ? { Valor: emSegundos(atuais[v.id]) } : tipoDoc === "EASING" ? { Valor: curvas[String(atuais[v.id])] } : valoresPorModo(v, atuais[v.id], temModos ? ["Dark", "Light", "Valor"] : ["Valor"]);
           registrar(
             {
-              nome: nomeVar(comp.id, "", kebab(v.id)),
+              nome: nomeVar(comp.id, "", kebab2(v.id)),
               colecao: COLECOES[v.grupo],
               tipo: tipoDoc,
               valores: valoresDoc,
@@ -1368,6 +2045,31 @@
             },
             ""
           );
+        }
+      }
+      const interacoes = [];
+      for (const it of (_d = comp.interacoes) != null ? _d : []) {
+        const de = comp.estados.find((e) => e.id === it.de);
+        const para = comp.estados.find((e) => e.id === it.para);
+        if (!de || !para) {
+          avisos.push(`${comp.nome}: intera\xE7\xE3o com estado inexistente (${it.de} \u2192 ${it.para}).`);
+          continue;
+        }
+        for (const v of variantes.filter((x) => x.propriedades["Estado"] === de.nome)) {
+          const alvo = variantes.find(
+            (x) => Object.entries(__spreadProps(__spreadValues({}, v.propriedades), { Estado: para.nome })).every(
+              ([k, val]) => x.propriedades[k] === val
+            )
+          );
+          if (alvo)
+            interacoes.push({
+              variante: v.nome,
+              no: it.no,
+              gatilho: it.gatilho,
+              destino: alvo.nome,
+              transicao: it.transicao,
+              duracao: it.duracao
+            });
         }
       }
       if (criarComponentes) {
@@ -1387,13 +2089,14 @@
           naoSuportado: f.naoSuportado,
           codigo: { html: comp.codigo.html, css: comp.codigo.css, js: comp.codigo.js },
           largura: comp.metadados.largura,
-          altura: comp.metadados.altura
+          altura: comp.metadados.altura,
+          interacoes: interacoes.length ? interacoes : void 0
         });
       }
     }
     if (usarVariaveis && pacote.composicao) {
       for (const s of pacote.composicao.compartilhadas) {
-        const nome = `${pacote.composicao.id}/${kebab(s.id)}`;
+        const nome = `${pacote.composicao.id}/${kebab2(s.id)}`;
         const primeiroAlvo = s.alvos[0].split(".");
         const cam = pacote.composicao.camadas.find((c) => c.prefixo === primeiroAlvo[0]);
         const comp = pacote.componentes.find((c) => c.id === (cam == null ? void 0 : cam.componente));
@@ -1416,7 +2119,7 @@
         for (const alvo of s.alvos) {
           const [prefixo, varId] = alvo.split(".");
           const camada = pacote.composicao.camadas.find((c) => c.prefixo === prefixo);
-          const alvoNome = nomeVar(camada.componente, "", kebab(varId));
+          const alvoNome = nomeVar(camada.componente, "", kebab2(varId));
           const pv = vars.get(alvoNome);
           if (pv) {
             pv.valores = Object.fromEntries(Object.keys(pv.valores).map((m) => [m, { alias: nome }]));
@@ -1517,6 +2220,7 @@
         pecas: [],
         propriedades: [],
         exemplos: [],
+        interacoes: [],
         avisos: []
       });
       __publicField(this, "fontePadrao", { family: "Inter", style: "Regular" });
@@ -1524,6 +2228,8 @@
       /* ------------------------------ Camadas ------------------------------ */
       /** Componentes das peças reutilizáveis já criados: "peça|variante" → componente. */
       __publicField(this, "pecas", /* @__PURE__ */ new Map());
+      /** Nós de cada variante (para ligar as interações do protótipo). */
+      __publicField(this, "nosPorVariante", /* @__PURE__ */ new Map());
     }
     /* ------------------------------ Variáveis ------------------------------ */
     async criarVariaveis() {
@@ -1852,7 +2558,7 @@
       return ultimo;
     }
     construirNo(p, alvo, paiAutoLayout, onde, refs) {
-      var _a, _b, _c, _d, _e, _f, _g;
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i;
       const f = this.figma;
       let no;
       const local = `${onde} \u203A ${p.nome}`;
@@ -1896,10 +2602,11 @@
         no.clipsContent = p.recortar;
       }
       no.name = p.nome;
+      if (p.id) (_e = refs.nos) == null ? void 0 : _e.set(p.id, no);
       if (p.tipo === "frame" && p.autoLayout) {
         no.layoutMode = p.autoLayout.direcao;
         no.primaryAxisAlignItems = "CENTER";
-        no.counterAxisAlignItems = "CENTER";
+        no.counterAxisAlignItems = (_f = p.autoLayout.alinhar) != null ? _f : "CENTER";
         no.itemSpacing = Number(p.autoLayout.espaco.valor);
         no.paddingLeft = no.paddingRight = Number(p.autoLayout.paddingX.valor);
         no.paddingTop = no.paddingBottom = Number(p.autoLayout.paddingY.valor);
@@ -1978,9 +2685,14 @@
         if (p.autoLayout && filho.absoluto) {
           n.layoutPositioning = "ABSOLUTE";
           absolutos.push({ no: n, plano: filho });
-        } else if (p.autoLayout && ((_e = filho.texto) == null ? void 0 : _e.preencher)) {
+        } else if (p.autoLayout && ((_g = filho.texto) == null ? void 0 : _g.preencher)) {
           n.layoutSizingHorizontal = "FILL";
           n.textAutoResize = "HEIGHT";
+        } else if (p.autoLayout && filho.encher) {
+          try {
+            n.layoutSizingHorizontal = "FILL";
+          } catch (e) {
+          }
         }
         if (filho.restricoes) {
           try {
@@ -1990,11 +2702,11 @@
         }
       }
       for (const a of absolutos) {
-        if (((_f = a.plano.restricoes) == null ? void 0 : _f.horizontal) === "STRETCH") {
+        if (((_h = a.plano.restricoes) == null ? void 0 : _h.horizontal) === "STRETCH") {
           a.no.x = 0;
           a.no.resize(Math.max(0.01, no.width), a.no.height);
         }
-        if (((_g = a.plano.restricoes) == null ? void 0 : _g.vertical) === "STRETCH") {
+        if (((_i = a.plano.restricoes) == null ? void 0 : _i.vertical) === "STRETCH") {
           a.no.y = 0;
           a.no.resize(a.no.width, Math.max(0.01, no.height));
         }
@@ -2050,11 +2762,12 @@
       const refsPorVariante = [];
       c.variantes.forEach((v) => {
         const comp = f.createComponent();
-        const refs = { texto: [], visivel: [] };
+        const refs = { texto: [], visivel: [], nos: /* @__PURE__ */ new Map() };
         this.construirNo(v.arvore, comp, false, c.nome, refs);
         comp.name = c.variantes.length > 1 ? v.nome : c.nome;
         variantes.push(comp);
         refsPorVariante.push(refs);
+        this.nosPorVariante.set(`${c.id}|${v.nome}`, { variante: comp, nos: refs.nos });
       });
       let principal;
       if (variantes.length > 1) {
@@ -2097,6 +2810,51 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       }
       this.rel.componentes.push({ nome: c.nome, id: principal.id, variantes: variantes.length });
       return principal;
+    }
+    /** Interações do protótipo: clique/hover troca para outra variante (Smart Animate). */
+    async criarInteracoes(c) {
+      var _a, _b;
+      if (!((_a = c.interacoes) == null ? void 0 : _a.length)) return;
+      const porNo = /* @__PURE__ */ new Map();
+      for (const it of c.interacoes) {
+        const origem = this.nosPorVariante.get(`${c.id}|${it.variante}`);
+        const destino = this.nosPorVariante.get(`${c.id}|${it.destino}`);
+        const no = origem == null ? void 0 : origem.nos.get(it.no);
+        if (!origem || !destino || !no) {
+          this.rel.avisos.push(
+            `Intera\xE7\xE3o "${it.no}" em ${it.variante}: camada ou variante n\xE3o encontrada.`
+          );
+          continue;
+        }
+        const transition = it.transicao === "instantanea" ? null : {
+          type: it.transicao === "dissolver" ? "DISSOLVE" : "SMART_ANIMATE",
+          easing: { type: "EASE_OUT" },
+          duration: it.duracao / 1e3
+        };
+        const lista = (_b = porNo.get(no)) != null ? _b : [];
+        lista.push({
+          trigger: { type: it.gatilho === "hover" ? "ON_HOVER" : "ON_CLICK" },
+          actions: [
+            {
+              type: "NODE",
+              destinationId: destino.variante.id,
+              navigation: "CHANGE_TO",
+              transition,
+              preserveScrollPosition: false
+            }
+          ]
+        });
+        porNo.set(no, lista);
+      }
+      for (const [no, reactions] of porNo) {
+        try {
+          if (typeof no.setReactionsAsync === "function") await no.setReactionsAsync(reactions);
+          else no.reactions = reactions;
+          this.rel.interacoes.push(`${no.name}: ${reactions.length}`);
+        } catch (e) {
+          this.rel.avisos.push(`Intera\xE7\xE3o em "${no.name}" n\xE3o foi criada: ${e.message}`);
+        }
+      }
     }
     /** Instância do componente pronta para usar, ao lado da definição. */
     construirExemplo(c, principal, x, y) {
@@ -2232,6 +2990,7 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
         const pecas = c.pecas.length ? this.construirPecas(c, x, y) : null;
         const px = pecas ? x + pecas.width + 80 : x;
         const p = this.construirComponente(c, px, y);
+        await this.criarInteracoes(c);
         principais.set(c.id, p);
         criados.push(p);
         if (pecas) criados.push(pecas);
@@ -2258,7 +3017,7 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
   function importarNoFigma(figma2, plano, pacoteJson, duplicados = "atualizar") {
     return new Construtor(figma2, plano, pacoteJson, duplicados).executar();
   }
-  var kebab2 = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
+  var kebab3 = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
   var hex22 = (n) => Math.round(Math.min(1, Math.max(0, n)) * 255).toString(16).padStart(2, "0");
   async function lerAlteracoes(figma2, no) {
     var _a, _b, _c, _d;
@@ -2294,7 +3053,7 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
     const valores = {};
     const ignoradas = [];
     for (const kv of comp.variaveis) {
-      const nome = `${compId}/${kebab2(kv.id)}`;
+      const nome = `${compId}/${kebab3(kv.id)}`;
       if (kv.tipo === "gradient") {
         const paradas = [];
         for (let i = 1; porNome.has(`${nome}/stop-${i}`); i++) {
@@ -2428,6 +3187,24 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
         const r = await lerAlteracoes(figma, sel);
         if ("erro" in r) return responder({ tipo: "erro", erro: r.erro });
         responder({ tipo: "alteracoes", arquivo: r.arquivo, ignoradas: r.ignoradas });
+      }
+      if (msg.tipo === "enviar-selecao") {
+        const sel = figma.currentPage.selection[0];
+        if (!sel)
+          return responder({
+            tipo: "erro",
+            erro: "Selecione um frame, componente ou inst\xE2ncia para enviar ao lab."
+          });
+        const comp = await lerSelecao(figma, sel);
+        const pacote = criarPacote([comp], { modo: "completo" });
+        responder({
+          tipo: "selecao",
+          id: comp.id,
+          nome: comp.nome,
+          texto: serializar(pacote),
+          variaveis: comp.variaveis.length,
+          avisos: comp.compatibilidade.figma.parcial
+        });
       }
       if (msg.tipo === "fechar") figma.closePlugin();
     } catch (e) {

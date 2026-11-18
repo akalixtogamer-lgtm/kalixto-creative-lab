@@ -228,6 +228,8 @@ export interface KcxNo {
     espaco: KcxRef<number>;
     paddingX: KcxRef<number>;
     paddingY: KcxRef<number>;
+    /** Alinhamento no eixo cruzado (padrão: centro). */
+    alinhar?: 'inicio' | 'centro' | 'fim';
   };
   /** Clip de conteúdo em frames. */
   recortar?: boolean;
@@ -236,6 +238,8 @@ export interface KcxNo {
    * restrições STRETCH, acompanha o tamanho do pai (ex.: halo atrás do botão).
    */
   absoluto?: boolean;
+  /** Dentro de Auto Layout: ocupa a largura do pai (Fill). */
+  encher?: boolean;
   /** Como a camada reage quando o pai é redimensionado no Figma. */
   restricoes?: { h: KcxRestricao; v: KcxRestricao };
   /** Vira propriedade de visibilidade (liga/desliga) no componente do Figma. */
@@ -336,6 +340,19 @@ export interface KcxCompatibilidade {
   };
 }
 
+/**
+ * Interação de protótipo no Figma: ao clicar (ou passar o mouse) no nó `no`
+ * da variante do estado `de`, troca para a variante do estado `para`.
+ */
+export interface KcxInteracao {
+  no: string;
+  gatilho: 'clique' | 'hover';
+  de: string;
+  para: string;
+  transicao: 'smart-animate' | 'dissolver' | 'instantanea';
+  duracao: number;
+}
+
 export interface KcxCodigo {
   html: string;
   /** Usa var(--kcx-…). O bloco :root com os valores é gerado a partir das variáveis. */
@@ -368,6 +385,10 @@ export interface KcxComponente {
   estrutura: KcxNo;
   animacoes: KcxAnimacao[];
   compatibilidade: KcxCompatibilidade;
+  /** Interações de protótipo criadas no Figma (opcional). */
+  interacoes?: KcxInteracao[];
+  /** Como o componente foi criado: 'construtor' (KCX Studio) ou 'figma' (importado). */
+  origemCriacao?: { tipo: 'construtor' | 'figma'; config?: unknown };
 }
 
 /* ============================== Composição ============================== */

@@ -7,6 +7,9 @@ import { Component, signal } from '@angular/core';
 })
 export class LightBeams {
   /** Posição horizontal de cada feixe (distribuídos pela largura). */
-  protected readonly feixes = Array.from({ length: 4 }, (_, i) => Math.round(((i + 1) / 5) * 100) + '%');
+  protected readonly feixes = Array.from(
+    { length: 4 },
+    (_, i) => Math.round(((i + 1) / 5) * 100) + '%',
+  );
   protected readonly pausado = signal(false);
 }

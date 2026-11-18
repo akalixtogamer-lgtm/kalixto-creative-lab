@@ -58,4 +58,3 @@ export class CodeViewer {
     this.timer = setTimeout(() => this.copiado.set(false), 1800);
   }
 }
-

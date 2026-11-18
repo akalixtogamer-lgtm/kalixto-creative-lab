@@ -9,20 +9,20 @@ export class SpotlightCards {
   protected readonly cards = [
     {
       titulo: 'Rápido',
-      texto: 'Tudo carrega em menos de um segundo.'
+      texto: 'Tudo carrega em menos de um segundo.',
     },
     {
       titulo: 'Acessível',
-      texto: 'Teclado, leitor de tela e contraste.'
+      texto: 'Teclado, leitor de tela e contraste.',
     },
     {
       titulo: 'Animado',
-      texto: 'Movimento com propósito.'
+      texto: 'Movimento com propósito.',
     },
     {
       titulo: 'Seu',
-      texto: 'Código aberto para copiar.'
-    }
+      texto: 'Código aberto para copiar.',
+    },
   ];
   private readonly elementos = viewChildren<ElementRef<HTMLElement>>('card');
   private quadro = 0;

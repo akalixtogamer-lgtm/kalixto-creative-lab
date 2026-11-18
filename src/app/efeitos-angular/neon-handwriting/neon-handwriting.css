@@ -4,10 +4,17 @@
   gap: 24px;
 }
 
-.neon { width: min(100%, 640px); overflow: visible; }
+.neon {
+  width: min(100%, 640px);
+  overflow: visible;
+}
 
 .neon .escrita {
-  font: italic 700 120px 'Segoe Script', 'Snell Roundhand', 'Brush Script MT', cursive;
+  font:
+    italic 700 120px 'Segoe Script',
+    'Snell Roundhand',
+    'Brush Script MT',
+    cursive;
   fill: #ff2e3e;
   fill-opacity: 0;
   stroke: #ff2e3e;
@@ -21,11 +28,31 @@
     acender 400ms ease 2200ms forwards,
     oscilar 4s linear 2600ms infinite;
 }
-@keyframes escrever { to { stroke-dashoffset: 0; } }
-@keyframes acender { to { fill-opacity: 1; } }
+@keyframes escrever {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes acender {
+  to {
+    fill-opacity: 1;
+  }
+}
 @keyframes oscilar {
-  0%, 17%, 21%, 24%, 52%, 56%, 100% { opacity: 1; }
-  19%, 23%, 54% { opacity: 0.6; }
+  0%,
+  17%,
+  21%,
+  24%,
+  52%,
+  56%,
+  100% {
+    opacity: 1;
+  }
+  19%,
+  23%,
+  54% {
+    opacity: 0.6;
+  }
 }
 
 .repetir {
@@ -37,8 +64,15 @@
   font: inherit;
   cursor: pointer;
 }
-.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.repetir:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .neon .escrita { animation: none; stroke-dashoffset: 0; fill-opacity: 1; }
+  .neon .escrita {
+    animation: none;
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
 }

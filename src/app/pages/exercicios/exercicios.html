@@ -4,7 +4,9 @@
     titulo="Exercícios"
     descricao="Perguntas rápidas para fixar o que você viu nos laboratórios. A correção aparece na hora, com explicação."
   >
-    <p class="kx-muted">Acertos no total: <strong class="placar">{{ geral().acertos }}/{{ geral().total }}</strong></p>
+    <p class="kx-muted">
+      Acertos no total: <strong class="placar">{{ geral().acertos }}/{{ geral().total }}</strong>
+    </p>
   </kx-page-header>
 
   <nav class="abas" aria-label="Laboratórios">
@@ -27,7 +29,8 @@
     <div class="ex-topo">
       <h2 id="ex-titulo" class="kx-section-title">{{ labAtual().titulo }}</h2>
       <p class="kx-muted">
-        {{ placar().respondidas }} de {{ placar().total }} respondidas · {{ placar().acertos }} acertos
+        {{ placar().respondidas }} de {{ placar().total }} respondidas ·
+        {{ placar().acertos }} acertos
       </p>
       @if (placar().respondidas) {
         <button type="button" class="kx-btn kx-btn--ghost" (click)="refazer()">Refazer</button>
@@ -37,8 +40,14 @@
     <ol class="questoes">
       @for (q of questoes(); track q.id; let n = $index) {
         <li class="questao kx-glass">
-          <p class="questao__pergunta"><span class="questao__n">{{ n + 1 }}</span> {{ q.pergunta }}</p>
-          <div class="alternativas" role="group" [attr.aria-label]="'Alternativas da questão ' + (n + 1)">
+          <p class="questao__pergunta">
+            <span class="questao__n">{{ n + 1 }}</span> {{ q.pergunta }}
+          </p>
+          <div
+            class="alternativas"
+            role="group"
+            [attr.aria-label]="'Alternativas da questão ' + (n + 1)"
+          >
             @for (a of q.alternativas; track a; let i = $index) {
               <button
                 type="button"
@@ -53,7 +62,8 @@
           </div>
           @if (respondida(q)) {
             <p class="feedback" [class.is-ok]="acertou(q)" role="status">
-              <strong>{{ acertou(q) ? 'Correto!' : 'Não foi dessa vez.' }}</strong> {{ q.explicacao }}
+              <strong>{{ acertou(q) ? 'Correto!' : 'Não foi dessa vez.' }}</strong>
+              {{ q.explicacao }}
             </p>
           }
         </li>

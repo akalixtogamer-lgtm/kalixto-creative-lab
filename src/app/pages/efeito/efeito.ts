@@ -109,14 +109,25 @@ export class Efeito {
   protected readonly bibliotecas = computed(() =>
     (this.kit()?.bibliotecas ?? []).map((id) => BIBLIOTECAS[id]),
   );
-  private readonly codigoBibliotecas = signal<{ id: string; nome: string; codigo: string }[] | null>(null);
+  private readonly codigoBibliotecas = signal<
+    { id: string; nome: string; codigo: string }[] | null
+  >(null);
   protected readonly erroBibliotecas = signal('');
   protected readonly bibliotecasProntas = computed(() => {
     const libs = this.bibliotecas();
     const carregadas = this.codigoBibliotecas();
-    return libs.length === 0 || (!!carregadas && carregadas.length === libs.length && carregadas.every((c, i) => c.id === libs[i].id));
+    return (
+      libs.length === 0 ||
+      (!!carregadas &&
+        carregadas.length === libs.length &&
+        carregadas.every((c, i) => c.id === libs[i].id))
+    );
   });
-  protected readonly nomesBibliotecas = computed(() => this.bibliotecas().map((b) => b.nome).join(' e '));
+  protected readonly nomesBibliotecas = computed(() =>
+    this.bibliotecas()
+      .map((b) => b.nome)
+      .join(' e '),
+  );
   protected readonly angularDisponivel = computed(() => this.kit()?.previewAngular !== false);
 
   protected readonly documento = computed(() => {
@@ -124,7 +135,11 @@ export class Efeito {
     const f = this.ficha();
     if (!c || !f || !this.bibliotecasProntas()) return '';
     const libs = this.bibliotecas().length ? (this.codigoBibliotecas() ?? []) : [];
-    return montarDocumento(f.nomeAmigavel, c, libs.map((l) => ({ nome: `${l.nome}`, codigo: l.codigo })));
+    return montarDocumento(
+      f.nomeAmigavel,
+      c,
+      libs.map((l) => ({ nome: `${l.nome}`, codigo: l.codigo })),
+    );
   });
 
   protected readonly nivelRotulo = NIVEL_FICHA_ROTULO;
@@ -164,10 +179,16 @@ export class Efeito {
         .then((codigos) => {
           if (this.bibliotecas() !== libs) return;
           this.codigoBibliotecas.set(
-            libs.map((l, i) => ({ id: l.id, nome: `${l.nome} ${l.versao} — ${l.licenca}`, codigo: codigos[i] })),
+            libs.map((l, i) => ({
+              id: l.id,
+              nome: `${l.nome} ${l.versao} — ${l.licenca}`,
+              codigo: codigos[i],
+            })),
           );
         })
-        .catch(() => this.erroBibliotecas.set('Não foi possível carregar as bibliotecas do efeito.'));
+        .catch(() =>
+          this.erroBibliotecas.set('Não foi possível carregar as bibliotecas do efeito.'),
+        );
     });
 
     // Carrega o componente Angular do efeito só quando o modo Angular é escolhido.
@@ -267,7 +288,10 @@ export class Efeito {
       codigo: l.codigo,
     }));
     const arquivos = montarPacote(k, this.valores(), c, ng, !!this.editado(), libs);
-    this.salvar(new Blob([criarZip(arquivos) as BlobPart], { type: 'application/zip' }), `${k.ficha.id}.zip`);
+    this.salvar(
+      new Blob([criarZip(arquivos) as BlobPart], { type: 'application/zip' }),
+      `${k.ficha.id}.zip`,
+    );
   }
 
   protected executarEditado(c: CodigoKit): void {

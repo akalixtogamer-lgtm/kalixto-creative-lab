@@ -40,23 +40,42 @@
       }
       @case ('easing') {
         <div class="g-easing">
-          <svg class="g-curva" [attr.viewBox]="'0 0 ' + grafico.largura + ' ' + grafico.altura" role="img"
-            [attr.aria-label]="'Gráfico da curva ' + ease()">
-            <line class="g-curva-guia" [attr.x1]="grafico.margem" [attr.x2]="grafico.largura - grafico.margem"
-              [attr.y1]="linhaZero" [attr.y2]="linhaZero" />
-            <line class="g-curva-guia" [attr.x1]="grafico.margem" [attr.x2]="grafico.largura - grafico.margem"
-              [attr.y1]="linhaUm" [attr.y2]="linhaUm" />
+          <svg
+            class="g-curva"
+            [attr.viewBox]="'0 0 ' + grafico.largura + ' ' + grafico.altura"
+            role="img"
+            [attr.aria-label]="'Gráfico da curva ' + ease()"
+          >
+            <line
+              class="g-curva-guia"
+              [attr.x1]="grafico.margem"
+              [attr.x2]="grafico.largura - grafico.margem"
+              [attr.y1]="linhaZero"
+              [attr.y2]="linhaZero"
+            />
+            <line
+              class="g-curva-guia"
+              [attr.x1]="grafico.margem"
+              [attr.x2]="grafico.largura - grafico.margem"
+              [attr.y1]="linhaUm"
+              [attr.y2]="linhaUm"
+            />
             <path class="g-curva-linha" [attr.d]="curva()" />
-            <circle class="g-curva-ponto" r="6" [attr.cx]="inicioCurva.x" [attr.cy]="inicioCurva.y" />
+            <circle
+              class="g-curva-ponto"
+              r="6"
+              [attr.cx]="inicioCurva.x"
+              [attr.cy]="inicioCurva.y"
+            />
           </svg>
           <code class="g-ease-nome">{{ ease() }}</code>
           <div class="g-trilho"><span class="g-bola"></span></div>
         </div>
       }
       @case ('splittext') {
-      <p class="g-split">Aprender. Experimentar. Construir — um passo de cada vez.</p>
-    }
-    @case ('reproducao') {
+        <p class="g-split">Aprender. Experimentar. Construir — um passo de cada vez.</p>
+      }
+      @case ('reproducao') {
         <div class="g-player">
           <div class="g-player__cena"><div class="g-card">K</div></div>
           <div class="g-player__barra">
@@ -74,8 +93,14 @@
             </div>
             <label class="g-player__progresso">
               <span class="sr-only">Progresso da timeline</span>
-              <input type="range" min="0" max="1" step="0.001" [value]="progresso()"
-                (input)="buscar($any($event.target).value)" />
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.001"
+                [value]="progresso()"
+                (input)="buscar($any($event.target).value)"
+              />
               <output>{{ (progresso() * 100).toFixed(0) }}%</output>
             </label>
           </div>
