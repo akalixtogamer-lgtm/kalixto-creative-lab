@@ -1,0 +1,160 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow">KCX {{ versao }} · Kalixto Component Exchange</p>
+    <h1 class="kx-title">KCX Studio</h1>
+    <p class="kx-lead">
+      Crie, personalize e exporte componentes animados com
+      <strong>variáveis que controlam de verdade</strong> o componente — no preview, no código e no
+      Figma. O formato KCX é aberto, versionado e não depende do Figma para existir.
+    </p>
+    <ol class="kcxs__fluxo" aria-label="Fluxo do KCX">
+      <li>Criação</li>
+      <li>Personalização</li>
+      <li>Variáveis</li>
+      <li>Composição</li>
+      <li>Exportação</li>
+      <li>Importação</li>
+      <li>Edição</li>
+    </ol>
+  </header>
+
+  <section class="kx-section" aria-labelledby="kcxs-comp">
+    <h2 id="kcxs-comp" class="kx-section-title">Componentes de referência</h2>
+    <div class="kcxs__cards">
+      @for (c of cards; track c.comp.id) {
+        <article class="kcxs__card kx-glass">
+          <div class="kcxs__thumb">
+            <img [src]="c.svg" [alt]="'Estrutura de ' + c.comp.nome" loading="lazy" />
+          </div>
+          <h3>{{ c.comp.nome }}</h3>
+          <p class="kx-muted">{{ c.comp.descricao }}</p>
+          <ul class="kcxs__chips">
+            <li class="kx-chip">
+              {{ c.comp.variaveis.length }} variáveis · {{ c.vinculos }} vínculos
+            </li>
+            <li class="kx-chip">{{ c.comp.presets.length }} presets</li>
+            <li class="kx-chip">Figma nível {{ c.comp.compatibilidade.figma.nivel }}</li>
+            <li class="kx-chip">{{ c.comp.licenca.spdx }}</li>
+          </ul>
+          <a class="kx-btn kx-btn--primary" [routerLink]="['/kcx', c.comp.id]"
+            >Abrir editor <kx-icon name="arrow-right"
+          /></a>
+        </article>
+      }
+      <article class="kcxs__card kcxs__card--compor kx-glass">
+        <h3>Composição</h3>
+        <p class="kx-muted">
+          Junte Animated Gradient, SVG Motion e Neon Glow num hero, com variáveis próprias em cada
+          camada e variáveis compartilhadas.
+        </p>
+        <a class="kx-btn kx-btn--ghost" routerLink="/kcx/compor"
+          ><kx-icon name="layers" /> Compor componentes</a
+        >
+      </article>
+    </div>
+  </section>
+
+  <section class="kx-section kcxs__niveis" aria-labelledby="kcxs-niveis">
+    <h2 id="kcxs-niveis" class="kx-section-title">Três níveis de compatibilidade com o Figma</h2>
+    <div class="kcxs__tres">
+      <div class="kx-glass">
+        <h3>1 · Nativo editável</h3>
+        <p>
+          SVG, formas, textos, gradientes, opacidade e transformações compatíveis viram camadas
+          nativas com variáveis vinculadas.
+        </p>
+      </div>
+      <div class="kx-glass">
+        <h3>2 · Parcialmente editável</h3>
+        <p>
+          Efeitos representados por camadas, propriedades e variantes (quadros-chave). A estrutura e
+          as variáveis ficam; o movimento contínuo não roda no Figma.
+        </p>
+      </div>
+      <div class="kx-glass">
+        <h3>3 · Pacote de desenvolvimento</h3>
+        <p>
+          GSAP, Three.js, WebGL, Canvas, GLSL e partículas: código, configuração, dependências e
+          documentação. Qualquer efeito da Biblioteca exporta neste nível.
+        </p>
+      </div>
+    </div>
+    <p class="kx-muted kcxs__nota">
+      O KCX nunca apresenta uma variável como funcional sem que ela esteja conectada a uma
+      propriedade. No Figma, o que não pode ser vinculado vira variável
+      <strong>documental</strong> — e o painel de exportação diz isso antes.
+    </p>
+  </section>
+
+  <section class="kx-section" aria-labelledby="kcxs-validar">
+    <h2 id="kcxs-validar" class="kx-section-title">Validar um arquivo KCX</h2>
+    <p class="kx-muted">
+      Escolha um <code>.kcx.json</code> (exportado do lab ou de outra ferramenta). Nada é enviado
+      para fora do navegador.
+    </p>
+    <div class="kcxs__barra">
+      <label class="kx-btn kx-btn--ghost kcxs__arquivo">
+        <kx-icon name="upload" /> Escolher arquivo
+        <input type="file" accept=".json,application/json" (change)="validar($event)" />
+      </label>
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarSchema()">
+        <kx-icon name="download" /> JSON Schema do KCX
+      </button>
+    </div>
+
+    @if (erroLeitura()) {
+      <p class="kcxs__erro" role="alert">{{ arquivo() }}: {{ erroLeitura() }}</p>
+    }
+    @if (validacao(); as v) {
+      @if (v.erros.length) {
+        <ul class="kcxs__problemas">
+          @for (e of v.erros; track $index) {
+            <li>
+              <code>{{ e.caminho || '(raiz)' }}</code> {{ e.mensagem }}
+            </li>
+          }
+        </ul>
+      }
+      @for (a of v.avisos; track $index) {
+        <p class="kcxs__aviso">{{ a.mensagem }}</p>
+      }
+    }
+    @if (pacote(); as p) {
+      <div class="kcxs__ok kx-glass" role="status">
+        <p>
+          <strong>{{ arquivo() }}</strong> é um pacote KCX válido: “{{ p.nome }}” v{{ p.versao }},
+          schema {{ p.schemaVersion }}, criado em {{ p.criadoEm.slice(0, 10) }} por
+          {{ p.origem.ferramenta }}.
+        </p>
+        @if (plano(); as pl) {
+          <p>
+            No Figma: {{ pl.resumo.variaveis }} variáveis ({{ pl.resumo.vinculadas }} vinculadas,
+            {{ pl.resumo.documentais }} documentais), {{ pl.resumo.componentes }} componente(s),
+            {{ pl.resumo.variantes }} variante(s).
+          </p>
+        }
+        <ul>
+          @for (c of p.componentes; track c.id) {
+            <li>
+              {{ c.nome }} <code>v{{ c.versao }}</code> — {{ c.variaveis.length }} variáveis
+              @if (conhecido(c.id)) {
+                · <a [routerLink]="['/kcx', c.id]">abrir no editor e comparar valores</a>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </section>
+
+  <section class="kx-section" aria-labelledby="kcxs-lic">
+    <h2 id="kcxs-lic" class="kx-section-title">Licenças</h2>
+    <p class="kx-muted">
+      Os componentes KCX e o runtime são <strong>MIT</strong> e não usam bibliotecas externas. O
+      GSAP (usado em parte da Biblioteca) tem licença própria, gratuita e comercial, mas
+      <strong>não é open source</strong> e proíbe uso em ferramentas visuais de animação sem código
+      que concorram com o Webflow — por isso o núcleo do KCX é feito só com CSS, SVG e JavaScript
+      nativos. Kits com GSAP exportam no nível 3, com esse aviso.
+    </p>
+  </section>
+</div>

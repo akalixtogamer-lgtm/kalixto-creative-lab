@@ -139,3 +139,9 @@ Campos novos no `EffectKit`:
 
 - `bibliotecas?: BibliotecaId[]`: o preview espera os arquivos carregarem antes de montar o documento.
 - `previewAngular?: false`: desliga o modo Angular no preview, para kits que dependem da rolagem da janela. Os arquivos Angular continuam no Code Lab e no `.zip`.
+
+## KCX — Kalixto Component Exchange (v1.9.0)
+
+Camada independente em `src/app/kcx/` (TypeScript puro, sem Angular), usada pelo lab, pelos testes e pelo
+plugin `figma-bridge/`. Páginas em `src/app/pages/kcx/`. Detalhes em [`kcx/AUDITORIA-E-GUIA.md`](kcx/AUDITORIA-E-GUIA.md)
+e no formato em [`kcx/ESPECIFICACAO.md`](kcx/ESPECIFICACAO.md).

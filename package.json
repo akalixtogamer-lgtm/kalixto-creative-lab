@@ -1,17 +1,20 @@
 {
   "name": "kalixto-creative-lab",
-  "version": "1.8.0-rc.1",
+  "version": "1.9.0-rc.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:pages": "ng build --base-href /kalixto-creative-lab/ && node scripts/copiar-404.mjs",
+    "build:pages": "npm run figma:build && ng build --base-href /kalixto-creative-lab/ && node scripts/copiar-404.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "docs:efeitos": "esbuild scripts/exportar-efeitos.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/exportar-efeitos.mjs && node .angular/exportar-efeitos.mjs | python3 scripts/gerar-docs-efeitos.py",
     "gerar:angular": "esbuild scripts/gerar-angular.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/gerar-angular.mjs && node .angular/gerar-angular.mjs",
-    "verificar:angular": "npm run gerar:angular && git diff --exit-code -- src/app/efeitos-angular"
+    "verificar:angular": "npm run gerar:angular && git diff --exit-code -- src/app/efeitos-angular",
+    "figma:build": "node scripts/build-figma.mjs",
+    "figma:check": "tsc -p figma-bridge/tsconfig.json",
+    "kcx:schema": "esbuild scripts/exportar-schema-kcx.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/kcx-schema.mjs && node .angular/kcx-schema.mjs"
   },
   "private": true,
   "packageManager": "npm@10.9.9",
@@ -35,6 +38,7 @@
     "@angular/build": "^22.2.7",
     "@angular/cli": "^22.2.7",
     "@angular/compiler-cli": "^22.2.0",
+    "@figma/plugin-typings": "^1.142.0",
     "@types/three": "^0.187.0",
     "jsdom": "^30.0.0",
     "prettier": "^3.8.1",

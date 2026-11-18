@@ -20,7 +20,11 @@ export type IconName =
   | 'download'
   | 'book'
   | 'sun'
-  | 'moon';
+  | 'moon'
+  | 'kcx'
+  | 'pause'
+  | 'upload'
+  | 'layers';
 
 /**
  * Ícones SVG de traço único (24×24, stroke 1.8) — consistentes em
@@ -53,6 +57,10 @@ export type IconName =
         @case ('moon') { <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/> }
         @case ('quiz') { <circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/> }
         @case ('download') { <path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/> }
+        @case ('kcx') { <path d="M4 8h13"/><path d="M14 4l4 4-4 4"/><path d="M20 16H7"/><path d="M10 12l-4 4 4 4"/> }
+        @case ('pause') { <path d="M8 5v14M16 5v14"/> }
+        @case ('upload') { <path d="M12 16V5"/><path d="M7 10l5-5 5 5"/><path d="M5 20h14"/> }
+        @case ('layers') { <path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/> }
         @case ('compare') { <rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/><path d="M6.5 9v6M17.5 12v3"/> }
       }
     </svg>

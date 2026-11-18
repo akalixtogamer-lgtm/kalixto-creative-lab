@@ -1,0 +1,201 @@
+<div class="kx-page" data-acento="magenta">
+  <kx-breadcrumb [itens]="migalhas()" />
+
+  @if (comp(); as c) {
+    <header class="kx-page-header">
+      <p class="kx-eyebrow">KCX · Kalixto Component Exchange · {{ c.categoria }}</p>
+      <h1 class="kx-title">{{ c.nome }}</h1>
+      <p class="kx-lead">{{ c.descricao }}</p>
+      <ul class="kcxe__chips" aria-label="Classificação">
+        <li class="kx-chip">v{{ c.versao }}</li>
+        <li class="kx-chip">{{ c.licenca.spdx }}</li>
+        @for (t of c.tecnologia; track t) {
+          <li class="kx-chip">{{ t }}</li>
+        }
+        <li class="kx-chip">
+          {{
+            c.dependencias.length ? c.dependencias.length + ' dependência(s)' : 'sem dependências'
+          }}
+        </li>
+        <li class="kx-chip kcxe__chip-nivel">
+          Figma: {{ nivelRotulo[c.compatibilidade.figma.nivel] }}
+        </li>
+      </ul>
+    </header>
+
+    <div class="kcxe__grid">
+      <section class="kcxe__palco kx-glass" aria-labelledby="kcxe-preview">
+        <header class="kcxe__palco-topo">
+          <div>
+            <p class="kx-eyebrow">Preview ao vivo</p>
+            <h2 id="kcxe-preview" class="kcxe__h2">
+              As variáveis mudam o componente sem recarregar
+            </h2>
+          </div>
+          <div class="kcxe__play" role="group" aria-label="Reprodução">
+            <button
+              type="button"
+              class="kx-btn kx-btn--ghost"
+              (click)="alternarPausa()"
+              [attr.aria-pressed]="pausado()"
+            >
+              <kx-icon [name]="pausado() ? 'play' : 'pause'" />
+              {{ pausado() ? 'Reproduzir' : 'Pausar' }}
+            </button>
+            <button type="button" class="kx-btn kx-btn--ghost" (click)="controlar('reiniciar')">
+              <kx-icon name="reset" /> Reiniciar
+            </button>
+            <label class="kcxe__vel">
+              <span>velocidade</span>
+              <select
+                (change)="mudarVelocidade($any($event.target).value)"
+                aria-label="Velocidade do preview"
+              >
+                @for (v of velocidades; track v) {
+                  <option [value]="v" [selected]="v === velocidade()">{{ v }}×</option>
+                }
+              </select>
+            </label>
+            <button
+              type="button"
+              class="kx-btn kx-btn--ghost"
+              (click)="alternarComparacao()"
+              [attr.aria-pressed]="comparando()"
+            >
+              <kx-icon name="compare" /> Antes/depois
+            </button>
+          </div>
+        </header>
+
+        @if (comparando()) {
+          <div class="kcxe__comparar">
+            <figure>
+              <figcaption>
+                Antes —
+                <select
+                  aria-label="Referência do antes"
+                  (change)="referencia.set($any($event.target).value)"
+                >
+                  <option value="padrao" [selected]="referencia() === 'padrao'">
+                    valores padrão
+                  </option>
+                  <option value="snapshot" [selected]="referencia() === 'snapshot'">
+                    valores fixados
+                  </option>
+                </select>
+                <button type="button" class="kcxe__link" (click)="fixarReferencia()">
+                  fixar os atuais
+                </button>
+              </figcaption>
+              <kx-kcx-preview
+                #previewAntes
+                [documento]="documentoAntes()"
+                [saidas]="saidasAntes()"
+                titulo="Antes"
+                altura="clamp(240px, 36vh, 340px)"
+              />
+            </figure>
+            <figure>
+              <figcaption>Depois — valores atuais</figcaption>
+              <kx-kcx-preview
+                #preview
+                [documento]="documento()"
+                [saidas]="saidas()"
+                titulo="Depois"
+                altura="clamp(240px, 36vh, 340px)"
+              />
+            </figure>
+          </div>
+          <p class="kx-muted kcxe__nota" role="status">
+            @if (alteradas().length) {
+              {{ alteradas().length }} variável(is) diferente(s): {{ alteradas().join(', ') }}.
+            } @else {
+              Nenhuma diferença entre antes e depois.
+            }
+          </p>
+        } @else {
+          <kx-kcx-preview
+            #preview
+            [documento]="documento()"
+            [saidas]="saidas()"
+            [titulo]="'Preview de ' + c.nome"
+          />
+        }
+        @if (codigoEditado()) {
+          <p class="kcxe__aviso" role="status">
+            Rodando o seu código editado. As variáveis continuam controlando o preview.
+          </p>
+        }
+      </section>
+
+      <section class="kcxe__controles kx-glass" aria-labelledby="kcxe-vars">
+        <div class="kcxe__controles-topo">
+          <h2 id="kcxe-vars" class="kcxe__h2">Variáveis</h2>
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="restaurar()">
+            <kx-icon name="reset" /> Restaurar valores
+          </button>
+        </div>
+        <p class="kx-muted kcxe__nota">
+          {{ c.variaveis.length }} variáveis funcionais. Cada uma mostra o que controla.
+        </p>
+        <kx-kcx-controles [variaveis]="c.variaveis" [valores]="valores()" (mudou)="mudar($event)" />
+      </section>
+
+      <section class="kcxe__presets kx-glass" aria-labelledby="kcxe-presets">
+        <h2 id="kcxe-presets" class="kcxe__h2">Presets</h2>
+        <kx-kcx-presets-painel
+          [comp]="c"
+          [valores]="valores()"
+          [ativo]="presetAtivo()"
+          (aplicar)="aplicarValores($event)"
+          (restaurar)="restaurar()"
+        />
+      </section>
+
+      <section class="kcxe__codigo" aria-labelledby="kcxe-codigo">
+        <h2 id="kcxe-codigo" class="kcxe__h2">Código</h2>
+        <kx-kcx-codigo-painel
+          [comp]="c"
+          [valores]="valores()"
+          [codigoEditado]="codigoEditado()"
+          (aplicar)="aplicarCodigo($event)"
+        />
+      </section>
+
+      <section class="kcxe__exportar kx-glass" aria-labelledby="kcxe-exportar">
+        <h2 id="kcxe-exportar" class="kcxe__h2">Exportar para Figma</h2>
+        <kx-kcx-exportar-painel [comp]="c" [valores]="valores()" [presetAtivo]="presetAtivo()" />
+      </section>
+
+      <section class="kcxe__importar kx-glass" aria-labelledby="kcxe-importar">
+        <h2 id="kcxe-importar" class="kcxe__h2">Trazer alterações do Figma</h2>
+        <kx-kcx-importar-painel
+          [comp]="c"
+          [valores]="valores()"
+          (aplicar)="aplicarValores({ valores: $event })"
+        />
+      </section>
+    </div>
+
+    <nav class="kx-pager" aria-label="Outros componentes KCX">
+      @if (vizinhos().anterior; as a) {
+        <a class="kx-btn kx-btn--ghost" [routerLink]="['/kcx', a.id]"
+          ><kx-icon name="arrow-left" /> {{ a.nome }}</a
+        >
+      } @else {
+        <span></span>
+      }
+      @if (vizinhos().proximo; as p) {
+        <a class="kx-btn kx-btn--ghost" [routerLink]="['/kcx', p.id]"
+          >{{ p.nome }} <kx-icon name="arrow-right"
+        /></a>
+      }
+    </nav>
+  } @else {
+    <header class="kx-page-header">
+      <h1 class="kx-title">Componente não encontrado</h1>
+      <p class="kx-lead">Não existe componente KCX com o ID “{{ id() }}”.</p>
+      <a class="kx-btn kx-btn--primary" routerLink="/kcx">Voltar ao KCX Studio</a>
+    </header>
+  }
+</div>

@@ -13,13 +13,27 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 | Item | Situação |
 |---|---|
-| Versão | `1.8.0-rc.1` (vidro e desfoque: gerador de glassmorphism, menu de vidro e modal com fundo desfocado) |
+| Versão | `1.9.0-rc.1` (KCX — Kalixto Component Exchange: variáveis funcionais, editor, composição e plugin Figma Bridge) |
 | Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
 | Conteúdo | 7 laboratórios · 60 demos interativas · 53 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
-| Testes | 688 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
-| Publicado no GitHub Pages | Sim, a `v1.8.0-rc.1` |
+| Testes | 740 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
+| Publicado no GitHub Pages | Sim, a `v1.8.0-rc.1` (a `v1.9.0-rc.1` aguarda teste) |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
+
+## KCX — Kalixto Component Exchange
+
+Formato aberto para criar componentes animados com **variáveis que controlam o componente** e levá-los
+ao Figma como estrutura editável. Abra **KCX Studio** (`/kcx`) no menu.
+
+- Especificação: [`docs/kcx/ESPECIFICACAO.md`](docs/kcx/ESPECIFICACAO.md)
+- Plugin do Figma: [`docs/kcx/FIGMA-BRIDGE.md`](docs/kcx/FIGMA-BRIDGE.md) · instalar: `figma-bridge/dist/manifest.json`
+- Auditoria, arquitetura e como criar componentes: [`docs/kcx/AUDITORIA-E-GUIA.md`](docs/kcx/AUDITORIA-E-GUIA.md)
+
+```bash
+npm run figma:build   # gera o plugin em figma-bridge/dist (e o download dentro do lab)
+npm run kcx:schema    # atualiza docs/kcx/kcx.schema.json e os exemplos .kcx.json
+```
 
 ---
 
@@ -30,7 +44,7 @@ Pré-requisito: **Node.js 22 ou mais recente** (`node -v` para conferir).
 ```bash
 npm install          # instala as dependências (rode sempre que o projeto ganhar bibliotecas novas)
 npm start            # abre em http://localhost:4200
-npm test             # roda os 233 testes
+npm test             # roda os 740 testes
 npm run build        # versão de produção em dist/
 npm run build:pages  # versão para o GitHub Pages (com 404.html)
 ```

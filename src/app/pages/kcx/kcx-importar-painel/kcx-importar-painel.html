@@ -1,0 +1,67 @@
+<p class="kx-muted kcxi__nota">
+  No plugin, selecione o componente importado e use <strong>Exportar alterações para o lab</strong>.
+  Escolha o arquivo aqui: as diferenças aparecem antes, e só o que você marcar é aplicado.
+</p>
+<label class="kx-btn kx-btn--ghost kcxi__arquivo">
+  <kx-icon name="upload" /> Escolher .kcx-alteracoes.json ou .kcx.json
+  <input type="file" accept=".json,application/json" (change)="escolher($event)" />
+</label>
+
+@if (erro()) {
+  <p class="kcxi__erro" role="alert">{{ erro() }}</p>
+}
+@if (info()) {
+  <p class="kcxi__info" role="status">{{ info() }}</p>
+}
+
+@if (diferencas().length) {
+  <div class="kcxi__tabela-wrap">
+    <table class="kcxi__tabela">
+      <thead>
+        <tr>
+          <th scope="col">Aplicar</th>
+          <th scope="col">Variável</th>
+          <th scope="col">No lab</th>
+          <th scope="col">Recebido</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of diferencas(); track d.variavel) {
+          <tr [class.kcxi__invalida]="!d.valido">
+            <td>
+              <input
+                type="checkbox"
+                [attr.aria-label]="'Aplicar ' + d.nome"
+                [checked]="marcadas().has(d.variavel)"
+                [disabled]="!d.valido"
+                (change)="alternar(d.variavel, $any($event.target).checked)"
+              />
+            </td>
+            <td>
+              {{ d.nome }} <code>{{ d.variavel }}</code>
+            </td>
+            <td>
+              <code>{{ mostrar(d.antes) }}</code>
+            </td>
+            <td>
+              <code>{{ mostrar(d.depois) }}</code>
+              @if (!d.valido) {
+                <small class="kcxi__erro">{{ d.problemas.join(' ') }}</small>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <button
+    type="button"
+    class="kx-btn kx-btn--primary"
+    [disabled]="qtdMarcadas() === 0"
+    (click)="aplicarMarcadas()"
+  >
+    Aplicar {{ qtdMarcadas() }} selecionada(s)
+  </button>
+} @else if (lido()) {
+  <p class="kx-muted kcxi__nota">Nada para atualizar: os valores já são iguais.</p>
+}

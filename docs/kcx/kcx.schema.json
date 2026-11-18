@@ -1,0 +1,1082 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akalixtogamer-lgtm.github.io/kalixto-creative-lab/kcx/kcx.schema.json",
+  "title": "KCX — Kalixto Component Exchange 1.0.0",
+  "description": "Formato aberto de troca de componentes animados com variáveis funcionais.",
+  "type": "object",
+  "required": [
+    "formato",
+    "schemaVersion",
+    "id",
+    "versao",
+    "nome",
+    "criadoEm",
+    "origem",
+    "exportacao",
+    "componentes",
+    "dependencias",
+    "historico"
+  ],
+  "properties": {
+    "formato": {
+      "const": "kcx"
+    },
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "versao": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "nome": {
+      "type": "string",
+      "minLength": 1
+    },
+    "criadoEm": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "origem": {
+      "type": "object",
+      "required": [
+        "ferramenta",
+        "versao"
+      ],
+      "properties": {
+        "ferramenta": {
+          "type": "string",
+          "minLength": 1
+        },
+        "versao": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "exportacao": {
+      "type": "object",
+      "required": [
+        "modo"
+      ],
+      "properties": {
+        "modo": {
+          "enum": [
+            "completo",
+            "visual",
+            "variaveis",
+            "componentes-variaveis",
+            "pacote"
+          ]
+        },
+        "presetAplicado": {
+          "type": "string"
+        }
+      }
+    },
+    "componentes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/componente"
+      }
+    },
+    "composicao": {
+      "$ref": "#/$defs/composicao"
+    },
+    "dependencias": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependencia"
+      }
+    },
+    "historico": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "versao",
+          "data",
+          "descricao"
+        ],
+        "properties": {
+          "versao": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
+          },
+          "data": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "operacao": {
+      "type": "object",
+      "required": [
+        "op"
+      ],
+      "properties": {
+        "op": {
+          "enum": [
+            "multiplicar",
+            "somar",
+            "mapear",
+            "limitar",
+            "arredondar",
+            "dividir",
+            "multiplicarPorVariavel",
+            "somarVariavel",
+            "alpha",
+            "converter",
+            "mapa",
+            "pontoNoCaminho",
+            "tracoNoCaminho"
+          ]
+        }
+      }
+    },
+    "vinculo": {
+      "type": "object",
+      "required": [
+        "propriedade",
+        "alvo"
+      ],
+      "properties": {
+        "propriedade": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alvo": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "tipo",
+                "nome"
+              ],
+              "properties": {
+                "tipo": {
+                  "const": "css-var"
+                },
+                "nome": {
+                  "type": "string",
+                  "pattern": "^--kcx-[a-z0-9-]+$"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "tipo",
+                "seletor",
+                "atributo"
+              ],
+              "properties": {
+                "tipo": {
+                  "const": "atributo"
+                },
+                "seletor": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "atributo": {
+                  "type": "string",
+                  "pattern": "^(?![oO][nN]).+"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "tipo",
+                "seletor"
+              ],
+              "properties": {
+                "tipo": {
+                  "const": "texto"
+                },
+                "seletor": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": [
+                "tipo",
+                "parametro"
+              ],
+              "properties": {
+                "tipo": {
+                  "const": "parametro-gerador"
+                },
+                "parametro": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "transformar": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operacao"
+          }
+        },
+        "unidadeSaida": {
+          "type": "string"
+        }
+      }
+    },
+    "variavel": {
+      "type": "object",
+      "required": [
+        "id",
+        "nome",
+        "tipo",
+        "padrao",
+        "valor",
+        "descricao",
+        "grupo",
+        "secao",
+        "vinculos",
+        "exportavel"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9]*$"
+        },
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tipo": {
+          "enum": [
+            "color",
+            "number",
+            "float",
+            "boolean",
+            "string",
+            "enum",
+            "dimension",
+            "time",
+            "gradient",
+            "transform"
+          ]
+        },
+        "padrao": {},
+        "valor": {},
+        "unidade": {
+          "enum": [
+            "",
+            "px",
+            "rem",
+            "em",
+            "%",
+            "ms",
+            "s",
+            "deg",
+            "turn",
+            "rad",
+            "x"
+          ]
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "passo": {
+          "type": "number"
+        },
+        "opcoes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "valor",
+              "rotulo"
+            ]
+          }
+        },
+        "descricao": {
+          "type": "string"
+        },
+        "grupo": {
+          "enum": [
+            "colors",
+            "dimensions",
+            "spacing",
+            "typography",
+            "motion",
+            "effects",
+            "components"
+          ]
+        },
+        "secao": {
+          "enum": [
+            "aparencia",
+            "animacao",
+            "comportamento"
+          ]
+        },
+        "vinculos": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/vinculo"
+          }
+        },
+        "exportavel": {
+          "type": "boolean"
+        },
+        "modos": {
+          "type": "object",
+          "properties": {
+            "light": {},
+            "dark": {}
+          }
+        }
+      }
+    },
+    "no": {
+      "type": "object",
+      "required": [
+        "id",
+        "nome",
+        "tipo"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tipo": {
+          "enum": [
+            "frame",
+            "retangulo",
+            "elipse",
+            "texto",
+            "svg"
+          ]
+        },
+        "x": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "$var"
+              ],
+              "properties": {
+                "$var": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "$derivado",
+                "nome"
+              ],
+              "properties": {
+                "$derivado": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transformar": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/operacao"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "y": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "$var"
+              ],
+              "properties": {
+                "$var": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "$derivado",
+                "nome"
+              ],
+              "properties": {
+                "$derivado": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transformar": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/operacao"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "largura": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "$var"
+              ],
+              "properties": {
+                "$var": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "$derivado",
+                "nome"
+              ],
+              "properties": {
+                "$derivado": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transformar": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/operacao"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "altura": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "$var"
+              ],
+              "properties": {
+                "$var": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "$derivado",
+                "nome"
+              ],
+              "properties": {
+                "$derivado": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transformar": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/operacao"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "raio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "$var"
+              ],
+              "properties": {
+                "$var": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "$derivado",
+                "nome"
+              ],
+              "properties": {
+                "$derivado": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transformar": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/operacao"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "opacidade": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "$var"
+              ],
+              "properties": {
+                "$var": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "$derivado",
+                "nome"
+              ],
+              "properties": {
+                "$derivado": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transformar": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/operacao"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "visivel": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "required": [
+                "$var"
+              ],
+              "properties": {
+                "$var": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "$derivado",
+                "nome"
+              ],
+              "properties": {
+                "$derivado": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transformar": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/operacao"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "svg": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "required": [
+                "$var"
+              ],
+              "properties": {
+                "$var": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "$derivado",
+                "nome"
+              ],
+              "properties": {
+                "$derivado": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transformar": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/operacao"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "filhos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/no"
+          }
+        }
+      }
+    },
+    "estado": {
+      "type": "object",
+      "required": [
+        "id",
+        "nome",
+        "gatilho",
+        "descricao",
+        "valores"
+      ],
+      "properties": {
+        "gatilho": {
+          "enum": [
+            "padrao",
+            "hover",
+            "focus",
+            "active",
+            "inicial",
+            "final"
+          ]
+        },
+        "valores": {
+          "type": "object"
+        },
+        "derivar": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "variavel",
+              "de",
+              "op"
+            ],
+            "properties": {
+              "op": {
+                "enum": [
+                  "copiar",
+                  "multiplicar"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "preset": {
+      "type": "object",
+      "required": [
+        "id",
+        "nome",
+        "valores"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "descricao": {
+          "type": "string"
+        },
+        "valores": {
+          "type": "object"
+        }
+      }
+    },
+    "dependencia": {
+      "type": "object",
+      "required": [
+        "nome",
+        "versao",
+        "licenca",
+        "url",
+        "obrigatoria"
+      ],
+      "properties": {
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "versao": {
+          "type": "string",
+          "minLength": 1
+        },
+        "licenca": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string"
+        },
+        "obrigatoria": {
+          "type": "boolean"
+        }
+      }
+    },
+    "componente": {
+      "type": "object",
+      "required": [
+        "id",
+        "nome",
+        "categoria",
+        "descricao",
+        "tecnologia",
+        "versao",
+        "licenca",
+        "metadados",
+        "codigo",
+        "variaveis",
+        "estados",
+        "presets",
+        "dependencias",
+        "estrutura",
+        "animacoes",
+        "compatibilidade"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "nome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "categoria": {
+          "type": "string",
+          "minLength": 1
+        },
+        "descricao": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tecnologia": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "versao": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
+        },
+        "licenca": {
+          "type": "object",
+          "required": [
+            "spdx",
+            "usoComercial",
+            "modificacao",
+            "redistribuicao",
+            "autor"
+          ],
+          "properties": {
+            "spdx": {
+              "type": "string",
+              "minLength": 1
+            },
+            "usoComercial": {
+              "type": "boolean"
+            },
+            "modificacao": {
+              "type": "boolean"
+            },
+            "redistribuicao": {
+              "type": "boolean"
+            },
+            "autor": {
+              "type": "string"
+            }
+          }
+        },
+        "metadados": {
+          "type": "object",
+          "required": [
+            "autor",
+            "tags",
+            "criadoEm",
+            "atualizadoEm",
+            "largura",
+            "altura"
+          ]
+        },
+        "codigo": {
+          "type": "object",
+          "required": [
+            "html",
+            "css",
+            "js"
+          ],
+          "properties": {
+            "html": {
+              "type": "string"
+            },
+            "css": {
+              "type": "string"
+            },
+            "js": {
+              "type": "string"
+            },
+            "svg": {
+              "type": "string"
+            }
+          }
+        },
+        "variaveis": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/variavel"
+          }
+        },
+        "estados": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/estado"
+          }
+        },
+        "presets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/preset"
+          }
+        },
+        "dependencias": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dependencia"
+          }
+        },
+        "estrutura": {
+          "$ref": "#/$defs/no"
+        },
+        "animacoes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "nome",
+              "tecnica",
+              "variaveis",
+              "figma",
+              "nivel",
+              "descricao"
+            ],
+            "properties": {
+              "nivel": {
+                "enum": [
+                  1,
+                  2,
+                  3
+                ]
+              },
+              "figma": {
+                "enum": [
+                  "variantes",
+                  "documental"
+                ]
+              }
+            }
+          }
+        },
+        "compatibilidade": {
+          "type": "object",
+          "required": [
+            "navegadores",
+            "reducedMotion",
+            "figma"
+          ],
+          "properties": {
+            "figma": {
+              "type": "object",
+              "required": [
+                "nivel",
+                "editavel",
+                "parcial",
+                "naoSuportado",
+                "limitacoes"
+              ],
+              "properties": {
+                "nivel": {
+                  "enum": [
+                    1,
+                    2,
+                    3
+                  ]
+                },
+                "eixosVariante": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "composicao": {
+      "type": "object",
+      "required": [
+        "id",
+        "nome",
+        "camadas",
+        "compartilhadas"
+      ],
+      "properties": {
+        "camadas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "componente",
+              "prefixo",
+              "papel",
+              "valores"
+            ],
+            "properties": {
+              "papel": {
+                "enum": [
+                  "fundo",
+                  "centro",
+                  "sobreposicao"
+                ]
+              }
+            }
+          }
+        },
+        "compartilhadas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "nome",
+              "tipo",
+              "valor",
+              "alvos"
+            ],
+            "properties": {
+              "alvos": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+\\.[a-zA-Z0-9]+$"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

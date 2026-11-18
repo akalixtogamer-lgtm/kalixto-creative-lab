@@ -1,0 +1,13 @@
+{
+  "name": "Kalixto Creative Lab — Figma Bridge",
+  "id": "kalixto-creative-lab-figma-bridge",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "O plugin lê só o arquivo .kcx.json escolhido pelo usuário. Não usa rede."
+  }
+}

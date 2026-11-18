@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; font: 12px/1.5 Inter, system-ui, sans-serif; color: var(--figma-color-text, #1e1e1e); background: var(--figma-color-bg, #fff); }
+  h1 { margin: 0 0 2px; font-size: 15px; }
+  h2 { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--figma-color-text-secondary, #666); }
+  p { margin: 0 0 8px; }
+  .muted { color: var(--figma-color-text-secondary, #666); }
+  .zona { display: block; padding: 18px; border: 1.5px dashed var(--figma-color-border, #ccc); border-radius: 8px; text-align: center; cursor: pointer; }
+  .zona:hover, .zona.sobre { border-color: #ff2bd6; }
+  .zona input { display: none; }
+  textarea { width: 100%; height: 70px; margin-top: 8px; font: 11px/1.4 monospace; }
+  button { padding: 7px 12px; border: 1px solid var(--figma-color-border, #ccc); border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+  button.primario { border: 0; background: linear-gradient(135deg, #d4119f, #7c3aed); color: #fff; font-weight: 600; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .barra { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  select { padding: 5px; font: inherit; }
+  ul { margin: 0; padding-left: 18px; }
+  .erro { color: #e5484d; }
+  .aviso { color: #c27c0e; }
+  .ok { color: #1a9e5c; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 2px 4px; border-bottom: 1px solid var(--figma-color-border, #eee); vertical-align: top; }
+  code { font-size: 11px; }
+  .tag { padding: 0 6px; border-radius: 99px; font-size: 10px; }
+  .tag.v { background: #1a9e5c22; color: #1a9e5c; }
+  .tag.d { background: #c27c0e22; color: #c27c0e; }
+  details { margin-top: 6px; }
+</style>
+</head>
+<body>
+  <h1>KCX · Figma Bridge</h1>
+  <p class="muted">Kalixto Creative Lab — importa pacotes <code>.kcx.json</code> como estrutura editável. Nada sai do seu computador.</p>
+
+  <label class="zona" id="zona">
+    <input type="file" id="arquivo" accept=".json,application/json">
+    <strong>Escolher ou soltar um .kcx.json</strong><br><span class="muted">ou cole o conteúdo abaixo</span>
+  </label>
+  <textarea id="colar" placeholder='{"formato": "kcx", ...}' aria-label="Conteúdo do pacote KCX"></textarea>
+
+  <div class="barra">
+    <label>Importar:
+      <select id="modo">
+        <option value="">como o pacote pede</option>
+        <option value="completo">componente completo</option>
+        <option value="visual">apenas elementos visuais</option>
+        <option value="variaveis">apenas variáveis</option>
+        <option value="componentes-variaveis">componentes e variáveis</option>
+      </select>
+    </label>
+    <button id="analisar">Analisar</button>
+  </div>
+
+  <div id="resultado"></div>
+
+  <h2>Figma → Lab</h2>
+  <p class="muted">Selecione um componente importado e exporte os valores atuais das variáveis para comparar no laboratório.</p>
+  <div class="barra"><button id="exportar">Exportar alterações para o lab</button></div>
+  <p id="msgExportar" class="muted"></p>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  let texto = '';
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const enviar = (m) => parent.postMessage({ pluginMessage: m }, '*');
+
+  async function carregar(arq) {
+    texto = await arq.text();
+    $('colar').value = texto.slice(0, 2000) + (texto.length > 2000 ? '\n…' : '');
+    analisar();
+  }
+  $('arquivo').addEventListener('change', (e) => e.target.files[0] && carregar(e.target.files[0]));
+  const zona = $('zona');
+  zona.addEventListener('dragover', (e) => { e.preventDefault(); zona.classList.add('sobre'); });
+  zona.addEventListener('dragleave', () => zona.classList.remove('sobre'));
+  zona.addEventListener('drop', (e) => { e.preventDefault(); zona.classList.remove('sobre'); e.dataTransfer.files[0] && carregar(e.dataTransfer.files[0]); });
+  $('colar').addEventListener('input', (e) => { texto = e.target.value; });
+
+  function modo() { return $('modo').value || undefined; }
+  function analisar() {
+    if (!texto.trim()) { $('resultado').innerHTML = '<p class="erro">Escolha um arquivo ou cole o JSON.</p>'; return; }
+    $('resultado').innerHTML = '<p class="muted">Validando…</p>';
+    enviar({ tipo: 'analisar', texto, modo: modo() });
+  }
+  $('analisar').addEventListener('click', analisar);
+  $('modo').addEventListener('change', () => texto && analisar());
+  $('exportar').addEventListener('click', () => { $('msgExportar').textContent = 'Lendo…'; enviar({ tipo: 'exportar-alteracoes' }); });
+
+  function baixar(nome, conteudo) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([conteudo], { type: 'application/json' }));
+    a.download = nome;
+    a.click();
+  }
+
+  function mostrarAnalise(m) {
+    const p = m.plano, d = m.duplicados;
+    const temDup = d.variaveis.length || d.componentes.length;
+    let h = `<h2>Pacote</h2><p class="ok">✓ “${esc(m.pacote.nome)}” v${esc(m.pacote.versao)} · schema ${esc(m.pacote.schema)} · ${esc(m.pacote.origem)}</p>`;
+    h += `<p>Modo: <strong>${esc(p.modo)}</strong> — ${p.resumo.variaveis} variáveis (${p.resumo.vinculadas} vinculadas, ${p.resumo.documentais} documentais), ${p.resumo.componentes} componente(s), ${p.resumo.variantes} variante(s), ${p.resumo.camadas} camadas.${p.documentacao ? ' Com quadro de documentação e código.' : ''}${p.composicao ? ' Com a composição “' + esc(p.composicao) + '”.' : ''}</p>`;
+    for (const c of p.componentes) {
+      h += `<h2>${esc(c.nome)} · nível ${c.nivel}</h2>`;
+      h += `<p><strong>Continua editável:</strong> ${c.editavel.map(esc).join('; ')}.</p>`;
+      if (c.parcial.length) h += `<p><strong>Representado, mas não executa:</strong> ${c.parcial.map(esc).join('; ')}.</p>`;
+      if (c.naoSuportado.length) h += `<p><strong>Só no código:</strong> ${c.naoSuportado.map(esc).join('; ')}.</p>`;
+      h += `<details><summary>${c.variantes.length} variante(s)</summary><ul>${c.variantes.map((v) => `<li>${esc(v)}</li>`).join('')}</ul></details>`;
+      h += `<details><summary>Limitações</summary><ul>${c.limitacoes.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></details>`;
+    }
+    h += '<details><summary>Variáveis por coleção</summary>';
+    for (const c of p.colecoes) {
+      h += `<p><strong>${esc(c.nome)}</strong> <span class="muted">${esc(c.modos.join(' / '))}</span></p><table>`;
+      h += c.variaveis.map((v) => `<tr><td><code>${esc(v.nome)}</code></td><td>${v.tipo}</td><td>${v.vinculada ? '<span class="tag v">vinculada</span>' : '<span class="tag d">documental</span>'}</td></tr>`).join('');
+      h += '</table>';
+    }
+    h += '</details>';
+    if (p.avisos.length) h += `<ul class="aviso">${p.avisos.map((a) => `<li>${esc(a)}</li>`).join('')}</ul>`;
+    if (temDup) {
+      h += `<h2>Já existe neste arquivo</h2><p class="aviso">${d.variaveis.length} variável(is) e ${d.componentes.length} componente(s) com o mesmo nome/ID.</p>`;
+      if (d.componentes.length) h += `<ul>${d.componentes.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>`;
+      h += `<label><input type="radio" name="dup" value="atualizar" checked> Atualizar as variáveis existentes (os componentes são criados de novo ao lado)</label><br>`;
+      h += `<label><input type="radio" name="dup" value="copia"> Criar cópias com outro nome</label>`;
+    }
+    h += `<div class="barra"><button class="primario" id="importar">Importar no Figma</button></div>`;
+    $('resultado').innerHTML = h;
+    $('importar').addEventListener('click', () => {
+      const dup = (document.querySelector('input[name=dup]:checked') || {}).value || 'atualizar';
+      $('importar').disabled = true;
+      enviar({ tipo: 'importar', texto, modo: modo(), duplicados: dup });
+    });
+  }
+
+  function mostrarRelatorio(r) {
+    let h = `<h2>Importado</h2><p class="ok">✓ ${r.componentes.length} componente(s), ${r.variaveisCriadas.length} variável(is) nova(s), ${r.variaveisAtualizadas.length} atualizada(s), ${r.vinculos} vínculo(s).</p>`;
+    h += `<ul>${r.colecoes.map((c) => `<li>${esc(c.nome)} — ${c.criada ? 'criada' : 'reutilizada'} (${esc(c.modos.join(' / '))})</li>`).join('')}</ul>`;
+    if (r.vinculosFalhos.length) h += `<h2>Vínculos que o Figma recusou</h2><ul class="erro">${r.vinculosFalhos.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
+    if (r.avisos.length) h += `<ul class="aviso">${r.avisos.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
+    h += '<div class="barra"><button id="fechar">Fechar</button></div>';
+    $('resultado').innerHTML = h;
+    $('fechar').addEventListener('click', () => enviar({ tipo: 'fechar' }));
+  }
+
+  onmessage = (e) => {
+    const m = e.data.pluginMessage;
+    if (!m) return;
+    if (m.tipo === 'erro') {
+      const probs = (m.problemas || []).slice(0, 12).map((p) => `<li><code>${esc(p.caminho || '(raiz)')}</code> ${esc(p.mensagem)}</li>`).join('');
+      $('resultado').innerHTML = `<p class="erro">${esc(m.erro)}</p>${probs ? `<ul class="erro">${probs}</ul>` : ''}`;
+      $('msgExportar').textContent = '';
+    }
+    if (m.tipo === 'analise') mostrarAnalise(m);
+    if (m.tipo === 'progresso') $('resultado').insertAdjacentHTML('beforeend', `<p class="muted">${esc(m.texto)}</p>`);
+    if (m.tipo === 'concluido') mostrarRelatorio(m.relatorio);
+    if (m.tipo === 'alteracoes') {
+      baixar(`${m.arquivo.componente}.kcx-alteracoes.json`, JSON.stringify(m.arquivo, null, 2));
+      $('msgExportar').textContent = `Arquivo gerado com ${Object.keys(m.arquivo.valores).length} valor(es). No lab: Editor KCX → “Trazer alterações do Figma”.` + (m.ignoradas.length ? ` Sem caminho de volta: ${m.ignoradas.join(', ')}.` : '');
+    }
+  };
+</script>
+</body>
+</html>

@@ -7,6 +7,33 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.9.0-rc.1] — 2026-11-18 · KCX — Kalixto Component Exchange
+
+### Adicionado
+- **Formato KCX 1.0.0** (`src/app/kcx/`): schema tipado em TypeScript + JSON Schema, validação, serialização,
+  migração de versões, comparação de valores e atualização sem sobrescrever personalizações.
+- **Variáveis funcionais**: 10 tipos (cor, número, float, boolean, texto, enum, dimensão, tempo, gradiente,
+  transformação), vínculos com várias propriedades, operações (mapear, limitar, dividir, converter unidade,
+  alpha, mapa…), conversão de unidades e proteção contra valores inconsistentes.
+- **KCX Studio** (`/kcx`), **editor** (`/kcx/:id`) e **composição** (`/kcx/compor`):
+  preview ao vivo que muda sem recarregar (postMessage), reproduzir/pausar/reiniciar/velocidade,
+  antes/depois, controles por tipo, presets (criar, duplicar, renomear, editar, excluir, exportar, importar,
+  restaurar), código sincronizado com edição avançada do `:root`, painel “Exportar para Figma” com os 5 modos
+  e “Trazer alterações do Figma” com comparação antes de aplicar.
+- **3 componentes de referência**: Neon Glow, Animated Gradient e SVG Motion (MIT, sem dependências).
+- **Plugin Kalixto Creative Lab — Figma Bridge** (`figma-bridge/`): importa `.kcx.json`, cria coleções
+  (Colors, Dimensions, Spacing, Typography, Motion, Effects, Components), modos Dark/Light, variáveis
+  vinculadas, componentes com variantes, propriedades de texto, documentação e composição; detecta
+  duplicações; exporta alterações de volta para o lab. Testado no Figma (48 vínculos, 0 recusados).
+- **Exportação de código independente**: `.zip` com `index.html`, CSS com `:root`, `kcx-runtime.js`
+  (`KCX.set()`), pacote `.kcx.json`, tokens W3C, SVG e README.
+- **Todos os 53 kits da Biblioteca** ganham “Exportar KCX” (pacote de desenvolvimento, nível 3).
+- Documentação: `docs/kcx/ESPECIFICACAO.md`, `docs/kcx/FIGMA-BRIDGE.md`, `docs/kcx/AUDITORIA-E-GUIA.md`.
+
+### Licenças
+- O núcleo KCX não usa GSAP: a licença Standard do GSAP não é open source e proíbe uso em ferramentas
+  visuais de animação que concorram com o Webflow. Kits com GSAP exportam no nível 3 com esse aviso.
+
 ## [1.8.0-rc.1] — 2026-11-18 · Vidro e desfoque
 
 ### Adicionado

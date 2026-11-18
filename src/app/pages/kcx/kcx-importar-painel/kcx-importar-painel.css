@@ -1,0 +1,56 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kx-space-3);
+  margin-top: var(--kx-space-3);
+}
+.kcxi__nota {
+  margin: 0;
+  font-size: var(--kx-fs-sm);
+}
+.kcxi__arquivo {
+  position: relative;
+}
+.kcxi__arquivo input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.kcxi__arquivo:focus-within {
+  outline: 2px solid var(--kx-ciano);
+  outline-offset: 2px;
+}
+.kcxi__erro {
+  margin: 0;
+  color: var(--kx-danger);
+  font-size: var(--kx-fs-sm);
+}
+small.kcxi__erro {
+  display: block;
+  font-size: var(--kx-fs-xs);
+}
+.kcxi__info {
+  margin: 0;
+  font-size: var(--kx-fs-sm);
+}
+.kcxi__tabela-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+.kcxi__tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--kx-fs-sm);
+}
+.kcxi__tabela th,
+.kcxi__tabela td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--kx-border);
+  text-align: left;
+  vertical-align: top;
+}
+.kcxi__invalida {
+  opacity: 0.7;
+}

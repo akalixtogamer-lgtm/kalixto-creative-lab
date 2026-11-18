@@ -73,6 +73,21 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'kcx',
+        title: 'KCX Studio · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/kcx/kcx-studio/kcx-studio').then((m) => m.KcxStudio),
+      },
+      {
+        path: 'kcx/compor',
+        title: 'Composição KCX · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/kcx/kcx-compositor/kcx-compositor').then((m) => m.KcxCompositor),
+      },
+      {
+        path: 'kcx/:id',
+        title: 'Editor KCX · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/kcx/kcx-editor/kcx-editor').then((m) => m.KcxEditor),
+      },
+      {
         path: 'glossario',
         title: 'Glossário A–Z · Kalixto Creative Lab',
         loadComponent: () => import('./pages/glossario/glossario').then((m) => m.Glossario),

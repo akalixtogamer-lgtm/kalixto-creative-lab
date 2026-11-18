@@ -32,3 +32,15 @@ Desde a versão 3.13 todos os plugins do GSAP (incluindo DrawSVG e MorphSVG) sã
 
 - Playwright + Chromium (conferência visual, WebGL e rolagem)
 - axe-core 4 (auditoria de acessibilidade)
+
+## Licença do GSAP e o KCX
+
+A licença Standard "No Charge" do GSAP é gratuita e permite uso comercial, mas **não é open source**:
+proíbe o uso em ferramentas que permitem criar animações visuais sem código e que concorram com o Webflow.
+Por isso o núcleo do KCX (editor de variáveis, componentes de referência, runtime e plugin) usa só CSS,
+SVG e JavaScript nativos. Kits que dependem de GSAP exportam como pacote de desenvolvimento (nível 3),
+com o aviso da licença. Fonte: https://gsap.com/standard-license
+
+| Pacote | Versão | Licença | Uso |
+|---|---|---|---|
+| @figma/plugin-typings | 1.142 | MIT | só tipos do plugin Figma Bridge (desenvolvimento) |
