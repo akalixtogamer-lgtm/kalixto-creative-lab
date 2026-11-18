@@ -1,0 +1,60 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.palco-halo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 640px);
+  aspect-ratio: 16 / 10;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1f6fff, #3f8cff);
+}
+.halo, .objeto { grid-area: 1 / 1; }
+.halo { position: relative; width: 60%; aspect-ratio: 1; }
+
+/* Um anel: gradiente cônico com o meio vazado pela máscara */
+.anel {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff9ad5, #ffe27a, #8ef0c6, #7fb2ff, #c9a2ff, #ff9ad5);
+  -webkit-mask-image: radial-gradient(circle, transparent 62%, #000 64%, #000 70%, transparent 72%);
+  mask-image: radial-gradient(circle, transparent 62%, #000 64%, #000 70%, transparent 72%);
+  opacity: 0;
+  animation: expandir 4s ease-out calc(var(--i) * -1.00s) infinite;
+}
+@keyframes expandir {
+  0% { scale: 0.4; opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { scale: 1.6; opacity: 0; }
+}
+.palco-halo.is-pausado .anel { animation-play-state: paused; }
+
+/* O objeto em destaque */
+.objeto {
+  position: relative;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff6c9, #f5b73b 45%, #a8650c);
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.3);
+}
+
+.pausar {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anel { animation: none; opacity: 0.5; scale: calc(0.7 + var(--i) * 0.25); }
+}

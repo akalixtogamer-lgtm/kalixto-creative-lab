@@ -1,0 +1,86 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.painel-ia {
+  position: relative;
+  display: grid;
+  gap: 16px;
+  width: min(100%, 560px);
+  padding: 24px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 16px;
+  background: #16110d;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.campo { min-height: 3.2em; margin: 0; font-size: 18px; color: #f4f2ff; }
+/* cursor piscando */
+.digitado::after {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: #ff6a1a;
+  animation: piscar 1s steps(1) infinite;
+}
+@keyframes piscar { 50% { opacity: 0; } }
+
+.rodape { display: flex; align-items: center; gap: 12px; }
+.gerar {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #ff6a1a;
+  color: #160b05;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+.gerar[data-estado='digitando'] { opacity: 0.45; }
+.gerar[data-estado='gerando'] { animation: respirar 800ms ease-in-out infinite alternate; }
+@keyframes respirar { to { opacity: 0.6; } }
+.progresso { flex: 1; height: 6px; border-radius: 999px; background: rgb(255 255 255 / 0.1); overflow: hidden; }
+.barra { display: block; height: 100%; background: #ff6a1a; transform: scaleX(var(--p, 0)); transform-origin: left center; }
+.porcento { min-width: 4ch; color: #ff6a1a; font-variant-numeric: tabular-nums; text-align: right; }
+
+/* Selo: começa grande e girado e "bate" no lugar */
+.selo {
+  position: absolute;
+  right: 20px;
+  top: -14px;
+  padding: 6px 14px;
+  border: 2px solid #ff6a1a;
+  border-radius: 8px;
+  background: #16110d;
+  color: #ff6a1a;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  rotate: -8deg;
+  opacity: 0;
+}
+.painel-ia.is-pronto .selo { animation: carimbar 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+@keyframes carimbar {
+  0% { opacity: 0; scale: 2.2; rotate: -24deg; }
+  70% { opacity: 1; scale: 0.92; rotate: -6deg; }
+  100% { opacity: 1; scale: 1; rotate: -8deg; }
+}
+.status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+.repetir {
+  padding: 8px 16px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #c9c3ea;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .digitado::after, .gerar[data-estado='gerando'] { animation: none; }
+  .painel-ia.is-pronto .selo { animation: none; opacity: 1; }
+}

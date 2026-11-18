@@ -1,0 +1,17 @@
+<section class="hero-frases">
+  <ul class="sr-frases">
+    @for (f of frases; track f) {
+      <li>{{ f }}</li>
+    }
+  </ul>
+  @for (i of [atual()]; track i) {
+    <h1 class="frase" aria-hidden="true" [class.is-saindo]="saindo()">
+      @for (p of palavras(); track $index) {
+        <span class="palavra" [style.--i]="$index">{{ p }}</span>
+      }
+    </h1>
+  }
+</section>
+<button class="pausar" type="button" [attr.aria-pressed]="pausado()" (click)="pausado.set(!pausado())">
+  {{ pausado() ? 'Continuar' : 'Pausar' }}
+</button>

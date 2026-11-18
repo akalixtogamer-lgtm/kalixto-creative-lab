@@ -1,0 +1,10 @@
+<section class="palco-cortina" [class.is-aberta]="aberta()">
+  <div class="cena-atras">
+    <h1>A estreia começa agora</h1>
+  </div>
+  <div class="cortina esq" aria-hidden="true"></div>
+  <div class="cortina dir" aria-hidden="true"></div>
+</section>
+<button class="abrir" type="button" [attr.aria-pressed]="!aberta()" (click)="aberta.set(!aberta())">
+  {{ aberta() ? 'Fechar cortina' : 'Abrir cortina' }}
+</button>

@@ -1,0 +1,13 @@
+<section class="painel-ia" [class.is-pronto]="estado() === 'pronto'" [style.--p]="p()">
+  <p class="campo" [attr.aria-label]="texto"><span class="digitado" aria-hidden="true">{{ digitado() }}</span></p>
+  <div class="rodape">
+    <button class="gerar" type="button" [attr.data-estado]="estado()" [disabled]="estado() === 'digitando'">
+      {{ rotulos[estado()] }}
+    </button>
+    <div class="progresso" aria-hidden="true"><span class="barra"></span></div>
+    <span class="porcento" aria-hidden="true">{{ (p() * 100).toFixed(0) }}%</span>
+  </div>
+  <span class="selo" aria-hidden="true">✓ PRONTO</span>
+  <p class="status" role="status">{{ estado() === 'digitando' ? '' : rotulos[estado()] }}</p>
+</section>
+<button class="repetir" type="button" (click)="comecar()">Repetir</button>

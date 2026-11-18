@@ -2,23 +2,23 @@
 
 > Gerado por `npm run docs:efeitos` a partir do registro (`src/app/core/efeitos/registry.ts`).
 
-Total: **103** itens — **43 kits** com ficha técnica completa e **60 demos** dos laboratórios.
+Total: **110** itens — **50 kits** com ficha técnica completa e **60 demos** dos laboratórios.
 
 | # | Categoria | Kits | Demos |
 |---|---|---|---|
-| 01 | Microinterações e UI | 2 | 3 |
-| 02 | Entradas, saídas e transições | 4 | 10 |
+| 01 | Microinterações e UI | 3 | 3 |
+| 02 | Entradas, saídas e transições | 5 | 10 |
 | 03 | Scroll e parallax | 7 | 8 |
-| 04 | Tipografia e texto | 7 | 5 |
+| 04 | Tipografia e texto | 8 | 5 |
 | 05 | Mouse e cursor | 6 | 2 |
 | 06 | Cards, imagens e galerias | 3 | 4 |
-| 07 | Backgrounds | 2 | 1 |
+| 07 | Backgrounds | 3 | 1 |
 | 08 | Luz, sombra e profundidade | 4 | 1 |
 | 09 | SVG, geometria e máscaras | 1 | 8 |
 | 10 | Partículas e simulações | 2 | 0 |
 | 11 | 3D e WebGL | 1 | 12 |
 | 12 | Áudio e audiovisual | 0 | 0 |
-| 13 | Componentes e dados | 0 | 1 |
+| 13 | Componentes e dados | 3 | 1 |
 | 14 | Navegação e experiência de página | 2 | 1 |
 | 15 | Experimental e creative coding | 2 | 4 |
 
@@ -30,6 +30,7 @@ Botões, toggles, tooltips, menus e respostas imediatas a uma ação.
 |---|---|---|---|
 | [Botão que sobe no hover](efeitos/button-hover.md) | Kit (ficha completa) | Iniciante | `/efeitos/button-hover` |
 | [Borda animada](efeitos/animated-border.md) | Kit (ficha completa) | Intermediário | `/efeitos/animated-border` |
+| [Troca de dispositivo (computador, tablet, celular)](efeitos/device-switcher.md) | Kit (ficha completa) | Intermediário | `/efeitos/device-switcher` |
 | Estados de hover em botões | Demo | Iniciante | `/labs/css?demo=hover` |
 | Elemento flutuante | Demo | Iniciante | `/labs/css?demo=floating` |
 | Curtir e interruptor | Demo | Intermediário | `/labs/css?demo=microinteracoes` |
@@ -44,6 +45,7 @@ Como um elemento aparece, some ou troca de estado.
 | [Deslizar para dentro](efeitos/slide-in.md) | Kit (ficha completa) | Iniciante | `/efeitos/slide-in` |
 | [Crescer ao aparecer](efeitos/scale-reveal.md) | Kit (ficha completa) | Iniciante | `/efeitos/scale-reveal` |
 | [Troca de mundo com revelação circular](efeitos/theme-wipe.md) | Kit (ficha completa) | Intermediário | `/efeitos/theme-wipe` |
+| [Cortina que se abre](efeitos/curtain-reveal.md) | Kit (ficha completa) | Intermediário | `/efeitos/curtain-reveal` |
 | Transição entre dois estados | Demo | Iniciante | `/labs/css?demo=transitions` |
 | Animação com @keyframes | Demo | Iniciante | `/labs/css?demo=keyframes` |
 | Mover, girar, escalar e inclinar | Demo | Iniciante | `/labs/css?demo=transform` |
@@ -90,6 +92,7 @@ Revelar, animar e estilizar texto.
 | [Texto embaralhado (decodificar)](efeitos/text-scramble.md) | Kit (ficha completa) | Intermediário | `/efeitos/text-scramble` |
 | [Título que se monta em pixels](efeitos/pixel-text.md) | Kit (ficha completa) | Avançado | `/efeitos/pixel-text` |
 | [Texto com eco](efeitos/echo-text.md) | Kit (ficha completa) | Iniciante | `/efeitos/echo-text` |
+| [Frases que se revezam no hero](efeitos/rotating-headline.md) | Kit (ficha completa) | Intermediário | `/efeitos/rotating-headline` |
 | Revelar texto por letras, palavras ou linhas | Demo | Intermediário | `/labs/gsap?demo=splittext` |
 | Hero com título editorial e entrada em sequência | Demo | Intermediário | `/labs/ui?demo=hero-editorial` |
 | Título gigante entre camadas | Demo | Intermediário | `/labs/ui?demo=texto-profundidade` |
@@ -133,6 +136,7 @@ Fundos animados, texturas e padrões.
 |---|---|---|---|
 | [Gradiente animado](efeitos/animated-gradient.md) | Kit (ficha completa) | Iniciante | `/efeitos/animated-gradient` |
 | [Mosaico de células que acendem](efeitos/tile-grid-reveal.md) | Kit (ficha completa) | Iniciante | `/efeitos/tile-grid-reveal` |
+| [Halo de anéis que pulsam](efeitos/ripple-halo.md) | Kit (ficha completa) | Iniciante | `/efeitos/ripple-halo` |
 | Grão de filme e vinheta cinematográfica | Demo | Iniciante | `/labs/ui?demo=grao-filme` |
 
 ## 08 · Luz, sombra e profundidade
@@ -204,6 +208,9 @@ Progresso, contadores, gráficos e linhas do tempo.
 
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
+| [Prompt digitado até o "pronto"](efeitos/typewriter-prompt.md) | Kit (ficha completa) | Intermediário | `/efeitos/typewriter-prompt` |
+| [Medidor de nota (gauge)](efeitos/gauge-meter.md) | Kit (ficha completa) | Intermediário | `/efeitos/gauge-meter` |
+| [Etapas que se desbloqueiam](efeitos/step-unlock.md) | Kit (ficha completa) | Intermediário | `/efeitos/step-unlock` |
 | Estatísticas com gráfico que se desenha | Demo | Iniciante | `/labs/ui?demo=numeros` |
 
 ## 14 · Navegação e experiência de página

@@ -44,6 +44,13 @@ import { PARTICLE_HELIX } from './kits/particle-helix.kit';
 import { ECHO_TEXT } from './kits/echo-text.kit';
 import { LIGHT_BEAMS } from './kits/light-beams.kit';
 import { GLITCH_TEXT } from './kits/glitch-text.kit';
+import { CURTAIN_REVEAL } from './kits/curtain-reveal.kit';
+import { RIPPLE_HALO } from './kits/ripple-halo.kit';
+import { ROTATING_HEADLINE } from './kits/rotating-headline.kit';
+import { TYPEWRITER_PROMPT } from './kits/typewriter-prompt.kit';
+import { GAUGE_METER } from './kits/gauge-meter.kit';
+import { STEP_UNLOCK } from './kits/step-unlock.kit';
+import { DEVICE_SWITCHER } from './kits/device-switcher.kit';
 
 /**
  * Registro central de efeitos.
@@ -100,6 +107,14 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   ECHO_TEXT,
   LIGHT_BEAMS,
   GLITCH_TEXT,
+  // Referências em vídeo — lote 4 (portfólio com pinturas + interface laranja)
+  CURTAIN_REVEAL,
+  RIPPLE_HALO,
+  ROTATING_HEADLINE,
+  TYPEWRITER_PROMPT,
+  GAUGE_METER,
+  STEP_UNLOCK,
+  DEVICE_SWITCHER,
 ];
 
 export function findKit(id: string): EffectKit | undefined {

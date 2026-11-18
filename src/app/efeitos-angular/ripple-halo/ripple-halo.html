@@ -1,0 +1,11 @@
+<section class="palco-halo" [class.is-pausado]="pausado()">
+  <div class="halo" aria-hidden="true">
+    @for (i of aneis; track i) {
+      <span class="anel" [style.--i]="i"></span>
+    }
+  </div>
+  <div class="objeto" role="img" aria-label="Esfera dourada"></div>
+</section>
+<button class="pausar" type="button" [attr.aria-pressed]="pausado()" (click)="pausado.set(!pausado())">
+  {{ pausado() ? 'Continuar' : 'Pausar' }}
+</button>

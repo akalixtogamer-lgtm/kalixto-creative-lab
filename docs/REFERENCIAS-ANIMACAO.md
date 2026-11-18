@@ -87,6 +87,35 @@ Página de proposta comercial gravada no notebook, com portfólio rodando ao fun
 | 6.8 | Portal circular com borda brilhante mostrando o mar | Imagem recortada em forma | 🔁 Interface Lab → *Imagem em formas* |
 | 6.9 | Etapas do processo (coleta, layout, aprovação) entrando em colunas | Revelação em sequência | 🔁 Kit `text-reveal` / GSAP Studio → *Stagger* |
 
+## Vídeo 7 — "Um portfólio que dá vontade de explorar" (@luccas2santos · 28 s)
+
+Portfólio com pinturas clássicas recortadas, peras douradas e céu azul; no fim, um site de resort.
+
+| # | O que aparece | Técnica | No lab |
+|---|---|---|---|
+| 7.1 | Personagem abrindo uma cortina de tecido e revelando a página | Duas metades com dobras em gradiente que se recolhem (`scaleX` a partir da borda) | ✅ [`curtain-reveal`](../src/app/core/efeitos/kits/curtain-reveal.kit.ts) |
+| 7.2 | Pera dourada com anéis iridescentes se expandindo atrás ("Asked before") | Anéis com `conic-gradient` + máscara, em ondas | ✅ [`ripple-halo`](../src/app/core/efeitos/kits/ripple-halo.kit.ts) |
+| 7.3 | "O mundo pode esperar." → "Dias que começam sem pressa." → "Sinta o lugar." sobre a foto do resort | Frases em revezamento, palavra por palavra, saindo do desfoque | ✅ [`rotating-headline`](../src/app/core/efeitos/kits/rotating-headline.kit.ts) |
+| 7.4 | Pera crescendo no galho conforme a rolagem | Sequência de quadros no scroll | 🔁 Kit `image-sequence` |
+| 7.5 | Nuvens e figuras em camadas | Parallax em camadas | 🔁 Kit `layered-parallax` |
+| 7.6 | Estrelas ligadas formando uma constelação | Partículas com linhas | 🔁 Kit `particle-field` / SVG Lab → *Traço* |
+| 7.7 | Título misturando serifa e itálico manuscrito ("Asked before *signing*") | Tipografia mista | 🔁 Interface Lab → *Hero editorial* |
+
+## Vídeo 8 — "Uma página para cada empresa" (@tommello.edit · 47 s)
+
+Motion design de interface escura com laranja, estilo painel/HUD.
+
+| # | O que aparece | Técnica | No lab |
+|---|---|---|---|
+| 8.1 | Prompt sendo digitado, botão "Gerando", barra até 100% e selo "PRONTO" | Digitação com `setTimeout`, progresso por tempo, carimbo elástico | ✅ [`typewriter-prompt`](../src/app/core/efeitos/kits/typewriter-prompt.kit.ts) |
+| 8.2 | Velocímetro "31 — nota de velocidade" e "82" enchendo | Arco SVG de 270° com `stroke-dashoffset` + contagem | ✅ [`gauge-meter`](../src/app/core/efeitos/kits/gauge-meter.kit.ts) |
+| 8.3 | "Estes 3 passos": cadeados que abrem e viram ✓ com selo "PASSO" | Estados com `data-estado`, tremor e carimbo | ✅ [`step-unlock`](../src/app/core/efeitos/kits/step-unlock.kit.ts) |
+| 8.4 | Seletor Computador / Tablet / Celular mudando a prévia | Controle segmentado + moldura com container queries | ✅ [`device-switcher`](../src/app/core/efeitos/kits/device-switcher.kit.ts) |
+| 8.5 | Contador "Desbloqueado 0/3", porcentagens e timecode | Números animados | 🔁 Interface Lab → *Números* · kit `preloader-counter` |
+| 8.6 | Mapa com pinos ligados por linhas | Traço SVG animado | 🔁 SVG Lab → *Traço* e *Motion path* |
+| 8.7 | Paleta de cores e tipografia do "manual de marca" montando | Revelação em sequência | 🔁 Kit `tile-grid-reveal` / GSAP Studio → *Stagger* |
+| 8.8 | Vitrine de sites em perspectiva com chips de nicho (salão, barbearia, clínica…) | Cards 3D + chips | 🔁 Kits `image-ribbon` e `card-tilt` |
+
 ---
 
 ## As animações mais usadas hoje (importadas para o lab)

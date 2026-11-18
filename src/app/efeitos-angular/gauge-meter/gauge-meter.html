@@ -1,0 +1,19 @@
+<section
+  class="medidor"
+  [class.is-cheio]="cheio()"
+  role="meter"
+  aria-label="Nota de velocidade"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-valuenow]="valor"
+>
+  <svg viewBox="0 0 200 200" aria-hidden="true">
+    <circle class="trilho" cx="100" cy="100" r="80" />
+    <circle class="valor" cx="100" cy="100" r="80" />
+  </svg>
+  <div class="leitura">
+    <span class="numero">{{ mostrado() }}</span>
+    <span class="rotulo">nota de velocidade · média</span>
+  </div>
+</section>
+<button class="repetir" type="button" (click)="encher()">Repetir</button>

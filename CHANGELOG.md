@@ -7,6 +7,19 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.7.0-rc.1] — 2026-11-18 · Referências em vídeo, lote 4
+
+### Adicionado
+- **Vídeos 7 e 8 mapeados** em `docs/REFERENCIAS-ANIMACAO.md`: 15 animações, 7 novas.
+- **7 kits novos** (50 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
+  - **Cortina que se abre** — tecido com dobras em gradiente, abre para os lados ou para cima.
+  - **Halo de anéis que pulsam** — ondas iridescentes, douradas ou brancas atrás de um objeto, com Pausar.
+  - **Frases que se revezam no hero** — palavra por palavra, saindo do desfoque, com Pausar.
+  - **Prompt digitado até o "pronto"** — digitação, barra de progresso e selo carimbado.
+  - **Medidor de nota (gauge)** — arco SVG de 270° com cor por faixa e `role="meter"`.
+  - **Etapas que se desbloqueiam** — cadeados que tremem e abrem, automático ou no clique.
+  - **Troca de dispositivo** — controle segmentado e moldura com container queries (3 → 2 → 1 coluna).
+
 ## [1.6.0-rc.1] — 2026-11-17 · Referências em vídeo, lote 3
 
 ### Adicionado

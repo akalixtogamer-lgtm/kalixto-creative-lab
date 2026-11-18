@@ -1,0 +1,60 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.palco-cortina {
+  position: relative;
+  width: min(100%, 680px);
+  aspect-ratio: 16 / 10;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.cena-atras {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 75% 25%, #fff 0 6%, transparent 7%),
+    radial-gradient(ellipse at 30% 80%, rgb(255 255 255 / 0.9) 0 12%, transparent 13%),
+    linear-gradient(180deg, #1f6fff, #6aa8ff);
+}
+.cena-atras h1 { margin: 0; font: 400 clamp(1.8rem, 7vw, 3.4rem) / 1.05 Georgia, serif; }
+
+/* O tecido: dobras com faixas claras e escuras + sombra para dar volume */
+.cortina {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background:
+    linear-gradient(180deg, transparent 70%, rgb(0 0 0 / 0.35)),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.28) 0 6px, rgb(255 255 255 / 0.1) 14px, rgb(0 0 0 / 0.28) 26px),
+    #7a1030;
+  transition: transform 1400ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.cortina.esq { left: 0; box-shadow: inset -18px 0 30px rgb(0 0 0 / 0.45); }
+.cortina.dir { right: 0; box-shadow: inset 18px 0 30px rgb(0 0 0 / 0.45); }
+
+/* Abertura */
+.cortina.esq { transform-origin: left center; }
+.cortina.dir { transform-origin: right center; }
+.palco-cortina.is-aberta .cortina { transform: scaleX(0.08); }
+
+.abrir {
+  padding: 10px 20px;
+  border: 1px solid #3a3456;
+  border-radius: 999px;
+  background: transparent;
+  color: #f4f2ff;
+  font: inherit;
+  cursor: pointer;
+}
+.abrir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cortina { transition: none; }
+}
