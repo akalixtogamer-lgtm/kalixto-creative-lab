@@ -28,6 +28,7 @@ Nada ainda.
   - **Lote 2 das referências:** Título que se monta em pixels (canvas `getImageData`), Campo de partículas com constelação (primeiro kit da categoria Partículas), Mosaico de células que acendem.
 - Tags "referência em vídeo" e "tendência 2026" para filtrar na Biblioteca.
 - **Glossário A–Z** (`/glossario`, no menu Geral e na Biblioteca): os 38 efeitos, as 60 demos e os 150 termos de código em ordem alfabética, com busca (também pela URL, `?q=`), filtro por tipo e índice de letras fixo no topo. Efeitos têm "Testar" e "Ver e copiar o código"; demos abrem o laboratório já na demo; termos levam a cada efeito que os usa.
+- **Modo claro e escuro.** Botão no menu lateral (e no topo, no celular). O modo claro usa rosa, azul, lilás e branco, com todos os textos em contraste AA (≥ 4,5:1). Sem escolha salva, o lab segue o tema do sistema; a escolha fica salva no navegador e é aplicada antes da página aparecer (sem piscar). Palcos das demos, previews e blocos de código continuam escuros nos dois modos, porque os efeitos foram desenhados para fundo escuro. As cores ficam em `src/styles/tokens.css` (`:root` e `:root[data-tema='claro']`).
 - **Code Lab abre na aba certa:** `/efeitos/:id?arquivo=css|js|html` abre direto no arquivo, e links com `#ef-codigo` rolam até o Code Lab.
 
 ## [1.4.1-rc.1] — 2026-11-17 · Correção

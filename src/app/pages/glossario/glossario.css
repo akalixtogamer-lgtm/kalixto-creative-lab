@@ -16,7 +16,7 @@
   padding: 0 var(--kx-space-3);
   border: 1px solid var(--kx-border-strong);
   border-radius: var(--kx-radius-sm);
-  background: rgb(0 0 0 / 0.35);
+  background: var(--kx-input-bg);
   color: var(--kx-text);
   font: inherit;
 }

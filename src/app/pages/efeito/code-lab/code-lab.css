@@ -55,7 +55,7 @@
   padding: var(--kx-space-4);
   border: 1px solid var(--kx-roxo);
   border-radius: var(--kx-radius-md);
-  background: rgb(4 3 10 / 0.85);
+  background: var(--kx-code-bg);
   color: #e9e5ff;
   font-family: var(--kx-font-mono);
   font-size: 0.8125rem;
@@ -74,7 +74,7 @@
   overflow: auto;
   border: 1px solid var(--kx-border);
   border-radius: var(--kx-radius-md);
-  background: rgb(4 3 10 / 0.75);
+  background: var(--kx-code-bg);
   color: #d9d3ff;
   font-size: 0.8125rem;
   line-height: 1.65;

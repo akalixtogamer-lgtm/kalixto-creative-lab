@@ -17,6 +17,7 @@
   color: var(--kx-text);
   text-decoration: none;
 }
+.sidebar__tema { display: block; margin-bottom: var(--kx-space-3); }
 .sidebar__brand-text {
   display: flex;
   flex-direction: column;

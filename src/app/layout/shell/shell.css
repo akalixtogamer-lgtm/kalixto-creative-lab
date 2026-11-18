@@ -43,6 +43,7 @@
     background: var(--kx-bg-blur);
     backdrop-filter: blur(16px);
   }
+  .shell__tema { margin-left: auto; }
   .shell__topbar-brand {
     display: flex;
     align-items: center;

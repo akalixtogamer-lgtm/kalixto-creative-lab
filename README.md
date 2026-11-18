@@ -16,7 +16,7 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 | Versão | `1.5.0-rc.1` (20 kits novos: referências em vídeo + animações mais usadas) |
 | Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
 | Conteúdo | 7 laboratórios · 60 demos interativas · 38 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
-| Testes | 566 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
+| Testes | 568 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
 | Publicado no GitHub Pages | Sim, a `v1.4.1-rc.1` (a `1.5.0-rc.1` aguarda o teste do Wallace) |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
