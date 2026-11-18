@@ -39,6 +39,11 @@ import { EXPANDING_GALLERY } from './kits/expanding-gallery.kit';
 import { PIXEL_TEXT } from './kits/pixel-text.kit';
 import { PARTICLE_FIELD } from './kits/particle-field.kit';
 import { TILE_GRID_REVEAL } from './kits/tile-grid-reveal.kit';
+import { LIQUID_GLASS_LENS } from './kits/liquid-glass-lens.kit';
+import { PARTICLE_HELIX } from './kits/particle-helix.kit';
+import { ECHO_TEXT } from './kits/echo-text.kit';
+import { LIGHT_BEAMS } from './kits/light-beams.kit';
+import { GLITCH_TEXT } from './kits/glitch-text.kit';
 
 /**
  * Registro central de efeitos.
@@ -89,6 +94,12 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   PIXEL_TEXT,
   PARTICLE_FIELD,
   TILE_GRID_REVEAL,
+  // Referências em vídeo — lote 3 (proposta comercial com DNA e vidro líquido)
+  LIQUID_GLASS_LENS,
+  PARTICLE_HELIX,
+  ECHO_TEXT,
+  LIGHT_BEAMS,
+  GLITCH_TEXT,
 ];
 
 export function findKit(id: string): EffectKit | undefined {

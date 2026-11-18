@@ -1,0 +1,73 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+}
+
+.vidro-palco {
+  --x: 50%;
+  --y: 50%;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 680px);
+  aspect-ratio: 16 / 10;
+  border-radius: 20px;
+  overflow: hidden;
+  touch-action: none; /* o dedo move a bolha em vez de rolar a página */
+  background:
+    radial-gradient(ellipse 120% 60% at 50% 120%, #1d4ed8 45%, #60a5fa 55%, transparent 56%),
+    linear-gradient(180deg, #ff7a1a, #f05a0a);
+}
+/* As duas versões do título ocupam o palco inteiro, uma sobre a outra
+   (assim --x/--y valem igual para o palco e para as máscaras) */
+.nome {
+  grid-area: 1 / 1;
+  place-self: stretch;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: #fff;
+  font: 700 clamp(2.4rem, 10vw, 5rem) / 1 system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+/* A versão normal some DENTRO do círculo (para não aparecer atrás da outra) */
+.nome:not(.nome--alt) {
+  -webkit-mask-image: radial-gradient(circle 85px at var(--x) var(--y), transparent 98%, #000);
+  mask-image: radial-gradient(circle 85px at var(--x) var(--y), transparent 98%, #000);
+}
+/* A versão alternativa só aparece dentro do círculo */
+.nome--alt {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  transform: scale(1.08);
+  transform-origin: var(--x) var(--y);
+  -webkit-mask-image: radial-gradient(circle 85px at var(--x) var(--y), #000 98%, transparent);
+  mask-image: radial-gradient(circle 85px at var(--x) var(--y), #000 98%, transparent);
+}
+
+/* A bolha de vidro: só desenho, segue o mesmo ponto */
+.bolha {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 170px;
+  height: 170px;
+  margin: -85px 0 0 -85px;
+  translate: var(--x) var(--y);
+  border: 1.5px solid rgb(255 255 255 / 0.55);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.55), transparent 22%),
+    radial-gradient(circle at 70% 80%, rgb(255 255 255 / 0.18), transparent 35%);
+  box-shadow: inset 0 -10px 30px rgb(255 255 255 / 0.18), inset 0 8px 20px rgb(0 0 0 / 0.12), 0 12px 40px rgb(0 0 0 / 0.25);
+  backdrop-filter: saturate(1.6) brightness(1.08);
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bolha { transition: none; }
+}

@@ -23,7 +23,7 @@ describe('Efeitos · registro e fichas', () => {
     for (const id of ids) expect(id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
   });
 
-  it('entrega os 38 efeitos (Fases 1 e 3 + referências em vídeo + tendências)', () => {
+  it('entrega os 43 efeitos (Fases 1 e 3 + referências em vídeo + tendências)', () => {
     expect(EFFECT_REGISTRY.map((k) => k.ficha.id).sort()).toEqual(
       [
         'animated-border',
@@ -64,6 +64,11 @@ describe('Efeitos · registro e fichas', () => {
         'pixel-text',
         'particle-field',
         'tile-grid-reveal',
+        'liquid-glass-lens',
+        'particle-helix',
+        'echo-text',
+        'light-beams',
+        'glitch-text',
       ].sort(),
     );
   });
