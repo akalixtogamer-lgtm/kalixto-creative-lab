@@ -1,0 +1,14 @@
+<section class="palco-show" [class.is-pausado]="pausado()">
+  <div class="luzes" aria-hidden="true">
+    @for (x of feixes; track $index) {
+      <span class="feixe" [style.--x]="x" [style.--i]="$index"></span>
+    }
+  </div>
+  <article class="card-vidro">
+    <p>Sua operação deixa de depender de você</p>
+    <strong>24h por dia</strong>
+  </article>
+</section>
+<button class="pausar" type="button" [attr.aria-pressed]="pausado()" (click)="pausado.set(!pausado())">
+  {{ pausado() ? 'Continuar' : 'Pausar' }}
+</button>

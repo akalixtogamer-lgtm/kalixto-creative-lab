@@ -43,4 +43,9 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'pixel-text': () => import('./pixel-text/pixel-text').then((m) => m.PixelText),
   'particle-field': () => import('./particle-field/particle-field').then((m) => m.ParticleField),
   'tile-grid-reveal': () => import('./tile-grid-reveal/tile-grid-reveal').then((m) => m.TileGridReveal),
+  'liquid-glass-lens': () => import('./liquid-glass-lens/liquid-glass-lens').then((m) => m.LiquidGlassLens),
+  'particle-helix': () => import('./particle-helix/particle-helix').then((m) => m.ParticleHelix),
+  'echo-text': () => import('./echo-text/echo-text').then((m) => m.EchoText),
+  'light-beams': () => import('./light-beams/light-beams').then((m) => m.LightBeams),
+  'glitch-text': () => import('./glitch-text/glitch-text').then((m) => m.GlitchText),
 };

@@ -2,25 +2,25 @@
 
 > Gerado por `npm run docs:efeitos` a partir do registro (`src/app/core/efeitos/registry.ts`).
 
-Total: **98** itens — **38 kits** com ficha técnica completa e **60 demos** dos laboratórios.
+Total: **103** itens — **43 kits** com ficha técnica completa e **60 demos** dos laboratórios.
 
 | # | Categoria | Kits | Demos |
 |---|---|---|---|
 | 01 | Microinterações e UI | 2 | 3 |
 | 02 | Entradas, saídas e transições | 4 | 10 |
 | 03 | Scroll e parallax | 7 | 8 |
-| 04 | Tipografia e texto | 6 | 5 |
-| 05 | Mouse e cursor | 5 | 2 |
+| 04 | Tipografia e texto | 7 | 5 |
+| 05 | Mouse e cursor | 6 | 2 |
 | 06 | Cards, imagens e galerias | 3 | 4 |
 | 07 | Backgrounds | 2 | 1 |
-| 08 | Luz, sombra e profundidade | 3 | 1 |
+| 08 | Luz, sombra e profundidade | 4 | 1 |
 | 09 | SVG, geometria e máscaras | 1 | 8 |
-| 10 | Partículas e simulações | 1 | 0 |
+| 10 | Partículas e simulações | 2 | 0 |
 | 11 | 3D e WebGL | 1 | 12 |
 | 12 | Áudio e audiovisual | 0 | 0 |
 | 13 | Componentes e dados | 0 | 1 |
 | 14 | Navegação e experiência de página | 2 | 1 |
-| 15 | Experimental e creative coding | 1 | 4 |
+| 15 | Experimental e creative coding | 2 | 4 |
 
 ## 01 · Microinterações e UI
 
@@ -89,6 +89,7 @@ Revelar, animar e estilizar texto.
 | [Tipografia inflada](efeitos/puffy-text.md) | Kit (ficha completa) | Iniciante | `/efeitos/puffy-text` |
 | [Texto embaralhado (decodificar)](efeitos/text-scramble.md) | Kit (ficha completa) | Intermediário | `/efeitos/text-scramble` |
 | [Título que se monta em pixels](efeitos/pixel-text.md) | Kit (ficha completa) | Avançado | `/efeitos/pixel-text` |
+| [Texto com eco](efeitos/echo-text.md) | Kit (ficha completa) | Iniciante | `/efeitos/echo-text` |
 | Revelar texto por letras, palavras ou linhas | Demo | Intermediário | `/labs/gsap?demo=splittext` |
 | Hero com título editorial e entrada em sequência | Demo | Intermediário | `/labs/ui?demo=hero-editorial` |
 | Título gigante entre camadas | Demo | Intermediário | `/labs/ui?demo=texto-profundidade` |
@@ -106,6 +107,7 @@ Elementos que reagem à posição do ponteiro.
 | [Lanterna que revela](efeitos/spotlight-reveal.md) | Kit (ficha completa) | Intermediário | `/efeitos/spotlight-reveal` |
 | [Lente de foco](efeitos/lens-focus.md) | Kit (ficha completa) | Avançado | `/efeitos/lens-focus` |
 | [Lista com imagem que segue o cursor](efeitos/hover-image-list.md) | Kit (ficha completa) | Intermediário | `/efeitos/hover-image-list` |
+| [Bolha de vidro que troca a fonte](efeitos/liquid-glass-lens.md) | Kit (ficha completa) | Avançado | `/efeitos/liquid-glass-lens` |
 | Anel orbital e camadas que seguem o mouse | Demo | Avançado | `/labs/ui?demo=orbita` |
 | Botões magnéticos e cursor personalizado | Demo | Intermediário | `/labs/ui?demo=magnetico` |
 
@@ -142,6 +144,7 @@ Brilho, reflexo, vidro e camadas.
 | [Botão com brilho neon](efeitos/glow-button.md) | Kit (ficha completa) | Iniciante | `/efeitos/glow-button` |
 | [Interface isométrica em camadas](efeitos/isometric-layers.md) | Kit (ficha completa) | Intermediário | `/efeitos/isometric-layers` |
 | [Cards com luz que segue o mouse](efeitos/spotlight-cards.md) | Kit (ficha completa) | Intermediário | `/efeitos/spotlight-cards` |
+| [Feixes de luz de palco](efeitos/light-beams.md) | Kit (ficha completa) | Intermediário | `/efeitos/light-beams` |
 | Cards escuros com sombras suaves e forma de destaque | Demo | Intermediário | `/labs/ui?demo=cards-profundidade` |
 
 ## 09 · SVG, geometria e máscaras
@@ -167,6 +170,7 @@ Sistemas de partículas e física simples.
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
 | [Campo de partículas com constelação](efeitos/particle-field.md) | Kit (ficha completa) | Intermediário | `/efeitos/particle-field` |
+| [Hélice de DNA em partículas](efeitos/particle-helix.md) | Kit (ficha completa) | Avançado | `/efeitos/particle-helix` |
 
 ## 11 · 3D e WebGL
 
@@ -219,6 +223,7 @@ Distorções, glitch, procedural e arte generativa.
 | Efeito | Tipo | Nível | Onde |
 |---|---|---|---|
 | [Distorção líquida na imagem](efeitos/image-distortion.md) | Kit (ficha completa) | Avançado | `/efeitos/image-distortion` |
+| [Texto com glitch RGB](efeitos/glitch-text.md) | Kit (ficha completa) | Intermediário | `/efeitos/glitch-text` |
 | Ruído e fbm | Demo | Avançado | `/labs/webgl?demo=noise` |
 | Distorcer uma imagem | Demo | Avançado | `/labs/webgl?demo=distortion` |
 | Plasma e Voronoi | Demo | Avançado | `/labs/webgl?demo=procedural` |

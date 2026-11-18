@@ -7,6 +7,18 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.6.0-rc.1] — 2026-11-17 · Referências em vídeo, lote 3
+
+### Adicionado
+- **Vídeo 6 mapeado** em `docs/REFERENCIAS-ANIMACAO.md` (proposta comercial com DNA e vidro líquido): 9 animações, 5 novas.
+- **5 kits novos** (43 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
+  - **Bolha de vidro que troca a fonte** — dentro da bolha o título vira itálico com serifa, contorno ou ultranegrito (máscaras opostas + `backdrop-filter`).
+  - **Hélice de DNA em partículas** — canvas com profundidade falsa, botão Pausar.
+  - **Texto com eco** — cópias empilhadas que se juntam, com aura de luz.
+  - **Feixes de luz de palco** — refletores que varrem um card de vidro, botão Pausar.
+  - **Texto com glitch RGB** — em rajadas, sempre ou só no hover; só CSS.
+- Os kits entram automaticamente no Glossário A–Z.
+
 ## [1.5.0-rc.1] — 2026-11-17 · Referências em vídeo
 
 ### Adicionado

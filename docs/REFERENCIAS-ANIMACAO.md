@@ -71,6 +71,22 @@ Dois sites gravados no notebook: uma marca de sementes de milho e uma transporta
 | 5.9 | Contador de quilômetros | Números animados | 🔁 Interface Lab → *Números* |
 | 5.10 | Troca de cena com desfoque entre seções | Transição com blur entre capítulos | 🔁 Scroll Lab → *Capítulos* |
 
+## Vídeo 6 — Proposta comercial "Site completo" (@tommello.edit · 23 s)
+
+Página de proposta comercial gravada no notebook, com portfólio rodando ao fundo.
+
+| # | O que aparece | Técnica | No lab |
+|---|---|---|---|
+| 6.1 | Bolha de vidro passando sobre "Mateus Souza": dentro dela as letras viram itálico com serifa | Duas cópias do título com máscaras opostas + bolha com `backdrop-filter` | ✅ [`liquid-glass-lens`](../src/app/core/efeitos/kits/liquid-glass-lens.kit.ts) |
+| 6.2 | Hélice de DNA de partículas rosa e azul girando atrás dos cards do portfólio | Hélice paramétrica em canvas com profundidade por tamanho/opacidade | ✅ [`particle-helix`](../src/app/core/efeitos/kits/particle-helix.kit.ts) |
+| 6.3 | "Site completo" e "R$ 3.000" chegando com cópias empilhadas que se juntam, sobre uma aura laranja | Ecos com `--i` (deslocamento e transparência) + aura com blur | ✅ [`echo-text`](../src/app/core/efeitos/kits/echo-text.kit.ts) |
+| 6.4 | Card de vidro com feixes de luz de palco ("Sua operação…") | Feixes com `clip-path` + `rotate` a partir do topo, somados com `screen` | ✅ [`light-beams`](../src/app/core/efeitos/kits/light-beams.kit.ts) |
+| 6.5 | "o céu mudou de dono" falhando sobre um card laranja | Glitch RGB com pseudo-elementos e `clip-path: inset()` | ✅ [`glitch-text`](../src/app/core/efeitos/kits/glitch-text.kit.ts) |
+| 6.6 | Galáxia azul de partículas com cursor em anel | Partículas + cursor personalizado | 🔁 Kits `particle-field` e `custom-cursor` |
+| 6.7 | Cards de projeto em vidro, inclinados, passando em 3D | Cards em perspectiva | 🔁 Kits `card-tilt` e `image-ribbon` |
+| 6.8 | Portal circular com borda brilhante mostrando o mar | Imagem recortada em forma | 🔁 Interface Lab → *Imagem em formas* |
+| 6.9 | Etapas do processo (coleta, layout, aprovação) entrando em colunas | Revelação em sequência | 🔁 Kit `text-reveal` / GSAP Studio → *Stagger* |
+
 ---
 
 ## As animações mais usadas hoje (importadas para o lab)

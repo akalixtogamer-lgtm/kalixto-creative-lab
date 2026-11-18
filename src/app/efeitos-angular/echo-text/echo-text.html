@@ -1,0 +1,18 @@
+<section class="oferta">
+  <div class="aura" aria-hidden="true"></div>
+  @for (c of [ciclo()]; track c) {
+    <h2 class="ecoar">
+      <span class="real">{{ titulo }}</span>
+      @for (i of ecos; track i) {
+        <span class="eco" aria-hidden="true" [style.--i]="i">{{ titulo }}</span>
+      }
+    </h2>
+    <p class="ecoar preco">
+      <span class="real">{{ preco }}</span>
+      @for (i of ecos; track i) {
+        <span class="eco" aria-hidden="true" [style.--i]="i">{{ preco }}</span>
+      }
+    </p>
+  }
+</section>
+<button class="repetir" type="button" (click)="repetir()">Repetir</button>
