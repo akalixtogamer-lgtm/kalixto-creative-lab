@@ -5,10 +5,6 @@ import { routes } from '../../app.routes';
 import { KCX_COMPONENTES, NEON_GLOW } from '../../kcx/componentes';
 import { RepositorioPresets } from '../../kcx/presets';
 import { criarPacote, serializar } from '../../kcx/serializar';
-import { kitParaKcx } from '../../kcx/de-kit';
-import { EFFECT_REGISTRY } from '../../core/efeitos/registry';
-import { validarPacote } from '../../kcx/validar';
-import { planejarFigma } from '../../kcx/figma-plano';
 
 function storageFalso(): Storage {
   const m = new Map<string, string>();
@@ -57,25 +53,6 @@ describe('KCX · presets do usuário', () => {
       r.importar(NEON_GLOW, '{"formato":"kcx-presets","componente":"svg-motion","presets":[]}')
         .erros[0],
     ).toContain('svg-motion');
-  });
-});
-
-describe('KCX · todos os kits da Biblioteca exportam como pacote nível 3', () => {
-  it('cada kit vira um pacote KCX válido, com variáveis documentais no Figma', () => {
-    for (const kit of EFFECT_REGISTRY) {
-      const valores = Object.fromEntries(kit.params.map((p) => [p.id, p.padrao]));
-      const comp = kitParaKcx(kit, valores, kit.gerar(valores), '2026-11-18');
-      const p = criarPacote([comp]);
-      const r = validarPacote(p);
-      expect(r.erros, kit.ficha.id).toEqual([]);
-      const plano = planejarFigma(p);
-      expect(plano.componentes[0].nivel).toBe(3);
-      expect(
-        plano.colecoes
-          .flatMap((c) => c.variaveis)
-          .every((v) => v.origem === 'documental' || v.vinculadaA.length > 0),
-      ).toBe(true);
-    }
   });
 });
 

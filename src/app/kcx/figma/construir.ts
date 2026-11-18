@@ -26,6 +26,8 @@ import {
 
 type Figma = any;
 type No = any;
+type Ref = { no: No; prop: string; plano: PlanoNo };
+type Refs = { texto: Ref[]; visivel: Ref[] };
 
 export type ModoDuplicados = 'atualizar' | 'copia';
 
@@ -36,6 +38,12 @@ export interface RelatorioImportacao {
   vinculos: number;
   vinculosFalhos: string[];
   componentes: { nome: string; id: string; variantes: number }[];
+  /** Peças reutilizáveis (ex.: Caminho do SVG Motion). */
+  pecas: { nome: string; id: string; variantes: number }[];
+  /** Propriedades de componente criadas. */
+  propriedades: string[];
+  /** Instâncias de exemplo. */
+  exemplos: string[];
   documentacao?: string;
   composicao?: string;
   avisos: string[];
@@ -97,6 +105,9 @@ class Construtor {
     vinculos: 0,
     vinculosFalhos: [],
     componentes: [],
+    pecas: [],
+    propriedades: [],
+    exemplos: [],
     avisos: [],
   };
   private fontePadrao = { family: 'Inter', style: 'Regular' };
@@ -121,23 +132,34 @@ class Construtor {
       const criada = !col;
       if (!col) col = f.variables.createVariableCollection(c.nome);
       // Modos: o primeiro é renomeado; os outros são procurados pelo nome ou criados.
+      // Coleção que já existe (criada por outro componente) com modos diferentes:
+      // um plano de modo único escreve em TODOS os modos existentes, em vez de
+      // criar um modo novo e deixar o modo padrão vazio.
       const modoIds: Record<string, string> = {};
-      c.modos.forEach((m, i) => {
-        const achado = col.modes.find((x: any) => x.name === m);
-        if (achado) modoIds[m] = achado.modeId;
-        else if (i === 0 && criada) {
-          col.renameMode(col.modes[0].modeId, m);
-          modoIds[m] = col.modes[0].modeId;
-        } else {
-          try {
-            modoIds[m] = col.addMode(m);
-          } catch {
-            this.rel.avisos.push(
-              `Modo "${m}" não foi criado em ${c.nome} (o plano do Figma limita a quantidade de modos). Usado só o primeiro modo.`,
-            );
+      const unicoEmExistente =
+        !criada && c.modos.length === 1 && !col.modes.some((x: any) => x.name === c.modos[0]);
+      if (unicoEmExistente) modoIds[c.modos[0]] = col.modes[0].modeId;
+      else
+        c.modos.forEach((m, i) => {
+          const achado = col.modes.find((x: any) => x.name === m);
+          if (achado) modoIds[m] = achado.modeId;
+          else if (i === 0 && criada) {
+            col.renameMode(col.modes[0].modeId, m);
+            modoIds[m] = col.modes[0].modeId;
+          } else {
+            try {
+              modoIds[m] = col.addMode(m);
+            } catch {
+              this.rel.avisos.push(
+                `Modo "${m}" não foi criado em ${c.nome} (o plano do Figma limita a quantidade de modos). Usado só o primeiro modo.`,
+              );
+            }
           }
-        }
-      });
+        });
+      // Modos da coleção que o plano não cobre recebem o valor do primeiro modo do plano.
+      const descobertos: string[] = col.modes
+        .map((x: any) => x.modeId)
+        .filter((id: string) => !Object.values(modoIds).includes(id));
       this.rel.colecoes.push({ nome: c.nome, criada, modos: Object.keys(modoIds) });
       for (const pv of c.variaveis) {
         let v = existentes.find(
@@ -193,16 +215,20 @@ class Construtor {
         } catch {
           /* pluginData indisponível */
         }
-        for (const [modo, valor] of Object.entries(pv.valores)) {
+        const entradas = Object.entries(pv.valores);
+        for (const [i, [modo, valor]] of entradas.entries()) {
           const id = modoIds[modo] ?? Object.values(modoIds)[0];
           if (!id) continue;
-          if (valor && typeof valor === 'object' && 'alias' in valor)
-            pendentesAlias.push({ variavel: v, modo: id, alvo: valor.alias });
-          else
-            v.setValueForMode(
-              id,
-              this.valorParaFigma({ ...pv, tipo: v.resolvedType ?? tipo }, valor),
-            );
+          const ids = i === 0 ? [id, ...descobertos] : [id];
+          for (const alvoModo of ids) {
+            if (valor && typeof valor === 'object' && 'alias' in valor)
+              pendentesAlias.push({ variavel: v, modo: alvoModo, alvo: valor.alias });
+            else
+              v.setValueForMode(
+                alvoModo,
+                this.valorParaFigma({ ...pv, tipo: v.resolvedType ?? tipo }, valor),
+              );
+          }
         }
         this.vars.set(pv.nome, v);
       }
@@ -286,7 +312,7 @@ class Construtor {
       return paint;
     }
     return {
-      type: 'GRADIENT_LINEAR',
+      type: p.subtipo ?? 'GRADIENT_LINEAR',
       gradientTransform: p.transformacao,
       visible: true,
       gradientStops: p.paradas.map((s) => {
@@ -382,28 +408,121 @@ class Construtor {
 
   /* ------------------------------ Camadas ------------------------------ */
 
+  /** Componentes das peças reutilizáveis já criados: "peça|variante" → componente. */
+  private readonly pecas = new Map<string, No>();
+
+  /** Aplica traço (cor/espessura vinculadas) aos vetores de um SVG importado. */
+  private tracarVetores(
+    vetores: No[],
+    traco: { cor: PlanoProp<FigmaCor>; espessura: PlanoProp<number> },
+    onde: string,
+  ): void {
+    for (const vet of vetores) {
+      vet.strokes = [this.pintura({ tipo: 'solido', cor: traco.cor }, onde)];
+      vet.strokeWeight = Number(traco.espessura.valor);
+      this.vincular(vet, 'strokeWeight', traco.espessura, onde);
+      vet.strokeCap = 'ROUND';
+      vet.strokeJoin = 'ROUND';
+      vet.fills = [];
+      try {
+        vet.constraints = { horizontal: 'SCALE', vertical: 'SCALE' };
+      } catch {
+        /* sem restrições */
+      }
+    }
+  }
+
+  /**
+   * Peças reutilizáveis: um componente com uma variante por opção (ex.:
+   * "SVG Motion · Caminho", Forma=onda/laço/zigue-zague). As variantes do
+   * componente principal usam instâncias dela: editar o desenho na peça
+   * atualiza todas as variantes.
+   */
+  private construirPecas(c: PlanoComponente, x: number, y: number): No | null {
+    const f = this.figma;
+    let ultimo: No | null = null;
+    let cursorY = y;
+    for (const peca of c.pecas) {
+      const comps: No[] = [];
+      for (const op of peca.opcoes) {
+        const svg = f.createNodeFromSvg(op.svg);
+        const comp = f.createComponent();
+        comp.name =
+          c.pecas.length && peca.opcoes.length > 1
+            ? `Forma=${op.rotulo}`
+            : `${c.nome} · ${peca.nome}`;
+        comp.resize(Math.max(1, svg.width), Math.max(1, svg.height));
+        comp.fills = [];
+        comp.clipsContent = false;
+        const vetores = svg.findAll ? svg.findAll((n: No) => n.type === 'VECTOR') : [];
+        for (const v of vetores) {
+          const vx = v.absoluteTransform ? v.absoluteTransform[0][2] - svg.x : v.x;
+          const vy = v.absoluteTransform ? v.absoluteTransform[1][2] - svg.y : v.y;
+          comp.appendChild(v);
+          v.x = vx;
+          v.y = vy;
+        }
+        svg.remove();
+        this.tracarVetores(vetores, op.traco, `${c.nome} › ${peca.nome} › ${op.rotulo}`);
+        comps.push(comp);
+        this.pecas.set(`${peca.nome}|${op.rotulo}`, comp);
+      }
+      let raiz: No;
+      if (comps.length > 1) {
+        raiz = f.combineAsVariants(comps, f.currentPage);
+        comps.forEach((k, i) => {
+          k.x = 20;
+          k.y = 20 + i * (k.height + 40);
+        });
+        raiz.layoutMode = 'NONE';
+        try {
+          raiz.resizeWithoutConstraints(
+            Math.max(...comps.map((k) => k.width)) + 40,
+            comps.reduce((s, k) => s + k.height + 40, 0) + 20,
+          );
+        } catch {
+          /* tamanho automático */
+        }
+      } else {
+        raiz = comps[0];
+        f.currentPage.appendChild(raiz);
+      }
+      raiz.name = `${c.nome} · ${peca.nome}`;
+      raiz.description = `Peça reutilizável de ${c.nome}. Edite o desenho aqui: todas as variantes de ${c.nome} usam instâncias desta peça.`;
+      raiz.x = x;
+      raiz.y = cursorY;
+      cursorY += raiz.height + 60;
+      this.rel.pecas.push({ nome: raiz.name, id: raiz.id, variantes: comps.length });
+      ultimo = raiz;
+    }
+    return ultimo;
+  }
+
   private construirNo(
     p: PlanoNo,
     alvo: No | null,
     paiAutoLayout: boolean,
     onde: string,
-    refsTexto: { no: No; prop: string; plano: PlanoNo }[],
+    refs: Refs,
   ): No {
     const f = this.figma;
     let no: No;
     const local = `${onde} › ${p.nome}`;
-    if (p.tipo === 'svg') {
+    const pecaComp = p.peca ? this.pecas.get(`${p.peca.nome}|${p.peca.variante}`) : undefined;
+    if (p.tipo === 'svg' && pecaComp) {
+      no = pecaComp.createInstance();
+      if (p.svgTraco?.tracejado?.length) {
+        for (const v of no.findAll((x: No) => x.type === 'VECTOR'))
+          v.dashPattern = p.svgTraco.tracejado;
+      }
+    } else if (p.tipo === 'svg') {
       no = f.createNodeFromSvg(p.svg ?? '<svg xmlns="http://www.w3.org/2000/svg"/>');
       no.fills = [];
       const vetores = no.findAll ? no.findAll((x: No) => x.type === 'VECTOR') : [];
-      for (const vet of vetores) {
-        if (p.svgTraco) {
-          vet.strokes = [this.pintura({ tipo: 'solido', cor: p.svgTraco.cor }, local)];
-          vet.strokeWeight = Number(p.svgTraco.espessura.valor);
-          this.vincular(vet, 'strokeWeight', p.svgTraco.espessura, local);
-          if (p.svgTraco.tracejado?.length) vet.dashPattern = p.svgTraco.tracejado;
-          vet.strokeCap = 'ROUND';
-        }
+      if (p.svgTraco) {
+        this.tracarVetores(vetores, p.svgTraco, local);
+        if (p.svgTraco.tracejado?.length)
+          for (const v of vetores) v.dashPattern = p.svgTraco.tracejado;
       }
     } else if (p.tipo === 'texto' && p.texto) {
       no = f.createText();
@@ -413,12 +532,13 @@ class Construtor {
       if (p.texto.espacamento)
         no.letterSpacing = { value: Number(p.texto.espacamento.valor), unit: 'PIXELS' };
       if (p.texto.caixaAlta) no.textCase = 'UPPER';
+      no.textAlignHorizontal = p.texto.alinhamento;
       no.textAutoResize = 'WIDTH_AND_HEIGHT';
       // Texto com propriedade de componente: a propriedade (com padrão ligado à variável) controla o texto.
       if (!p.texto.propriedade) this.vincular(no, 'characters', p.texto.conteudo, local);
       this.vincularTexto(no, 'fontSize', p.texto.tamanho, local);
       if (p.texto.espacamento) this.vincularTexto(no, 'letterSpacing', p.texto.espacamento, local);
-      if (p.texto.propriedade) refsTexto.push({ no, prop: p.texto.propriedade, plano: p });
+      if (p.texto.propriedade) refs.texto.push({ no, prop: p.texto.propriedade, plano: p });
     } else if (p.tipo === 'elipse') {
       no = f.createEllipse();
     } else if (p.tipo === 'retangulo') {
@@ -442,28 +562,53 @@ class Construtor {
         this.vincular(no, lado, p.autoLayout.paddingX, local);
       for (const lado of ['paddingTop', 'paddingBottom'])
         this.vincular(no, lado, p.autoLayout.paddingY, local);
-      const fixo = p.largura !== undefined;
-      no.primaryAxisSizingMode = fixo ? 'FIXED' : 'AUTO';
-      no.counterAxisSizingMode = fixo ? 'FIXED' : 'AUTO';
+      // Eixo com medida definida fica FIXED; o outro abraça o conteúdo (Hug).
+      const hor = p.autoLayout.direcao === 'HORIZONTAL';
+      const principal = hor ? p.largura : p.altura;
+      const cruzado = hor ? p.altura : p.largura;
+      no.primaryAxisSizingMode = principal !== undefined ? 'FIXED' : 'AUTO';
+      no.counterAxisSizingMode = cruzado !== undefined ? 'FIXED' : 'AUTO';
     }
-    if (p.largura && p.altura && p.tipo !== 'texto' && p.tipo !== 'svg') {
-      no.resize(Math.max(0.01, Number(p.largura.valor)), Math.max(0.01, Number(p.altura.valor)));
-      this.vincular(no, 'width', p.largura, local);
-      this.vincular(no, 'height', p.altura, local);
+    if ((p.largura || p.altura) && p.tipo !== 'texto') {
+      const auto = p.tipo === 'frame' && p.autoLayout;
+      if (p.largura && p.altura)
+        no.resize(Math.max(0.01, Number(p.largura.valor)), Math.max(0.01, Number(p.altura.valor)));
+      else if (p.largura && auto)
+        no.resize(Math.max(0.01, Number(p.largura.valor)), Math.max(0.01, no.height));
+      else if (p.altura && auto)
+        no.resize(Math.max(0.01, no.width), Math.max(0.01, Number(p.altura.valor)));
+      // resize() deixa os dois eixos FIXED: volta o eixo sem medida para Hug.
+      if (auto && !(p.largura && p.altura)) {
+        const hor = p.autoLayout!.direcao === 'HORIZONTAL';
+        if (p.largura)
+          hor ? (no.counterAxisSizingMode = 'AUTO') : (no.primaryAxisSizingMode = 'AUTO');
+        else hor ? (no.primaryAxisSizingMode = 'AUTO') : (no.counterAxisSizingMode = 'AUTO');
+      }
+      if (p.largura) this.vincular(no, 'width', p.largura, local);
+      if (p.altura) this.vincular(no, 'height', p.altura, local);
     }
-    if (!paiAutoLayout) {
+    if (!paiAutoLayout || p.absoluto) {
       if (p.x !== undefined) no.x = p.x;
       if (p.y !== undefined) no.y = p.y;
     }
     if (p.rotacao) no.rotation = p.rotacao;
+    if (p.arco && p.tipo === 'elipse') {
+      no.arcData = {
+        startingAngle: p.arco.inicio,
+        endingAngle: p.arco.fim,
+        innerRadius: p.arco.interno,
+      };
+    }
     if (p.opacidade) {
       no.opacity = Math.min(1, Math.max(0, Number(p.opacidade.valor)));
       this.vincular(no, 'opacity', p.opacidade, local);
     }
     if (p.visivel) {
       no.visible = p.visivel.valor !== false;
-      this.vincular(no, 'visible', p.visivel, local);
+      // Com propriedade de visibilidade, quem controla é a propriedade (padrão ligado à variável).
+      if (!p.propriedadeVisivel) this.vincular(no, 'visible', p.visivel, local);
     }
+    if (p.propriedadeVisivel) refs.visivel.push({ no, prop: p.propriedadeVisivel, plano: p });
     if (p.raio && 'cornerRadius' in no) {
       no.cornerRadius = Number(p.raio.valor);
       // O Figma vincula o raio canto a canto.
@@ -478,29 +623,98 @@ class Construtor {
     if (p.preenchimentos.length && p.tipo !== 'svg')
       no.fills = p.preenchimentos.map((x) => this.pintura(x, local));
     if (p.traco) {
-      no.strokes = [this.pintura({ tipo: 'solido', cor: p.traco.cor }, local)];
+      no.strokes = [this.pintura(p.traco.pintura, local)];
       no.strokeWeight = Number(p.traco.espessura.valor);
       no.strokeAlign = 'INSIDE';
       this.vincular(no, 'strokeWeight', p.traco.espessura, local);
     }
     this.efeitos(no, p, local);
 
+    const absolutos: { no: No; plano: PlanoNo }[] = [];
     for (const filho of p.filhos) {
-      const n = this.construirNo(filho, null, !!p.autoLayout, local, refsTexto);
+      const n = this.construirNo(filho, null, !!p.autoLayout, local, refs);
       no.appendChild(n);
+      if (p.autoLayout && filho.absoluto) {
+        n.layoutPositioning = 'ABSOLUTE';
+        absolutos.push({ no: n, plano: filho });
+      } else if (p.autoLayout && filho.texto?.preencher) {
+        n.layoutSizingHorizontal = 'FILL';
+        n.textAutoResize = 'HEIGHT';
+      }
+      if (filho.restricoes) {
+        try {
+          n.constraints = filho.restricoes;
+        } catch {
+          /* restrições indisponíveis neste tipo */
+        }
+      }
+    }
+    // Camadas absolutas que esticam: ganham o tamanho do pai e acompanham o redimensionamento.
+    for (const a of absolutos) {
+      if (a.plano.restricoes?.horizontal === 'STRETCH') {
+        a.no.x = 0;
+        a.no.resize(Math.max(0.01, no.width), a.no.height);
+      }
+      if (a.plano.restricoes?.vertical === 'STRETCH') {
+        a.no.y = 0;
+        a.no.resize(a.no.width, Math.max(0.01, no.height));
+      }
     }
     return no;
   }
 
-  /* ------------------------------ Componentes ------------------------------ */
+  /** Cria as propriedades de componente (texto e visibilidade) e liga as camadas a elas. */
+  private propriedades(principal: No, refsPorVariante: Refs[]): void {
+    const f = this.figma;
+    const tipos = [
+      { lista: 'texto' as const, tipo: 'TEXT', campo: 'characters' },
+      { lista: 'visivel' as const, tipo: 'BOOLEAN', campo: 'visible' },
+    ];
+    for (const t of tipos) {
+      const nomes = new Set(refsPorVariante.flatMap((r) => r[t.lista].map((x) => x.prop)));
+      for (const nome of nomes) {
+        const ref = refsPorVariante.flatMap((r) => r[t.lista]).find((r) => r.prop === nome)!;
+        const prop = t.tipo === 'TEXT' ? ref.plano.texto!.conteudo : ref.plano.visivel;
+        const literal =
+          t.tipo === 'TEXT' ? String(prop?.valor ?? '') : prop ? prop.valor !== false : true;
+        const v = this.variavel(prop);
+        let chave: string;
+        try {
+          chave = principal.addComponentProperty(
+            nome,
+            t.tipo,
+            v ? f.variables.createVariableAlias(v) : literal,
+          );
+        } catch {
+          chave = principal.addComponentProperty(nome, t.tipo, literal);
+          this.rel.avisos.push(
+            `Propriedade "${nome}": o padrão não pôde ser ligado à variável; ficou com o valor atual.`,
+          );
+        }
+        for (const refs of refsPorVariante) {
+          for (const r of refs[t.lista].filter((x) => x.prop === nome)) {
+            try {
+              r.no.componentPropertyReferences = {
+                ...(r.no.componentPropertyReferences ?? {}),
+                [t.campo]: chave,
+              };
+            } catch (e) {
+              this.rel.avisos.push(`Propriedade "${nome}": ${(e as Error).message}`);
+            }
+          }
+        }
+        this.rel.propriedades.push(`${nome} (${t.tipo === 'TEXT' ? 'texto' : 'mostrar/ocultar'})`);
+      }
+    }
+  }
 
   private construirComponente(c: PlanoComponente, x0: number, y0: number): No {
     const f = this.figma;
     const variantes: No[] = [];
-    const refsPorVariante: { no: No; prop: string; plano: PlanoNo }[][] = [];
+    const refsPorVariante: Refs[] = [];
     c.variantes.forEach((v) => {
       const comp = f.createComponent();
-      const refs: { no: No; prop: string; plano: PlanoNo }[] = [];
+      const refs: Refs = { texto: [], visivel: [] };
       this.construirNo(v.arvore, comp, false, c.nome, refs);
       comp.name = c.variantes.length > 1 ? v.nome : c.nome;
       variantes.push(comp);
@@ -535,40 +749,7 @@ class Construtor {
     principal.description =
       `${c.descricao}\n\nKCX ${c.id} v${c.versao} · Nível ${c.nivel}.\n` +
       `Editável: ${c.editavel.join('; ')}.\nLimitações: ${c.limitacoes.join(' ')}`;
-
-    // Propriedades de texto editáveis (padrão ligado à variável de texto, quando houver).
-    const nomesProps = new Set(refsPorVariante.flat().map((r) => r.prop));
-    for (const nome of nomesProps) {
-      const ref = refsPorVariante[0].find((r) => r.prop === nome);
-      if (!ref?.plano.texto) continue;
-      const v = this.variavel(ref.plano.texto.conteudo);
-      let chave: string;
-      try {
-        chave = principal.addComponentProperty(
-          nome,
-          'TEXT',
-          v ? f.variables.createVariableAlias(v) : String(ref.plano.texto.conteudo.valor),
-        );
-      } catch {
-        chave = principal.addComponentProperty(
-          nome,
-          'TEXT',
-          String(ref.plano.texto.conteudo.valor),
-        );
-        this.rel.avisos.push(
-          `Propriedade "${nome}": o padrão não pôde ser ligado à variável; ficou com o texto atual.`,
-        );
-      }
-      for (const refs of refsPorVariante) {
-        for (const r of refs.filter((x) => x.prop === nome)) {
-          try {
-            r.no.componentPropertyReferences = { characters: chave };
-          } catch (e) {
-            this.rel.avisos.push(`Propriedade "${nome}": ${(e as Error).message}`);
-          }
-        }
-      }
-    }
+    this.propriedades(principal, refsPorVariante);
 
     try {
       principal.setSharedPluginData(CHAVE_PLUGIN, 'componente', c.id);
@@ -581,6 +762,18 @@ class Construtor {
     }
     this.rel.componentes.push({ nome: c.nome, id: principal.id, variantes: variantes.length });
     return principal;
+  }
+
+  /** Instância do componente pronta para usar, ao lado da definição. */
+  private construirExemplo(c: PlanoComponente, principal: No, x: number, y: number): No {
+    const base = principal.type === 'COMPONENT_SET' ? principal.defaultVariant : principal;
+    const inst = base.createInstance();
+    inst.name = `${c.nome} — instância de exemplo`;
+    this.figma.currentPage.appendChild(inst);
+    inst.x = x;
+    inst.y = y;
+    this.rel.exemplos.push(inst.id);
+    return inst;
   }
 
   /* ------------------------------ Documentação ------------------------------ */
@@ -621,7 +814,7 @@ class Construtor {
     add(this.texto(`${c.nome} — KCX v${c.versao}`, 28, 'Bold'));
     add(
       this.texto(
-        `Nível ${c.nivel} · ${c.nivel === 1 ? 'nativo editável' : c.nivel === 2 ? 'parcialmente editável' : 'pacote de desenvolvimento'} · pacote ${c.pacote}`,
+        `Nível ${c.nivel} · ${c.nivel === 1 ? 'nativo editável' : 'parcialmente editável'} · pacote ${c.pacote}`,
         14,
       ),
     );
@@ -713,11 +906,23 @@ class Construtor {
     const principais = new Map<string, No>();
     const criados: No[] = [];
     for (const c of this.plano.componentes) {
-      const p = this.construirComponente(c, x, y);
+      // Peças reutilizáveis à esquerda, componente no meio, documentação à direita, exemplo embaixo.
+      const pecas = c.pecas.length ? this.construirPecas(c, x, y) : null;
+      const px = pecas ? x + pecas.width + 80 : x;
+      const p = this.construirComponente(c, px, y);
       principais.set(c.id, p);
       criados.push(p);
-      if (this.plano.documentacao) criados.push(this.construirDocumentacao(c, x + p.width + 80, y));
-      y += Math.max(p.height, 200) + 120;
+      if (pecas) criados.push(pecas);
+      const exemplo = this.construirExemplo(c, p, px, y + p.height + 60);
+      criados.push(exemplo);
+      let alto = p.height + 60 + exemplo.height;
+      if (this.plano.documentacao) {
+        const doc = this.construirDocumentacao(c, px + p.width + 80, y);
+        criados.push(doc);
+        alto = Math.max(alto, doc.height);
+      }
+      if (pecas) alto = Math.max(alto, pecas.height);
+      y += Math.max(alto, 200) + 160;
     }
     if (this.plano.composicao) this.construirComposicao(principais, x, y);
     try {

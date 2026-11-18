@@ -15,7 +15,7 @@ export const NEON_GLOW: KcxComponente = {
   categoria: 'luz-profundidade',
   descricao:
     'Botão com halo neon em gradiente que pulsa, com brilho, distância e desfoque controlados por variáveis.',
-  tecnologia: ['HTML', 'CSS'],
+  tecnologia: ['HTML', 'CSS', 'Angular'],
   versao: '1.0.0',
   licenca: LICENCA_MIT,
   metadados: {
@@ -457,13 +457,6 @@ export const NEON_GLOW: KcxComponente = {
       valores: {},
       derivar: [{ variavel: 'glowIntensity', de: 'hoverBoost', op: 'multiplicar' }],
     },
-    {
-      id: 'desligado',
-      nome: 'Sem brilho',
-      gatilho: 'final',
-      descricao: 'Halo desligado.',
-      valores: { glowEnabled: false },
-    },
   ],
   presets: [
     {
@@ -499,20 +492,34 @@ export const NEON_GLOW: KcxComponente = {
     id: 'raiz',
     nome: 'Neon Glow',
     tipo: 'frame',
-    largura: 280,
-    altura: 140,
     opacidade: { $var: 'opacity' },
+    // Auto Layout em volta do botão: a folga é a distância do brilho; o halo estica junto.
+    autoLayout: {
+      direcao: 'horizontal',
+      espaco: 0,
+      paddingX: {
+        $derivado: 'glowDistance',
+        nome: 'halo-padding',
+        transformar: [{ op: 'multiplicar', fator: 0.5 }],
+      },
+      paddingY: {
+        $derivado: 'glowDistance',
+        nome: 'halo-padding',
+        transformar: [{ op: 'multiplicar', fator: 0.5 }],
+      },
+    },
     filhos: [
       {
         id: 'halo',
         nome: 'Halo',
         tipo: 'retangulo',
-        x: 56,
-        y: 32,
-        largura: 167,
-        altura: 75,
+        absoluto: true,
+        restricoes: { h: 'STRETCH', v: 'STRETCH' },
+        largura: 100,
+        altura: 40,
         raio: { $var: 'radius' },
         visivel: { $var: 'glowEnabled' },
+        propriedadeVisivel: 'Brilho',
         opacidade: {
           $derivado: 'glowIntensity',
           nome: 'halo-opacity',
@@ -537,8 +544,6 @@ export const NEON_GLOW: KcxComponente = {
         id: 'botao',
         nome: 'Botão',
         tipo: 'frame',
-        x: 68,
-        y: 44,
         raio: { $var: 'radius' },
         preenchimentos: [{ tipo: 'solido', cor: { $var: 'backgroundColor' } }],
         traco: { cor: { $var: 'primaryColor' }, espessura: { $var: 'borderWidth' } },
@@ -612,16 +617,16 @@ export const NEON_GLOW: KcxComponente = {
     figma: {
       nivel: 2,
       editavel: [
-        'Botão com Auto Layout',
-        'Rótulo (propriedade de texto)',
-        'Cores (modos Dark/Light)',
-        'Borda, raio e padding',
+        'Componente reutilizável com instância de exemplo',
+        'Tamanho: Auto Layout — o botão cresce com o rótulo e o halo estica junto',
+        'Rótulo (propriedade de texto) e Brilho (propriedade liga/desliga)',
+        'Cores (variáveis com modos Dark/Light)',
+        'Formato: raio, borda e padding por variáveis',
         'Halo com gradiente e desfoque de camada',
         'Sombra luminosa',
-        'Visibilidade do halo',
       ],
       parcial: [
-        'Estados Hover/Foco/Sem brilho como variantes',
+        'Estados Hover e Foco como variantes',
         'Intensidade do brilho → variáveis derivadas (halo-opacity, glow-reach)',
       ],
       naoSuportado: ['Pulsação contínua (keyframes)', 'Filtro brightness()', 'Transições de hover'],
@@ -629,7 +634,6 @@ export const NEON_GLOW: KcxComponente = {
         'O Figma não executa animações contínuas: duração, velocidade e ativação da pulsação ficam como variáveis de Motion documentais.',
         'O Figma não calcula fórmulas entre variáveis: halo-opacity e glow-reach são variáveis próprias, criadas com o valor calculado no lab.',
         'filter: brightness() não existe no Figma; a intensidade aparece pela opacidade do halo e pelo raio da sombra.',
-        'O halo tem tamanho fixo (botão com o rótulo padrão + distância do brilho): com um rótulo bem maior, ajuste o halo à mão.',
       ],
     },
   },

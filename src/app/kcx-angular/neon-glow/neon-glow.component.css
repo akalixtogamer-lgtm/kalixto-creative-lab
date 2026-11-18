@@ -1,0 +1,62 @@
+/* Neon Glow — KCX (os valores chegam como custom properties no elemento kcx-neon-glow) */
+kcx-neon-glow { display: contents; }
+
+/* Neon Glow — todas as propriedades vêm das variáveis KCX (bloco :root acima) */
+.kcx-neon-glow {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  opacity: var(--kcx-neon-glow-opacity);
+}
+
+.kcx-neon-glow__halo {
+  position: absolute;
+  inset: calc(var(--kcx-neon-glow-distance) * -0.5);
+  border-radius: calc(var(--kcx-neon-glow-radius) + var(--kcx-neon-glow-distance) * 0.5);
+  background: linear-gradient(90deg, var(--kcx-neon-glow-primary), var(--kcx-neon-glow-secondary));
+  filter: blur(var(--kcx-neon-glow-blur)) brightness(var(--kcx-neon-glow-filter));
+  opacity: calc(var(--kcx-neon-glow-layer-alpha) * var(--kcx-neon-glow-enabled));
+  animation: var(--kcx-neon-glow-animation) calc(var(--kcx-neon-glow-duration) / var(--kcx-neon-glow-speed)) ease-in-out infinite alternate;
+  transition: scale var(--kcx-neon-glow-transition) ease, opacity var(--kcx-neon-glow-transition) ease;
+  pointer-events: none;
+}
+
+@keyframes kcx-neon-glow-pulsar {
+  from { transform: scale(0.94); opacity: calc(var(--kcx-neon-glow-layer-alpha) * 0.55 * var(--kcx-neon-glow-enabled)); }
+  to   { transform: scale(1.04); opacity: calc(var(--kcx-neon-glow-layer-alpha) * var(--kcx-neon-glow-enabled)); }
+}
+
+.kcx-neon-glow__botao {
+  position: relative;
+  padding: var(--kcx-neon-glow-py) var(--kcx-neon-glow-px);
+  border: var(--kcx-neon-glow-border) solid var(--kcx-neon-glow-primary);
+  border-radius: var(--kcx-neon-glow-radius);
+  background: var(--kcx-neon-glow-bg);
+  color: var(--kcx-neon-glow-text);
+  font: 600 1rem/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    0 0 var(--kcx-neon-glow-reach) var(--kcx-neon-glow-primary),
+    inset 0 0 calc(var(--kcx-neon-glow-reach) * 0.5) rgb(255 255 255 / var(--kcx-neon-glow-inner));
+  transition: box-shadow var(--kcx-neon-glow-transition) ease, transform var(--kcx-neon-glow-transition) ease;
+}
+
+/* Estados */
+.kcx-neon-glow:hover .kcx-neon-glow__halo,
+.kcx-neon-glow:focus-within .kcx-neon-glow__halo { scale: var(--kcx-neon-glow-hover); }
+
+.kcx-neon-glow__botao:hover,
+.kcx-neon-glow__botao:focus-visible {
+  box-shadow:
+    0 0 calc(var(--kcx-neon-glow-reach) * var(--kcx-neon-glow-hover)) var(--kcx-neon-glow-primary),
+    inset 0 0 var(--kcx-neon-glow-reach) rgb(255 255 255 / var(--kcx-neon-glow-inner));
+}
+
+.kcx-neon-glow__botao:active { transform: scale(0.97); }
+.kcx-neon-glow__botao:focus-visible { outline: 2px solid var(--kcx-neon-glow-secondary); outline-offset: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kcx-neon-glow__halo { animation: none; }
+}

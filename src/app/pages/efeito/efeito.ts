@@ -20,8 +20,6 @@ import { montarPacote } from '../../core/efeitos/exportar';
 import { BIBLIOTECAS, carregarBiblioteca } from '../../core/efeitos/bibliotecas';
 import { COMPONENTES_ANGULAR } from '../../efeitos-angular';
 import { criarZip } from '../../shared/utils/zip';
-import { kitParaKcx } from '../../kcx/de-kit';
-import { criarPacote, serializar } from '../../kcx/serializar';
 import { Arquivo, CodeLab } from './code-lab/code-lab';
 import { Explicador } from './explicador/explicador';
 import { ParamDef, Valor, Valores } from '../../core/models/demo.model';
@@ -270,16 +268,6 @@ export class Efeito {
     }));
     const arquivos = montarPacote(k, this.valores(), c, ng, !!this.editado(), libs);
     this.salvar(new Blob([criarZip(arquivos) as BlobPart], { type: 'application/zip' }), `${k.ficha.id}.zip`);
-  }
-
-  /** Pacote KCX nível 3 (pacote de desenvolvimento) com os valores e o código atuais. */
-  protected baixarKcx(): void {
-    const k = this.kit();
-    const c = this.codigo();
-    if (!k || !c) return;
-    const comp = kitParaKcx(k, this.valores(), c);
-    const pacote = criarPacote([comp], { modo: 'pacote' });
-    this.salvar(new Blob([serializar(pacote)], { type: 'application/json' }), `${k.ficha.id}.kcx.json`);
   }
 
   protected executarEditado(c: CodigoKit): void {

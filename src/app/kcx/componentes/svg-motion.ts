@@ -33,7 +33,7 @@ export const SVG_MOTION: KcxComponente = {
   categoria: 'svg',
   descricao:
     'Linha SVG que se desenha e um ponto luminoso que percorre o mesmo caminho, com forma, tempo e progresso controlados por variáveis.',
-  tecnologia: ['HTML', 'CSS', 'SVG'],
+  tecnologia: ['HTML', 'CSS', 'SVG', 'Angular'],
   versao: '1.0.0',
   licenca: LICENCA_MIT,
   metadados: {
@@ -438,6 +438,9 @@ export const SVG_MOTION: KcxComponente = {
         tipo: 'svg',
         x: 0,
         y: 0,
+        peca: { nome: 'Caminho', eixo: 'shape' },
+        restricoes: { h: 'SCALE', v: 'SCALE' },
+        propriedadeVisivel: 'Trilha',
         opacidade: { $var: 'trailOpacity' },
         svg: {
           $derivado: 'shape',
@@ -452,6 +455,8 @@ export const SVG_MOTION: KcxComponente = {
         tipo: 'svg',
         x: 0,
         y: 0,
+        peca: { nome: 'Caminho', eixo: 'shape' },
+        restricoes: { h: 'SCALE', v: 'SCALE' },
         svg: {
           $derivado: 'shape',
           nome: 'svg-linha',
@@ -477,6 +482,8 @@ export const SVG_MOTION: KcxComponente = {
         id: 'ponto',
         nome: 'Ponto',
         tipo: 'elipse',
+        restricoes: { h: 'SCALE', v: 'SCALE' },
+        propriedadeVisivel: 'Ponto',
         largura: { $var: 'dotSize' },
         altura: { $var: 'dotSize' },
         x: {
@@ -520,7 +527,7 @@ export const SVG_MOTION: KcxComponente = {
       figma: 'variantes',
       nivel: 2,
       descricao:
-        'stroke-dashoffset de 1 a 0 com pathLength="1". No Figma: variantes Estado=Início/Meio/Fim com tracejado calculado.',
+        'stroke-dashoffset de 1 a 0 com pathLength="1". No Figma: variantes Estado=Início/Meio/Fim; Fim usa a peça Caminho, Início/Meio são vetores já cortados no progresso.',
     },
     {
       id: 'percorrer',
@@ -549,19 +556,20 @@ export const SVG_MOTION: KcxComponente = {
     figma: {
       nivel: 2,
       editavel: [
-        'Caminhos como vetores nativos',
-        'Cor e espessura do traço',
-        'Opacidade da trilha',
-        'Ponto (cor, tamanho e brilho)',
+        'Componente reutilizável com instância de exemplo',
+        'Formato: os caminhos são vetores nativos numa peça própria (SVG Motion · Caminho) — edite o desenho uma vez e todas as variantes mudam',
+        'Tamanho: redimensione o componente e o caminho e o ponto acompanham (restrições Scale)',
+        'Cor e espessura do traço, opacidade da trilha, cor e tamanho do ponto por variáveis',
+        'Propriedades Trilha e Ponto (liga/desliga)',
       ],
       parcial: [
         'Formas como variantes (Forma=onda/laço/zigue-zague)',
-        'Quadros Início/Meio/Fim como variantes (tracejado e posição do ponto calculados no lab)',
+        'Quadros Início/Meio/Fim como variantes (trecho desenhado e posição do ponto calculados no lab)',
       ],
       naoSuportado: ['Movimento contínuo', 'Easing, atraso, repetição e direção'],
       limitacoes: [
-        'O Figma não executa stroke-dashoffset nem offset-path: cada quadro é uma variante com o tracejado e a posição do ponto já calculados.',
-        'Trocar a forma no Figma é trocar a variante; o vetor de cada forma é editável, mas não atualiza as outras.',
+        'O Figma não executa stroke-dashoffset nem offset-path, e o tracejado dele se ajusta a cada segmento: cada quadro é uma variante com o trecho desenhado e a posição do ponto já calculados.',
+        'Redesenhar a peça Caminho muda a trilha e o quadro Fim; os quadros Início/Meio são vetores calculados a partir do desenho original — exporte de novo pelo lab para recalcular.',
       ],
       eixosVariante: ['shape'],
     },

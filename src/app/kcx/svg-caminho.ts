@@ -127,3 +127,41 @@ export function pontoEm(d: string, t: number): Ponto {
   }
   return p[p.length - 1];
 }
+
+/**
+ * Trecho inicial do caminho com `alvo` unidades de comprimento, como polilinha.
+ * Usado no Figma, que redistribui o tracejado por segmento do vetor
+ * (verificado: `dashPattern` não reproduz `stroke-dashoffset` em curvas).
+ */
+export function cortarCaminho(d: string, alvo: number): string {
+  const p = amostrar(d);
+  const r = (n: number) => Math.round(n * 100) / 100;
+  const saida: Ponto[] = [p[0]];
+  let andado = 0;
+  for (let k = 1; k < p.length; k++) {
+    const seg = dist(p[k - 1], p[k]);
+    if (andado + seg >= alvo) {
+      const f = seg === 0 ? 0 : (alvo - andado) / seg;
+      saida.push({
+        x: p[k - 1].x + (p[k].x - p[k - 1].x) * f,
+        y: p[k - 1].y + (p[k].y - p[k - 1].y) * f,
+      });
+      break;
+    }
+    saida.push(p[k]);
+    andado += seg;
+  }
+  if (saida.length === 1) saida.push({ x: saida[0].x + 0.01, y: saida[0].y });
+  return saida.map((q, i) => `${i ? 'L' : 'M'} ${r(q.x)} ${r(q.y)}`).join(' ');
+}
+
+/** Aplica `cortarCaminho` ao primeiro `<path d>` de um SVG, mantendo viewBox e estilo. */
+export function cortarSvg(svg: string, alvo: number): string {
+  return svg.replace(/(<path[^>]*\sd=")([^"]+)(")/, (_, a, d, b) => a + cortarCaminho(d, alvo) + b);
+}
+
+/** Comprimento do primeiro `<path d>` de um SVG (0 se não houver). */
+export function comprimentoSvg(svg: string): number {
+  const m = /<path[^>]*\sd="([^"]+)"/.exec(svg);
+  return m ? comprimento(m[1]) : 0;
+}

@@ -1,0 +1,37 @@
+/* Animated Gradient — KCX (os valores chegam como custom properties no elemento kcx-animated-gradient) */
+kcx-animated-gradient { display: contents; }
+
+/* Animated Gradient — controlado pelas variáveis KCX */
+.kcx-animated-gradient {
+  display: grid;
+  place-items: center;
+  width: min(100%, var(--kcx-animated-gradient-width));
+  height: min(var(--kcx-animated-gradient-height), 56.25vw);
+  border-radius: var(--kcx-animated-gradient-radius);
+  background-image: var(--kcx-animated-gradient-image);
+  background-size: var(--kcx-animated-gradient-size) var(--kcx-animated-gradient-size);
+  background-position: var(--kcx-animated-gradient-from) 50%;
+  animation: kcx-animated-gradient-deslizar calc(var(--kcx-animated-gradient-duration) / var(--kcx-animated-gradient-speed)) var(--kcx-animated-gradient-easing) var(--kcx-animated-gradient-delay)
+    var(--kcx-animated-gradient-iterations) var(--kcx-animated-gradient-direction) both;
+  animation-play-state: var(--kcx-animated-gradient-play);
+}
+
+.kcx-animated-gradient__titulo {
+  margin: 0;
+  padding: 0 24px;
+  color: var(--kcx-animated-gradient-text);
+  font: 700 var(--kcx-animated-gradient-title-size) / 1.1 Inter, system-ui, sans-serif;
+  text-align: center;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.45);
+}
+
+.kcx-animated-gradient__titulo:empty { display: none; }
+
+@keyframes kcx-animated-gradient-deslizar {
+  from { background-position: var(--kcx-animated-gradient-from) 50%; }
+  to   { background-position: var(--kcx-animated-gradient-to) 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kcx-animated-gradient { animation: none; }
+}

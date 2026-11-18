@@ -33,10 +33,12 @@ src/app/kcx/                   ← núcleo KCX (sem Angular; usado pelo lab, pel
   exportar-kcx.ts              5 modos, tokens W3C, SVG estático, código independente (.zip)
   composicao.ts                camadas + variáveis compartilhadas
   presets.ts                   presets do usuário (localStorage) com import/export
-  de-kit.ts                    qualquer kit da Biblioteca → pacote nível 3
-  componentes/                 Neon Glow, Animated Gradient, SVG Motion
+  angular.ts                   gerador do componente Angular standalone (input() por variável)
+  svg-caminho.ts               comprimento, ponto e corte de caminhos SVG
+  componentes/                 Neon Glow, Animated Gradient, SVG Motion, Animated Border, Hover Lift, Gauge Meter
+src/app/kcx-angular/           ← componentes Angular gerados (npm run gerar:kcx-angular)
 src/app/pages/kcx/             ← interface Angular
-  kcx-studio/                  /kcx — componentes, níveis, validador de arquivos, licenças
+  kcx-studio/                  /kcx — componentes, o que é editável no Figma, validador de arquivos, licenças
   kcx-editor/                  /kcx/:id — editor
   kcx-compositor/              /kcx/compor — composição
   kcx-preview/                 iframe ao vivo (sem recarregar)
@@ -83,8 +85,8 @@ mensagem leva o novo valor; no navegador (Playwright + Chrome) a duração da an
 |---|---|---|
 | Núcleo KCX, runtime, componentes de referência, plugin | MIT | sem dependências externas |
 | `@figma/plugin-typings` | MIT | só tipos, em desenvolvimento |
-| GSAP / ScrollTrigger | GSAP Standard "No Charge" | gratuita, comercial, **não é open source**; proíbe uso em ferramentas visuais de animação sem código que concorram com o Webflow — por isso o núcleo KCX não usa GSAP. Kits com GSAP exportam no nível 3 com esse aviso. |
-| Lenis, Three.js | MIT | usados só em kits/labs, exportam no nível 3 |
+| GSAP / ScrollTrigger | GSAP Standard "No Charge" | gratuita, comercial, **não é open source**; proíbe uso em ferramentas visuais de animação sem código que concorram com o Webflow — por isso o KCX não usa GSAP. |
+| Lenis, Three.js | MIT | usados só nos kits e labs; ficam fora do KCX (o KCX aceita só CSS, SVG e Angular) |
 
 ## 5. Critérios de aceitação
 

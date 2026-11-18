@@ -1,0 +1,60 @@
+/* SVG Motion — KCX (os valores chegam como custom properties no elemento kcx-svg-motion) */
+kcx-svg-motion { display: contents; }
+
+/* SVG Motion — controlado pelas variáveis KCX */
+.kcx-svg-motion {
+  position: relative;
+  width: 400px;
+  height: 160px;
+  max-width: 100%;
+}
+
+.kcx-svg-motion svg { position: absolute; inset: 0; overflow: visible; }
+
+.kcx-svg-motion path {
+  fill: none;
+  stroke: var(--kcx-svg-motion-stroke);
+  stroke-width: var(--kcx-svg-motion-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kcx-svg-motion__trilha { opacity: var(--kcx-svg-motion-trail); }
+
+.kcx-svg-motion__linha {
+  stroke-dasharray: 1;
+  stroke-dashoffset: var(--kcx-svg-motion-offset);
+  animation: var(--kcx-svg-motion-anim-linha) calc(var(--kcx-svg-motion-duration) / var(--kcx-svg-motion-speed)) var(--kcx-svg-motion-easing) var(--kcx-svg-motion-delay)
+    var(--kcx-svg-motion-iterations) var(--kcx-svg-motion-direction) both;
+}
+
+.kcx-svg-motion__ponto {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--kcx-svg-motion-dot);
+  height: var(--kcx-svg-motion-dot);
+  border-radius: 50%;
+  background: var(--kcx-svg-motion-accent);
+  box-shadow: 0 0 var(--kcx-svg-motion-dot) var(--kcx-svg-motion-accent);
+  offset-path: var(--kcx-svg-motion-path);
+  offset-distance: var(--kcx-svg-motion-distance);
+  offset-rotate: 0deg;
+  animation: var(--kcx-svg-motion-anim-ponto) calc(var(--kcx-svg-motion-duration) / var(--kcx-svg-motion-speed)) var(--kcx-svg-motion-easing) var(--kcx-svg-motion-delay)
+    var(--kcx-svg-motion-iterations) var(--kcx-svg-motion-direction) both;
+}
+
+@keyframes kcx-svg-motion-desenhar {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes kcx-svg-motion-percorrer {
+  from { offset-distance: 0%; }
+  to   { offset-distance: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kcx-svg-motion__linha,
+  .kcx-svg-motion__ponto { animation: none; }
+}

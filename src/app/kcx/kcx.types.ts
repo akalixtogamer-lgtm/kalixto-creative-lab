@@ -69,6 +69,8 @@ export type KcxOperacao =
   | { op: 'dividir'; numerador: number }
   /** valor × valor de outra variável numérica. */
   | { op: 'multiplicarPorVariavel'; variavel: string }
+  /** valor ÷ valor de outra variável (ex.: espessura ÷ tamanho). */
+  | { op: 'dividirPorVariavel'; variavel: string }
   /** valor + fator × valor de outra variável (ex.: centralizar: −0,5 × tamanho). */
   | { op: 'somarVariavel'; variavel: string; fator: number }
   /** cor + transparência (0–1), fixa ou vinda de outra variável. */
@@ -97,13 +99,7 @@ export type KcxAlvo =
   /** Atributo de elementos (ex.: `d` de um path SVG). */
   | { tipo: 'atributo'; seletor: string; atributo: string }
   /** Texto dos elementos (textContent). */
-  | { tipo: 'texto'; seletor: string }
-  /**
-   * Parâmetro do gerador de código de um kit (componentes nível 3 vindos da
-   * biblioteca): no lab, mudar a variável regenera o código; no código
-   * exportado o valor fica fixo.
-   */
-  | { tipo: 'parametro-gerador'; parametro: string };
+  | { tipo: 'texto'; seletor: string };
 
 export interface KcxVinculo {
   /** Descrição legível da propriedade controlada (ex.: "Opacidade do brilho"). */
@@ -160,6 +156,12 @@ export type KcxPreenchimento =
       angulo: KcxRef<number>;
       paradas: { posicao: number; cor: KcxRef<string> }[];
     }
+  | {
+      tipo: 'gradiente-conico';
+      /** Ângulo inicial em graus (como `conic-gradient(from …)`). */
+      angulo: KcxRef<number>;
+      paradas: { posicao: number; cor: KcxRef<string> }[];
+    }
   /**
    * Gradiente vindo de uma variável do tipo gradient. No Figma, cada parada
    * vira uma variável de cor vinculada à parada (o Figma não tem variável de gradiente).
@@ -200,7 +202,8 @@ export interface KcxNo {
   visivel?: KcxRef<boolean>;
   rotacao?: KcxRef<number>;
   preenchimentos?: KcxPreenchimento[];
-  traco?: { cor: KcxRef<string>; espessura: KcxRef<number>; tracejado?: KcxRef<number>[] };
+  /** Traço: cor sólida (`cor`) ou uma pintura completa (`pintura`, ex.: gradiente cônico). */
+  traco?: { cor?: KcxRef<string>; pintura?: KcxPreenchimento; espessura: KcxRef<number> };
   efeitos?: KcxEfeito[];
   texto?: {
     conteudo: KcxRef<string>;
@@ -210,6 +213,9 @@ export interface KcxNo {
     espacamento?: KcxRef<number>;
     /** Caixa alta (text-transform: uppercase / textCase UPPER). */
     caixaAlta?: boolean;
+    alinhamento?: 'esquerda' | 'centro' | 'direita';
+    /** Ocupa a largura do Auto Layout pai (o texto quebra linha ao redimensionar). */
+    preencher?: boolean;
     /** Vira propriedade de texto editável no componente do Figma. */
     propriedade?: string;
   };
@@ -225,8 +231,27 @@ export interface KcxNo {
   };
   /** Clip de conteúdo em frames. */
   recortar?: boolean;
+  /**
+   * Dentro de um Auto Layout, fica fora do fluxo (posição absoluta). Com
+   * restrições STRETCH, acompanha o tamanho do pai (ex.: halo atrás do botão).
+   */
+  absoluto?: boolean;
+  /** Como a camada reage quando o pai é redimensionado no Figma. */
+  restricoes?: { h: KcxRestricao; v: KcxRestricao };
+  /** Vira propriedade de visibilidade (liga/desliga) no componente do Figma. */
+  propriedadeVisivel?: string;
+  /**
+   * Peça reutilizável (tipo svg): cada opção da variável enum `eixo` vira uma
+   * variante de um componente próprio ("<nome do componente> · <nome>"), e esta
+   * camada vira uma instância dele. Editar a forma na peça muda todas as variantes.
+   */
+  peca?: { nome: string; eixo: string };
+  /** Arco nativo do Figma (tipo elipse), em graus; `interno` de 0 a 1 (anel). */
+  arco?: { inicio: KcxRef<number>; fim: KcxRef<number>; interno: KcxRef<number> };
   filhos?: KcxNo[];
 }
+
+export type KcxRestricao = 'MIN' | 'CENTER' | 'MAX' | 'STRETCH' | 'SCALE';
 
 /* ============================== Estados, presets, animações ============================== */
 
@@ -254,13 +279,21 @@ export interface KcxPreset {
   valores: Record<string, KcxValor>;
 }
 
-export type KcxNivel = 1 | 2 | 3;
+/**
+ * Nível de compatibilidade com o Figma:
+ * 1 = nativo editável (formas, SVG, textos, gradientes, opacidade);
+ * 2 = parcialmente editável (estrutura + variáveis + quadros-chave como variantes).
+ * O KCX do laboratório usa só CSS, SVG e Angular — não há pacotes de desenvolvimento.
+ */
+export type KcxNivel = 1 | 2;
+
+/** Tecnologias aceitas num componente KCX. */
+export const KCX_TECNOLOGIAS = ['HTML', 'CSS', 'SVG', 'Angular', 'TypeScript'] as const;
 
 export interface KcxAnimacao {
   id: string;
   nome: string;
-  tecnica:
-    'css-keyframes' | 'css-transition' | 'css-motion-path' | 'waapi' | 'canvas' | 'webgl' | 'js';
+  tecnica: 'css-keyframes' | 'css-transition' | 'css-motion-path' | 'css-property';
   /** Variáveis que controlam a animação. */
   variaveis: string[];
   /** Como aparece no Figma: variantes (quadros-chave), documentação ou não exportada. */

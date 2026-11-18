@@ -14,7 +14,7 @@ export const ANIMATED_GRADIENT_KCX: KcxComponente = {
   categoria: 'backgrounds',
   descricao:
     'Fundo em gradiente que desliza devagar entre uma posição inicial e uma final, com título sobreposto.',
-  tecnologia: ['HTML', 'CSS'],
+  tecnologia: ['HTML', 'CSS', 'Angular'],
   versao: '1.0.0',
   licenca: LICENCA_MIT,
   metadados: {
@@ -471,8 +471,11 @@ export const ANIMATED_GRADIENT_KCX: KcxComponente = {
           tamanho: { $var: 'titleSize' },
           familia: 'Inter',
           estilo: 'Bold',
+          alinhamento: 'centro',
+          preencher: true,
           propriedade: 'Título',
         },
+        propriedadeVisivel: 'Mostrar título',
         efeitos: [{ tipo: 'sombra', cor: '#00000073', raio: 12, x: 0, y: 2 }],
       },
     ],
@@ -505,10 +508,11 @@ export const ANIMATED_GRADIENT_KCX: KcxComponente = {
     figma: {
       nivel: 2,
       editavel: [
-        'Frame com Auto Layout',
-        'Paradas do gradiente (variáveis de cor)',
-        'Título (propriedade de texto, tamanho e cor)',
-        'Largura e raio',
+        'Componente reutilizável com instância de exemplo',
+        'Tamanho: redimensione à vontade — o título quebra linha e continua centralizado',
+        'Cores: cada parada do gradiente é uma variável de cor',
+        'Título (propriedade de texto) e Mostrar título (liga/desliga), tamanho e cor por variáveis',
+        'Formato: largura e raio por variáveis',
       ],
       parcial: [
         'Quadros Inicial e Final como variantes',

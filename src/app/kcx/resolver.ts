@@ -192,6 +192,14 @@ export function aplicarOperacoes(
         x = comoNumero(x, variavel.id) * comoNumero(outra as KcxValor, o.variavel);
         break;
       }
+      case 'dividirPorVariavel': {
+        const outra = comoNumero(
+          (valores[o.variavel] ?? todas.find((t) => t.id === o.variavel)?.valor) as KcxValor,
+          o.variavel,
+        );
+        x = outra === 0 ? 0 : comoNumero(x, variavel.id) / outra;
+        break;
+      }
       case 'somarVariavel': {
         const outra = valores[o.variavel] ?? todas.find((t) => t.id === o.variavel)?.valor;
         x = comoNumero(x, variavel.id) + o.fator * comoNumero(outra as KcxValor, o.variavel);
@@ -275,7 +283,6 @@ export function resolverSaidas(variaveis: KcxVariavel[], valores: Valores = {}):
   const textos: Saidas['textos'] = [];
   for (const v of variaveis) {
     for (const vin of v.vinculos) {
-      if (vin.alvo.tipo === 'parametro-gerador') continue;
       const valor = valorDoVinculo(v, vin, atuais, variaveis);
       if (vin.alvo.tipo === 'css-var') cssVars[vin.alvo.nome] = valor;
       else if (vin.alvo.tipo === 'atributo')

@@ -104,11 +104,28 @@ export class NoMock {
   setRangeBoundVariable(_i: number, _f: number, campo: string, v: any): void {
     this.boundVariables[campo] = { type: 'VARIABLE_ALIAS', id: v.id };
   }
+  remove(): void {
+    if (this.parent) this.parent.children = this.parent.children.filter((c) => c !== this);
+    this.parent = null;
+  }
+  /** Instância: cópia rasa dos filhos (para testar overrides). */
   createInstance(): NoMock {
     const i = new NoMock('INSTANCE');
     i.width = this.width;
     i.height = this.height;
     i['mainComponent'] = this;
+    const copiar = (de: NoMock, para: NoMock) =>
+      de.children.forEach((c) => {
+        const n = new NoMock(c.type);
+        Object.assign(n, {
+          name: c.name,
+          strokes: c.strokes,
+          boundVariables: { ...c.boundVariables },
+        });
+        para.appendChild(n);
+        copiar(c, n);
+      });
+    copiar(this, i);
     return i;
   }
   get defaultVariant(): NoMock {

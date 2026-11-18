@@ -25,6 +25,7 @@
   // src/app/kcx/kcx.types.ts
   var KCX_SCHEMA_VERSION = "1.0.0";
   var KCX_FORMATO = "kcx";
+  var KCX_TECNOLOGIAS = ["HTML", "CSS", "SVG", "Angular", "TypeScript"];
 
   // src/app/kcx/unidades.ts
   var BASE_REM = 16;
@@ -224,6 +225,34 @@
     }
     return p[p.length - 1];
   }
+  function cortarCaminho(d, alvo) {
+    const p = amostrar(d);
+    const r = (n) => Math.round(n * 100) / 100;
+    const saida = [p[0]];
+    let andado = 0;
+    for (let k = 1; k < p.length; k++) {
+      const seg = dist(p[k - 1], p[k]);
+      if (andado + seg >= alvo) {
+        const f = seg === 0 ? 0 : (alvo - andado) / seg;
+        saida.push({
+          x: p[k - 1].x + (p[k].x - p[k - 1].x) * f,
+          y: p[k - 1].y + (p[k].y - p[k - 1].y) * f
+        });
+        break;
+      }
+      saida.push(p[k]);
+      andado += seg;
+    }
+    if (saida.length === 1) saida.push({ x: saida[0].x + 0.01, y: saida[0].y });
+    return saida.map((q, i) => `${i ? "L" : "M"} ${r(q.x)} ${r(q.y)}`).join(" ");
+  }
+  function cortarSvg(svg, alvo) {
+    return svg.replace(/(<path[^>]*\sd=")([^"]+)(")/, (_, a, d, b) => a + cortarCaminho(d, alvo) + b);
+  }
+  function comprimentoSvg(svg) {
+    const m = /<path[^>]*\sd="([^"]+)"/.exec(svg);
+    return m ? comprimento(m[1]) : 0;
+  }
 
   // src/app/kcx/resolver.ts
   function ehGradiente(x) {
@@ -281,7 +310,7 @@
     return x;
   }
   function aplicarOperacoes(variavel, valor, ops = [], valores = {}, todas = []) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m;
     let x = valor;
     let unidade = (_a = variavel.unidade) != null ? _a : "";
     for (const o of ops) {
@@ -319,16 +348,24 @@
           x = comoNumero(x, variavel.id) * comoNumero(outra, o.variavel);
           break;
         }
+        case "dividirPorVariavel": {
+          const outra = comoNumero(
+            (_e = valores[o.variavel]) != null ? _e : (_d = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _d.valor,
+            o.variavel
+          );
+          x = outra === 0 ? 0 : comoNumero(x, variavel.id) / outra;
+          break;
+        }
         case "somarVariavel": {
-          const outra = (_e = valores[o.variavel]) != null ? _e : (_d = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _d.valor;
+          const outra = (_g = valores[o.variavel]) != null ? _g : (_f = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _f.valor;
           x = comoNumero(x, variavel.id) + o.fator * comoNumero(outra, o.variavel);
           break;
         }
         case "alpha": {
           if (typeof x !== "string")
             throw new Error(`KCX: alpha em "${variavel.id}" precisa de cor.`);
-          const a = o.variavel ? (_g = valores[o.variavel]) != null ? _g : (_f = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _f.valor : o.valor;
-          x = comAlpha(x, comoNumero(a != null ? a : 1, (_h = o.variavel) != null ? _h : variavel.id));
+          const a = o.variavel ? (_i = valores[o.variavel]) != null ? _i : (_h = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _h.valor : o.valor;
+          x = comAlpha(x, comoNumero(a != null ? a : 1, (_j = o.variavel) != null ? _j : variavel.id));
           break;
         }
         case "converter":
@@ -346,11 +383,11 @@
         }
         case "pontoNoCaminho":
         case "tracoNoCaminho": {
-          const forma = String((_j = valores[o.variavel]) != null ? _j : (_i = todas.find((t2) => t2.id === o.variavel)) == null ? void 0 : _i.valor);
+          const forma = String((_l = valores[o.variavel]) != null ? _l : (_k = todas.find((t2) => t2.id === o.variavel)) == null ? void 0 : _k.valor);
           const d = o.caminhos[forma];
           if (!d) throw new Error(`KCX: caminho "${forma}" n\xE3o encontrado.`);
           const t = comoNumero(x, variavel.id);
-          x = o.op === "tracoNoCaminho" ? comprimento(d) * t : pontoEm(d, t)[o.eixo] + ((_k = o.somar) != null ? _k : 0);
+          x = o.op === "tracoNoCaminho" ? comprimento(d) * t : pontoEm(d, t)[o.eixo] + ((_m = o.somar) != null ? _m : 0);
           break;
         }
       }
@@ -422,7 +459,7 @@
       return;
     }
     v.vinculos.forEach((vin, i) => {
-      var _a, _b, _c, _d, _e, _f, _g;
+      var _a, _b, _c, _d, _e, _f;
       const cv = `vinculos[${i}]`;
       if (!ehTexto(vin.propriedade)) e(`${cv}.propriedade`, "Descreva a propriedade controlada.");
       if (((_a = vin.alvo) == null ? void 0 : _a.tipo) === "css-var") {
@@ -433,23 +470,21 @@
           e(`${cv}.alvo`, "Seletor e atributo obrigat\xF3rios.");
         if (/^on/i.test((_c = vin.alvo.atributo) != null ? _c : ""))
           e(`${cv}.alvo.atributo`, "Atributos de evento (on*) n\xE3o s\xE3o permitidos.");
-      } else if (((_d = vin.alvo) == null ? void 0 : _d.tipo) === "parametro-gerador") {
-        if (!ehTexto(vin.alvo.parametro)) e(`${cv}.alvo.parametro`, "Par\xE2metro obrigat\xF3rio.");
-      } else if (((_e = vin.alvo) == null ? void 0 : _e.tipo) === "texto") {
+      } else if (((_d = vin.alvo) == null ? void 0 : _d.tipo) === "texto") {
         if (!ehTexto(vin.alvo.seletor)) e(`${cv}.alvo.seletor`, "Seletor obrigat\xF3rio.");
       } else e(`${cv}.alvo`, "Alvo deve ser css-var, atributo ou texto.");
-      for (const o of (_f = vin.transformar) != null ? _f : []) {
+      for (const o of (_e = vin.transformar) != null ? _e : []) {
         if (o.op === "pontoNoCaminho" || o.op === "tracoNoCaminho") {
           e(`${cv}.transformar`, `A opera\xE7\xE3o ${o.op} s\xF3 pode ser usada na estrutura visual.`);
         }
-        if ((o.op === "multiplicarPorVariavel" || o.op === "somarVariavel" || o.op === "alpha" && o.variavel) && !todas.has(o.variavel)) {
+        if ((o.op === "multiplicarPorVariavel" || o.op === "dividirPorVariavel" || o.op === "somarVariavel" || o.op === "alpha" && o.variavel) && !todas.has(o.variavel)) {
           e(
             `${cv}.transformar`,
             `Opera\xE7\xE3o ${o.op} usa a vari\xE1vel "${o.variavel}", que n\xE3o existe.`
           );
         }
         if (o.op === "mapa" && v.tipo === "enum") {
-          const faltam = ((_g = v.opcoes) != null ? _g : []).filter((op) => !(op.valor in o.valores)).map((op) => op.valor);
+          const faltam = ((_f = v.opcoes) != null ? _f : []).filter((op) => !(op.valor in o.valores)).map((op) => op.valor);
           if (faltam.length) e(`${cv}.transformar`, `Mapa sem valor para: ${faltam.join(", ")}.`);
         }
         if (o.op === "mapa" && v.tipo === "boolean" && !("true" in o.valores && "false" in o.valores)) {
@@ -481,9 +516,26 @@
         p.paradas.forEach((s, j) => add(`preenchimentos[${i}].paradas[${j}].cor`, s.cor));
       }
     });
+    const pintura = (p, campo) => {
+      if (p.tipo === "solido") add(`${campo}.cor`, p.cor);
+      else if (p.tipo === "gradiente-variavel") {
+        add(`${campo}.variavel`, { $var: p.variavel });
+        add(`${campo}.tamanho`, p.tamanho);
+        add(`${campo}.deslocamento`, p.deslocamento);
+      } else {
+        add(`${campo}.angulo`, p.angulo);
+        p.paradas.forEach((s, j) => add(`${campo}.paradas[${j}].cor`, s.cor));
+      }
+    };
     if (no.traco) {
-      add("traco.cor", no.traco.cor);
+      if (no.traco.cor !== void 0) add("traco.cor", no.traco.cor);
+      if (no.traco.pintura) pintura(no.traco.pintura, "traco.pintura");
       add("traco.espessura", no.traco.espessura);
+    }
+    if (no.arco) {
+      add("arco.inicio", no.arco.inicio);
+      add("arco.fim", no.arco.fim);
+      add("arco.interno", no.arco.interno);
     }
     if (no.svgTraco) {
       add("svgTraco.cor", no.svgTraco.cor);
@@ -509,7 +561,7 @@
     return out;
   }
   function validarComponente(comp, c) {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     const erros = [];
     const e = (campo, mensagem) => erros.push({ caminho: `${c}.${campo}`, mensagem });
     if (!ehObjeto(comp)) return [{ caminho: c, mensagem: "Componente deve ser um objeto." }];
@@ -583,8 +635,18 @@
       if (((_f = porId2.get(eixo)) == null ? void 0 : _f.tipo) !== "enum")
         e("compatibilidade.figma.eixosVariante", `"${eixo}" precisa ser uma vari\xE1vel enum.`);
     }
-    if (![1, 2, 3].includes((_h = (_g = comp.compatibilidade) == null ? void 0 : _g.figma) == null ? void 0 : _h.nivel))
-      e("compatibilidade.figma.nivel", "N\xEDvel deve ser 1, 2 ou 3.");
+    if (![1, 2].includes((_h = (_g = comp.compatibilidade) == null ? void 0 : _g.figma) == null ? void 0 : _h.nivel))
+      e("compatibilidade.figma.nivel", "N\xEDvel deve ser 1 (nativo) ou 2 (parcial).");
+    const fora = ((_i = comp.tecnologia) != null ? _i : []).filter(
+      (t) => !KCX_TECNOLOGIAS.includes(t)
+    );
+    if (fora.length)
+      e(
+        "tecnologia",
+        `O KCX aceita s\xF3 ${KCX_TECNOLOGIAS.join(", ")} (recebido: ${fora.join(", ")}).`
+      );
+    if (((_j = comp.dependencias) != null ? _j : []).length)
+      e("dependencias", "Componentes KCX n\xE3o usam bibliotecas externas.");
     return erros;
   }
   function validarPacote(p) {
@@ -945,8 +1007,18 @@
     ];
     return [linha(d), linha(n)];
   }
+  function matrizConica(anguloCss) {
+    const t = (anguloCss - 90) * Math.PI / 180;
+    const c = Math.cos(t);
+    const s = Math.sin(t);
+    const r = (k) => Math.round(k * 1e4) / 1e4 || 0;
+    return [
+      [r(c), r(s), r(0.5 - 0.5 * c - 0.5 * s)],
+      [r(-s), r(c), r(0.5 + 0.5 * s - 0.5 * c)]
+    ];
+  }
   function planejarNo(no, ctx, caminho) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
     const onde = (campo) => `${ctx.comp.nome} \u203A ${caminho} \u203A ${campo}`;
     const p = {
       id: no.id,
@@ -963,59 +1035,68 @@
       preenchimentos: [],
       efeitos: [],
       recortar: !!no.recortar,
+      absoluto: !!no.absoluto,
       filhos: []
     };
-    ((_a = no.preenchimentos) != null ? _a : []).forEach((f, i) => {
+    const pintura = (f, rotulo, campoCor) => {
       var _a2, _b2, _c2;
-      if (f.tipo === "solido") {
-        p.preenchimentos.push({
-          tipo: "solido",
-          cor: corRef(f.cor, CAMPOS["corPreenchimento"], onde("preenchimento"), ctx)
-        });
-      } else if (f.tipo === "gradiente-linear") {
-        p.preenchimentos.push({
+      if (f.tipo === "solido")
+        return { tipo: "solido", cor: corRef(f.cor, campoCor, onde(rotulo), ctx) };
+      if (f.tipo === "gradiente-linear" || f.tipo === "gradiente-conico") {
+        const ang = (_a2 = literal(f.angulo, ctx)) != null ? _a2 : f.tipo === "gradiente-linear" ? 90 : 0;
+        return {
           tipo: "gradiente",
-          transformacao: matrizGradiente((_a2 = literal(f.angulo, ctx)) != null ? _a2 : 90),
+          subtipo: f.tipo === "gradiente-conico" ? "GRADIENT_ANGULAR" : "GRADIENT_LINEAR",
+          transformacao: f.tipo === "gradiente-conico" ? matrizConica(ang) : matrizGradiente(ang),
           paradas: f.paradas.map((s) => ({
             posicao: s.posicao,
-            cor: corRef(s.cor, CAMPOS["corParada"], onde(`parada ${s.posicao}`), ctx)
+            cor: corRef(s.cor, CAMPOS["corParada"], onde(`${rotulo} \u203A parada ${s.posicao}`), ctx)
           }))
-        });
-      } else {
-        const v = porId(ctx.comp, f.variavel);
-        const g = ctx.valores[v.id];
-        const tamanho = (_b2 = literal(f.tamanho, ctx)) != null ? _b2 : 100;
-        const desloc = (_c2 = literal(f.deslocamento, ctx)) != null ? _c2 : 0;
-        p.preenchimentos.push({
-          tipo: "gradiente",
-          transformacao: matrizGradiente(g.angulo, tamanho, desloc),
-          paradas: [...g.paradas].sort((a, b) => a.posicao - b.posicao).map((s, j) => {
-            const cor = corFigma(s.cor);
-            if (!ctx.usarVariaveis) return { posicao: s.posicao, cor: { valor: cor } };
-            const sufixo = difereDaBase(ctx, [v.id]) ? ctx.sufixo : "";
-            const nome = nomeVar(ctx.comp.id, sufixo, `${kebab(v.id)}/stop-${j + 1}`);
-            ctx.registrar(
-              {
-                nome,
-                colecao: COLECOES["colors"],
-                tipo: "COLOR",
-                valores: Object.fromEntries(ctx.modos.map((m) => [m, cor])),
-                escopos: CAMPOS["corParada"].escopo,
-                descricao: `Parada ${j + 1} de "${v.nome}" (posi\xE7\xE3o ${Math.round(s.posicao * 100)}%). Representa\xE7\xE3o do gradiente: uma vari\xE1vel de cor por parada.`,
-                origem: "parada",
-                variavelKcx: v.id,
-                vinculadaA: []
-              },
-              onde(`preenchimento ${i + 1} \u203A parada ${j + 1}`)
-            );
-            return { posicao: s.posicao, cor: { valor: cor, variavel: nome } };
-          })
-        });
+        };
       }
-    });
+      const v = porId(ctx.comp, f.variavel);
+      const g = ctx.valores[v.id];
+      const tamanho = (_b2 = literal(f.tamanho, ctx)) != null ? _b2 : 100;
+      const desloc = (_c2 = literal(f.deslocamento, ctx)) != null ? _c2 : 0;
+      return {
+        tipo: "gradiente",
+        subtipo: "GRADIENT_LINEAR",
+        transformacao: matrizGradiente(g.angulo, tamanho, desloc),
+        paradas: [...g.paradas].sort((a, b) => a.posicao - b.posicao).map((s, j) => {
+          const cor = corFigma(s.cor);
+          if (!ctx.usarVariaveis) return { posicao: s.posicao, cor: { valor: cor } };
+          const sufixo = difereDaBase(ctx, [v.id]) ? ctx.sufixo : "";
+          const nome = nomeVar(ctx.comp.id, sufixo, `${kebab(v.id)}/stop-${j + 1}`);
+          ctx.registrar(
+            {
+              nome,
+              colecao: COLECOES["colors"],
+              tipo: "COLOR",
+              valores: Object.fromEntries(ctx.modos.map((m) => [m, cor])),
+              escopos: CAMPOS["corParada"].escopo,
+              descricao: `Parada ${j + 1} de "${v.nome}" (posi\xE7\xE3o ${Math.round(s.posicao * 100)}%). Representa\xE7\xE3o do gradiente: uma vari\xE1vel de cor por parada.`,
+              origem: "parada",
+              variavelKcx: v.id,
+              vinculadaA: []
+            },
+            onde(`${rotulo} \u203A parada ${j + 1}`)
+          );
+          return { posicao: s.posicao, cor: { valor: cor, variavel: nome } };
+        })
+      };
+    };
+    ((_a = no.preenchimentos) != null ? _a : []).forEach(
+      (f, i) => p.preenchimentos.push(
+        pintura(f, i ? `preenchimento ${i + 1}` : "preenchimento", CAMPOS["corPreenchimento"])
+      )
+    );
     if (no.traco) {
+      const base = (_c = no.traco.pintura) != null ? _c : {
+        tipo: "solido",
+        cor: (_b = no.traco.cor) != null ? _b : "#000000"
+      };
       p.traco = {
-        cor: corRef(no.traco.cor, CAMPOS["corTraco"], onde("cor do tra\xE7o"), ctx),
+        pintura: pintura(base, "tra\xE7o", CAMPOS["corTraco"]),
         espessura: resolverRef(
           no.traco.espessura,
           CAMPOS["espessura"],
@@ -1024,7 +1105,17 @@
         )
       };
     }
-    ((_b = no.efeitos) != null ? _b : []).forEach((ef, i) => {
+    if (no.arco) {
+      const rad = (g) => Math.round(g * Math.PI / 180 * 1e4) / 1e4;
+      p.arco = {
+        inicio: rad((_d = literal(no.arco.inicio, ctx)) != null ? _d : 0),
+        fim: rad((_e = literal(no.arco.fim, ctx)) != null ? _e : 360),
+        interno: Math.min(0.99, Math.max(0, (_f = literal(no.arco.interno, ctx)) != null ? _f : 0))
+      };
+    }
+    if (no.restricoes) p.restricoes = { horizontal: no.restricoes.h, vertical: no.restricoes.v };
+    if (no.propriedadeVisivel) p.propriedadeVisivel = no.propriedadeVisivel;
+    ((_g = no.efeitos) != null ? _g : []).forEach((ef, i) => {
       var _a2, _b2, _c2;
       if (ef.tipo === "sombra") {
         p.efeitos.push({
@@ -1065,6 +1156,8 @@
         familia: no.texto.familia,
         estilo: no.texto.estilo,
         caixaAlta: !!no.texto.caixaAlta,
+        alinhamento: no.texto.alinhamento === "centro" ? "CENTER" : no.texto.alinhamento === "direita" ? "RIGHT" : "LEFT",
+        preencher: !!no.texto.preencher,
         propriedade: no.texto.propriedade
       };
     }
@@ -1072,7 +1165,7 @@
       const r = resolverRef(no.svg, __spreadProps(__spreadValues({}, CAMPOS["fixo"]), { tipo: "STRING" }), "", __spreadProps(__spreadValues({}, ctx), {
         usarVariaveis: false
       }));
-      p.svg = String((_c = r == null ? void 0 : r.valor) != null ? _c : "");
+      p.svg = String((_h = r == null ? void 0 : r.valor) != null ? _h : "");
     }
     if (no.svgTraco) {
       p.svgTraco = {
@@ -1083,11 +1176,45 @@
           onde("espessura do tra\xE7o"),
           ctx
         ),
-        tracejado: (_d = no.svgTraco.tracejado) == null ? void 0 : _d.map((t) => {
+        tracejado: (_i = no.svgTraco.tracejado) == null ? void 0 : _i.map((t) => {
           var _a2;
           return Math.round(((_a2 = literal(t, ctx)) != null ? _a2 : 0) * 100) / 100;
         })
       };
+    }
+    let parcial = false;
+    const tr = (_j = p.svgTraco) == null ? void 0 : _j.tracejado;
+    if (p.svg && tr && tr.length === 2) {
+      const total = comprimentoSvg(p.svg);
+      if (total > 0 && tr[1] >= total) {
+        if (tr[0] < total - 0.5) {
+          p.svg = cortarSvg(p.svg, tr[0]);
+          parcial = true;
+        }
+        p.svgTraco = __spreadProps(__spreadValues({}, p.svgTraco), { tracejado: void 0 });
+      }
+    }
+    if (no.peca && p.svg && parcial) {
+    } else if (no.peca && p.svg) {
+      const eixo = porId(ctx.comp, no.peca.eixo);
+      const rotulo = (_m = (_l = (_k = eixo.opcoes) == null ? void 0 : _k.find((o) => o.valor === ctx.valores[eixo.id])) == null ? void 0 : _l.rotulo) != null ? _m : String(ctx.valores[eixo.id]);
+      p.peca = { nome: no.peca.nome, variante: rotulo };
+      let peca = ctx.pecas.get(no.peca.nome);
+      if (!peca)
+        ctx.pecas.set(no.peca.nome, peca = { nome: no.peca.nome, eixo: eixo.id, opcoes: [] });
+      if (!peca.opcoes.some((o) => o.rotulo === rotulo)) {
+        const traco = (_n = p.svgTraco) != null ? _n : {
+          cor: { valor: { r: 0, g: 0, b: 0, a: 1 } },
+          espessura: { valor: 1 }
+        };
+        peca.opcoes.push({
+          rotulo,
+          svg: p.svg,
+          traco: { cor: traco.cor, espessura: traco.espessura }
+        });
+        const ordem = ((_o = eixo.opcoes) != null ? _o : []).map((o) => o.rotulo);
+        peca.opcoes.sort((a, b) => ordem.indexOf(a.rotulo) - ordem.indexOf(b.rotulo));
+      }
     }
     if (no.autoLayout) {
       p.autoLayout = {
@@ -1107,7 +1234,7 @@
         )
       };
     }
-    p.filhos = ((_e = no.filhos) != null ? _e : []).map((f) => planejarNo(f, ctx, `${caminho} \u203A ${f.nome}`));
+    p.filhos = ((_p = no.filhos) != null ? _p : []).map((f) => planejarNo(f, ctx, `${caminho} \u203A ${f.nome}`));
     return p;
   }
   function combinacoes(comp, atuais) {
@@ -1189,6 +1316,7 @@
       const atuais = valoresAtuais(comp.variaveis);
       const combos = combinacoes(comp, atuais);
       const base = (_b = (_a = combos[0]) == null ? void 0 : _a.valores) != null ? _b : atuais;
+      const pecas = /* @__PURE__ */ new Map();
       const variantes = combos.map((c, i) => {
         const ctx = {
           comp,
@@ -1197,7 +1325,8 @@
           sufixo: i === 0 ? "" : c.sufixo,
           usarVariaveis,
           modos: [],
-          registrar
+          registrar,
+          pecas
         };
         ctx.modos = temModos ? ["Dark", "Light", "Valor"] : ["Valor"];
         return {
@@ -1251,6 +1380,7 @@
           nivel: f.nivel,
           descricao: comp.descricao,
           variantes,
+          pecas: [...pecas.values()],
           limitacoes: f.limitacoes,
           editavel: f.editavel,
           parcial: f.parcial,
@@ -1384,10 +1514,16 @@
         vinculos: 0,
         vinculosFalhos: [],
         componentes: [],
+        pecas: [],
+        propriedades: [],
+        exemplos: [],
         avisos: []
       });
       __publicField(this, "fontePadrao", { family: "Inter", style: "Regular" });
       __publicField(this, "fontesOk", /* @__PURE__ */ new Set());
+      /* ------------------------------ Camadas ------------------------------ */
+      /** Componentes das peças reutilizáveis já criados: "peça|variante" → componente. */
+      __publicField(this, "pecas", /* @__PURE__ */ new Map());
     }
     /* ------------------------------ Variáveis ------------------------------ */
     async criarVariaveis() {
@@ -1401,22 +1537,26 @@
         const criada = !col;
         if (!col) col = f.variables.createVariableCollection(c.nome);
         const modoIds = {};
-        c.modos.forEach((m, i) => {
-          const achado = col.modes.find((x) => x.name === m);
-          if (achado) modoIds[m] = achado.modeId;
-          else if (i === 0 && criada) {
-            col.renameMode(col.modes[0].modeId, m);
-            modoIds[m] = col.modes[0].modeId;
-          } else {
-            try {
-              modoIds[m] = col.addMode(m);
-            } catch (e) {
-              this.rel.avisos.push(
-                `Modo "${m}" n\xE3o foi criado em ${c.nome} (o plano do Figma limita a quantidade de modos). Usado s\xF3 o primeiro modo.`
-              );
+        const unicoEmExistente = !criada && c.modos.length === 1 && !col.modes.some((x) => x.name === c.modos[0]);
+        if (unicoEmExistente) modoIds[c.modos[0]] = col.modes[0].modeId;
+        else
+          c.modos.forEach((m, i) => {
+            const achado = col.modes.find((x) => x.name === m);
+            if (achado) modoIds[m] = achado.modeId;
+            else if (i === 0 && criada) {
+              col.renameMode(col.modes[0].modeId, m);
+              modoIds[m] = col.modes[0].modeId;
+            } else {
+              try {
+                modoIds[m] = col.addMode(m);
+              } catch (e) {
+                this.rel.avisos.push(
+                  `Modo "${m}" n\xE3o foi criado em ${c.nome} (o plano do Figma limita a quantidade de modos). Usado s\xF3 o primeiro modo.`
+                );
+              }
             }
-          }
-        });
+          });
+        const descobertos = col.modes.map((x) => x.modeId).filter((id) => !Object.values(modoIds).includes(id));
         this.rel.colecoes.push({ nome: c.nome, criada, modos: Object.keys(modoIds) });
         for (const pv of c.variaveis) {
           let v = existentes.find(
@@ -1465,16 +1605,20 @@
             );
           } catch (e) {
           }
-          for (const [modo, valor] of Object.entries(pv.valores)) {
+          const entradas = Object.entries(pv.valores);
+          for (const [i, [modo, valor]] of entradas.entries()) {
             const id = (_b = modoIds[modo]) != null ? _b : Object.values(modoIds)[0];
             if (!id) continue;
-            if (valor && typeof valor === "object" && "alias" in valor)
-              pendentesAlias.push({ variavel: v, modo: id, alvo: valor.alias });
-            else
-              v.setValueForMode(
-                id,
-                this.valorParaFigma(__spreadProps(__spreadValues({}, pv), { tipo: (_c = v.resolvedType) != null ? _c : tipo }), valor)
-              );
+            const ids = i === 0 ? [id, ...descobertos] : [id];
+            for (const alvoModo of ids) {
+              if (valor && typeof valor === "object" && "alias" in valor)
+                pendentesAlias.push({ variavel: v, modo: alvoModo, alvo: valor.alias });
+              else
+                v.setValueForMode(
+                  alvoModo,
+                  this.valorParaFigma(__spreadProps(__spreadValues({}, pv), { tipo: (_c = v.resolvedType) != null ? _c : tipo }), valor)
+                );
+            }
           }
           this.vars.set(pv.nome, v);
         }
@@ -1523,6 +1667,7 @@
       }
     }
     pintura(p, onde) {
+      var _a;
       const f = this.figma;
       if (p.tipo === "solido") {
         let paint = {
@@ -1543,7 +1688,7 @@
         return paint;
       }
       return {
-        type: "GRADIENT_LINEAR",
+        type: (_a = p.subtipo) != null ? _a : "GRADIENT_LINEAR",
         gradientTransform: p.transformacao,
         visible: true,
         gradientStops: p.paradas.map((s) => {
@@ -1630,24 +1775,102 @@
     fonte(familia, estilo) {
       return this.fontesOk.has(`${familia}|${estilo}`) ? { family: familia, style: estilo } : this.fontePadrao;
     }
-    /* ------------------------------ Camadas ------------------------------ */
-    construirNo(p, alvo, paiAutoLayout, onde, refsTexto) {
-      var _a, _b;
+    /** Aplica traço (cor/espessura vinculadas) aos vetores de um SVG importado. */
+    tracarVetores(vetores, traco, onde) {
+      for (const vet of vetores) {
+        vet.strokes = [this.pintura({ tipo: "solido", cor: traco.cor }, onde)];
+        vet.strokeWeight = Number(traco.espessura.valor);
+        this.vincular(vet, "strokeWeight", traco.espessura, onde);
+        vet.strokeCap = "ROUND";
+        vet.strokeJoin = "ROUND";
+        vet.fills = [];
+        try {
+          vet.constraints = { horizontal: "SCALE", vertical: "SCALE" };
+        } catch (e) {
+        }
+      }
+    }
+    /**
+     * Peças reutilizáveis: um componente com uma variante por opção (ex.:
+     * "SVG Motion · Caminho", Forma=onda/laço/zigue-zague). As variantes do
+     * componente principal usam instâncias dela: editar o desenho na peça
+     * atualiza todas as variantes.
+     */
+    construirPecas(c, x, y) {
+      const f = this.figma;
+      let ultimo = null;
+      let cursorY = y;
+      for (const peca of c.pecas) {
+        const comps = [];
+        for (const op of peca.opcoes) {
+          const svg = f.createNodeFromSvg(op.svg);
+          const comp = f.createComponent();
+          comp.name = c.pecas.length && peca.opcoes.length > 1 ? `Forma=${op.rotulo}` : `${c.nome} \xB7 ${peca.nome}`;
+          comp.resize(Math.max(1, svg.width), Math.max(1, svg.height));
+          comp.fills = [];
+          comp.clipsContent = false;
+          const vetores = svg.findAll ? svg.findAll((n) => n.type === "VECTOR") : [];
+          for (const v of vetores) {
+            const vx = v.absoluteTransform ? v.absoluteTransform[0][2] - svg.x : v.x;
+            const vy = v.absoluteTransform ? v.absoluteTransform[1][2] - svg.y : v.y;
+            comp.appendChild(v);
+            v.x = vx;
+            v.y = vy;
+          }
+          svg.remove();
+          this.tracarVetores(vetores, op.traco, `${c.nome} \u203A ${peca.nome} \u203A ${op.rotulo}`);
+          comps.push(comp);
+          this.pecas.set(`${peca.nome}|${op.rotulo}`, comp);
+        }
+        let raiz;
+        if (comps.length > 1) {
+          raiz = f.combineAsVariants(comps, f.currentPage);
+          comps.forEach((k, i) => {
+            k.x = 20;
+            k.y = 20 + i * (k.height + 40);
+          });
+          raiz.layoutMode = "NONE";
+          try {
+            raiz.resizeWithoutConstraints(
+              Math.max(...comps.map((k) => k.width)) + 40,
+              comps.reduce((s, k) => s + k.height + 40, 0) + 20
+            );
+          } catch (e) {
+          }
+        } else {
+          raiz = comps[0];
+          f.currentPage.appendChild(raiz);
+        }
+        raiz.name = `${c.nome} \xB7 ${peca.nome}`;
+        raiz.description = `Pe\xE7a reutiliz\xE1vel de ${c.nome}. Edite o desenho aqui: todas as variantes de ${c.nome} usam inst\xE2ncias desta pe\xE7a.`;
+        raiz.x = x;
+        raiz.y = cursorY;
+        cursorY += raiz.height + 60;
+        this.rel.pecas.push({ nome: raiz.name, id: raiz.id, variantes: comps.length });
+        ultimo = raiz;
+      }
+      return ultimo;
+    }
+    construirNo(p, alvo, paiAutoLayout, onde, refs) {
+      var _a, _b, _c, _d, _e, _f, _g;
       const f = this.figma;
       let no;
       const local = `${onde} \u203A ${p.nome}`;
-      if (p.tipo === "svg") {
-        no = f.createNodeFromSvg((_a = p.svg) != null ? _a : '<svg xmlns="http://www.w3.org/2000/svg"/>');
+      const pecaComp = p.peca ? this.pecas.get(`${p.peca.nome}|${p.peca.variante}`) : void 0;
+      if (p.tipo === "svg" && pecaComp) {
+        no = pecaComp.createInstance();
+        if ((_b = (_a = p.svgTraco) == null ? void 0 : _a.tracejado) == null ? void 0 : _b.length) {
+          for (const v of no.findAll((x) => x.type === "VECTOR"))
+            v.dashPattern = p.svgTraco.tracejado;
+        }
+      } else if (p.tipo === "svg") {
+        no = f.createNodeFromSvg((_c = p.svg) != null ? _c : '<svg xmlns="http://www.w3.org/2000/svg"/>');
         no.fills = [];
         const vetores = no.findAll ? no.findAll((x) => x.type === "VECTOR") : [];
-        for (const vet of vetores) {
-          if (p.svgTraco) {
-            vet.strokes = [this.pintura({ tipo: "solido", cor: p.svgTraco.cor }, local)];
-            vet.strokeWeight = Number(p.svgTraco.espessura.valor);
-            this.vincular(vet, "strokeWeight", p.svgTraco.espessura, local);
-            if ((_b = p.svgTraco.tracejado) == null ? void 0 : _b.length) vet.dashPattern = p.svgTraco.tracejado;
-            vet.strokeCap = "ROUND";
-          }
+        if (p.svgTraco) {
+          this.tracarVetores(vetores, p.svgTraco, local);
+          if ((_d = p.svgTraco.tracejado) == null ? void 0 : _d.length)
+            for (const v of vetores) v.dashPattern = p.svgTraco.tracejado;
         }
       } else if (p.tipo === "texto" && p.texto) {
         no = f.createText();
@@ -1657,11 +1880,12 @@
         if (p.texto.espacamento)
           no.letterSpacing = { value: Number(p.texto.espacamento.valor), unit: "PIXELS" };
         if (p.texto.caixaAlta) no.textCase = "UPPER";
+        no.textAlignHorizontal = p.texto.alinhamento;
         no.textAutoResize = "WIDTH_AND_HEIGHT";
         if (!p.texto.propriedade) this.vincular(no, "characters", p.texto.conteudo, local);
         this.vincularTexto(no, "fontSize", p.texto.tamanho, local);
         if (p.texto.espacamento) this.vincularTexto(no, "letterSpacing", p.texto.espacamento, local);
-        if (p.texto.propriedade) refsTexto.push({ no, prop: p.texto.propriedade, plano: p });
+        if (p.texto.propriedade) refs.texto.push({ no, prop: p.texto.propriedade, plano: p });
       } else if (p.tipo === "elipse") {
         no = f.createEllipse();
       } else if (p.tipo === "retangulo") {
@@ -1684,28 +1908,50 @@
           this.vincular(no, lado, p.autoLayout.paddingX, local);
         for (const lado of ["paddingTop", "paddingBottom"])
           this.vincular(no, lado, p.autoLayout.paddingY, local);
-        const fixo = p.largura !== void 0;
-        no.primaryAxisSizingMode = fixo ? "FIXED" : "AUTO";
-        no.counterAxisSizingMode = fixo ? "FIXED" : "AUTO";
+        const hor = p.autoLayout.direcao === "HORIZONTAL";
+        const principal = hor ? p.largura : p.altura;
+        const cruzado = hor ? p.altura : p.largura;
+        no.primaryAxisSizingMode = principal !== void 0 ? "FIXED" : "AUTO";
+        no.counterAxisSizingMode = cruzado !== void 0 ? "FIXED" : "AUTO";
       }
-      if (p.largura && p.altura && p.tipo !== "texto" && p.tipo !== "svg") {
-        no.resize(Math.max(0.01, Number(p.largura.valor)), Math.max(0.01, Number(p.altura.valor)));
-        this.vincular(no, "width", p.largura, local);
-        this.vincular(no, "height", p.altura, local);
+      if ((p.largura || p.altura) && p.tipo !== "texto") {
+        const auto = p.tipo === "frame" && p.autoLayout;
+        if (p.largura && p.altura)
+          no.resize(Math.max(0.01, Number(p.largura.valor)), Math.max(0.01, Number(p.altura.valor)));
+        else if (p.largura && auto)
+          no.resize(Math.max(0.01, Number(p.largura.valor)), Math.max(0.01, no.height));
+        else if (p.altura && auto)
+          no.resize(Math.max(0.01, no.width), Math.max(0.01, Number(p.altura.valor)));
+        if (auto && !(p.largura && p.altura)) {
+          const hor = p.autoLayout.direcao === "HORIZONTAL";
+          if (p.largura)
+            hor ? no.counterAxisSizingMode = "AUTO" : no.primaryAxisSizingMode = "AUTO";
+          else hor ? no.primaryAxisSizingMode = "AUTO" : no.counterAxisSizingMode = "AUTO";
+        }
+        if (p.largura) this.vincular(no, "width", p.largura, local);
+        if (p.altura) this.vincular(no, "height", p.altura, local);
       }
-      if (!paiAutoLayout) {
+      if (!paiAutoLayout || p.absoluto) {
         if (p.x !== void 0) no.x = p.x;
         if (p.y !== void 0) no.y = p.y;
       }
       if (p.rotacao) no.rotation = p.rotacao;
+      if (p.arco && p.tipo === "elipse") {
+        no.arcData = {
+          startingAngle: p.arco.inicio,
+          endingAngle: p.arco.fim,
+          innerRadius: p.arco.interno
+        };
+      }
       if (p.opacidade) {
         no.opacity = Math.min(1, Math.max(0, Number(p.opacidade.valor)));
         this.vincular(no, "opacity", p.opacidade, local);
       }
       if (p.visivel) {
         no.visible = p.visivel.valor !== false;
-        this.vincular(no, "visible", p.visivel, local);
+        if (!p.propriedadeVisivel) this.vincular(no, "visible", p.visivel, local);
       }
+      if (p.propriedadeVisivel) refs.visivel.push({ no, prop: p.propriedadeVisivel, plano: p });
       if (p.raio && "cornerRadius" in no) {
         no.cornerRadius = Number(p.raio.valor);
         for (const canto of [
@@ -1719,26 +1965,92 @@
       if (p.preenchimentos.length && p.tipo !== "svg")
         no.fills = p.preenchimentos.map((x) => this.pintura(x, local));
       if (p.traco) {
-        no.strokes = [this.pintura({ tipo: "solido", cor: p.traco.cor }, local)];
+        no.strokes = [this.pintura(p.traco.pintura, local)];
         no.strokeWeight = Number(p.traco.espessura.valor);
         no.strokeAlign = "INSIDE";
         this.vincular(no, "strokeWeight", p.traco.espessura, local);
       }
       this.efeitos(no, p, local);
+      const absolutos = [];
       for (const filho of p.filhos) {
-        const n = this.construirNo(filho, null, !!p.autoLayout, local, refsTexto);
+        const n = this.construirNo(filho, null, !!p.autoLayout, local, refs);
         no.appendChild(n);
+        if (p.autoLayout && filho.absoluto) {
+          n.layoutPositioning = "ABSOLUTE";
+          absolutos.push({ no: n, plano: filho });
+        } else if (p.autoLayout && ((_e = filho.texto) == null ? void 0 : _e.preencher)) {
+          n.layoutSizingHorizontal = "FILL";
+          n.textAutoResize = "HEIGHT";
+        }
+        if (filho.restricoes) {
+          try {
+            n.constraints = filho.restricoes;
+          } catch (e) {
+          }
+        }
+      }
+      for (const a of absolutos) {
+        if (((_f = a.plano.restricoes) == null ? void 0 : _f.horizontal) === "STRETCH") {
+          a.no.x = 0;
+          a.no.resize(Math.max(0.01, no.width), a.no.height);
+        }
+        if (((_g = a.plano.restricoes) == null ? void 0 : _g.vertical) === "STRETCH") {
+          a.no.y = 0;
+          a.no.resize(a.no.width, Math.max(0.01, no.height));
+        }
       }
       return no;
     }
-    /* ------------------------------ Componentes ------------------------------ */
+    /** Cria as propriedades de componente (texto e visibilidade) e liga as camadas a elas. */
+    propriedades(principal, refsPorVariante) {
+      var _a, _b;
+      const f = this.figma;
+      const tipos = [
+        { lista: "texto", tipo: "TEXT", campo: "characters" },
+        { lista: "visivel", tipo: "BOOLEAN", campo: "visible" }
+      ];
+      for (const t of tipos) {
+        const nomes = new Set(refsPorVariante.flatMap((r) => r[t.lista].map((x) => x.prop)));
+        for (const nome of nomes) {
+          const ref = refsPorVariante.flatMap((r) => r[t.lista]).find((r) => r.prop === nome);
+          const prop = t.tipo === "TEXT" ? ref.plano.texto.conteudo : ref.plano.visivel;
+          const literal2 = t.tipo === "TEXT" ? String((_a = prop == null ? void 0 : prop.valor) != null ? _a : "") : prop ? prop.valor !== false : true;
+          const v = this.variavel(prop);
+          let chave;
+          try {
+            chave = principal.addComponentProperty(
+              nome,
+              t.tipo,
+              v ? f.variables.createVariableAlias(v) : literal2
+            );
+          } catch (e) {
+            chave = principal.addComponentProperty(nome, t.tipo, literal2);
+            this.rel.avisos.push(
+              `Propriedade "${nome}": o padr\xE3o n\xE3o p\xF4de ser ligado \xE0 vari\xE1vel; ficou com o valor atual.`
+            );
+          }
+          for (const refs of refsPorVariante) {
+            for (const r of refs[t.lista].filter((x) => x.prop === nome)) {
+              try {
+                r.no.componentPropertyReferences = __spreadProps(__spreadValues({}, (_b = r.no.componentPropertyReferences) != null ? _b : {}), {
+                  [t.campo]: chave
+                });
+              } catch (e) {
+                this.rel.avisos.push(`Propriedade "${nome}": ${e.message}`);
+              }
+            }
+          }
+          this.rel.propriedades.push(`${nome} (${t.tipo === "TEXT" ? "texto" : "mostrar/ocultar"})`);
+        }
+      }
+    }
     construirComponente(c, x0, y0) {
       const f = this.figma;
       const variantes = [];
       const refsPorVariante = [];
       c.variantes.forEach((v) => {
         const comp = f.createComponent();
-        const refs = [];
+        const refs = { texto: [], visivel: [] };
         this.construirNo(v.arvore, comp, false, c.nome, refs);
         comp.name = c.variantes.length > 1 ? v.nome : c.nome;
         variantes.push(comp);
@@ -1773,38 +2085,7 @@
 KCX ${c.id} v${c.versao} \xB7 N\xEDvel ${c.nivel}.
 Edit\xE1vel: ${c.editavel.join("; ")}.
 Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
-      const nomesProps = new Set(refsPorVariante.flat().map((r) => r.prop));
-      for (const nome of nomesProps) {
-        const ref = refsPorVariante[0].find((r) => r.prop === nome);
-        if (!(ref == null ? void 0 : ref.plano.texto)) continue;
-        const v = this.variavel(ref.plano.texto.conteudo);
-        let chave;
-        try {
-          chave = principal.addComponentProperty(
-            nome,
-            "TEXT",
-            v ? f.variables.createVariableAlias(v) : String(ref.plano.texto.conteudo.valor)
-          );
-        } catch (e) {
-          chave = principal.addComponentProperty(
-            nome,
-            "TEXT",
-            String(ref.plano.texto.conteudo.valor)
-          );
-          this.rel.avisos.push(
-            `Propriedade "${nome}": o padr\xE3o n\xE3o p\xF4de ser ligado \xE0 vari\xE1vel; ficou com o texto atual.`
-          );
-        }
-        for (const refs of refsPorVariante) {
-          for (const r of refs.filter((x) => x.prop === nome)) {
-            try {
-              r.no.componentPropertyReferences = { characters: chave };
-            } catch (e) {
-              this.rel.avisos.push(`Propriedade "${nome}": ${e.message}`);
-            }
-          }
-        }
-      }
+      this.propriedades(principal, refsPorVariante);
       try {
         principal.setSharedPluginData(CHAVE_PLUGIN, "componente", c.id);
         principal.setSharedPluginData(CHAVE_PLUGIN, "versao", c.versao);
@@ -1816,6 +2097,17 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       }
       this.rel.componentes.push({ nome: c.nome, id: principal.id, variantes: variantes.length });
       return principal;
+    }
+    /** Instância do componente pronta para usar, ao lado da definição. */
+    construirExemplo(c, principal, x, y) {
+      const base = principal.type === "COMPONENT_SET" ? principal.defaultVariant : principal;
+      const inst = base.createInstance();
+      inst.name = `${c.nome} \u2014 inst\xE2ncia de exemplo`;
+      this.figma.currentPage.appendChild(inst);
+      inst.x = x;
+      inst.y = y;
+      this.rel.exemplos.push(inst.id);
+      return inst;
     }
     /* ------------------------------ Documentação ------------------------------ */
     texto(conteudo, tamanho, estilo = "Regular", familia = "Inter", cor = { r: 0.96, g: 0.95, b: 1, a: 1 }) {
@@ -1845,7 +2137,7 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       add(this.texto(`${c.nome} \u2014 KCX v${c.versao}`, 28, "Bold"));
       add(
         this.texto(
-          `N\xEDvel ${c.nivel} \xB7 ${c.nivel === 1 ? "nativo edit\xE1vel" : c.nivel === 2 ? "parcialmente edit\xE1vel" : "pacote de desenvolvimento"} \xB7 pacote ${c.pacote}`,
+          `N\xEDvel ${c.nivel} \xB7 ${c.nivel === 1 ? "nativo edit\xE1vel" : "parcialmente edit\xE1vel"} \xB7 pacote ${c.pacote}`,
           14
         )
       );
@@ -1937,11 +2229,22 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       const principais = /* @__PURE__ */ new Map();
       const criados = [];
       for (const c of this.plano.componentes) {
-        const p = this.construirComponente(c, x, y);
+        const pecas = c.pecas.length ? this.construirPecas(c, x, y) : null;
+        const px = pecas ? x + pecas.width + 80 : x;
+        const p = this.construirComponente(c, px, y);
         principais.set(c.id, p);
         criados.push(p);
-        if (this.plano.documentacao) criados.push(this.construirDocumentacao(c, x + p.width + 80, y));
-        y += Math.max(p.height, 200) + 120;
+        if (pecas) criados.push(pecas);
+        const exemplo = this.construirExemplo(c, p, px, y + p.height + 60);
+        criados.push(exemplo);
+        let alto = p.height + 60 + exemplo.height;
+        if (this.plano.documentacao) {
+          const doc = this.construirDocumentacao(c, px + p.width + 80, y);
+          criados.push(doc);
+          alto = Math.max(alto, doc.height);
+        }
+        if (pecas) alto = Math.max(alto, pecas.height);
+        y += Math.max(alto, 200) + 160;
       }
       if (this.plano.composicao) this.construirComposicao(principais, x, y);
       try {

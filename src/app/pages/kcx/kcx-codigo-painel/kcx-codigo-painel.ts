@@ -3,9 +3,10 @@ import { KcxCodigo, KcxComponente } from '../../../kcx/kcx.types';
 import { Valores, blocoRoot, lerBlocoRoot, resolverSaidas } from '../../../kcx/resolver';
 import { criarPacote, serializar } from '../../../kcx/serializar';
 import { svgEstatico } from '../../../kcx/exportar-kcx';
+import { angularKcx } from '../../../kcx/angular';
 import { CodeViewer } from '../../../shared/components/code-viewer/code-viewer';
 
-type Aba = 'variaveis' | 'html' | 'css' | 'js' | 'svg' | 'kcx';
+type Aba = 'variaveis' | 'html' | 'css' | 'js' | 'svg' | 'ng-ts' | 'ng-css' | 'kcx';
 
 /**
  * Código-fonte do componente, sempre sincronizado com as variáveis.
@@ -38,6 +39,7 @@ export class KcxCodigoPainel {
   protected readonly svg = computed(
     () => this.comp().codigo.svg ?? svgEstatico(this.comp(), this.valores()),
   );
+  protected readonly angular = computed(() => angularKcx(this.comp(), this.valores()));
   protected readonly kcx = computed(() =>
     serializar(
       criarPacote([this.comp()], { valores: { [this.comp().id]: this.valores() }, modo: 'pacote' }),
@@ -50,6 +52,8 @@ export class KcxCodigoPainel {
     { id: 'css', rotulo: 'CSS' },
     { id: 'js', rotulo: 'JS' },
     { id: 'svg', rotulo: 'SVG' },
+    { id: 'ng-ts', rotulo: 'Angular (TS)' },
+    { id: 'ng-css', rotulo: 'Angular (CSS)' },
     { id: 'kcx', rotulo: 'KCX JSON' },
   ];
 
@@ -65,15 +69,27 @@ export class KcxCodigoPainel {
         return this.codigo().js;
       case 'svg':
         return this.svg();
+      case 'ng-ts':
+        return this.angular().ts;
+      case 'ng-css':
+        return this.angular().css;
       default:
         return this.kcx();
     }
   }
 
   protected linguagem(): string {
-    return { variaveis: 'CSS', html: 'HTML', css: 'CSS', js: 'JS', svg: 'HTML', kcx: 'JSON' }[
-      this.aba()
-    ];
+    const mapa: Record<Aba, string> = {
+      variaveis: 'CSS',
+      html: 'HTML',
+      css: 'CSS',
+      js: 'JS',
+      svg: 'HTML',
+      'ng-ts': 'TS',
+      'ng-css': 'CSS',
+      kcx: 'JSON',
+    };
+    return mapa[this.aba()];
   }
 
   /** Lê os quatro campos do modo avançado e sincroniza as três camadas. */

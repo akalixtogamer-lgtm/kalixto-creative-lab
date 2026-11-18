@@ -83,10 +83,10 @@ Conversão de unidades: ms ↔ s, px ↔ rem/em (base 16), deg ↔ turn ↔ rad 
 ```
 
 Alvos: `css-var` (sempre `--kcx-*`), `atributo` (`seletor` + `atributo`, nunca `on*`), `texto`
-(`textContent`) e `parametro-gerador` (só para kits nível 3 da Biblioteca).
+(`textContent`).
 
 Operações: `multiplicar`, `somar`, `mapear` (`de` → `para`), `limitar`, `arredondar`, `dividir`
-(`numerador / valor`), `multiplicarPorVariavel`, `somarVariavel`, `alpha`, `converter` (unidade),
+(`numerador / valor`), `multiplicarPorVariavel`, `dividirPorVariavel`, `somarVariavel`, `alpha`, `converter` (unidade),
 `mapa` (enum/boolean → texto). Na estrutura visual também `pontoNoCaminho` e `tracoNoCaminho`.
 
 Consistência: números são limitados por `min`/`max`; se uma conta der `NaN`/`Infinity`, o valor
@@ -138,9 +138,40 @@ em no máximo uma camada (as custom properties colidiriam).
 
 ## 9. Níveis de compatibilidade
 
-1. **Nativo editável** — SVG, formas, textos, gradientes, opacidade, transformações compatíveis.
-2. **Parcialmente editável** — estrutura, variáveis e quadros-chave como variantes; o movimento contínuo não roda no Figma.
-3. **Pacote de desenvolvimento** — GSAP, Three.js, WebGL, Canvas, GLSL, partículas: código, configuração, dependências e documentação.
+KCX aceita só **HTML, CSS, SVG e Angular** (TypeScript gerado). Nada de GSAP, Three.js, WebGL,
+Canvas ou bibliotecas externas: `dependencias` precisa ser vazio e `tecnologia` só aceita
+`HTML`, `CSS`, `SVG`, `Angular` e `TypeScript`. Assim tudo que o componente desenha vira camada
+nativa no Figma.
+
+1. **Nativo editável** — formas, textos, gradientes (lineares e cônicos), arcos, opacidade, sombras e desfoques: tudo vira camada nativa ligada a variáveis.
+2. **Parcialmente editável** — a estrutura e as variáveis são nativas, e os quadros-chave viram variantes; o movimento contínuo (keyframes, transições) não roda no Figma.
+
+## 9.1 Edição total no Figma
+
+O Figma Bridge entrega cada componente para ser **mudado e reutilizado** no Figma:
+
+| O que | Como |
+|---|---|
+| Cor | Variável COLOR ligada a preenchimento, traço, sombra e paradas de gradiente; modos Dark/Light em Colors |
+| Formato | Raio canto a canto, borda, padding e arcos por variável; caminhos SVG viram vetores nativos numa **peça** reutilizável (`<Comp> · Caminho`, uma variante por forma) — editar a peça muda todas as variantes |
+| Tamanho | Auto Layout (cresce com o texto), camadas absolutas com restrição Stretch/Scale (halo, fundo, arcos acompanham) e largura/altura por variável |
+| Conteúdo | Propriedades de texto (`TEXT`) com padrão ligado à variável |
+| Mostrar/ocultar | Propriedades `BOOLEAN` (Brilho, Trilha, Ponto, Mostrar texto…) com padrão ligado à variável |
+| Reutilização | Componente com variantes (estados × eixos), **instância de exemplo** ao lado, quadro de documentação |
+
+Limites reais da API do Figma (verificados no arquivo de teste):
+- O tracejado (`dashPattern`) é redistribuído por segmento do vetor, então não reproduz `stroke-dashoffset`.
+  Quadros com traço completo usam a peça sem tracejado; quadros parciais recebem um vetor já cortado no progresso.
+- Escopos só existem em variáveis COLOR, FLOAT e STRING.
+- Coleções compartilhadas: quando um componente de modo único entra numa coleção que já tem Dark/Light,
+  o valor é gravado em todos os modos existentes (nenhum modo novo é criado).
+
+## 9.2 Saída Angular
+
+`angularKcx(componente, valores)` gera um componente standalone (`selector: 'kcx-<id>'`) com um
+`input()` por variável, `computed` que resolve as saídas com o mesmo runtime (`kcx-runtime.ts`) e
+`host: { '[style]': ... }` para as propriedades `--kcx-*`. Está na aba **Angular** do painel de código
+e na pasta `angular/` do `.zip`. `npm run gerar:kcx-angular` gera os 6 componentes em `src/app/kcx-angular/`.
 
 ## 10. Versionamento
 

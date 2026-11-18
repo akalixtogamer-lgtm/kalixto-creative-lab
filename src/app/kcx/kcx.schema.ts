@@ -96,6 +96,7 @@ export const KCX_JSON_SCHEMA = {
             'arredondar',
             'dividir',
             'multiplicarPorVariavel',
+            'dividirPorVariavel',
             'somarVariavel',
             'alpha',
             'converter',
@@ -134,11 +135,6 @@ export const KCX_JSON_SCHEMA = {
               type: 'object',
               required: ['tipo', 'seletor'],
               properties: { tipo: { const: 'texto' }, seletor: texto },
-            },
-            {
-              type: 'object',
-              required: ['tipo', 'parametro'],
-              properties: { tipo: { const: 'parametro-gerador' }, parametro: texto },
             },
           ],
         },
@@ -282,7 +278,10 @@ export const KCX_JSON_SCHEMA = {
         nome: texto,
         categoria: texto,
         descricao: texto,
-        tecnologia: { type: 'array', items: { type: 'string' } },
+        tecnologia: {
+          type: 'array',
+          items: { enum: ['HTML', 'CSS', 'SVG', 'Angular', 'TypeScript'] },
+        },
         versao: semver,
         licenca: {
           type: 'object',
@@ -312,7 +311,7 @@ export const KCX_JSON_SCHEMA = {
         variaveis: { type: 'array', items: ref('variavel') },
         estados: { type: 'array', items: ref('estado') },
         presets: { type: 'array', items: ref('preset') },
-        dependencias: { type: 'array', items: ref('dependencia') },
+        dependencias: { type: 'array', maxItems: 0, items: ref('dependencia') },
         estrutura: ref('no'),
         animacoes: {
           type: 'array',
@@ -320,7 +319,7 @@ export const KCX_JSON_SCHEMA = {
             type: 'object',
             required: ['id', 'nome', 'tecnica', 'variaveis', 'figma', 'nivel', 'descricao'],
             properties: {
-              nivel: { enum: [1, 2, 3] },
+              nivel: { enum: [1, 2] },
               figma: { enum: ['variantes', 'documental'] },
             },
           },
@@ -333,7 +332,7 @@ export const KCX_JSON_SCHEMA = {
               type: 'object',
               required: ['nivel', 'editavel', 'parcial', 'naoSuportado', 'limitacoes'],
               properties: {
-                nivel: { enum: [1, 2, 3] },
+                nivel: { enum: [1, 2] },
                 eixosVariante: { type: 'array', items: { type: 'string' } },
               },
             },

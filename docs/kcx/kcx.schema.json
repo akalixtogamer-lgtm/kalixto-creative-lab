@@ -137,6 +137,7 @@
             "arredondar",
             "dividir",
             "multiplicarPorVariavel",
+            "dividirPorVariavel",
             "somarVariavel",
             "alpha",
             "converter",
@@ -208,22 +209,6 @@
                   "const": "texto"
                 },
                 "seletor": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              }
-            },
-            {
-              "type": "object",
-              "required": [
-                "tipo",
-                "parametro"
-              ],
-              "properties": {
-                "tipo": {
-                  "const": "parametro-gerador"
-                },
-                "parametro": {
                   "type": "string",
                   "minLength": 1
                 }
@@ -862,7 +847,13 @@
         "tecnologia": {
           "type": "array",
           "items": {
-            "type": "string"
+            "enum": [
+              "HTML",
+              "CSS",
+              "SVG",
+              "Angular",
+              "TypeScript"
+            ]
           }
         },
         "versao": {
@@ -950,6 +941,7 @@
         },
         "dependencias": {
           "type": "array",
+          "maxItems": 0,
           "items": {
             "$ref": "#/$defs/dependencia"
           }
@@ -974,8 +966,7 @@
               "nivel": {
                 "enum": [
                   1,
-                  2,
-                  3
+                  2
                 ]
               },
               "figma": {
@@ -1008,8 +999,7 @@
                 "nivel": {
                   "enum": [
                     1,
-                    2,
-                    3
+                    2
                   ]
                 },
                 "eixosVariante": {

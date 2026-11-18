@@ -5,6 +5,7 @@ import { COMPOSICAO_PADRAO, pacoteComposicao, resolverComposicao } from '../comp
 import { planejarFigma, matrizGradiente } from '../figma-plano';
 import { clonar, compararValores, criarPacote, serializar } from '../serializar';
 import { valoresAtuais } from '../resolver';
+import { comprimentoSvg } from '../svg-caminho';
 import { detectarDuplicados, importarNoFigma, lerAlteracoes } from './construir';
 import { NoMock, criarFigmaMock } from './figma-mock';
 
@@ -73,10 +74,13 @@ describe('Figma Bridge — plano', () => {
     const ponto = (i: number) => vs[i].arvore.filhos.find((f) => f.id === 'ponto')!;
     expect(ponto(6).x).toBeCloseTo(10 - 7); // início da onda (10, 80) menos meio ponto
     expect(ponto(0).x).toBeCloseTo(390 - 7); // fim (primeira variante = caminho completo)
-    const dash = (i: number) =>
-      vs[i].arvore.filhos.find((f) => f.id === 'linha')!.svgTraco!.tracejado![0];
-    expect(dash(6)).toBeLessThan(1);
-    expect(dash(0)).toBeGreaterThan(300);
+    // O Figma redistribui dashPattern por segmento (visto no Figma real): sem tracejado.
+    const linha = (i: number) => vs[i].arvore.filhos.find((f) => f.id === 'linha')!;
+    expect(linha(0).svgTraco!.tracejado).toBeUndefined();
+    expect(linha(0).peca).toEqual({ nome: 'Caminho', variante: 'onda' }); // completo = instância da peça
+    expect(linha(3).peca).toBeUndefined(); // Meio = vetor próprio cortado
+    expect(comprimentoSvg(linha(3).svg!)).toBeCloseTo(comprimentoSvg(linha(0).svg!) / 2, -1);
+    expect(comprimentoSvg(linha(6).svg!)).toBeLessThan(1); // Início = só a ponta
   });
 });
 
@@ -95,7 +99,7 @@ describe('Figma Bridge — importação (API simulada)', () => {
     expect(Object.values(bg.valuesByMode)[1]).toEqual({ r: 1, g: 1, b: 1, a: 1 }); // Light
     const doc = porNome(variaveis, 'neon-glow/pulse-duration');
     expect(doc.resolvedType).toBe('TIMING'); // TIMING não aceita escopo (verificado no Figma)
-    expect(porNome(variaveis, 'neon-glow/glow-distance').scopes).toEqual([]); // documental fica fora dos seletores
+    expect(porNome(variaveis, 'neon-glow/hover-boost').scopes).toEqual([]); // documental fica fora dos seletores
     expect(Object.values(doc.valuesByMode)[0]).toBe(2);
     expect(porNome(variaveis, 'neon-glow/radius').resolvedType).toBe('FLOAT');
     expect(rel.vinculosFalhos).toEqual([]);
@@ -108,7 +112,6 @@ describe('Figma Bridge — importação (API simulada)', () => {
       'Estado=Padrão',
       'Estado=Hover',
       'Estado=Foco',
-      'Estado=Sem brilho',
     ]);
     const id = (n: string) => porNome(variaveis, n).id;
     const padrao = set.children[0];
@@ -118,7 +121,15 @@ describe('Figma Bridge — importação (API simulada)', () => {
       id('neon-glow/secondary-color'),
     ]);
     expect(halo.effects[0].boundVariables.radius.id).toBe(id('neon-glow/blur'));
-    expect(halo.boundVariables['visible'].id).toBe(id('neon-glow/glow-enabled'));
+    // Visibilidade do halo: propriedade "Brilho" do componente, com padrão ligado à variável.
+    expect(halo.componentPropertyReferences!['visible'].startsWith('Brilho')).toBe(true);
+    const brilho = set.componentPropertyDefinitions[halo.componentPropertyReferences!['visible']];
+    expect(brilho.type).toBe('BOOLEAN');
+    expect(brilho.defaultValue.id).toBe(id('neon-glow/glow-enabled'));
+    // Halo absoluto que estica com o Auto Layout (acompanha o tamanho do botão)
+    expect(halo['layoutPositioning']).toBe('ABSOLUTE');
+    expect(halo['constraints']).toEqual({ horizontal: 'STRETCH', vertical: 'STRETCH' });
+    expect(padrao.boundVariables['paddingLeft'].id).toBe(id('neon-glow/halo-padding'));
     expect(halo.boundVariables['opacity'].id).toBe(id('neon-glow/halo-opacity'));
     const botao = no(padrao, 'Botão');
     expect(botao.strokes[0].boundVariables.color.id).toBe(id('neon-glow/primary-color'));
@@ -129,15 +140,14 @@ describe('Figma Bridge — importação (API simulada)', () => {
     expect(no(set.children[1], 'Halo').boundVariables['opacity'].id).toBe(
       id('neon-glow/hover/halo-opacity'),
     );
-    expect(no(set.children[3], 'Halo').boundVariables['visible'].id).toBe(
-      id('neon-glow/desligado/glow-enabled'),
-    );
   });
 
   it('cria a propriedade de texto com padrão ligado à variável e guarda o código', async () => {
     const { pagina, variaveis, p } = await importar();
     const set = pagina.children.find((n) => n.type === 'COMPONENT_SET')!;
-    const [chave, def] = Object.entries(set.componentPropertyDefinitions)[0] as [string, any];
+    const [chave, def] = Object.entries(set.componentPropertyDefinitions).find(([k]) =>
+      k.startsWith('Rótulo'),
+    ) as [string, any];
     expect(chave.startsWith('Rótulo')).toBe(true);
     expect(def.defaultValue.id).toBe(porNome(variaveis, 'neon-glow/label').id);
     expect(no(set.children[0], 'Rótulo').componentPropertyReferences).toEqual({
@@ -164,6 +174,19 @@ describe('Figma Bridge — importação (API simulada)', () => {
     });
   });
 
+  it('coleção já existente com Dark/Light: componente de modo único preenche todos os modos', async () => {
+    // Bug visto no Figma real: Neon cria Colors com Dark/Light; o SVG Motion (modo único)
+    // criava um modo "Valor" e deixava o Dark (padrão) branco.
+    const primeiro = await importar([NEON_GLOW]);
+    const { colecoes, variaveis, rel } = await importar([SVG_MOTION], 'completo', primeiro);
+    const cores = colecoes.find((c) => c.name === 'KCX · Colors');
+    expect(cores.modes.map((m: any) => m.name)).toEqual(['Dark', 'Light']);
+    const linha = porNome(variaveis, 'svg-motion/stroke-color');
+    expect(Object.keys(linha.valuesByMode)).toHaveLength(2);
+    expect(new Set(Object.values(linha.valuesByMode).map((c) => JSON.stringify(c))).size).toBe(1);
+    expect(rel.avisos.filter((a) => a.includes('Modo'))).toEqual([]);
+  });
+
   it('o raio é vinculado canto a canto', async () => {
     const { pagina, variaveis } = await importar();
     const botao = no(pagina.children.find((n) => n.type === 'COMPONENT_SET')!.children[0], 'Botão');
@@ -172,21 +195,46 @@ describe('Figma Bridge — importação (API simulada)', () => {
     }
   });
 
-  it('SVG Motion: vetores com traço vinculado e ponto com tamanho vinculado', async () => {
-    const { pagina, variaveis } = await importar([SVG_MOTION]);
-    const set = pagina.children.find((n) => n.type === 'COMPONENT_SET')!;
-    expect(set.children).toHaveLength(9);
-    const linha = no(set.children[0], 'Linha').children[0];
-    expect(linha.type).toBe('VECTOR');
-    expect(linha.boundVariables['strokeWeight'].id).toBe(
+  it('SVG Motion: caminho numa peça reutilizável, instâncias nas variantes, ponto com tamanho vinculado', async () => {
+    const { pagina, variaveis, rel } = await importar([SVG_MOTION]);
+    const peca = pagina.children.find((n) => n.name === 'SVG Motion · Caminho')!;
+    expect(peca.type).toBe('COMPONENT_SET');
+    expect(peca.children.map((c) => c.name)).toEqual([
+      'Forma=onda',
+      'Forma=laço',
+      'Forma=zigue-zague',
+    ]);
+    const vetorMestre = peca.children[0].children[0];
+    expect(vetorMestre.type).toBe('VECTOR');
+    expect(vetorMestre.boundVariables['strokeWeight'].id).toBe(
       porNome(variaveis, 'svg-motion/stroke-width').id,
     );
-    expect(linha.strokes[0].boundVariables.color.id).toBe(
+    expect(vetorMestre.strokes[0].boundVariables.color.id).toBe(
       porNome(variaveis, 'svg-motion/stroke-color').id,
     );
+    const set = pagina.children.find((n) => n.name === 'SVG Motion')!;
+    expect(set.children).toHaveLength(9);
+    const linha = no(set.children[0], 'Linha');
+    expect(linha.type).toBe('INSTANCE');
+    expect(linha['mainComponent']).toBe(peca.children[0]);
+    expect(linha.children[0]['dashPattern'] ?? []).toEqual([]); // completo: traço contínuo
+    const meio = no(set.children[3], 'Linha');
+    expect(meio.type).not.toBe('INSTANCE'); // quadro parcial: vetor próprio já cortado
+    expect(meio.findAll((n) => n.type === 'VECTOR')[0].boundVariables['strokeWeight'].id).toBe(
+      porNome(variaveis, 'svg-motion/stroke-width').id,
+    );
+    expect(linha['constraints']).toEqual({ horizontal: 'SCALE', vertical: 'SCALE' });
+    expect(rel.propriedades).toEqual(['Trilha (mostrar/ocultar)', 'Ponto (mostrar/ocultar)']);
     expect(no(set.children[0], 'Ponto').boundVariables['width'].id).toBe(
       porNome(variaveis, 'svg-motion/dot-size').id,
     );
+  });
+
+  it('cria uma instância de exemplo de cada componente', async () => {
+    const { pagina, rel } = await importar();
+    const exemplo = pagina.children.find((n) => n.name === 'Neon Glow — instância de exemplo')!;
+    expect(exemplo.type).toBe('INSTANCE');
+    expect(rel.exemplos).toEqual([exemplo.id]);
   });
 
   it('Animated Gradient: cada parada do gradiente vira uma variável de cor vinculada', async () => {
@@ -195,6 +243,13 @@ describe('Figma Bridge — importação (API simulada)', () => {
     expect(raiz.fills[0].gradientStops.map((s: any) => s.boundVariables.color.id)).toEqual(
       [1, 2, 3].map((i) => porNome(variaveis, `animated-gradient/gradient/stop-${i}`).id),
     );
+  });
+
+  it('cria uma instância de exemplo de cada componente', async () => {
+    const { pagina, rel } = await importar();
+    const exemplo = pagina.children.find((n) => n.name === 'Neon Glow — instância de exemplo')!;
+    expect(exemplo.type).toBe('INSTANCE');
+    expect(rel.exemplos).toEqual([exemplo.id]);
   });
 
   it('modo visual: camadas sem nenhuma variável nem vínculo', async () => {
@@ -228,6 +283,12 @@ describe('Figma Bridge — importação (API simulada)', () => {
     expect(Object.values(alvo.valuesByMode)[0]).toEqual({ type: 'VARIABLE_ALIAS', id: comp.id });
     const quadro = mock.pagina.children.find((n) => n.name === 'KCX · Hero Neon')!;
     expect(quadro.children.map((c) => c.type)).toEqual(['INSTANCE', 'INSTANCE', 'INSTANCE']);
+    expect(
+      mock.pagina.children.filter((n) => n.name.endsWith('instância de exemplo')),
+    ).toHaveLength(3);
+    expect(
+      mock.pagina.children.filter((n) => n.name.endsWith('instância de exemplo')),
+    ).toHaveLength(3);
     expect(rel.composicao).toBe(quadro.id);
   });
 });

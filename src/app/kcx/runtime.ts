@@ -68,7 +68,7 @@ ${APLICAR}
 })();`;
 
 /** Cálculo dos vínculos em JS puro (espelho de resolver.ts). */
-const RESOLVER = String.raw`
+export const RESOLVER_JS = String.raw`
   function arred(n, c) { var f = Math.pow(10, c === undefined ? 4 : c); return Math.round(n * f) / f; }
   var BASE = { '': 1, x: 1, px: 1, rem: 16, em: 16, '%': 1, ms: 1, s: 1000, deg: 1, turn: 360, rad: 180 / Math.PI };
   var FAM = { '': 'n', x: 'n', px: 'c', rem: 'c', em: 'c', '%': 'p', ms: 't', s: 't', deg: 'a', turn: 'a', rad: 'a' };
@@ -101,6 +101,7 @@ const RESOLVER = String.raw`
       else if (o.op === 'arredondar') x = arred(x, o.casas);
       else if (o.op === 'dividir') x = x === 0 ? o.numerador : o.numerador / x;
       else if (o.op === 'multiplicarPorVariavel') x = x * valorDe(o.variavel, valores, vars);
+      else if (o.op === 'dividirPorVariavel') { var dv = valorDe(o.variavel, valores, vars); x = dv === 0 ? 0 : x / dv; }
       else if (o.op === 'somarVariavel') x = x + o.fator * valorDe(o.variavel, valores, vars);
       else if (o.op === 'alpha') x = comAlpha(x, o.variavel ? valorDe(o.variavel, valores, vars) : (o.valor === undefined ? 1 : o.valor));
       else if (o.op === 'converter') { if (FAM[u] !== FAM[o.para] && u !== o.para) throw new Error('KCX: unidade'); x = (x * BASE[u]) / BASE[o.para]; u = o.para; }
@@ -124,7 +125,6 @@ const RESOLVER = String.raw`
     var s = { cssVars: {}, atributos: [], textos: [] };
     vars.forEach(function (v) {
       v.vinculos.forEach(function (vin) {
-        if (vin.alvo.tipo === 'parametro-gerador') return;
         var x = operar(v, atuais[v.id], vin.transformar, atuais, vars);
         if (typeof x === 'number' && !isFinite(x)) x = operar(v, v.padrao, vin.transformar, {}, vars);
         var t = textoCss(v, x, vin);
@@ -159,7 +159,7 @@ export function runtimeStandalone(componenteId: string, variaveis: KcxVariavel[]
   return `/* KCX runtime — ${componenteId}. Kalixto Component Exchange, licença MIT. */
 (function () {
 ${APLICAR}
-${RESOLVER}
+${RESOLVER_JS}
   var vars = ${JSON.stringify(configRuntime(variaveis))};
   var valores = {};
   function limitar(v, x) {

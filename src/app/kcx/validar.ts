@@ -7,6 +7,7 @@
  * - referências na estrutura visual apontam para variáveis que existem.
  */
 import {
+  KCX_TECNOLOGIAS,
   KCX_FORMATO,
   KCX_SCHEMA_VERSION,
   KcxComponente,
@@ -108,8 +109,6 @@ function validarVariavel(
         e(`${cv}.alvo`, 'Seletor e atributo obrigatórios.');
       if (/^on/i.test(vin.alvo.atributo ?? ''))
         e(`${cv}.alvo.atributo`, 'Atributos de evento (on*) não são permitidos.');
-    } else if (vin.alvo?.tipo === 'parametro-gerador') {
-      if (!ehTexto(vin.alvo.parametro)) e(`${cv}.alvo.parametro`, 'Parâmetro obrigatório.');
     } else if (vin.alvo?.tipo === 'texto') {
       if (!ehTexto(vin.alvo.seletor)) e(`${cv}.alvo.seletor`, 'Seletor obrigatório.');
     } else e(`${cv}.alvo`, 'Alvo deve ser css-var, atributo ou texto.');
@@ -119,6 +118,7 @@ function validarVariavel(
       }
       if (
         (o.op === 'multiplicarPorVariavel' ||
+          o.op === 'dividirPorVariavel' ||
           o.op === 'somarVariavel' ||
           (o.op === 'alpha' && o.variavel)) &&
         !todas.has((o as { variavel: string }).variavel)
@@ -174,9 +174,29 @@ export function refsDoNo(no: KcxNo): { campo: string; ref: KcxRef<unknown> }[] {
       p.paradas.forEach((s, j) => add(`preenchimentos[${i}].paradas[${j}].cor`, s.cor));
     }
   });
+  const pintura = (
+    p: KcxNo['preenchimentos'] extends (infer P)[] | undefined ? P : never,
+    campo: string,
+  ) => {
+    if (p.tipo === 'solido') add(`${campo}.cor`, p.cor);
+    else if (p.tipo === 'gradiente-variavel') {
+      add(`${campo}.variavel`, { $var: p.variavel });
+      add(`${campo}.tamanho`, p.tamanho);
+      add(`${campo}.deslocamento`, p.deslocamento);
+    } else {
+      add(`${campo}.angulo`, p.angulo);
+      p.paradas.forEach((s, j) => add(`${campo}.paradas[${j}].cor`, s.cor));
+    }
+  };
   if (no.traco) {
-    add('traco.cor', no.traco.cor);
+    if (no.traco.cor !== undefined) add('traco.cor', no.traco.cor);
+    if (no.traco.pintura) pintura(no.traco.pintura, 'traco.pintura');
     add('traco.espessura', no.traco.espessura);
+  }
+  if (no.arco) {
+    add('arco.inicio', no.arco.inicio);
+    add('arco.fim', no.arco.fim);
+    add('arco.interno', no.arco.interno);
   }
   if (no.svgTraco) {
     add('svgTraco.cor', no.svgTraco.cor);
@@ -282,8 +302,18 @@ export function validarComponente(comp: KcxComponente, c: string): ProblemaKcx[]
     if (porId.get(eixo)?.tipo !== 'enum')
       e('compatibilidade.figma.eixosVariante', `"${eixo}" precisa ser uma variável enum.`);
   }
-  if (![1, 2, 3].includes(comp.compatibilidade?.figma?.nivel))
-    e('compatibilidade.figma.nivel', 'Nível deve ser 1, 2 ou 3.');
+  if (![1, 2].includes(comp.compatibilidade?.figma?.nivel))
+    e('compatibilidade.figma.nivel', 'Nível deve ser 1 (nativo) ou 2 (parcial).');
+  const fora = (comp.tecnologia ?? []).filter(
+    (t) => !(KCX_TECNOLOGIAS as readonly string[]).includes(t),
+  );
+  if (fora.length)
+    e(
+      'tecnologia',
+      `O KCX aceita só ${KCX_TECNOLOGIAS.join(', ')} (recebido: ${fora.join(', ')}).`,
+    );
+  if ((comp.dependencias ?? []).length)
+    e('dependencias', 'Componentes KCX não usam bibliotecas externas.');
   return erros;
 }
 

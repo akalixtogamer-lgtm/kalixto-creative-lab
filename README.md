@@ -24,7 +24,10 @@ Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
 ## KCX — Kalixto Component Exchange
 
 Formato aberto para criar componentes animados com **variáveis que controlam o componente** e levá-los
-ao Figma como estrutura editável. Abra **KCX Studio** (`/kcx`) no menu.
+ao Figma como estrutura editável. Só **CSS, SVG e Angular**, sem dependências, para que tudo vire camada
+nativa no Figma: cor, formato e tamanho por variável, propriedades de texto e liga/desliga, peças
+reutilizáveis e instância de exemplo. 6 componentes: Neon Glow, Animated Gradient, SVG Motion,
+Animated Border, Hover Lift e Gauge Meter. Abra **KCX Studio** (`/kcx`) no menu.
 
 - Especificação: [`docs/kcx/ESPECIFICACAO.md`](docs/kcx/ESPECIFICACAO.md)
 - Plugin do Figma: [`docs/kcx/FIGMA-BRIDGE.md`](docs/kcx/FIGMA-BRIDGE.md) · instalar: `figma-bridge/dist/manifest.json`
@@ -33,6 +36,7 @@ ao Figma como estrutura editável. Abra **KCX Studio** (`/kcx`) no menu.
 ```bash
 npm run figma:build   # gera o plugin em figma-bridge/dist (e o download dentro do lab)
 npm run kcx:schema    # atualiza docs/kcx/kcx.schema.json e os exemplos .kcx.json
+npm run gerar:kcx-angular   # gera os componentes Angular em src/app/kcx-angular/
 ```
 
 ---

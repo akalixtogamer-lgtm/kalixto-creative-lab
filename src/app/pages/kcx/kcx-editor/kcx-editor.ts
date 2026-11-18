@@ -28,7 +28,6 @@ import { KcxImportarPainel } from '../kcx-importar-painel/kcx-importar-painel';
 const NIVEL_ROTULO = {
   1: 'Nível 1 — nativo editável',
   2: 'Nível 2 — parcialmente editável',
-  3: 'Nível 3 — pacote de desenvolvimento',
 } as const;
 
 /**

@@ -55,34 +55,37 @@
   </section>
 
   <section class="kx-section kcxs__niveis" aria-labelledby="kcxs-niveis">
-    <h2 id="kcxs-niveis" class="kx-section-title">Três níveis de compatibilidade com o Figma</h2>
+    <h2 id="kcxs-niveis" class="kx-section-title">
+      Só CSS, SVG e Angular — editável de verdade no Figma
+    </h2>
     <div class="kcxs__tres">
       <div class="kx-glass">
         <h3>1 · Nativo editável</h3>
         <p>
-          SVG, formas, textos, gradientes, opacidade e transformações compatíveis viram camadas
-          nativas com variáveis vinculadas.
+          Formas, caminhos SVG, textos, gradientes, arcos, bordas e sombras viram camadas nativas,
+          ligadas a variáveis: cor, formato e tamanho mudam no próprio Figma.
         </p>
       </div>
       <div class="kx-glass">
         <h3>2 · Parcialmente editável</h3>
         <p>
-          Efeitos representados por camadas, propriedades e variantes (quadros-chave). A estrutura e
-          as variáveis ficam; o movimento contínuo não roda no Figma.
+          Tudo do nível 1, mais os quadros-chave da animação como variantes. O movimento contínuo
+          não roda no Figma — tempo e easing ficam como variáveis de Motion.
         </p>
       </div>
       <div class="kx-glass">
-        <h3>3 · Pacote de desenvolvimento</h3>
+        <h3>Reutilizável</h3>
         <p>
-          GSAP, Three.js, WebGL, Canvas, GLSL e partículas: código, configuração, dependências e
-          documentação. Qualquer efeito da Biblioteca exporta neste nível.
+          Cada efeito vira um componente com variantes, propriedades de texto e de visibilidade,
+          Auto Layout e restrições para redimensionar, e uma instância de exemplo ao lado.
         </p>
       </div>
     </div>
     <p class="kx-muted kcxs__nota">
-      O KCX nunca apresenta uma variável como funcional sem que ela esteja conectada a uma
-      propriedade. No Figma, o que não pode ser vinculado vira variável
-      <strong>documental</strong> — e o painel de exportação diz isso antes.
+      Efeitos que dependem de GSAP, Canvas, WebGL ou Three.js ficam fora do KCX. O KCX nunca
+      apresenta uma variável como funcional sem que ela esteja conectada a uma propriedade: o que o
+      Figma não vincula vira variável <strong>documental</strong>, e o painel de exportação diz isso
+      antes.
     </p>
   </section>
 
@@ -150,11 +153,8 @@
   <section class="kx-section" aria-labelledby="kcxs-lic">
     <h2 id="kcxs-lic" class="kx-section-title">Licenças</h2>
     <p class="kx-muted">
-      Os componentes KCX e o runtime são <strong>MIT</strong> e não usam bibliotecas externas. O
-      GSAP (usado em parte da Biblioteca) tem licença própria, gratuita e comercial, mas
-      <strong>não é open source</strong> e proíbe uso em ferramentas visuais de animação sem código
-      que concorram com o Webflow — por isso o núcleo do KCX é feito só com CSS, SVG e JavaScript
-      nativos. Kits com GSAP exportam no nível 3, com esse aviso.
+      Os componentes KCX, o runtime e o plugin são <strong>MIT</strong> e não usam bibliotecas
+      externas: só CSS, SVG e Angular. Nada depende de serviço pago ou de API privada.
     </p>
   </section>
 </div>

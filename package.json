@@ -14,7 +14,9 @@
     "verificar:angular": "npm run gerar:angular && git diff --exit-code -- src/app/efeitos-angular",
     "figma:build": "node scripts/build-figma.mjs",
     "figma:check": "tsc -p figma-bridge/tsconfig.json",
-    "kcx:schema": "esbuild scripts/exportar-schema-kcx.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/kcx-schema.mjs && node .angular/kcx-schema.mjs"
+    "kcx:schema": "esbuild scripts/exportar-schema-kcx.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/kcx-schema.mjs && node .angular/kcx-schema.mjs",
+    "gerar:kcx-angular": "esbuild scripts/gerar-kcx-angular.ts --bundle --platform=node --format=esm --log-level=error --outfile=.angular/gerar-kcx-angular.mjs && node .angular/gerar-kcx-angular.mjs",
+    "verificar:kcx-angular": "npm run gerar:kcx-angular && git diff --exit-code -- src/app/kcx-angular"
   },
   "private": true,
   "packageManager": "npm@10.9.9",

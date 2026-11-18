@@ -8,6 +8,7 @@ import { KcxComponente, KcxGradiente, KcxModoExportacao, KcxPacote } from './kcx
 import { PlanoEfeito, PlanoNo, PlanoPaint, planejarFigma, FigmaCor } from './figma-plano';
 import { Valores, blocoRoot, gradienteCss, resolverSaidas, valoresAtuais } from './resolver';
 import { runtimeStandalone } from './runtime';
+import { RUNTIME_ANGULAR, angularKcx } from './angular';
 import { criarPacote, serializar } from './serializar';
 import { corDeFigma } from './unidades';
 
@@ -109,7 +110,7 @@ export function tokensW3C(comp: KcxComponente, valores: Valores): Record<string,
 
 /* ============================== SVG estático ============================== */
 
-const esc = (s: string) =>
+const esc = (v: unknown, s = String(v)) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const cor = (c: FigmaCor) => corDeFigma(c).slice(0, 7);
 const alfa = (c: FigmaCor) => (c.a < 1 ? ` stop-opacity="${c.a}"` : '');
@@ -125,7 +126,7 @@ function medir(n: PlanoNo): { w: number; h: number } {
     };
   }
   if (n.autoLayout && n.largura === undefined) {
-    const filhos = n.filhos.map(medir);
+    const filhos = n.filhos.filter((c) => !c.absoluto).map(medir);
     const gap = Number(n.autoLayout.espaco.valor);
     const px = Number(n.autoLayout.paddingX.valor);
     const py = Number(n.autoLayout.paddingY.valor);
@@ -184,12 +185,14 @@ function svgNo(n: PlanoNo, defs: string[], x0: number, y0: number): string {
   };
   const raio = n.raio ? ` rx="${n.raio.valor}"` : '';
   const traco = n.traco
-    ? ` stroke="${cor(n.traco.cor.valor)}" stroke-width="${n.traco.espessura.valor}"`
+    ? ` stroke="${preench(n.traco.pintura)}" stroke-width="${n.traco.espessura.valor}"`
     : '';
   if (n.tipo === 'texto' && n.texto) {
     const t = n.texto.caixaAlta ? n.texto.conteudo.valor.toUpperCase() : n.texto.conteudo.valor;
     const peso = /bold/i.test(n.texto.estilo) ? (/semi/i.test(n.texto.estilo) ? 600 : 700) : 400;
-    return `<text x="${x}" y="${y + Number(n.texto.tamanho.valor)}" font-family="${esc(n.texto.familia)}, system-ui, sans-serif" font-size="${n.texto.tamanho.valor}" font-weight="${peso}" letter-spacing="${n.texto.espacamento?.valor ?? 0}" fill="${preench(n.preenchimentos[0])}"${attrs}>${esc(t)}</text>`;
+    const centro = n.texto.alinhamento === 'CENTER' && n.largura;
+    const tx = centro ? x + Number(n.largura!.valor) / 2 : x;
+    return `<text x="${tx}"${centro ? ' text-anchor="middle"' : ''} y="${y + Number(n.texto.tamanho.valor)}" font-family="${esc(n.texto.familia)}, system-ui, sans-serif" font-size="${n.texto.tamanho.valor}" font-weight="${peso}" letter-spacing="${n.texto.espacamento?.valor ?? 0}" fill="${preench(n.preenchimentos[0])}"${attrs}>${esc(t)}</text>`;
   }
   if (n.tipo === 'svg' && n.svg) {
     const interno = n.svg.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
@@ -207,6 +210,16 @@ function svgNo(n: PlanoNo, defs: string[], x0: number, y0: number): string {
     const [, , vw, vh] = vb.split(/\s+/).map(Number);
     return `<svg x="${x}" y="${y}" width="${vw}" height="${vh}" viewBox="${vb}" overflow="visible"${attrs}>${estilo}</svg>`;
   }
+  if (n.tipo === 'elipse' && n.arco) {
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    const R = w / 2;
+    const r = R * n.arco.interno;
+    const pt = (raio: number, a: number) => `${cx + raio * Math.cos(a)} ${cy + raio * Math.sin(a)}`;
+    const grande = n.arco.fim - n.arco.inicio > Math.PI ? 1 : 0;
+    const d = `M ${pt(R, n.arco.inicio)} A ${R} ${R} 0 ${grande} 1 ${pt(R, n.arco.fim)} L ${pt(r, n.arco.fim)} A ${r} ${r} 0 ${grande} 0 ${pt(r, n.arco.inicio)} Z`;
+    return `<path d="${d}" fill="${preench(n.preenchimentos[0])}"${attrs}/>`;
+  }
   const forma =
     n.tipo === 'elipse'
       ? `<ellipse cx="${x + w / 2}" cy="${y + h / 2}" rx="${w / 2}" ry="${h / 2}" fill="${preench(n.preenchimentos[0])}"${traco}${attrs}/>`
@@ -217,17 +230,32 @@ function svgNo(n: PlanoNo, defs: string[], x0: number, y0: number): string {
   if (n.autoLayout) {
     const hor = n.autoLayout.direcao === 'HORIZONTAL';
     // Auto Layout centralizado: começa no meio do espaço livre (como o Figma faz).
-    const medidas = n.filhos.map(medir);
+    for (const f of n.filhos.filter((c) => c.absoluto)) {
+      const estica = f.restricoes?.horizontal === 'STRETCH';
+      filhos += svgNo(
+        estica ? { ...f, x: 0, y: 0, largura: { valor: w }, altura: { valor: h } } : f,
+        defs,
+        x,
+        y,
+      );
+    }
+    const fluxo = n.filhos.filter((c) => !c.absoluto);
+    const medidas = fluxo.map(medir);
     const ocupado =
       medidas.reduce((s, m) => s + (hor ? m.w : m.h), 0) +
-      Number(n.autoLayout.espaco.valor) * Math.max(0, n.filhos.length - 1);
+      Number(n.autoLayout.espaco.valor) * Math.max(0, fluxo.length - 1);
     const pad = hor ? Number(n.autoLayout.paddingX.valor) : Number(n.autoLayout.paddingY.valor);
     let cursor = Math.max(pad, ((hor ? w : h) - ocupado) / 2);
-    for (const f of n.filhos) {
-      const m = medir(f);
+    for (const f of fluxo) {
+      const larguraUtil = w - 2 * Number(n.autoLayout.paddingX.valor);
+      const m = f.texto?.preencher && !hor ? { ...medir(f), w: larguraUtil } : medir(f);
       const fx = hor ? cursor : (w - m.w) / 2;
       const fy = hor ? (h - m.h) / 2 : cursor;
-      filhos += svgNo({ ...f, x: 0, y: 0 }, defs, x + fx, y + fy);
+      const fn =
+        f.texto?.preencher && !hor
+          ? { ...f, x: 0, y: 0, largura: { valor: m.w } }
+          : { ...f, x: 0, y: 0 };
+      filhos += svgNo(fn, defs, x + fx, y + fy);
       cursor += (hor ? m.w : m.h) + Number(n.autoLayout.espaco.valor);
     }
   } else {
@@ -292,6 +320,7 @@ Gerado pelo **Kalixto Creative Lab** no formato **KCX (Kalixto Component Exchang
 | \`${comp.id}.kcx.json\` | Pacote KCX (importe no plugin Figma Bridge ou de volta no lab) |
 | \`tokens.json\` | Variáveis no formato W3C Design Tokens |
 | \`${comp.id}.svg\` | Imagem estática da estrutura visual |
+| \`angular/\` | Componente Angular standalone (cada variável é um \`input()\`) + \`kcx-runtime.ts\` |
 
 ## Variáveis
 
@@ -308,6 +337,20 @@ KCX.pause(); KCX.play(); KCX.restart(); KCX.speed(0.5);
 
 Sem o runtime, edite os valores do bloco \`:root\` em \`${comp.id}.css\`.
 
+## Angular
+
+Copie \`angular/kcx-runtime.ts\` e a pasta \`angular/${comp.id}/\` para o seu projeto e use:
+
+\`\`\`html
+<kcx-${comp.id} ${comp.variaveis
+    .filter((v) => v.tipo === 'color')
+    .slice(0, 1)
+    .map((v) => `${v.id}="${atuais[v.id]}"`)
+    .join(' ')} />
+\`\`\`
+
+Cada variável é um \`input()\` com signal: mudar o valor muda o componente na hora.
+
 ## Figma
 
 Nível de compatibilidade: **${comp.compatibilidade.figma.nivel}**.
@@ -321,6 +364,7 @@ export function arquivosCodigo(comp: KcxComponente, valores: Valores): ArquivoZi
   const dir = `${comp.id}-kcx`;
   const saidas = resolverSaidas(comp.variaveis, valores);
   const css = `${blocoRoot(saidas)}\n\n${comp.codigo.css.trim()}\n`;
+  const ng = angularKcx(comp, valores);
   const runtime = runtimeStandalone(
     comp.id,
     comp.variaveis.map((v) => ({ ...v, valor: valores[v.id] ?? v.valor })),
@@ -344,6 +388,10 @@ export function arquivosCodigo(comp: KcxComponente, valores: Valores): ArquivoZi
       conteudo: JSON.stringify(tokensW3C(comp, valores), null, 2) + '\n',
     },
     { nome: `${dir}/${comp.id}.svg`, conteudo: svgEstatico(comp, valores) },
+    { nome: `${dir}/angular/kcx-runtime.ts`, conteudo: RUNTIME_ANGULAR },
+    { nome: `${dir}/angular/${comp.id}/${comp.id}.component.ts`, conteudo: ng.ts },
+    { nome: `${dir}/angular/${comp.id}/${comp.id}.component.html`, conteudo: ng.html },
+    { nome: `${dir}/angular/${comp.id}/${comp.id}.component.css`, conteudo: ng.css },
     { nome: `${dir}/README.md`, conteudo: readmeKcx(comp, valores) },
   ];
 }

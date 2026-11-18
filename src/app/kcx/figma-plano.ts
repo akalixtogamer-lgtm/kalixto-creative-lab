@@ -9,6 +9,7 @@
  * executado pelo plugin — o que o painel promete é exatamente o que o plugin faz.
  */
 import {
+  KcxPreenchimento,
   KcxComponente,
   KcxModoExportacao,
   KcxNo,
@@ -23,6 +24,7 @@ import {
 import { Valores, aplicarOperacoes, valoresAtuais } from './resolver';
 import { ehRefDerivada, ehRefVariavel } from './validar';
 import { corFigma } from './unidades';
+import { comprimentoSvg, cortarSvg } from './svg-caminho';
 
 export type FigmaTipo = 'COLOR' | 'FLOAT' | 'BOOLEAN' | 'STRING' | 'TIMING' | 'EASING';
 export type FigmaCor = { r: number; g: number; b: number; a: number };
@@ -116,6 +118,8 @@ export type PlanoPaint =
   | { tipo: 'solido'; cor: PlanoProp<FigmaCor> }
   | {
       tipo: 'gradiente';
+      /** LINEAR (padrão) ou ANGULAR (cônico). */
+      subtipo?: 'GRADIENT_LINEAR' | 'GRADIENT_ANGULAR';
       transformacao: [[number, number, number], [number, number, number]];
       paradas: { posicao: number; cor: PlanoProp<FigmaCor> }[];
     };
@@ -144,7 +148,7 @@ export interface PlanoNo {
   opacidade?: PlanoProp<number>;
   visivel?: PlanoProp<boolean>;
   preenchimentos: PlanoPaint[];
-  traco?: { cor: PlanoProp<FigmaCor>; espessura: PlanoProp<number> };
+  traco?: { pintura: PlanoPaint; espessura: PlanoProp<number> };
   efeitos: PlanoEfeito[];
   texto?: {
     conteudo: PlanoProp<string>;
@@ -153,9 +157,13 @@ export interface PlanoNo {
     familia: string;
     estilo: string;
     caixaAlta: boolean;
+    alinhamento: 'LEFT' | 'CENTER' | 'RIGHT';
+    preencher: boolean;
     propriedade?: string;
   };
   svg?: string;
+  /** Instância de uma peça reutilizável (rótulo da variante da peça). */
+  peca?: { nome: string; variante: string };
   svgTraco?: { cor: PlanoProp<FigmaCor>; espessura: PlanoProp<number>; tracejado?: number[] };
   autoLayout?: {
     direcao: 'HORIZONTAL' | 'VERTICAL';
@@ -164,7 +172,23 @@ export interface PlanoNo {
     paddingY: PlanoProp<number>;
   };
   recortar: boolean;
+  absoluto: boolean;
+  restricoes?: { horizontal: string; vertical: string };
+  propriedadeVisivel?: string;
+  /** Arco em radianos (arcData do Figma). */
+  arco?: { inicio: number; fim: number; interno: number };
   filhos: PlanoNo[];
+}
+
+/** Peça reutilizável: um componente com uma variante por opção do eixo. */
+export interface PlanoPeca {
+  nome: string;
+  eixo: string;
+  opcoes: {
+    rotulo: string;
+    svg: string;
+    traco: { cor: PlanoProp<FigmaCor>; espessura: PlanoProp<number> };
+  }[];
 }
 
 export interface PlanoVariante {
@@ -179,9 +203,11 @@ export interface PlanoComponente {
   nome: string;
   versao: string;
   pacote: string;
-  nivel: 1 | 2 | 3;
+  nivel: 1 | 2;
   descricao: string;
   variantes: PlanoVariante[];
+  /** Peças reutilizáveis usadas pelas variantes (ex.: "Caminho"). */
+  pecas: PlanoPeca[];
   limitacoes: string[];
   editavel: string[];
   parcial: string[];
@@ -316,6 +342,7 @@ interface Contexto {
   usarVariaveis: boolean;
   modos: string[];
   registrar: (pv: PlanoVariavel, onde: string) => void;
+  pecas: Map<string, PlanoPeca>;
 }
 
 function nomeVar(comp: string, sufixo: string, nome: string): string {
@@ -462,6 +489,20 @@ export function matrizGradiente(
   return [linha(d), linha(n)];
 }
 
+/** Matriz do gradiente cônico (ANGULAR): rotação em torno do centro. */
+export function matrizConica(
+  anguloCss: number,
+): [[number, number, number], [number, number, number]] {
+  const t = ((anguloCss - 90) * Math.PI) / 180; // CSS: 0° = topo; Figma: 0 = direita
+  const c = Math.cos(t);
+  const s = Math.sin(t);
+  const r = (k: number) => Math.round(k * 10000) / 10000 || 0;
+  return [
+    [r(c), r(s), r(0.5 - 0.5 * c - 0.5 * s)],
+    [r(-s), r(c), r(0.5 + 0.5 * s - 0.5 * c)],
+  ];
+}
+
 function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
   const onde = (campo: string) => `${ctx.comp.nome} › ${caminho} › ${campo}`;
   const p: PlanoNo = {
@@ -479,60 +520,69 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
     preenchimentos: [],
     efeitos: [],
     recortar: !!no.recortar,
+    absoluto: !!no.absoluto,
     filhos: [],
   };
-  (no.preenchimentos ?? []).forEach((f, i) => {
-    if (f.tipo === 'solido') {
-      p.preenchimentos.push({
-        tipo: 'solido',
-        cor: corRef(f.cor, CAMPOS['corPreenchimento'], onde('preenchimento'), ctx)!,
-      });
-    } else if (f.tipo === 'gradiente-linear') {
-      p.preenchimentos.push({
+  const pintura = (f: KcxPreenchimento, rotulo: string, campoCor: Campo): PlanoPaint => {
+    if (f.tipo === 'solido')
+      return { tipo: 'solido', cor: corRef(f.cor, campoCor, onde(rotulo), ctx) };
+    if (f.tipo === 'gradiente-linear' || f.tipo === 'gradiente-conico') {
+      const ang = literal(f.angulo, ctx) ?? (f.tipo === 'gradiente-linear' ? 90 : 0);
+      return {
         tipo: 'gradiente',
-        transformacao: matrizGradiente(literal(f.angulo, ctx) ?? 90),
+        subtipo: f.tipo === 'gradiente-conico' ? 'GRADIENT_ANGULAR' : 'GRADIENT_LINEAR',
+        transformacao: f.tipo === 'gradiente-conico' ? matrizConica(ang) : matrizGradiente(ang),
         paradas: f.paradas.map((s) => ({
           posicao: s.posicao,
-          cor: corRef(s.cor, CAMPOS['corParada'], onde(`parada ${s.posicao}`), ctx)!,
+          cor: corRef(s.cor, CAMPOS['corParada'], onde(`${rotulo} › parada ${s.posicao}`), ctx),
         })),
-      });
-    } else {
-      const v = porId(ctx.comp, f.variavel);
-      const g = ctx.valores[v.id] as KcxGradiente;
-      const tamanho = literal(f.tamanho, ctx) ?? 100;
-      const desloc = literal(f.deslocamento, ctx) ?? 0;
-      p.preenchimentos.push({
-        tipo: 'gradiente',
-        transformacao: matrizGradiente(g.angulo, tamanho, desloc),
-        paradas: [...g.paradas]
-          .sort((a, b) => a.posicao - b.posicao)
-          .map((s, j) => {
-            const cor = corFigma(s.cor);
-            if (!ctx.usarVariaveis) return { posicao: s.posicao, cor: { valor: cor } };
-            const sufixo = difereDaBase(ctx, [v.id]) ? ctx.sufixo : '';
-            const nome = nomeVar(ctx.comp.id, sufixo, `${kebab(v.id)}/stop-${j + 1}`);
-            ctx.registrar(
-              {
-                nome,
-                colecao: COLECOES['colors'],
-                tipo: 'COLOR',
-                valores: Object.fromEntries(ctx.modos.map((m) => [m, cor])),
-                escopos: CAMPOS['corParada'].escopo,
-                descricao: `Parada ${j + 1} de "${v.nome}" (posição ${Math.round(s.posicao * 100)}%). Representação do gradiente: uma variável de cor por parada.`,
-                origem: 'parada',
-                variavelKcx: v.id,
-                vinculadaA: [],
-              },
-              onde(`preenchimento ${i + 1} › parada ${j + 1}`),
-            );
-            return { posicao: s.posicao, cor: { valor: cor, variavel: nome } };
-          }),
-      });
+      };
     }
-  });
+    const v = porId(ctx.comp, f.variavel);
+    const g = ctx.valores[v.id] as KcxGradiente;
+    const tamanho = literal(f.tamanho, ctx) ?? 100;
+    const desloc = literal(f.deslocamento, ctx) ?? 0;
+    return {
+      tipo: 'gradiente',
+      subtipo: 'GRADIENT_LINEAR',
+      transformacao: matrizGradiente(g.angulo, tamanho, desloc),
+      paradas: [...g.paradas]
+        .sort((a, b) => a.posicao - b.posicao)
+        .map((s, j) => {
+          const cor = corFigma(s.cor);
+          if (!ctx.usarVariaveis) return { posicao: s.posicao, cor: { valor: cor } };
+          const sufixo = difereDaBase(ctx, [v.id]) ? ctx.sufixo : '';
+          const nome = nomeVar(ctx.comp.id, sufixo, `${kebab(v.id)}/stop-${j + 1}`);
+          ctx.registrar(
+            {
+              nome,
+              colecao: COLECOES['colors'],
+              tipo: 'COLOR',
+              valores: Object.fromEntries(ctx.modos.map((m) => [m, cor])),
+              escopos: CAMPOS['corParada'].escopo,
+              descricao: `Parada ${j + 1} de "${v.nome}" (posição ${Math.round(s.posicao * 100)}%). Representação do gradiente: uma variável de cor por parada.`,
+              origem: 'parada',
+              variavelKcx: v.id,
+              vinculadaA: [],
+            },
+            onde(`${rotulo} › parada ${j + 1}`),
+          );
+          return { posicao: s.posicao, cor: { valor: cor, variavel: nome } };
+        }),
+    };
+  };
+  (no.preenchimentos ?? []).forEach((f, i) =>
+    p.preenchimentos.push(
+      pintura(f, i ? `preenchimento ${i + 1}` : 'preenchimento', CAMPOS['corPreenchimento']),
+    ),
+  );
   if (no.traco) {
+    const base: KcxPreenchimento = no.traco.pintura ?? {
+      tipo: 'solido',
+      cor: no.traco.cor ?? '#000000',
+    };
     p.traco = {
-      cor: corRef(no.traco.cor, CAMPOS['corTraco'], onde('cor do traço'), ctx)!,
+      pintura: pintura(base, 'traço', CAMPOS['corTraco']),
       espessura: resolverRef(
         no.traco.espessura,
         CAMPOS['espessura'],
@@ -541,6 +591,16 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
       )!,
     };
   }
+  if (no.arco) {
+    const rad = (g: number) => Math.round(((g * Math.PI) / 180) * 10000) / 10000;
+    p.arco = {
+      inicio: rad(literal(no.arco.inicio, ctx) ?? 0),
+      fim: rad(literal(no.arco.fim, ctx) ?? 360),
+      interno: Math.min(0.99, Math.max(0, literal(no.arco.interno, ctx) ?? 0)),
+    };
+  }
+  if (no.restricoes) p.restricoes = { horizontal: no.restricoes.h, vertical: no.restricoes.v };
+  if (no.propriedadeVisivel) p.propriedadeVisivel = no.propriedadeVisivel;
   (no.efeitos ?? []).forEach((ef, i) => {
     if (ef.tipo === 'sombra') {
       p.efeitos.push({
@@ -581,6 +641,13 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
       familia: no.texto.familia,
       estilo: no.texto.estilo,
       caixaAlta: !!no.texto.caixaAlta,
+      alinhamento:
+        no.texto.alinhamento === 'centro'
+          ? 'CENTER'
+          : no.texto.alinhamento === 'direita'
+            ? 'RIGHT'
+            : 'LEFT',
+      preencher: !!no.texto.preencher,
       propriedade: no.texto.propriedade,
     };
   }
@@ -602,6 +669,46 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
       )!,
       tracejado: no.svgTraco.tracejado?.map((t) => Math.round((literal(t, ctx) ?? 0) * 100) / 100),
     };
+  }
+  // Tracejado de "desenho" (traço + vão maior que o caminho): o Figma redistribui o
+  // tracejado por segmento, então o quadro vira geometria real. Completo → sem
+  // tracejado (e continua instância da peça); parcial → vetor próprio cortado.
+  let parcial = false;
+  const tr = p.svgTraco?.tracejado;
+  if (p.svg && tr && tr.length === 2) {
+    const total = comprimentoSvg(p.svg);
+    if (total > 0 && tr[1] >= total) {
+      if (tr[0] < total - 0.5) {
+        p.svg = cortarSvg(p.svg, tr[0]);
+        parcial = true;
+      }
+      p.svgTraco = { ...p.svgTraco!, tracejado: undefined };
+    }
+  }
+  if (no.peca && p.svg && parcial) {
+    // quadro parcial: vetor próprio (a peça guarda só o desenho completo)
+  } else if (no.peca && p.svg) {
+    const eixo = porId(ctx.comp, no.peca.eixo);
+    const rotulo =
+      eixo.opcoes?.find((o) => o.valor === ctx.valores[eixo.id])?.rotulo ??
+      String(ctx.valores[eixo.id]);
+    p.peca = { nome: no.peca.nome, variante: rotulo };
+    let peca = ctx.pecas.get(no.peca.nome);
+    if (!peca)
+      ctx.pecas.set(no.peca.nome, (peca = { nome: no.peca.nome, eixo: eixo.id, opcoes: [] }));
+    if (!peca.opcoes.some((o) => o.rotulo === rotulo)) {
+      const traco = p.svgTraco ?? {
+        cor: { valor: { r: 0, g: 0, b: 0, a: 1 } },
+        espessura: { valor: 1 },
+      };
+      peca.opcoes.push({
+        rotulo,
+        svg: p.svg,
+        traco: { cor: traco.cor, espessura: traco.espessura },
+      });
+      const ordem = (eixo.opcoes ?? []).map((o) => o.rotulo);
+      peca.opcoes.sort((a, b) => ordem.indexOf(a.rotulo) - ordem.indexOf(b.rotulo));
+    }
   }
   if (no.autoLayout) {
     p.autoLayout = {
@@ -714,6 +821,7 @@ export function planejarFigma(
     const atuais = valoresAtuais(comp.variaveis);
     const combos = combinacoes(comp, atuais);
     const base = combos[0]?.valores ?? atuais;
+    const pecas = new Map<string, PlanoPeca>();
     const variantes: PlanoVariante[] = combos.map((c, i) => {
       const ctx: Contexto = {
         comp,
@@ -723,6 +831,7 @@ export function planejarFigma(
         usarVariaveis,
         modos: [],
         registrar,
+        pecas,
       };
       // modos são decididos por coleção no registrar; aqui passamos Dark/Light para gerar os dois valores.
       ctx.modos = temModos ? ['Dark', 'Light', 'Valor'] : ['Valor'];
@@ -786,6 +895,7 @@ export function planejarFigma(
         nivel: f.nivel,
         descricao: comp.descricao,
         variantes,
+        pecas: [...pecas.values()],
         limitacoes: f.limitacoes,
         editavel: f.editavel,
         parcial: f.parcial,
