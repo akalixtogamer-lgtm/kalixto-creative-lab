@@ -1,0 +1,53 @@
+:host { display: block; }
+
+.sensor { position: absolute; top: 0; height: 1px; width: 1px; }
+
+/* Cabeçalho: transparente no topo, vidro depois de rolar */
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px;
+  border-bottom: 1px solid transparent;
+  background: rgb(12 10 24 / 0);
+  transition: padding 300ms ease, background 300ms ease, border-color 300ms ease, backdrop-filter 300ms ease;
+}
+.topo.is-vidro {
+  padding-block: 12px;
+  border-color: rgb(255 255 255 / 0.12);
+  background: rgb(12 10 24 / 0.7);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+  backdrop-filter: blur(14px) saturate(1.5);
+}
+/* sobre o hero os links são brancos; no vidro, usam a cor do tema */
+.topo a { color: #fff; text-decoration: none; transition: color 300ms ease; }
+.topo.is-vidro a { color: #f4f2ff; }
+.marca { font-weight: 800; letter-spacing: 0.06em; }
+.topo nav { display: flex; flex-wrap: wrap; gap: 18px; font-size: 15px; }
+.topo a:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+
+.hero-foto {
+  display: grid;
+  place-items: center;
+  min-height: 80vh;
+  margin-top: -70px;
+  padding: 24px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 25% 30%, #ff8ad8, transparent 40%),
+    radial-gradient(circle at 75% 60%, #60a5fa, transparent 45%),
+    linear-gradient(160deg, #7c4ddb, #1d1530);
+}
+.hero-foto h1 { max-width: 14ch; margin: 0; font-size: clamp(2rem, 7vw, 3.6rem); color: #fff; }
+.conteudo-longo { max-width: 680px; margin: 0 auto; padding: 48px 24px; }
+.faixas { display: grid; gap: 16px; }
+.faixas span { height: 120px; border-radius: 16px; background: linear-gradient(90deg, #ff2bd6, #7c4ddb, #2f7bff); }
+.faixas span:nth-child(2n) { background: linear-gradient(90deg, #c6ff3d, #22e3ff); }
+
+@media (prefers-reduced-motion: reduce) {
+  .topo { transition: none; }
+}

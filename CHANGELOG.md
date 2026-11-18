@@ -7,6 +7,15 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 Nada ainda.
 
+## [1.8.0-rc.1] — 2026-11-18 · Vidro e desfoque
+
+### Adicionado
+- **3 kits de vidro e desfoque** (53 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
+  - **Gerador de vidro (glassmorphism)** — desfoque, opacidade, saturação, brilho da borda e cor do vidro (branco, lilás, rosa, azul ou fumê), com reflexo que segue o mouse e plano B (`@supports`) para navegadores sem `backdrop-filter`.
+  - **Menu que vira vidro ao rolar** — cabeçalho sticky transparente no topo e fosco depois de rolar (IntersectionObserver), tom claro ou escuro.
+  - **Janela com fundo desfocado** — `<dialog>` nativo com `::backdrop` desfocado e escurecido, entrada com `@starting-style`, fecha com Esc, botões ou clique fora.
+- Antes, o vidro aparecia só dentro de outros efeitos (carrossel de vidro, bolha de vidro líquido, lente de foco, feixes de palco); agora há kits dedicados para criar e ajustar.
+
 ## [1.7.0-rc.1] — 2026-11-18 · Referências em vídeo, lote 4
 
 ### Adicionado

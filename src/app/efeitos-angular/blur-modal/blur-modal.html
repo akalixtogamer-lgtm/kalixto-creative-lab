@@ -1,0 +1,14 @@
+<section class="pagina-fundo">
+  <h1>Galeria do lab</h1>
+  <div class="miniaturas" aria-hidden="true"><span></span><span></span><span></span></div>
+  <button class="abrir-modal" type="button" (click)="abrir()">Abrir janela</button>
+</section>
+
+<dialog #janela class="janela" aria-labelledby="janela-titulo" (click)="clicarFora($event)">
+  <h2 id="janela-titulo">Quer receber novidades?</h2>
+  <p>Enviamos um e-mail por mês com efeitos novos do laboratório.</p>
+  <form method="dialog" class="acoes">
+    <button value="depois" type="submit">Agora não</button>
+    <button value="sim" type="submit" class="principal">Quero receber</button>
+  </form>
+</dialog>
