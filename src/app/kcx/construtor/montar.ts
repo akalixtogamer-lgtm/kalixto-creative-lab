@@ -3,6 +3,7 @@
  * do Figma, estados e interações) a partir de um tipo + os nomes e a animação
  * que a pessoa escolheu no KCX Studio. Só CSS, SVG e Angular (sem dependências).
  */
+import { ICONES_KCX } from '../icones';
 import {
   KcxAnimacao,
   KcxComponente,
@@ -41,6 +42,20 @@ export interface ConfigConstrutor {
   midia?: string;
   /** Cor de cada item, nos tipos com `coresPorItem` (ex.: um botão de cada cor). */
   coresItens?: string[];
+  /** Recursos do Figma ligados (ids de `DefinicaoTipo.recursos`). Ausente = desligado. */
+  recursos?: Record<string, boolean>;
+  /** Ícone escolhido para cada lugar (`DefinicaoTipo.icones`), da biblioteca KCX. */
+  icones?: Record<string, string>;
+}
+
+/** Recurso opcional de um tipo (vira variantes, propriedades ou interações no Figma). */
+export interface RecursoTipo {
+  id: string;
+  nome: string;
+  descricao: string;
+  padrao: boolean;
+  /** Recurso que não combina com uma animação (ex.: Tipos com “Preenche no hover”). */
+  exceto?: string[];
 }
 
 export interface CampoTexto {
@@ -96,6 +111,15 @@ export interface DefinicaoTipo {
   itens?: { rotulo: string; padrao: string[]; min: number; max: number };
   /** Cada item tem a sua cor (cfg.coresItens). */
   coresPorItem?: boolean;
+  /** Recursos do Figma que a pessoa liga e desliga (estados, tipos, ícones…). */
+  recursos?: RecursoTipo[];
+  /**
+   * Partes que a pessoa liga e desliga (recurso "partes"): cada uma vira uma
+   * propriedade liga/desliga no Figma e um atributo data-mostrar-<id> no código.
+   */
+  partes?: { no: string; nome: string; classe: string }[];
+  /** Lugares com ícone trocável (ex.: à esquerda e à direita do texto). */
+  icones?: { id: string; rotulo: string; padrao: string; recurso?: string }[];
   animacoes: OpcaoAnimacao[];
   midia?: 'imagem' | 'video';
   largura: number;
@@ -138,6 +162,41 @@ export class Blocos {
     this.id = cfg.id || slug(cfg.nome);
     this.P = `--kcx-${this.id}`;
     this.C = `kcx-${this.id}`;
+  }
+
+  /** O recurso está ligado? (configurações antigas, sem `recursos`, ficam como eram). */
+  tem(recurso: string): boolean {
+    return this.cfg.recursos?.[recurso] === true;
+  }
+
+  /** Ícone escolhido para o lugar `id` (ou o padrão). */
+  nomeIcone(id: string, padrao: string): string {
+    const n = this.cfg.icones?.[id];
+    return n && n in ICONES_KCX ? n : padrao;
+  }
+
+  /** SVG inline de um ícone da biblioteca KCX (currentColor). */
+  svgKcx(nome: string, classe: string, tamanho = 20): string {
+    return svgIcone(ICONES_KCX[nome] ?? ICONES_KCX['mais'], classe, tamanho);
+  }
+
+  /** Instância de um ícone da biblioteca KCX no Figma (com troca de instância). */
+  noIcone(
+    id: string,
+    nome: string,
+    icone: string,
+    cor: KcxRef<string>,
+    tamanho: KcxRef<number> = 20,
+    extra: Partial<KcxNo> & { troca?: string } = {},
+  ): KcxNo {
+    const { troca, ...resto } = extra;
+    return {
+      id,
+      nome,
+      tipo: 'icone',
+      icone: { nome: icone, cor, tamanho, propriedade: troca },
+      ...resto,
+    };
   }
 
   /** Classe BEM: kcx-<id>__<parte>. */
@@ -514,6 +573,8 @@ export function configPadrao(def: DefinicaoTipo, nome = def.nome): ConfigConstru
     cores: { ...CORES_PADRAO },
     raio: 12,
     midia: '',
+    recursos: Object.fromEntries((def.recursos ?? []).map((r) => [r.id, r.padrao])),
+    icones: Object.fromEntries((def.icones ?? []).map((i) => [i.id, i.padrao])),
   };
 }
 
@@ -712,6 +773,7 @@ const CSS_SEM_MOVIMENTO = (b: Blocos) => `
 export function construirComponente(def: DefinicaoTipo, cfg: ConfigConstrutor): KcxComponente {
   const b = new Blocos(cfg);
   const partes = def.gerar(cfg, b);
+  aplicarPartesOpcionais(def, b, partes);
   const anim = def.animacoes.find((a) => a.id === cfg.animacao) ?? def.animacoes[0];
   const hoje = new Date().toISOString().slice(0, 10);
   const variaveis = [...variaveisBase(b, def), ...b.extras, ...(partes.variaveis ?? [])];
@@ -809,4 +871,54 @@ export function construirComponente(def: DefinicaoTipo, cfg: ConfigConstrutor): 
     interacoes: partes.interacoes,
     origemCriacao: { tipo: 'construtor', config: cfg },
   };
+}
+
+/** Busca um nó da estrutura pelo id. */
+export function acharNo(raiz: KcxNo, id: string): KcxNo | undefined {
+  if (raiz.id === id) return raiz;
+  for (const f of raiz.filhos ?? []) {
+    const r = acharNo(f, id);
+    if (r) return r;
+  }
+  return undefined;
+}
+
+/**
+ * Recurso "partes": cada parte vira uma variável booleana (Mostrar …) ligada a
+ * data-mostrar-<id> na raiz e à visibilidade da camada, com propriedade
+ * liga/desliga no componente do Figma.
+ */
+function aplicarPartesOpcionais(def: DefinicaoTipo, b: Blocos, partes: Partes): void {
+  if (!def.partes?.length || !b.tem('partes')) return;
+  const regras: string[] = [];
+  for (const parte of def.partes) {
+    const no = acharNo(partes.estrutura, parte.no);
+    if (!no) continue;
+    const id = `mostrar${pascal(parte.no.replace(/^t-/, ''))}`;
+    const attr = `data-mostrar-${slug(parte.no.replace(/^t-/, ''))}`;
+    b.extra({
+      id,
+      nome: `Mostrar ${parte.nome.toLowerCase()}`,
+      tipo: 'boolean',
+      padrao: true,
+      descricao: `Liga e desliga “${parte.nome}”. No Figma é uma propriedade liga/desliga da instância.`,
+      grupo: 'components',
+      secao: 'aparencia',
+      vinculos: [
+        {
+          propriedade: attr,
+          alvo: { tipo: 'atributo', seletor: `.${b.C}`, atributo: attr },
+          transformar: [{ op: 'mapa', valores: { true: 'true', false: 'false' } }],
+        },
+      ],
+    });
+    no.visivel = { $var: id };
+    no.propriedadeVisivel = `Mostrar ${parte.nome.toLowerCase()}`;
+    regras.push(`.${b.C}[${attr}="false"] .${b.c(parte.classe)} { display: none !important; }`);
+  }
+  partes.css += `\n${regras.join('\n')}`;
+  partes.editavel = [
+    ...partes.editavel,
+    `Partes liga/desliga na instância: ${def.partes.map((p) => p.nome).join(', ')}`,
+  ];
 }

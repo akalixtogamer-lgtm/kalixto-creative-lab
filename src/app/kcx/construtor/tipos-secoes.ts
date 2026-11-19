@@ -205,6 +205,20 @@ export const TOAST: DefinicaoTipo = {
     { id: 'texto', rotulo: 'Texto', padrao: 'Suas alterações foram guardadas.' },
     { id: 'acao', rotulo: 'Ação', padrao: 'Desfazer' },
   ],
+  recursos: [
+    {
+      id: 'tipos',
+      nome: 'Tipos de aviso',
+      descricao: 'Sucesso, Erro, Alerta e Info: cada um com cor e ícone (eixo de variante).',
+      padrao: true,
+    },
+    {
+      id: 'atraso',
+      nome: 'Some sozinho',
+      descricao: 'No protótipo do Figma, o aviso volta a Oculto depois de 4 s (After delay).',
+      padrao: true,
+    },
+  ],
   animacoes: [
     { id: 'baixo', nome: 'Sobe de baixo', descricao: 'Entra subindo pela parte de baixo.' },
     { id: 'lado', nome: 'Entra pela direita', descricao: 'Desliza da lateral direita.' },
@@ -216,15 +230,78 @@ export const TOAST: DefinicaoTipo = {
     const C = b.C;
     const v = (n: string) => b.v(n);
     const aberto = b.estadoAberto('visivel', 'Aviso visível', 'Mostra o aviso.');
+    const comTipos = b.tem('tipos');
+    const TIPOS_AVISO = [
+      { valor: 'sucesso', rotulo: 'Sucesso', cor: '#2ee59d', icone: 'sucesso' },
+      { valor: 'erro', rotulo: 'Erro', cor: '#ff5c7a', icone: 'erro' },
+      { valor: 'alerta', rotulo: 'Alerta', cor: '#ffb547', icone: 'alerta' },
+      { valor: 'info', rotulo: 'Info', cor: '#4da3ff', icone: 'info' },
+    ];
+    const tipoAviso = comTipos
+      ? b.extra({
+          id: 'tipoAviso',
+          nome: 'Tipo de aviso',
+          tipo: 'enum',
+          padrao: 'sucesso',
+          opcoes: TIPOS_AVISO.map((t) => ({ valor: t.valor, rotulo: t.rotulo })),
+          descricao: 'Sucesso, Erro, Alerta ou Info. No Figma é um eixo de variante.',
+          grupo: 'components',
+          secao: 'aparencia',
+          vinculos: [
+            {
+              propriedade: 'data-tipo',
+              alvo: { tipo: 'atributo', seletor: `.${C}`, atributo: 'data-tipo' },
+            },
+          ],
+        })
+      : undefined;
+    const corTipoVars = comTipos
+      ? Object.fromEntries(
+          TIPOS_AVISO.map((t) => [
+            t.valor,
+            b.extra({
+              id: `cor${t.rotulo}`,
+              nome: `Cor de ${t.rotulo.toLowerCase()}`,
+              tipo: 'color',
+              padrao: t.cor,
+              descricao: `Cor do aviso de ${t.rotulo.toLowerCase()}.`,
+              grupo: 'colors',
+              secao: 'aparencia',
+              vinculos: [
+                { propriedade: t.valor, alvo: { tipo: 'css-var', nome: `${b.P}-${t.valor}` } },
+              ],
+            }),
+          ]),
+        )
+      : {};
+    const corDoTipo = (nome: string, alpha?: number) =>
+      comTipos
+        ? ({
+            $derivado: tipoAviso!,
+            nome,
+            transformar: [
+              { op: 'variavelPorOpcao', variaveis: corTipoVars },
+              ...(alpha !== undefined ? [{ op: 'alpha', valor: alpha }] : []),
+            ],
+          } as never)
+        : alpha !== undefined
+          ? b.corAlpha('corPrimaria', nome, alpha)
+          : b.cor('primaria');
     const fora: Record<string, string> = {
       baixo: 'transform: translateY(calc(100% + 24px));',
       lado: 'transform: translateX(calc(100% + 24px));',
       pop: 'transform: scale(.6); opacity: 0;',
     };
-    const html = `<div class="${C}" data-visivel="false">
+    const html = `<div class="${C}" data-visivel="false"${comTipos ? ' data-tipo="sucesso"' : ''}>
   <button class="${C}__mostrar" type="button">${b.span('mostrar')}</button>
   <div class="${C}__aviso" role="status" aria-live="polite">
-    <span class="${C}__marca">${svgIcone(ICONES.check, `${C}__icone`, 18)}</span>
+    <span class="${C}__marca">${
+      comTipos
+        ? TIPOS_AVISO.map((t) => b.svgKcx(t.icone, `${C}__icone ${C}__icone--${t.valor}`, 18)).join(
+            '',
+          )
+        : svgIcone(ICONES.check, `${C}__icone`, 18)
+    }</span>
     <div class="${C}__msg">${b.span('titulo', 'strong')}${b.span('texto')}</div>
     <button class="${C}__botao" type="button">${b.span('acao')}</button>
     <button class="${C}__fechar" type="button" aria-label="Fechar aviso">${svgIcone(ICONES.fechar, `${C}__icone`, 16)}</button>
@@ -238,7 +315,17 @@ export const TOAST: DefinicaoTipo = {
 .${C}__msg { display: grid; flex: 1; gap: 2px; }
 .${C}__texto { color: ${v('suave')}; font-size: .9em; }
 .${C}__botao { padding: .4em .7em; border: 0; border-radius: calc(${v('raio')} * .75); background: none; color: ${v('primaria')}; font-weight: 600; }
-.${C}__fechar { display: grid; place-items: center; padding: .3em; border: 0; background: none; color: ${v('suave')}; }`;
+.${C}__fechar { display: grid; place-items: center; padding: .3em; border: 0; background: none; color: ${v('suave')}; }${
+      comTipos
+        ? `
+${TIPOS_AVISO.map(
+  (
+    t,
+  ) => `.${C}[data-tipo="${t.valor}"] .${C}__marca { background: color-mix(in srgb, ${v(t.valor)} 22%, transparent); color: ${v(t.valor)}; }
+.${C}:not([data-tipo="${t.valor}"]) .${C}__icone--${t.valor} { display: none; }`,
+).join('\n')}`
+        : ''
+    }`;
     const js = `// Mostra o aviso e esconde depois de 4 s (o mouse em cima segura).
 document.querySelectorAll('.${C}').forEach((raiz) => {
   let tempo;
@@ -270,9 +357,30 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
           largura: 32,
           altura: 32,
           raio: 16,
-          preenchimentos: [{ tipo: 'solido', cor: b.corAlpha('corPrimaria', 'marca-fundo', 0.25) }],
+          preenchimentos: [{ tipo: 'solido', cor: corDoTipo('marca-fundo', 0.25) }],
           filhos: [
-            { ...b.icone('check', 'Check', ICONES.check, 18, b.cor('primaria')), x: 7, y: 7 },
+            comTipos
+              ? {
+                  ...b.noIcone(
+                    'check',
+                    'Ícone',
+                    {
+                      $derivado: tipoAviso!,
+                      nome: 'aviso-icone',
+                      transformar: [
+                        {
+                          op: 'mapa',
+                          valores: Object.fromEntries(TIPOS_AVISO.map((t) => [t.valor, t.icone])),
+                        },
+                      ],
+                    } as never,
+                    corDoTipo('marca-cor'),
+                    18,
+                  ),
+                  x: 7,
+                  y: 7,
+                }
+              : { ...b.icone('check', 'Check', ICONES.check, 18, b.cor('primaria')), x: 7, y: 7 },
           ],
         },
         b.pilha(
@@ -355,10 +463,20 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
           valores: { [aberto]: true },
         },
       ],
+      eixos: tipoAviso ? [tipoAviso] : undefined,
       interacoes: [
         interacao('mostrar-btn', 'oculto', 'visivel'),
         interacao('fechar', 'visivel', 'oculto'),
         interacao('t-acao', 'visivel', 'oculto'),
+        ...(b.tem('atraso')
+          ? [
+              {
+                ...interacao('tela', 'visivel', 'oculto'),
+                gatilho: 'atraso' as const,
+                atraso: 4000,
+              },
+            ]
+          : []),
       ],
       animacao: {
         nome: TOAST.animacoes.find((a) => a.id === cfg.animacao)?.nome ?? 'Entrada',
@@ -369,8 +487,12 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
       editavel: [
         'Variantes Oculto e Visível: o aviso muda de posição e o Smart Animate faz a entrada',
         'Protótipo: o botão mostra; o X e a ação escondem',
+        ...(comTipos ? ['Eixo Tipo: Sucesso, Erro, Alerta e Info, cada um com cor e ícone'] : []),
+        ...(b.tem('atraso') ? ['Protótipo: depois de 4 s o aviso some sozinho (After delay)'] : []),
       ],
-      naoSuportado: ['Sumir sozinho depois de 4 s (no Figma, use “After delay” se quiser)'],
+      naoSuportado: b.tem('atraso')
+        ? []
+        : ['Sumir sozinho depois de 4 s (no Figma, use “After delay” se quiser)'],
       tags: ['toast', 'snackbar', 'notificação', 'alerta'],
     };
   },
@@ -391,6 +513,28 @@ export const FORMULARIO: DefinicaoTipo = {
     { id: 'erro', rotulo: 'Mensagem de erro', padrao: 'Digite um e-mail válido.' },
     { id: 'sucesso', rotulo: 'Mensagem de sucesso', padrao: 'Pronto! Confira seu e-mail.' },
   ],
+  recursos: [
+    {
+      id: 'desativado',
+      nome: 'Estado Desativado',
+      descricao: 'Mais uma variante: o formulário apagado, sem poder usar.',
+      padrao: true,
+    },
+    {
+      id: 'icone',
+      nome: 'Ícone no campo',
+      descricao: 'Ícone à esquerda do campo, liga/desliga e trocável no Figma.',
+      padrao: true,
+    },
+    {
+      id: 'partes',
+      nome: 'Partes liga/desliga',
+      descricao: 'Mostrar ou ocultar o título na instância do Figma.',
+      padrao: true,
+    },
+  ],
+  partes: [{ no: 't-titulo', nome: 'Título', classe: 'titulo' }],
+  icones: [{ id: 'campo', rotulo: 'Ícone do campo', padrao: 'email', recurso: 'icone' }],
   animacoes: [
     {
       id: 'flutuante',
@@ -419,6 +563,7 @@ export const FORMULARIO: DefinicaoTipo = {
         { valor: 'foco', rotulo: 'Foco' },
         { valor: 'erro', rotulo: 'Erro' },
         { valor: 'sucesso', rotulo: 'Sucesso' },
+        ...(b.tem('desativado') ? [{ valor: 'desativado', rotulo: 'Desativado' }] : []),
       ],
       descricao: 'Mostra o formulário em cada situação (no site, muda sozinho).',
       grupo: 'components',
@@ -430,10 +575,29 @@ export const FORMULARIO: DefinicaoTipo = {
         },
       ],
     });
+    const mostrarIcone = b.tem('icone')
+      ? b.extra({
+          id: 'mostrarIcone',
+          nome: 'Mostrar ícone do campo',
+          tipo: 'boolean',
+          padrao: true,
+          descricao: 'Liga e desliga o ícone do campo. No Figma é uma propriedade liga/desliga.',
+          grupo: 'components',
+          secao: 'aparencia',
+          vinculos: [
+            {
+              propriedade: 'data-icone',
+              alvo: { tipo: 'atributo', seletor: `.${C}`, atributo: 'data-icone' },
+              transformar: [{ op: 'mapa', valores: { true: 'true', false: 'false' } }],
+            },
+          ],
+        })
+      : undefined;
     const html = `<form class="${C}" data-situacao="padrao" novalidate>
   ${b.span('titulo', 'h3')}
   <div class="${C}__linha">
     <label class="${C}__campo">
+      ${b.tem('icone') ? b.svgKcx(b.nomeIcone('campo', 'email'), `${C}__icone`, 18) : ''}
       <input class="${C}__input" type="email" name="email" placeholder=" " autocomplete="email" required aria-describedby="${C}-msg">
       ${b.span('rotulo')}
     </label>
@@ -456,7 +620,22 @@ ${flutuante ? `.${C}__input:focus + .${C}__rotulo, .${C}__input:not(:placeholder
 .${C}__msg { min-height: 1.4em; margin: 0; font-size: .9em; }
 .${C}__msg > span { display: none; }
 .${C}[data-situacao="erro"] .${C}__erro { display: inline; color: #ff5c7a; }
-.${C}[data-situacao="sucesso"] .${C}__sucesso { display: inline; color: #3ddc97; }`;
+.${C}[data-situacao="sucesso"] .${C}__sucesso { display: inline; color: #3ddc97; }${
+      b.tem('desativado')
+        ? `
+.${C}[data-situacao="desativado"] { opacity: .45; pointer-events: none; }`
+        : ''
+    }${
+      b.tem('icone')
+        ? `
+.${C}__icone { position: absolute; left: .85em; top: 50%; transform: translateY(-50%); color: ${v('suave')}; pointer-events: none; }
+.${C}__icone ~ .${C}__input { padding-left: 2.6em; }
+.${C}__icone ~ .${C}__rotulo { left: 2.65em; }
+.${C}[data-icone="false"] .${C}__icone { display: none; }
+.${C}[data-icone="false"] .${C}__input { padding-left: .9em; }
+.${C}[data-icone="false"] .${C}__rotulo { left: .95em; }`
+        : ''
+    }`;
     const js = `// Valida o e-mail no envio (não manda para lugar nenhum: ligue ao seu back-end).
 document.querySelectorAll('.${C}').forEach((form) => {
   const input = form.querySelector('.${C}__input');
@@ -481,6 +660,7 @@ document.querySelectorAll('.${C}').forEach((form) => {
               foco: 'false',
               erro: 'false',
               sucesso: 'false',
+              desativado: 'false',
               [valor]: 'true',
             },
           },
@@ -489,7 +669,12 @@ document.querySelectorAll('.${C}').forEach((form) => {
     const borda = {
       $derivado: estado,
       nome: 'campo-borda',
-      transformar: [{ op: 'mapa', valores: { padrao: '1', foco: '2', erro: '2', sucesso: '1' } }],
+      transformar: [
+        {
+          op: 'mapa',
+          valores: { padrao: '1', foco: '2', erro: '2', sucesso: '1', desativado: '1' },
+        },
+      ],
     } as never;
     const estrutura = b.pilha(
       'form',
@@ -510,8 +695,27 @@ document.querySelectorAll('.${C}').forEach((form) => {
               'campo',
               'Campo',
               'horizontal',
-              [b.noTexto('rotulo', 'Rótulo do campo', { cor: b.cor('suave'), preencher: true })],
+              [
+                ...(b.tem('icone')
+                  ? [
+                      b.noIcone(
+                        'icone-campo',
+                        'Ícone do campo',
+                        b.nomeIcone('campo', 'email'),
+                        b.cor('suave'),
+                        18,
+                        {
+                          troca: 'Ícone do campo (trocar)',
+                          visivel: { $var: mostrarIcone! },
+                          propriedadeVisivel: 'Ícone do campo',
+                        },
+                      ),
+                    ]
+                  : []),
+                b.noTexto('rotulo', 'Rótulo do campo', { cor: b.cor('suave'), preencher: true }),
+              ],
               {
+                espaco: 8,
                 px: b.espacoX(0.9, 'campo-px'),
                 py: b.espacoX(0.8, 'campo-py'),
                 raio: b.raio,
@@ -548,6 +752,24 @@ document.querySelectorAll('.${C}').forEach((form) => {
         py: b.espacoX(1.25, 'form-py'),
         raio: b.raio,
         preenchimentos: [{ tipo: 'solido', cor: b.cor('superficie') }],
+        opacidade: b.tem('desativado')
+          ? ({
+              $derivado: estado,
+              nome: 'form-opacidade',
+              transformar: [
+                {
+                  op: 'mapa',
+                  valores: {
+                    padrao: '1',
+                    foco: '1',
+                    erro: '1',
+                    sucesso: '1',
+                    desativado: '0.45',
+                  },
+                },
+              ],
+            } as never)
+          : undefined,
       },
     );
     return {
@@ -584,6 +806,17 @@ document.querySelectorAll('.${C}').forEach((form) => {
           descricao: 'Enviado.',
           valores: { [estado]: 'sucesso' },
         },
+        ...(b.tem('desativado')
+          ? [
+              {
+                id: 'desativado',
+                nome: 'Desativado',
+                gatilho: 'desativado' as const,
+                descricao: 'Não pode ser usado agora.',
+                valores: { [estado]: 'desativado' },
+              },
+            ]
+          : []),
       ],
       interacoes: [
         interacao('campo', 'padrao', 'foco'),
@@ -762,6 +995,8 @@ export const HERO: DefinicaoTipo = {
 
 /* ============================== Rodapé ============================== */
 
+const REDES = ['instagram', 'whatsapp', 'youtube'];
+
 export const RODAPE: DefinicaoTipo = {
   id: 'rodape',
   nome: 'Rodapé',
@@ -779,6 +1014,19 @@ export const RODAPE: DefinicaoTipo = {
     min: 1,
     max: 8,
   },
+  recursos: [
+    {
+      id: 'redes',
+      nome: 'Redes sociais',
+      descricao: 'Três ícones de redes, cada um liga/desliga e trocável no Figma.',
+      padrao: true,
+    },
+  ],
+  icones: [
+    { id: 'rede1', rotulo: 'Rede 1', padrao: 'instagram', recurso: 'redes' },
+    { id: 'rede2', rotulo: 'Rede 2', padrao: 'whatsapp', recurso: 'redes' },
+    { id: 'rede3', rotulo: 'Rede 3', padrao: 'youtube', recurso: 'redes' },
+  ],
   animacoes: [
     {
       id: 'sublinhado',
@@ -804,6 +1052,11 @@ export const RODAPE: DefinicaoTipo = {
     <div>${b.span('marca', 'strong')}${b.span('frase', 'p')}</div>
     <nav class="${C}__links" aria-label="Rodapé">${cfg.itens.map((_, i) => b.item(i, 'a', 'href="#"')).join('')}</nav>
   </div>
+  ${
+    b.tem('redes')
+      ? `<div class="${C}__redes">${REDES.map((r, k) => `<a href="#" aria-label="${r}">${b.svgKcx(b.nomeIcone(`rede${k + 1}`, r), `${C}__rede`, 22)}</a>`).join('')}</div>`
+      : ''
+  }
   ${b.span('direitos', 'small')}
 </footer>`;
     const css = `.${C} { display: grid; gap: calc(${v('espaco')} * 1.5); width: 100%; max-width: 720px; padding: calc(${v('espaco')} * 2); border-radius: ${v('raio')}; background: ${v('superficie')}; }
@@ -813,6 +1066,9 @@ export const RODAPE: DefinicaoTipo = {
 .${C}__links { display: flex; flex-wrap: wrap; align-content: start; gap: .5em 1.25em; }
 .${C}__links a { display: inline-block; color: ${v('suave')}; text-decoration: none; transition: color ${v('duracao')} ${v('easing')}, transform ${v('duracao')} ${v('easing')}; }
 ${efeito[cfg.animacao] ?? efeito['sublinhado']}
+.${C}__redes { display: flex; gap: .75em; }
+.${C}__redes a { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: color-mix(in srgb, ${v('primaria')} 16%, transparent); color: ${v('primaria')}; transition: transform ${v('duracao')} ${v('easing')}; }
+.${C}__redes a:hover { transform: translateY(-2px); }
 .${C}__direitos { padding-top: ${v('espaco')}; border-top: 1px solid color-mix(in srgb, ${v('suave')} 25%, transparent); color: ${v('suave')}; }`;
     const estrutura = b.pilha(
       'rodape',
@@ -847,6 +1103,42 @@ ${efeito[cfg.animacao] ?? efeito['sublinhado']}
           ],
           { espaco: b.espaco, encher: true },
         ),
+        ...(b.tem('redes')
+          ? [
+              b.pilha(
+                'redes',
+                'Redes sociais',
+                'horizontal',
+                REDES.map((r, k) =>
+                  b.pilha(
+                    `rede-${k + 1}`,
+                    `Rede ${k + 1}`,
+                    'horizontal',
+                    [
+                      b.noIcone(
+                        `rede-icone-${k + 1}`,
+                        'Ícone',
+                        b.nomeIcone(`rede${k + 1}`, r),
+                        b.cor('primaria'),
+                        22,
+                        { troca: `Rede ${k + 1} (trocar)` },
+                      ),
+                    ],
+                    {
+                      px: 9,
+                      py: 9,
+                      raio: 20,
+                      preenchimentos: [
+                        { tipo: 'solido', cor: b.corAlpha('corPrimaria', 'rede-fundo', 0.16) },
+                      ],
+                      propriedadeVisivel: `Mostrar rede ${k + 1}`,
+                    },
+                  ),
+                ),
+                { espaco: 12 },
+              ),
+            ]
+          : []),
         b.noTexto('direitos', 'Direitos', {
           cor: b.cor('suave'),
           tamanho: b.fonteX(0.85, 'direitos-tamanho'),

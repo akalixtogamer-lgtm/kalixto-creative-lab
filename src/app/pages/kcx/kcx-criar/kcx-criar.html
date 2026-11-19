@@ -152,6 +152,76 @@
           }
         </section>
 
+        @if (def().recursos?.length) {
+          <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-rec">
+            <h2 id="kcxc-rec" class="kcxc__titulo"><span>◇</span> Recursos do Figma</h2>
+            <p class="kx-muted kcxc__dica">
+              Cada recurso ligado vira variantes, propriedades ou interações no Figma (e funciona no
+              código).
+            </p>
+            <div class="kcxc__recursos">
+              @for (r of def().recursos; track r.id) {
+                <label class="kcxc__recurso" [class.kcxc__recurso--off]="recursoBloqueado(r)">
+                  <input
+                    type="checkbox"
+                    [checked]="recursoLigado(r.id) && !recursoBloqueado(r)"
+                    [disabled]="recursoBloqueado(r)"
+                    (change)="mudarRecurso(r.id, $any($event.target).checked)"
+                  />
+                  <span>
+                    <strong>{{ r.nome }}</strong>
+                    <small class="kx-muted">{{
+                      recursoBloqueado(r) ? 'Não combina com a animação escolhida.' : r.descricao
+                    }}</small>
+                  </span>
+                </label>
+              }
+            </div>
+            @if (def().icones?.length) {
+              <div class="kcxc__icones">
+                @for (lugar of def().icones; track lugar.id) {
+                  @if (lugarVisivel(lugar)) {
+                    <label class="kcxc__campo kcxc__icone-campo">
+                      <span>{{ lugar.rotulo }}</span>
+                      <span class="kcxc__icone-sel">
+                        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                          <path
+                            [attr.d]="caminhoIcone(iconeEscolhido(lugar.id, lugar.padrao))"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        <select
+                          [value]="iconeEscolhido(lugar.id, lugar.padrao)"
+                          (change)="mudarIcone(lugar.id, valor($event))"
+                        >
+                          @for (n of nomesIcones; track n) {
+                            <option
+                              [value]="n"
+                              [selected]="n === iconeEscolhido(lugar.id, lugar.padrao)"
+                            >
+                              {{ n }}
+                            </option>
+                          }
+                        </select>
+                      </span>
+                    </label>
+                  }
+                }
+              </div>
+            }
+            @if (figma(); as f) {
+              <p class="kcxc__dica">
+                No Figma: <strong>{{ f.variantes.length }} variantes</strong> ·
+                {{ f.interacoes }} interações · {{ f.propriedades }} propriedades
+              </p>
+            }
+          </section>
+        }
+
         <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-anim">
           <h2 id="kcxc-anim" class="kcxc__titulo"><span>✦</span> Animação</h2>
           <div class="kcxc__anims" role="radiogroup" aria-labelledby="kcxc-anim">
@@ -361,6 +431,10 @@
                   >
                 }
               </dd>
+              @if (recursosLigados().length) {
+                <dt>Recursos</dt>
+                <dd>{{ recursosLigados().join(' · ') }}</dd>
+              }
               <dt>Cores</dt>
               <dd class="kcxc__amostras kcxc__amostras--grande">
                 <i [style.background]="cfg().cores.fundo" title="Fundo"></i>

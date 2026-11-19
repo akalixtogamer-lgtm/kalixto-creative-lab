@@ -93,7 +93,9 @@ export type KcxOperacao =
   /** Só na estrutura visual: fração do percurso → comprimento do traço (px). */
   | { op: 'tracoNoCaminho'; variavel: string; caminhos: Record<string, string> }
   /** Só na estrutura visual: devolve o valor da variável escolhida pela opção atual (enum). */
-  | { op: 'variavelPorOpcao'; variaveis: Record<string, string> };
+  | { op: 'variavelPorOpcao'; variaveis: Record<string, string> }
+  /** Só em estrutura: multiplica a opacidade da cor conforme a opção de uma variável enum. */
+  | { op: 'alphaPorOpcao'; variavel: string; valores: Record<string, number> };
 
 export type KcxAlvo =
   /** Custom property CSS. Sempre começa com --kcx-. */
@@ -189,7 +191,7 @@ export type KcxEfeito =
   | { tipo: 'desfoque-camada'; raio: KcxRef<number> }
   | { tipo: 'desfoque-fundo'; raio: KcxRef<number> };
 
-export type KcxTipoNo = 'frame' | 'retangulo' | 'elipse' | 'texto' | 'svg';
+export type KcxTipoNo = 'frame' | 'retangulo' | 'elipse' | 'texto' | 'svg' | 'icone';
 
 export interface KcxNo {
   id: string;
@@ -252,6 +254,17 @@ export interface KcxNo {
    * camada vira uma instância dele. Editar a forma na peça muda todas as variantes.
    */
   peca?: { nome: string; eixo: string };
+  /**
+   * Ícone da biblioteca KCX (tipo icone): vira uma instância de "KCX Ícone/<nome>"
+   * no Figma. Com `propriedade`, ganha uma propriedade de troca de instância
+   * (Instance swap) com os ícones da biblioteca como sugeridos.
+   */
+  icone?: {
+    nome: KcxRef<string>;
+    cor: KcxRef<string>;
+    tamanho?: KcxRef<number>;
+    propriedade?: string;
+  };
   /** Arco nativo do Figma (tipo elipse), em graus; `interno` de 0 a 1 (anel). */
   arco?: { inicio: KcxRef<number>; fim: KcxRef<number>; interno: KcxRef<number> };
   filhos?: KcxNo[];
@@ -261,7 +274,8 @@ export type KcxRestricao = 'MIN' | 'CENTER' | 'MAX' | 'STRETCH' | 'SCALE';
 
 /* ============================== Estados, presets, animações ============================== */
 
-export type KcxGatilho = 'padrao' | 'hover' | 'focus' | 'active' | 'inicial' | 'final';
+export type KcxGatilho =
+  'padrao' | 'hover' | 'focus' | 'active' | 'desativado' | 'inicial' | 'final';
 
 export interface KcxEstado {
   id: string;
@@ -348,11 +362,24 @@ export interface KcxCompatibilidade {
  */
 export interface KcxInteracao {
   no: string;
-  gatilho: 'clique' | 'hover';
+  /**
+   * clique (On click), hover (While hovering), pressionar (While pressing),
+   * entrar/sair (Mouse enter/leave), atraso (After delay: `atraso` ms),
+   * tecla (Key: `tecla`, ex.: "Escape", "ArrowRight").
+   */
+  gatilho: 'clique' | 'hover' | 'pressionar' | 'entrar' | 'sair' | 'atraso' | 'tecla';
   de: string;
   para: string;
-  transicao: 'smart-animate' | 'dissolver' | 'instantanea';
+  transicao: 'smart-animate' | 'dissolver' | 'instantanea' | 'mover' | 'empurrar';
   duracao: number;
+  /** Curva: suave (ease-out, padrão), linear, entrada-saida, mola (spring gentil), quique. */
+  curva?: 'suave' | 'linear' | 'entrada-saida' | 'mola' | 'quique';
+  /** Direção de mover/empurrar. */
+  direcao?: 'esquerda' | 'direita' | 'cima' | 'baixo';
+  atraso?: number;
+  tecla?: string;
+  /** Também troca eixos de variante no destino (id da variável enum → valor). */
+  muda?: Record<string, string>;
 }
 
 export interface KcxCodigo {

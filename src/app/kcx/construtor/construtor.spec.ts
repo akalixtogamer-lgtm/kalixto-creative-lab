@@ -153,12 +153,13 @@ describe('Construtor KCX — todos os tipos', () => {
     });
     const plano = planejarFigma(criarPacote([comp], { agora }));
     const vs = plano.componentes[0].variantes;
-    expect(vs).toHaveLength(12);
+    expect(vs).toHaveLength(30); // 2 botões × 3 tamanhos × 5 estados
     const achar = (nome: string) => vs.find((v) => v.nome === nome)!.arvore;
     const entrarM = achar('Estado=Padrão, Botão=Entrar, Tamanho=M');
     const criarG = achar('Estado=Hover, Botão=Criar conta, Tamanho=G');
-    expect(entrarM.filhos[0].texto!.conteudo.valor).toBe('Entrar');
-    expect(criarG.filhos[0].texto!.conteudo.valor).toBe('Criar conta');
+    const txt = (n: typeof entrarM) => n.filhos.find((f) => f.texto)!.texto!.conteudo.valor;
+    expect(txt(entrarM)).toBe('Entrar');
+    expect(txt(criarG)).toBe('Criar conta');
     expect(entrarM.preenchimentos[0]).not.toEqual(criarG.preenchimentos[0]);
     expect(criarG.autoLayout!.paddingX.valor).toBe(32);
     expect(entrarM.autoLayout!.paddingX.valor).toBe(24);
@@ -167,7 +168,7 @@ describe('Construtor KCX — todos os tipos', () => {
     );
     const rel = await importarNoFigma(criarFigmaMock().figma, plano, '{}', 'atualizar');
     expect(rel.vinculosFalhos).toEqual([]);
-    expect(rel.interacoes.length).toBe(6); // hover em cada combinação de botão × tamanho
+    expect(rel.interacoes.length).toBe(12); // hover (Padrão) e pressionar (Hover) em cada botão × tamanho
   });
 
   it('a lista de itens respeita mínimo e máximo do tipo', () => {
@@ -205,7 +206,7 @@ describe('Construtor KCX — todos os tipos', () => {
     const def = TIPOS_CONSTRUTOR.find((t) => t.id === 'navbar')!;
     const plano = planejarFigma(criarPacote([montarDoConstrutor(configPadrao(def))]))
       .componentes[0];
-    const cel = plano.variantes.find((v) => v.nome === 'Estado=Celular')!;
+    const cel = plano.variantes.find((v) => v.nome.startsWith('Estado=Celular,'))!;
     const html = documentoDaVariante(cel.arvore);
     const links = html.indexOf('>Sobre<');
     expect(links).toBeGreaterThan(0);

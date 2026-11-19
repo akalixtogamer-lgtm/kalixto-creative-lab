@@ -20,11 +20,13 @@ import {
   KcxVariavel,
   KcxGradiente,
   KcxGrupo,
+  KcxInteracao,
 } from './kcx.types';
 import { Valores, aplicarOperacoes, valoresAtuais } from './resolver';
 import { ehRefDerivada, ehRefVariavel } from './validar';
 import { corFigma } from './unidades';
 import { comprimentoSvg, cortarSvg } from './svg-caminho';
+import { ICONES_KCX } from './icones';
 
 export type FigmaTipo = 'COLOR' | 'FLOAT' | 'BOOLEAN' | 'STRING' | 'TIMING' | 'EASING';
 export type FigmaCor = { r: number; g: number; b: number; a: number };
@@ -179,6 +181,8 @@ export interface PlanoNo {
   propriedadeVisivel?: string;
   /** Arco em radianos (arcData do Figma). */
   arco?: { inicio: number; fim: number; interno: number };
+  /** Instância de "KCX Ícone/<nome>" (tipo icone). */
+  icone?: { nome: string; cor: PlanoProp<FigmaCor>; tamanho: number; propriedade?: string };
   filhos: PlanoNo[];
 }
 
@@ -227,12 +231,16 @@ export interface PlanoInteracao {
   variante: string;
   /** Id do nó (como no KCX). */
   no: string;
-  gatilho: 'clique' | 'hover';
+  gatilho: KcxInteracao['gatilho'];
   /** Variante de destino. */
   destino: string;
-  transicao: 'smart-animate' | 'dissolver' | 'instantanea';
+  transicao: KcxInteracao['transicao'];
   /** Em milissegundos. */
   duracao: number;
+  curva?: KcxInteracao['curva'];
+  direcao?: KcxInteracao['direcao'];
+  atraso?: number;
+  tecla?: string;
 }
 
 export interface PlanoColecao {
@@ -250,6 +258,8 @@ export interface PlanoFigma {
   composicao?: { nome: string; camadas: { componente: string; papel: string }[] };
   /** Frame de documentação (código, limitações, variáveis documentais). */
   documentacao: boolean;
+  /** Biblioteca de ícones a criar (nome → caminho SVG), quando algum componente usa ícones. */
+  icones?: Record<string, string>;
   avisos: string[];
   resumo: {
     variaveis: number;
@@ -685,6 +695,19 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
       propriedade: no.texto.propriedade,
     };
   }
+  if (no.icone) {
+    const r = resolverRef(no.icone.nome, { ...CAMPOS['fixo'], tipo: 'STRING' }, '', {
+      ...ctx,
+      usarVariaveis: false,
+    });
+    const nome = String(r?.valor ?? 'mais');
+    p.icone = {
+      nome: nome in ICONES_KCX ? nome : 'mais',
+      cor: corRef(no.icone.cor, CAMPOS['corTraco'], onde('cor do ícone'), ctx)!,
+      tamanho: literal(no.icone.tamanho, ctx) ?? 20,
+      propriedade: no.icone.propriedade,
+    };
+  }
   if (no.svg !== undefined) {
     const r = resolverRef(no.svg as KcxRef<string>, { ...CAMPOS['fixo'], tipo: 'STRING' }, '', {
       ...ctx,
@@ -804,6 +827,9 @@ export function valoresDaVariante(
   if (!v) return valores;
   const hover = comp.estados.filter((e) => e.gatilho === 'hover');
   if (!hover.length) return v.valores;
+  // Estados que o CSS faz sozinho (Padrão e Hover): ficam com os valores atuais.
+  const estado = comp.estados.find((e) => e.nome === v.props['Estado']);
+  if (estado && estado.gatilho !== 'padrao' && estado.gatilho !== 'hover') return v.valores;
   const doCss = new Set<string>();
   for (const e of comp.estados)
     if (e.gatilho === 'hover' || e.gatilho === 'padrao')
@@ -983,13 +1009,19 @@ export function planejarFigma(
         avisos.push(`${comp.nome}: interação com estado inexistente (${it.de} → ${it.para}).`);
         continue;
       }
+      const muda: Record<string, string> = {};
+      for (const [vid, valor] of Object.entries(it.muda ?? {})) {
+        const ev = comp.variaveis.find((x) => x.id === vid);
+        const rot = ev?.opcoes?.find((o) => o.valor === valor)?.rotulo;
+        if (ev && rot) muda[ev.nome] = rot;
+      }
       for (const v of variantes.filter((x) => x.propriedades['Estado'] === de.nome)) {
         const alvo = variantes.find((x) =>
-          Object.entries({ ...v.propriedades, Estado: para.nome }).every(
+          Object.entries({ ...v.propriedades, Estado: para.nome, ...muda }).every(
             ([k, val]) => x.propriedades[k] === val,
           ),
         );
-        if (alvo)
+        if (alvo && alvo.nome !== v.nome)
           interacoes.push({
             variante: v.nome,
             no: it.no,
@@ -997,6 +1029,10 @@ export function planejarFigma(
             destino: alvo.nome,
             transicao: it.transicao,
             duracao: it.duracao,
+            curva: it.curva,
+            direcao: it.direcao,
+            atraso: it.atraso,
+            tecla: it.tecla,
           });
       }
     }
@@ -1070,8 +1106,11 @@ export function planejarFigma(
 
   const todas = [...vars.values()];
   const contar = (n: PlanoNo): number => 1 + n.filhos.reduce((s, f) => s + contar(f), 0);
+  const temIcone = (n: PlanoNo): boolean => !!n.icone || n.filhos.some(temIcone);
+  const usaIcones = componentes.some((c) => c.variantes.some((v) => temIcone(v.arvore)));
   return {
     modo,
+    icones: usaIcones ? { ...ICONES_KCX } : undefined,
     pacote: { id: pacote.id, versao: pacote.versao, nome: pacote.nome },
     colecoes,
     componentes,

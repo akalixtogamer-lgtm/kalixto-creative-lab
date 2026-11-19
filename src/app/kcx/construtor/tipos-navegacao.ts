@@ -52,6 +52,14 @@ export const NAVBAR: DefinicaoTipo = {
     { id: 'cta', rotulo: 'Botão', padrao: 'Contato' },
   ],
   itens: { rotulo: 'Link', padrao: ['Início', 'Sobre', 'Serviços', 'Portfólio'], min: 2, max: 7 },
+  recursos: [
+    {
+      id: 'ativo',
+      nome: 'Página ativa',
+      descricao: 'Eixo de variante com o link da página atual destacado (um por link).',
+      padrao: true,
+    },
+  ],
   animacoes: [
     {
       id: 'sublinhado',
@@ -97,9 +105,35 @@ export const NAVBAR: DefinicaoTipo = {
     });
     const aberto = b.estadoAberto('aberto', 'Menu aberto', 'Mostra o menu do celular aberto.');
     const n = cfg.itens.length;
+    const comAtivo = b.tem('ativo');
+    const ativo = comAtivo
+      ? b.extra({
+          id: 'paginaAtiva',
+          nome: 'Página ativa',
+          tipo: 'enum',
+          padrao: 'p1',
+          opcoes: cfg.itens.map((t, i) => ({ valor: `p${i + 1}`, rotulo: t || `Link ${i + 1}` })),
+          descricao: 'Link da página atual (destacado). No Figma é um eixo de variante.',
+          grupo: 'components',
+          secao: 'comportamento',
+          vinculos: [
+            {
+              propriedade: 'data-ativo',
+              alvo: { tipo: 'atributo', seletor: `.${C}`, atributo: 'data-ativo' },
+            },
+          ],
+        })
+      : undefined;
     const links = cfg.itens
-      .map((_, i) => b.item(i, 'a', `href="#"${i === 0 ? ' aria-current="page"' : ''}`))
+      .map((_, i) =>
+        b.item(i, 'a', `href="#"${i === 0 && !comAtivo ? ' aria-current="page"' : ''}`),
+      )
       .join('\n      ');
+    const selAtivo = comAtivo
+      ? cfg.itens
+          .map((_, i) => `.${C}[data-ativo="p${i + 1}"] .${C}__links a:nth-child(${i + 1})`)
+          .join(', ')
+      : '';
     const efeito =
       cfg.animacao === 'pilula'
         ? `.${C}__links a:hover, .${C}__links a[aria-current] { background: color-mix(in srgb, ${v('primaria')} 18%, transparent); color: ${v('texto')}; }`
@@ -108,7 +142,13 @@ export const NAVBAR: DefinicaoTipo = {
           : `.${C}__links a::after { content: ''; position: absolute; left: .7em; right: .7em; bottom: .2em; height: 2px; border-radius: 2px; background: ${v('primaria')}; transform: scaleX(0); transform-origin: left; transition: transform ${v('duracao')} ${v('easing')}; }
 .${C}__links a:hover::after, .${C}__links a[aria-current]::after { transform: scaleX(1); }
 .${C}__links a:hover, .${C}__links a[aria-current] { color: ${v('texto')}; }`;
-    const html = `<header class="${C}" data-aberto="false" data-vista="false">
+    const efeitoFinal = comAtivo
+      ? efeito.replaceAll(
+          `.${C}__links a[aria-current]`,
+          `.${C}__links a[aria-current], ${selAtivo}`,
+        )
+      : efeito;
+    const html = `<header class="${C}" data-aberto="false" data-vista="false"${comAtivo ? ' data-ativo="p1"' : ''}>
   <div class="${C}__barra">
     ${b.span('marca', 'strong')}
     <nav class="${C}__links" aria-label="Principal">
@@ -142,7 +182,7 @@ export const NAVBAR: DefinicaoTipo = {
   text-decoration: none;
   transition: color ${v('duracao')} ${v('easing')}, background ${v('duracao')} ${v('easing')}, text-shadow ${v('duracao')} ${v('easing')};
 }
-${efeito}
+${efeitoFinal}
 .${C}__botao { padding: .6em 1.1em; border-radius: ${v('raio')}; background: ${v('primaria')}; color: ${v('fundo')}; font-weight: 600; text-decoration: none; white-space: nowrap; }
 .${C}__burger { display: none; padding: .3em; border: 0; background: none; }
 .${C}__painel { display: none; grid-template-rows: 0fr; transition: grid-template-rows ${v('duracao')} ${v('easing')}; }
@@ -167,7 +207,25 @@ document.querySelectorAll('.${C}').forEach((nav) => {
   });
 });`;
     const linksFigma = cfg.itens.map((_, i) =>
-      b.noItem(i, { cor: i === 0 ? b.cor('texto') : b.cor('suave') }),
+      b.noItem(i, {
+        cor: ativo
+          ? ({
+              $derivado: ativo,
+              nome: `link-${i + 1}-cor`,
+              transformar: [
+                {
+                  op: 'variavelPorOpcao',
+                  variaveis: Object.fromEntries(
+                    cfg.itens.map((_, k) => [`p${k + 1}`, k === i ? 'corPrimaria' : 'corSuave']),
+                  ),
+                },
+              ],
+            } as never)
+          : i === 0
+            ? b.cor('texto')
+            : b.cor('suave'),
+        estilo: ativo ? 'Medium' : undefined,
+      }),
     );
     const estrutura: KcxNo = b.pilha(
       'navbar',
@@ -247,7 +305,15 @@ document.querySelectorAll('.${C}').forEach((nav) => {
       js,
       estrutura,
       estados,
+      eixos: ativo ? [ativo] : undefined,
       interacoes: [
+        // Clicar num link leva à variante com aquele link ativo.
+        ...(ativo
+          ? cfg.itens.map((_, i) => ({
+              ...interacao(`item-${i + 1}`, 'desktop', 'desktop'),
+              muda: { [ativo]: `p${i + 1}` },
+            }))
+          : []),
         interacao('burger', 'mobile', 'mobile-aberto'),
         interacao('burger', 'mobile-aberto', 'mobile'),
       ],
@@ -262,6 +328,7 @@ document.querySelectorAll('.${C}').forEach((nav) => {
         `${n} links como propriedades de texto`,
         'Variantes Desktop, Celular e Celular aberto; no protótipo, clicar no ícone abre e fecha (Smart Animate)',
         'Largura por variável; a barra e o menu esticam juntos (Fill)',
+        ...(ativo ? ['Eixo Página ativa: o link da página atual na cor principal'] : []),
       ],
       parcial: ['O efeito de hover dos links fica no código'],
       tags: ['menu', 'header', 'responsivo'],
@@ -836,6 +903,8 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
 
 /* ============================== Tab bar (app) ============================== */
 
+const PADRAO_TABBAR = ['casa', 'busca', 'coracao', 'usuario', 'config'];
+
 const ICONES_TABBAR = [
   ICONES.casa,
   'M 11 4 C 15 4 18 7 18 11 C 18 15 15 18 11 18 C 7 18 4 15 4 11 C 4 7 7 4 11 4 M 16 16 L 20 20',
@@ -852,6 +921,22 @@ export const TABBAR: DefinicaoTipo = {
   descricao: 'Barra inferior de aplicativo com ícones e indicador do item ativo.',
   textos: [],
   itens: { rotulo: 'Item', padrao: ['Início', 'Buscar', 'Favoritos', 'Perfil'], min: 3, max: 5 },
+  recursos: [
+    {
+      id: 'icones',
+      nome: 'Ícones trocáveis',
+      descricao:
+        'Cada ícone vira instância da biblioteca KCX Ícone, com troca de instância no Figma.',
+      padrao: true,
+    },
+  ],
+  icones: [
+    { id: 'item1', rotulo: 'Ícone do item 1', padrao: 'casa', recurso: 'icones' },
+    { id: 'item2', rotulo: 'Ícone do item 2', padrao: 'busca', recurso: 'icones' },
+    { id: 'item3', rotulo: 'Ícone do item 3', padrao: 'coracao', recurso: 'icones' },
+    { id: 'item4', rotulo: 'Ícone do item 4', padrao: 'usuario', recurso: 'icones' },
+    { id: 'item5', rotulo: 'Ícone do item 5', padrao: 'config', recurso: 'icones' },
+  ],
   animacoes: [
     {
       id: 'pilula',
@@ -871,7 +956,16 @@ export const TABBAR: DefinicaoTipo = {
     const ponto = cfg.animacao === 'ponto';
     const html = `<nav class="${C}" data-ativo="1" aria-label="Navegação do app">
   <span class="${C}__indicador" aria-hidden="true"></span>
-  ${cfg.itens.map((_, i) => `<button class="${C}__item" type="button" data-n="${i + 1}"${i === 0 ? ' aria-current="page"' : ''}>${svgIcone(ICONES_TABBAR[i % ICONES_TABBAR.length], `${C}__icone`)}${b.item(i)}</button>`).join('\n  ')}
+  ${cfg.itens
+    .map(
+      (_, i) =>
+        `<button class="${C}__item" type="button" data-n="${i + 1}"${i === 0 ? ' aria-current="page"' : ''}>${
+          b.tem('icones')
+            ? b.svgKcx(b.nomeIcone(`item${i + 1}`, PADRAO_TABBAR[i]), `${C}__icone`, 24)
+            : svgIcone(ICONES_TABBAR[i % ICONES_TABBAR.length], `${C}__icone`)
+        }${b.item(i)}</button>`,
+    )
+    .join('\n  ')}
 </nav>`;
     const css = `.${C} { position: relative; display: grid; grid-template-columns: repeat(${n}, 1fr); width: 100%; max-width: 375px; padding: 8px; border-radius: ${v('raio')}; background: ${v('superficie')}; box-shadow: 0 10px 30px rgb(0 0 0 / .3); }
 .${C}__item { position: relative; z-index: 1; display: grid; justify-items: center; gap: 2px; padding: 6px 0; border: 0; background: none; color: ${v('suave')}; font-size: calc(${v('fonte')} * .75); font-weight: 600; transition: color ${v('duracao')} ${v('easing')}; }
@@ -935,7 +1029,16 @@ document.querySelectorAll('.${C}').forEach((barra) => {
             `Item ${i + 1}`,
             'vertical',
             [
-              b.icone(`icone-${i + 1}`, 'Ícone', ICONES_TABBAR[i % ICONES_TABBAR.length], 24),
+              b.tem('icones')
+                ? b.noIcone(
+                    `icone-${i + 1}`,
+                    'Ícone',
+                    b.nomeIcone(`item${i + 1}`, PADRAO_TABBAR[i]),
+                    b.cor('texto'),
+                    24,
+                    { troca: `Ícone do item ${i + 1}` },
+                  )
+                : b.icone(`icone-${i + 1}`, 'Ícone', ICONES_TABBAR[i % ICONES_TABBAR.length], 24),
               b.noItem(i, { tamanho: b.fonteX(0.75, 'item-tamanho'), estilo: 'Semi Bold' }),
             ],
             {

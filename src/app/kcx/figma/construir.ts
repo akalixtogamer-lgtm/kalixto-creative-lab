@@ -18,6 +18,7 @@ import {
   easingFigma,
   PlanoComponente,
   PlanoFigma,
+  PlanoInteracao,
   PlanoNo,
   PlanoPaint,
   PlanoProp,
@@ -27,7 +28,7 @@ import {
 type Figma = any;
 type No = any;
 type Ref = { no: No; prop: string; plano: PlanoNo };
-type Refs = { texto: Ref[]; visivel: Ref[]; nos?: Map<string, No> };
+type Refs = { texto: Ref[]; visivel: Ref[]; icone?: Ref[]; nos?: Map<string, No> };
 
 export type ModoDuplicados = 'atualizar' | 'copia';
 
@@ -435,6 +436,77 @@ class Construtor {
     }
   }
 
+  /** Componentes da biblioteca de ícones (nome → componente). */
+  private readonly icones = new Map<string, No>();
+
+  /**
+   * Biblioteca "KCX · Ícones": um componente por ícone ("KCX Ícone/<nome>"),
+   * 24 × 24, traço de 2 px. Reaproveita a biblioteca que já estiver na página.
+   */
+  private construirIcones(x: number, y: number): No | null {
+    const lista = this.plano.icones;
+    if (!lista) return null;
+    const f = this.figma;
+    const existentes: No[] = (() => {
+      try {
+        return f.currentPage.findAll(
+          (n: No) => n.type === 'COMPONENT' && /^KCX Ícone\//.test(n.name),
+        );
+      } catch {
+        return [];
+      }
+    })();
+    for (const e of existentes) this.icones.set(e.name.replace(/^KCX Ícone\//, ''), e);
+    const faltam = Object.keys(lista).filter((n) => !this.icones.has(n));
+    if (!faltam.length) return null;
+    const quadro = f.createFrame();
+    quadro.name = 'KCX · Ícones';
+    quadro.layoutMode = 'HORIZONTAL';
+    quadro.layoutWrap = 'WRAP';
+    quadro.itemSpacing = 16;
+    quadro.counterAxisSpacing = 16;
+    quadro.paddingLeft = quadro.paddingRight = quadro.paddingTop = quadro.paddingBottom = 24;
+    quadro.primaryAxisSizingMode = 'FIXED';
+    quadro.counterAxisSizingMode = 'AUTO';
+    quadro.resize(24 * 8 + 16 * 7 + 48, 100);
+    quadro.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }];
+    quadro.cornerRadius = 12;
+    for (const nome of faltam) {
+      const svg = f.createNodeFromSvg(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="${lista[nome]}" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      );
+      const comp = f.createComponent();
+      comp.name = `KCX Ícone/${nome}`;
+      comp.resize(24, 24);
+      comp.fills = [];
+      comp.clipsContent = false;
+      const vetores = svg.findAll ? svg.findAll((n: No) => n.type === 'VECTOR') : [];
+      for (const v of vetores) {
+        const vx = v.absoluteTransform ? v.absoluteTransform[0][2] - svg.x : v.x;
+        const vy = v.absoluteTransform ? v.absoluteTransform[1][2] - svg.y : v.y;
+        comp.appendChild(v);
+        v.x = vx;
+        v.y = vy;
+        // Mesmo nome em todos os ícones: a cor sobrescrita passa para o ícone trocado.
+        v.name = 'Traço';
+      }
+      svg.remove();
+      this.tracarVetores(
+        vetores,
+        { cor: { valor: { r: 0, g: 0, b: 0, a: 1 } }, espessura: { valor: 2 } },
+        `Ícone ${nome}`,
+      );
+      comp.description = `Ícone da biblioteca KCX. Troque nos componentes pela propriedade de ícone (Instance swap).`;
+      quadro.appendChild(comp);
+      this.icones.set(nome, comp);
+    }
+    quadro.x = x;
+    quadro.y = y;
+    f.currentPage.appendChild(quadro);
+    this.rel.pecas.push({ nome: quadro.name, id: quadro.id, variantes: faltam.length });
+    return quadro;
+  }
+
   /**
    * Peças reutilizáveis: um componente com uma variante por opção (ex.:
    * "SVG Motion · Caminho", Forma=onda/laço/zigue-zague). As variantes do
@@ -512,7 +584,27 @@ class Construtor {
     let no: No;
     const local = `${onde} › ${p.nome}`;
     const pecaComp = p.peca ? this.pecas.get(`${p.peca.nome}|${p.peca.variante}`) : undefined;
-    if (p.tipo === 'svg' && pecaComp) {
+    const iconeComp = p.tipo === 'icone' && p.icone ? this.icones.get(p.icone.nome) : undefined;
+    if (p.tipo === 'icone' && p.icone && iconeComp) {
+      no = iconeComp.createInstance();
+      const t = p.icone.tamanho;
+      try {
+        no.resize(t, t);
+      } catch {
+        /* tamanho do componente */
+      }
+      const vetores = no.findAll ? no.findAll((x: No) => x.type === 'VECTOR') : [];
+      for (const v of vetores) {
+        v.strokes = [this.pintura({ tipo: 'solido', cor: p.icone.cor }, local)];
+      }
+      if (p.icone.propriedade)
+        (refs.icone ??= []).push({ no, prop: p.icone.propriedade, plano: p });
+    } else if (p.tipo === 'icone') {
+      no = f.createFrame();
+      no.fills = [];
+      no.resize(p.icone?.tamanho ?? 20, p.icone?.tamanho ?? 20);
+      this.rel.avisos.push(`${local}: ícone "${p.icone?.nome}" fora da biblioteca.`);
+    } else if (p.tipo === 'svg' && pecaComp) {
       no = pecaComp.createInstance();
       if (p.svgTraco?.tracejado?.length) {
         for (const v of no.findAll((x: No) => x.type === 'VECTOR'))
@@ -717,6 +809,42 @@ class Construtor {
         this.rel.propriedades.push(`${nome} (${t.tipo === 'TEXT' ? 'texto' : 'mostrar/ocultar'})`);
       }
     }
+    // Troca de instância: ícones da biblioteca como sugeridos.
+    const nomesIcone = new Set(refsPorVariante.flatMap((r) => (r.icone ?? []).map((x) => x.prop)));
+    for (const nome of nomesIcone) {
+      const ref = refsPorVariante.flatMap((r) => r.icone ?? []).find((r) => r.prop === nome)!;
+      const padrao = this.icones.get(ref.plano.icone!.nome);
+      if (!padrao) continue;
+      const sugeridos = [...this.icones.values()]
+        .filter((c) => c.key)
+        .map((c) => ({ type: 'COMPONENT', key: c.key }));
+      let chave: string;
+      try {
+        chave = principal.addComponentProperty(nome, 'INSTANCE_SWAP', padrao.id, {
+          preferredValues: sugeridos,
+        });
+      } catch {
+        try {
+          chave = principal.addComponentProperty(nome, 'INSTANCE_SWAP', padrao.id);
+        } catch (e) {
+          this.rel.avisos.push(`Propriedade "${nome}" (troca de ícone): ${(e as Error).message}`);
+          continue;
+        }
+      }
+      for (const refs of refsPorVariante) {
+        for (const r of (refs.icone ?? []).filter((x) => x.prop === nome)) {
+          try {
+            r.no.componentPropertyReferences = {
+              ...(r.no.componentPropertyReferences ?? {}),
+              mainComponent: chave,
+            };
+          } catch (e) {
+            this.rel.avisos.push(`Propriedade "${nome}": ${(e as Error).message}`);
+          }
+        }
+      }
+      this.rel.propriedades.push(`${nome} (troca de ícone)`);
+    }
   }
 
   private construirComponente(c: PlanoComponente, x0: number, y0: number): No {
@@ -793,23 +921,15 @@ class Construtor {
         );
         continue;
       }
-      const transition =
-        it.transicao === 'instantanea'
-          ? null
-          : {
-              type: it.transicao === 'dissolver' ? 'DISSOLVE' : 'SMART_ANIMATE',
-              easing: { type: 'EASE_OUT' },
-              duration: it.duracao / 1000,
-            };
       const lista = porNo.get(no) ?? [];
       lista.push({
-        trigger: { type: it.gatilho === 'hover' ? 'ON_HOVER' : 'ON_CLICK' },
+        trigger: gatilhoFigma(it),
         actions: [
           {
             type: 'NODE',
             destinationId: destino.variante.id,
             navigation: 'CHANGE_TO',
-            transition,
+            transition: transicaoFigma(it),
             preserveScrollPosition: false,
           },
         ],
@@ -968,6 +1088,8 @@ class Construtor {
     const x = Math.round(origem.x);
     const principais = new Map<string, No>();
     const criados: No[] = [];
+    const biblioteca = this.construirIcones(x - 600, y);
+    if (biblioteca) criados.push(biblioteca);
     for (const c of this.plano.componentes) {
       // Peças reutilizáveis à esquerda, componente no meio, documentação à direita, exemplo embaixo.
       const pecas = c.pecas.length ? this.construirPecas(c, x, y) : null;
@@ -1119,4 +1241,76 @@ export async function lerAlteracoes(
     },
     ignoradas,
   };
+}
+
+/** Gatilho do protótipo do Figma para uma interação KCX. */
+export function gatilhoFigma(it: PlanoInteracao): Record<string, unknown> {
+  switch (it.gatilho) {
+    case 'hover':
+      return { type: 'ON_HOVER' };
+    case 'pressionar':
+      return { type: 'ON_PRESS' };
+    case 'entrar':
+      return { type: 'MOUSE_ENTER', delay: 0 };
+    case 'sair':
+      return { type: 'MOUSE_LEAVE', delay: 0 };
+    case 'atraso':
+      return { type: 'AFTER_TIMEOUT', timeout: Math.max(0, (it.atraso ?? 1000) / 1000) };
+    case 'tecla':
+      return { type: 'ON_KEY_DOWN', device: 'KEYBOARD', keyCodes: [codigoTecla(it.tecla)] };
+    default:
+      return { type: 'ON_CLICK' };
+  }
+}
+
+/** Códigos de tecla (keyCode) que o Figma usa no gatilho Key/Gamepad. */
+export function codigoTecla(tecla = 'Escape'): number {
+  const mapa: Record<string, number> = {
+    Escape: 27,
+    Enter: 13,
+    ' ': 32,
+    Espaco: 32,
+    ArrowLeft: 37,
+    ArrowUp: 38,
+    ArrowRight: 39,
+    ArrowDown: 40,
+    Tab: 9,
+  };
+  return mapa[tecla] ?? (tecla.length === 1 ? tecla.toUpperCase().charCodeAt(0) : 27);
+}
+
+/**
+ * Transição do Figma (tipo, curva, direção e duração). Mover e empurrar só
+ * valem para navegar e overlays: na troca de variante (Change to) o Figma
+ * recusa, então viram Smart Animate (visto no Figma real).
+ */
+export function transicaoFigma(
+  it: PlanoInteracao,
+  trocaDeVariante = true,
+): Record<string, unknown> | null {
+  if (it.transicao === 'instantanea') return null;
+  const easing =
+    it.curva === 'linear'
+      ? { type: 'LINEAR' }
+      : it.curva === 'entrada-saida'
+        ? { type: 'EASE_IN_AND_OUT' }
+        : it.curva === 'mola'
+          ? { type: 'GENTLE' }
+          : it.curva === 'quique'
+            ? { type: 'BOUNCY' }
+            : { type: 'EASE_OUT' };
+  const duration = it.duracao / 1000;
+  if ((it.transicao === 'mover' || it.transicao === 'empurrar') && !trocaDeVariante) {
+    const dir = { esquerda: 'LEFT', direita: 'RIGHT', cima: 'TOP', baixo: 'BOTTOM' }[
+      it.direcao ?? 'esquerda'
+    ];
+    return {
+      type: it.transicao === 'mover' ? 'MOVE_IN' : 'PUSH',
+      direction: dir,
+      matchLayers: false,
+      easing,
+      duration,
+    };
+  }
+  return { type: it.transicao === 'dissolver' ? 'DISSOLVE' : 'SMART_ANIMATE', easing, duration };
 }

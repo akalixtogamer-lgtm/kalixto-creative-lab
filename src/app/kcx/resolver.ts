@@ -205,6 +205,13 @@ export function aplicarOperacoes(
         x = (alvo && (valores[alvo] ?? todas.find((t) => t.id === alvo)?.valor)) ?? x;
         break;
       }
+      case 'alphaPorOpcao': {
+        if (typeof x !== 'string')
+          throw new Error(`KCX: alphaPorOpcao em "${variavel.id}" precisa de cor.`);
+        const op = String(valores[o.variavel] ?? todas.find((t) => t.id === o.variavel)?.valor);
+        x = comAlpha(x, o.valores[op] ?? 1);
+        break;
+      }
       case 'somarVariavel': {
         const outra = valores[o.variavel] ?? todas.find((t) => t.id === o.variavel)?.valor;
         x = comoNumero(x, variavel.id) + o.fator * comoNumero(outra as KcxValor, o.variavel);

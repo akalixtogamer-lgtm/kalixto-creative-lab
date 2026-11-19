@@ -113,7 +113,12 @@ function validarVariavel(
       if (!ehTexto(vin.alvo.seletor)) e(`${cv}.alvo.seletor`, 'Seletor obrigatório.');
     } else e(`${cv}.alvo`, 'Alvo deve ser css-var, atributo ou texto.');
     for (const o of vin.transformar ?? []) {
-      if (o.op === 'pontoNoCaminho' || o.op === 'tracoNoCaminho' || o.op === 'variavelPorOpcao') {
+      if (
+        o.op === 'pontoNoCaminho' ||
+        o.op === 'tracoNoCaminho' ||
+        o.op === 'variavelPorOpcao' ||
+        o.op === 'alphaPorOpcao'
+      ) {
         e(`${cv}.transformar`, `A operação ${o.op} só pode ser usada na estrutura visual.`);
       }
       if (
@@ -197,6 +202,10 @@ export function refsDoNo(no: KcxNo): { campo: string; ref: KcxRef<unknown> }[] {
     add('arco.inicio', no.arco.inicio);
     add('arco.fim', no.arco.fim);
     add('arco.interno', no.arco.interno);
+  }
+  if (no.icone) {
+    add('icone.nome', no.icone.nome);
+    add('icone.cor', no.icone.cor);
   }
   if (no.svgTraco) {
     add('svgTraco.cor', no.svgTraco.cor);

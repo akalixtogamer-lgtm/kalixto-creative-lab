@@ -104,6 +104,7 @@ export const KCX_JSON_SCHEMA = {
             'pontoNoCaminho',
             'tracoNoCaminho',
             'variavelPorOpcao',
+            'alphaPorOpcao',
           ],
         },
       },
@@ -205,7 +206,7 @@ export const KCX_JSON_SCHEMA = {
       properties: {
         id: texto,
         nome: texto,
-        tipo: { enum: ['frame', 'retangulo', 'elipse', 'texto', 'svg'] },
+        tipo: { enum: ['frame', 'retangulo', 'elipse', 'texto', 'svg', 'icone'] },
         x: kref({ type: 'number' }),
         y: kref({ type: 'number' }),
         largura: kref({ type: 'number' }),
@@ -221,7 +222,9 @@ export const KCX_JSON_SCHEMA = {
       type: 'object',
       required: ['id', 'nome', 'gatilho', 'descricao', 'valores'],
       properties: {
-        gatilho: { enum: ['padrao', 'hover', 'focus', 'active', 'inicial', 'final'] },
+        gatilho: {
+          enum: ['padrao', 'hover', 'focus', 'active', 'desativado', 'inicial', 'final'],
+        },
         valores: { type: 'object' },
         derivar: {
           type: 'array',

@@ -60,6 +60,7 @@ export class NoMock {
 
   constructor(public type: string) {
     if (['FRAME', 'RECTANGLE', 'COMPONENT'].includes(type)) this['cornerRadius'] = 0;
+    if (type === 'COMPONENT') this['key'] = `chave-${this.id}`;
   }
 
   appendChild(n: NoMock): void {
@@ -94,11 +95,17 @@ export class NoMock {
   getSharedPluginData(ns: string, k: string): string {
     return this.pluginData[`${ns}:${k}`] ?? '';
   }
-  addComponentProperty(nome: string, tipo: string, padrao: any): string {
+  addComponentProperty(nome: string, tipo: string, padrao: any, opcoes?: any): string {
     if (this.type !== 'COMPONENT' && this.type !== 'COMPONENT_SET')
       throw new Error('só em componentes');
     const chave = `${nome}#${Object.keys(this.componentPropertyDefinitions).length + 1}:0`;
-    this.componentPropertyDefinitions[chave] = { type: tipo, defaultValue: padrao };
+    if (tipo === 'INSTANCE_SWAP' && typeof padrao !== 'string')
+      throw new Error('INSTANCE_SWAP precisa do id do componente');
+    this.componentPropertyDefinitions[chave] = {
+      type: tipo,
+      defaultValue: padrao,
+      ...(opcoes?.preferredValues ? { preferredValues: opcoes.preferredValues } : {}),
+    };
     return chave;
   }
   setRangeBoundVariable(_i: number, _f: number, campo: string, v: any): void {
@@ -111,6 +118,32 @@ export class NoMock {
   /** Interações do protótipo (Figma: setReactionsAsync). */
   reactions: any[] = [];
   async setReactionsAsync(r: any[]): Promise<void> {
+    const gatilhos = [
+      'ON_CLICK',
+      'ON_HOVER',
+      'ON_PRESS',
+      'MOUSE_ENTER',
+      'MOUSE_LEAVE',
+      'AFTER_TIMEOUT',
+      'ON_KEY_DOWN',
+      'ON_DRAG',
+    ];
+    const tipos = r.map((x) => x.trigger.type);
+    if (tipos.includes('ON_CLICK') && tipos.includes('ON_HOVER'))
+      throw new Error('On click e While hovering não podem estar no mesmo objeto');
+    for (const x of r) {
+      if (!gatilhos.includes(x.trigger.type))
+        throw new Error(`gatilho inválido: ${x.trigger.type}`);
+      if (tipos.filter((t) => t === x.trigger.type).length > 1 && x.trigger.type !== 'ON_KEY_DOWN')
+        throw new Error(`gatilho repetido: ${x.trigger.type}`);
+    }
+    for (const x of r)
+      for (const a of x.actions)
+        if (
+          a.navigation === 'CHANGE_TO' &&
+          ['PUSH', 'MOVE_IN', 'MOVE_OUT', 'SLIDE_IN', 'SLIDE_OUT'].includes(a.transition?.type)
+        )
+          throw new Error('Reaction at index 0 was invalid');
     for (const x of r)
       for (const a of x.actions)
         if (a.type === 'NODE' && !a.destinationId) throw new Error('destinationId ausente');

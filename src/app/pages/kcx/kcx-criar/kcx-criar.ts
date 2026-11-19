@@ -7,6 +7,7 @@ import {
   corDoBotao,
   notaFigma,
   NivelFigma,
+  RecursoTipo,
   DefinicaoTipo,
   TIPOS_CONSTRUTOR,
   configPadrao,
@@ -23,6 +24,21 @@ import { resolverSaidas } from '../../../kcx/resolver';
 import { Icon } from '../../../shared/components/icon/icon';
 import { KcxMeusService } from '../kcx-meus.service';
 import { KcxPreview } from '../kcx-preview/kcx-preview';
+import { ICONES_KCX } from '../../../kcx/icones';
+import { PlanoComponente, PlanoNo } from '../../../kcx/figma-plano';
+
+/** Propriedades de componente que o Figma vai mostrar (texto, liga/desliga, troca de ícone). */
+function contarPropriedades(c: PlanoComponente): number {
+  const nomes = new Set<string>();
+  const ver = (n: PlanoNo) => {
+    if (n.texto?.propriedade) nomes.add('t:' + n.texto.propriedade);
+    if (n.propriedadeVisivel) nomes.add('v:' + n.propriedadeVisivel);
+    if (n.icone?.propriedade) nomes.add('i:' + n.icone.propriedade);
+    n.filhos.forEach(ver);
+  };
+  c.variantes.forEach((v) => ver(v.arvore));
+  return nomes.size;
+}
 import { KcxVariantes, valoresDaVariante } from '../kcx-variantes/kcx-variantes';
 
 export type PassoCriar = 1 | 2 | 3;
@@ -142,6 +158,7 @@ export class KcxCriar {
     return {
       variantes: p.variantes.map((v) => v.nome),
       interacoes: p.interacoes?.length ?? 0,
+      propriedades: contarPropriedades(p),
       variaveis: plano.colecoes.reduce(
         (s, col) => s + col.variaveis.filter((v) => v.nome.startsWith(`${c.id}/`)).length,
         0,
@@ -197,6 +214,46 @@ export class KcxCriar {
     if (p === 3 && !this.resultado().comp) return;
     this.passo.set(p);
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ---------- Recursos do Figma ---------- */
+  protected readonly recursosLigados = computed(() =>
+    (this.def().recursos ?? [])
+      .filter((r) => this.recursoLigado(r.id) && !this.recursoBloqueado(r))
+      .map((r) => r.nome),
+  );
+
+  protected readonly nomesIcones = Object.keys(ICONES_KCX);
+
+  protected recursoLigado(id: string): boolean {
+    return this.cfg().recursos?.[id] === true;
+  }
+
+  protected recursoBloqueado(r: RecursoTipo): boolean {
+    return !!r.exceto?.includes(this.cfg().animacao);
+  }
+
+  protected mudarRecurso(id: string, ligado: boolean): void {
+    this.cfg.update((c) => ({ ...c, recursos: { ...c.recursos, [id]: ligado } }));
+    this.variante.set('');
+  }
+
+  protected lugarVisivel(l: { id: string; recurso?: string }): boolean {
+    if (l.recurso && !this.recursoLigado(l.recurso)) return false;
+    const m = /^item(\d+)$/.exec(l.id);
+    return !m || Number(m[1]) <= this.cfg().itens.length;
+  }
+
+  protected iconeEscolhido(lugar: string, padrao: string): string {
+    return this.cfg().icones?.[lugar] ?? padrao;
+  }
+
+  protected caminhoIcone(nome: string): string {
+    return ICONES_KCX[nome] ?? '';
+  }
+
+  protected mudarIcone(lugar: string, nome: string): void {
+    this.cfg.update((c) => ({ ...c, icones: { ...c.icones, [lugar]: nome } }));
   }
 
   protected aplicarPaleta(cores: CoresConstrutor): void {

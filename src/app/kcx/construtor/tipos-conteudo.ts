@@ -1,5 +1,6 @@
 /** Tipos do construtor: botão, cards (foto, vídeo, preço), carrossel e acordeão. */
-import { KcxEfeito, KcxEstado, KcxInteracao, KcxNo, KcxOperacao } from '../kcx.types';
+import { KcxEfeito, KcxEstado, KcxInteracao, KcxNo, KcxOperacao, KcxRef } from '../kcx.types';
+import { estadosCss, estadosDs } from './estados-ds';
 import { Blocos, ConfigConstrutor, DefinicaoTipo, ICONES, escHtml, svgIcone } from './montar';
 
 const interacao = (
@@ -55,6 +56,7 @@ function sombraHover(b: Blocos, noRaiz: string) {
     },
   ];
   return {
+    id,
     efeito,
     estados,
     interacoes: [interacao(noRaiz, 'padrao', 'hover', 'hover')],
@@ -77,6 +79,13 @@ const gradienteMidia = (b: Blocos) => [
       { posicao: 1, cor: b.cor('superficie') },
     ],
   },
+];
+
+/** Tamanhos P/M/G dos botões (padding e texto, em px). */
+const TAMANHOS = [
+  { valor: 'p', rotulo: 'P', px: 16, py: 8, fonte: 14 },
+  { valor: 'm', rotulo: 'M', px: 24, py: 12, fonte: 16 },
+  { valor: 'g', rotulo: 'G', px: 32, py: 16, fonte: 20 },
 ];
 
 /* ============================== Botão ============================== */
@@ -119,8 +128,35 @@ export const BOTAO: DefinicaoTipo = {
   nome: 'Botão',
   categoria: 'acoes',
   uso: 'site e app',
-  descricao: 'Botão de ação com o texto que você quiser e uma animação de destaque.',
+  descricao:
+    'Botão de design system: tipos (primário, secundário, terciário, destrutivo), tamanhos P/M/G, estados e ícones trocáveis.',
   textos: [{ id: 'rotulo', rotulo: 'Texto do botão', padrao: 'Começar agora' }],
+  recursos: [
+    {
+      id: 'tipos',
+      nome: 'Tipos',
+      descricao: 'Primário, Secundário (contorno), Terciário (só texto) e Destrutivo.',
+      padrao: true,
+      exceto: ['preencher'],
+    },
+    { id: 'tamanhos', nome: 'Tamanhos', descricao: 'P, M e G (padding e texto).', padrao: true },
+    {
+      id: 'estados',
+      nome: 'Estados',
+      descricao: 'Pressionado, Foco (teclado) e Desativado, além de Padrão e Hover.',
+      padrao: true,
+    },
+    {
+      id: 'icones',
+      nome: 'Ícones',
+      descricao: 'Ícone à esquerda e à direita: liga/desliga e troca de ícone no Figma.',
+      padrao: true,
+    },
+  ],
+  icones: [
+    { id: 'esquerda', rotulo: 'Ícone à esquerda', padrao: 'mais', recurso: 'icones' },
+    { id: 'direita', rotulo: 'Ícone à direita', padrao: 'seta', recurso: 'icones' },
+  ],
   animacoes: [
     {
       id: 'elevar',
@@ -135,12 +171,173 @@ export const BOTAO: DefinicaoTipo = {
     { id: 'brilho', nome: 'Brilho pulsando', descricao: 'Um halo pulsa em volta o tempo todo.' },
     { id: 'pulsar', nome: 'Pulsa', descricao: 'O botão cresce e volta, chamando atenção.' },
   ],
-  largura: 220,
-  altura: 56,
+  largura: 260,
+  altura: 64,
   gerar(cfg, b) {
     const C = b.C;
     const v = (n: string) => b.v(n);
+    const preencher = cfg.animacao === 'preencher';
+    const comTipos = b.tem('tipos') && !preencher;
+    const comTamanhos = b.tem('tamanhos');
+    const comEstados = b.tem('estados');
+    const comIcones = b.tem('icones');
     const s = sombraHover(b, 'botao');
+    const ds = comEstados ? estadosDs(b) : undefined;
+
+    /* ---------- Variáveis dos recursos ---------- */
+    const TIPOS_BTN = [
+      { valor: 'primario', rotulo: 'Primário' },
+      { valor: 'secundario', rotulo: 'Secundário' },
+      { valor: 'terciario', rotulo: 'Terciário' },
+      { valor: 'destrutivo', rotulo: 'Destrutivo' },
+    ];
+    const tipo = comTipos
+      ? b.extra({
+          id: 'tipoBotao',
+          nome: 'Tipo',
+          tipo: 'enum',
+          padrao: 'primario',
+          opcoes: TIPOS_BTN,
+          descricao: 'Hierarquia do botão. No Figma é um eixo de variante.',
+          grupo: 'components',
+          secao: 'aparencia',
+          vinculos: [
+            {
+              propriedade: 'data-tipo',
+              alvo: { tipo: 'atributo', seletor: `.${C}`, atributo: 'data-tipo' },
+            },
+          ],
+        })
+      : undefined;
+    const perigo = comTipos
+      ? b.extra({
+          id: 'corPerigo',
+          nome: 'Cor de perigo',
+          tipo: 'color',
+          padrao: '#ff5c7a',
+          descricao: 'Cor do botão Destrutivo (excluir, cancelar assinatura).',
+          grupo: 'colors',
+          secao: 'aparencia',
+          vinculos: [{ propriedade: 'perigo', alvo: { tipo: 'css-var', nome: `${b.P}-perigo` } }],
+        })
+      : undefined;
+    const tamanho = comTamanhos
+      ? b.extra({
+          id: 'tamanho',
+          nome: 'Tamanho',
+          tipo: 'enum',
+          padrao: 'm',
+          opcoes: TAMANHOS.map((t) => ({ valor: t.valor, rotulo: t.rotulo })),
+          descricao: 'P, M ou G. No Figma é um eixo de variante.',
+          grupo: 'dimensions',
+          secao: 'aparencia',
+          vinculos: [
+            {
+              propriedade: 'data-tamanho',
+              alvo: { tipo: 'atributo', seletor: `.${C}`, atributo: 'data-tamanho' },
+            },
+          ],
+        })
+      : undefined;
+    const iconeLado = (lado: 'esquerda' | 'direita', padrao: boolean) =>
+      b.extra({
+        id: lado === 'esquerda' ? 'iconeEsquerda' : 'iconeDireita',
+        nome: lado === 'esquerda' ? 'Ícone à esquerda' : 'Ícone à direita',
+        tipo: 'boolean',
+        padrao,
+        descricao: `Mostra o ícone ${lado === 'esquerda' ? 'antes' : 'depois'} do texto. No Figma é uma propriedade liga/desliga.`,
+        grupo: 'components',
+        secao: 'aparencia',
+        vinculos: [
+          {
+            propriedade: `data-icone-${lado}`,
+            alvo: { tipo: 'atributo', seletor: `.${C}`, atributo: `data-icone-${lado}` },
+            transformar: [{ op: 'mapa', valores: { true: 'true', false: 'false' } }],
+          },
+        ],
+      });
+    const ie = comIcones ? iconeLado('esquerda', false) : undefined;
+    const id = comIcones ? iconeLado('direita', true) : undefined;
+    const nomeIe = b.nomeIcone('esquerda', 'mais');
+    const nomeId = b.nomeIcone('direita', 'seta');
+
+    /* ---------- Cores por tipo (Figma) ---------- */
+    const porTipo = (
+      nome: string,
+      vars: Record<string, string>,
+      alphas?: Record<string, number>,
+    ): KcxRef<string> =>
+      ({
+        $derivado: tipo!,
+        nome,
+        transformar: [
+          { op: 'variavelPorOpcao', variaveis: vars },
+          ...(alphas ? [{ op: 'alphaPorOpcao', variavel: tipo!, valores: alphas }] : []),
+        ],
+      }) as never;
+    const BASE = {
+      primario: 'corPrimaria',
+      secundario: 'corPrimaria',
+      terciario: 'corPrimaria',
+      destrutivo: perigo ?? 'corPrimaria',
+    };
+    const base: KcxRef<string> = tipo ? porTipo('botao-base', BASE) : b.cor('primaria');
+    const fundoBtn: KcxRef<string> = tipo
+      ? porTipo('botao-cor', BASE, { primario: 1, secundario: 0, terciario: 0, destrutivo: 1 })
+      : b.cor('primaria');
+    const contorno: KcxRef<string> | undefined = tipo
+      ? porTipo('contorno-cor', BASE, { primario: 0, secundario: 1, terciario: 0, destrutivo: 0 })
+      : undefined;
+    const corTexto: KcxRef<string> = tipo
+      ? porTipo('rotulo-cor', {
+          primario: 'corFundo',
+          secundario: 'corPrimaria',
+          terciario: 'corPrimaria',
+          destrutivo: 'corFundo',
+        })
+      : { $var: 'corFundo' };
+    const sombraCor: KcxRef<string> = tipo
+      ? ({
+          $derivado: tipo,
+          nome: 'sombra-cor',
+          transformar: [
+            { op: 'variavelPorOpcao', variaveis: BASE },
+            {
+              op: 'alphaPorOpcao',
+              variavel: tipo,
+              valores: { primario: 1, secundario: 0.6, terciario: 0, destrutivo: 1 },
+            },
+            { op: 'alpha', variavel: s.id },
+          ],
+        } as never)
+      : s.efeito.tipo === 'sombra'
+        ? s.efeito.cor
+        : b.cor('primaria');
+
+    /* ---------- Tamanho (Figma) ---------- */
+    const porTamanho = (campo: 'px' | 'py' | 'fonte' | 'icone', nome: string): KcxRef<number> =>
+      ({
+        $derivado: tamanho!,
+        nome,
+        transformar: [
+          {
+            op: 'mapa',
+            valores: Object.fromEntries(
+              TAMANHOS.map((t) => [
+                t.valor,
+                String(campo === 'icone' ? Math.round(t.fonte * 1.15) : t[campo]),
+              ]),
+            ),
+          },
+        ],
+      }) as never;
+    const px = tamanho ? porTamanho('px', 'botao-px') : b.espacoX(1.5, 'botao-px');
+    const py = tamanho ? porTamanho('py', 'botao-py') : b.espacoX(0.75, 'botao-py');
+    const fonte = tamanho ? porTamanho('fonte', 'botao-fonte') : b.fonte;
+    const tamIcone = (t: (typeof TAMANHOS)[number]['valor']) =>
+      Math.round((TAMANHOS.find((x) => x.valor === t)?.fonte ?? 16) * 1.15);
+
+    /* ---------- Código ---------- */
     const anims: Record<string, string> = {
       elevar: `.${C}:hover, .${C}:focus-visible { transform: translateY(-3px); box-shadow: ${s.sombraCss}; }
 .${C}:active { transform: translateY(0) scale(.98); }`,
@@ -154,47 +351,137 @@ export const BOTAO: DefinicaoTipo = {
 .${C}:hover { animation-play-state: paused; box-shadow: ${s.sombraCss}; }
 @keyframes ${C}-pulso { 50% { transform: scale(1.05); } }`,
     };
+    const cssTipos = comTipos
+      ? `.${C}[data-tipo="secundario"] { background: transparent; color: ${v('primaria')}; box-shadow: inset 0 0 0 1.5px ${v('primaria')}; }
+.${C}[data-tipo="terciario"] { background: transparent; color: ${v('primaria')}; }
+.${C}[data-tipo="terciario"]:hover { box-shadow: none; }
+.${C}[data-tipo="destrutivo"] { background: ${v('perigo')}; --kcx-cor-sombra: ${v('perigo')}; }`
+      : '';
+    const cssTamanhos = comTamanhos
+      ? TAMANHOS.map(
+          (t) =>
+            `.${C}[data-tamanho="${t.valor}"] { padding: ${t.py}px ${t.px}px; font-size: ${t.fonte}px; }`,
+        ).join('\n')
+      : '';
+    const cssIcones = comIcones
+      ? `.${C}__icone { flex: none; width: 1.15em; height: 1.15em; }
+.${C}[data-icone-esquerda="false"] .${C}__icone--esquerda, .${C}[data-icone-direita="false"] .${C}__icone--direita { display: none; }`
+      : '';
     const css = `.${C} {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: .5em;
   padding: calc(${v('espaco')} * .75) calc(${v('espaco')} * 1.5);
   border: 0;
   border-radius: ${v('raio')};
   background: ${v('primaria')};
   color: ${v('fundo')};
+  font: inherit;
   font-weight: 600;
-  transition: transform ${v('duracao')} ${v('easing')}, box-shadow ${v('duracao')} ${v('easing')}, color ${v('duracao')} ${v('easing')};
+  cursor: pointer;
+  transition: transform ${v('duracao')} ${v('easing')}, box-shadow ${v('duracao')} ${v('easing')}, color ${v('duracao')} ${v('easing')}, opacity ${v('duracao')} ${v('easing')};
 }
-${anims[cfg.animacao] ?? anims['elevar']}`;
-    const html = `<button class="${C}" type="button">${b.span('rotulo')}</button>`;
-    const estrutura = b.noBotao('botao', 'rotulo', 'Texto do botão', 'primario', {
-      nome: cfg.nome,
-      efeitos: [s.efeito],
+${anims[cfg.animacao] ?? anims['elevar']}
+${cssTipos}
+${cssTamanhos}
+${cssIcones}
+${ds ? ds.css(`.${C}`, v('primaria')) : ''}`;
+    const attrs = [
+      tipo ? 'data-tipo="primario"' : '',
+      tamanho ? 'data-tamanho="m"' : '',
+      comIcones ? 'data-icone-esquerda="false" data-icone-direita="true"' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+    const html = `<button class="${C}" type="button"${attrs ? ' ' + attrs : ''}>${
+      comIcones ? b.svgKcx(nomeIe, `${C}__icone ${C}__icone--esquerda`) : ''
+    }${b.span('rotulo')}${comIcones ? b.svgKcx(nomeId, `${C}__icone ${C}__icone--direita`) : ''}</button>`;
+
+    /* ---------- Figma ---------- */
+    const texto = b.noTexto('rotulo', 'Texto do botão', {
+      estilo: 'Semi Bold',
+      cor: corTexto,
+      tamanho: fonte,
     });
-    let estados = s.estados;
-    if (cfg.animacao === 'preencher') {
+    let filhos: KcxNo[] = [texto];
+    if (comIcones) {
+      const tam = tamanho ? porTamanho('icone', 'botao-icone') : 18;
+      filhos = [
+        b.noIcone('icone-esquerda', 'Ícone à esquerda', nomeIe, corTexto, tam, {
+          troca: 'Ícone à esquerda (trocar)',
+          visivel: { $var: ie! },
+          propriedadeVisivel: 'Ícone à esquerda',
+        }),
+        texto,
+        b.noIcone('icone-direita', 'Ícone à direita', nomeId, corTexto, tam, {
+          troca: 'Ícone à direita (trocar)',
+          visivel: { $var: id! },
+          propriedadeVisivel: 'Ícone à direita',
+        }),
+      ];
+    }
+    if (ds) filhos = [ds.noRealce(corTexto), ...filhos];
+    const efeitos: KcxEfeito[] = [
+      { ...(s.efeito as KcxEfeito & { tipo: 'sombra' }), cor: sombraCor },
+    ];
+    if (ds) efeitos.push(ds.efeitoAnel(base));
+    const estrutura = b.pilha('botao', cfg.nome, 'horizontal', filhos, {
+      espaco: tamanho ? 8 : b.espacoX(0.5, 'botao-espaco'),
+      px,
+      py,
+      raio: b.raio,
+      preenchimentos: [{ tipo: 'solido', cor: fundoBtn }],
+      traco: contorno ? { cor: contorno, espessura: 1.5 } : undefined,
+      efeitos,
+      opacidade: ds ? { $var: ds.opacidade } : undefined,
+    });
+
+    let estados = ds
+      ? ds.estados({ padrao: { [s.id]: 0 }, pressionado: { [s.id]: 0 } })
+      : s.estados;
+    if (preencher) {
       const p = varsPreencher(b);
       estrutura.preenchimentos = [
         { tipo: 'solido', cor: b.corAlpha('corPrimaria', 'botao-cor', p.cheio) },
       ];
       estrutura.traco = { cor: b.cor('primaria'), espessura: 2 };
-      const rotulo = estrutura.filhos![0];
+      const rotulo = estrutura.filhos!.find((f) => f.id === 't-rotulo')!;
       rotulo.preenchimentos = [
         { tipo: 'solido', cor: { $var: 'corFundo' } },
         { tipo: 'solido', cor: b.corAlpha('corPrimaria', 'rotulo-cor', p.vazio) },
       ];
       estados = estados.map((e) =>
-        e.id === 'padrao' ? { ...e, valores: { ...e.valores, [p.cheio]: 0, [p.vazio]: 1 } } : e,
+        e.id === 'padrao' || e.id === 'foco' || e.id === 'desativado'
+          ? { ...e, valores: { ...e.valores, [p.cheio]: 0, [p.vazio]: 1 } }
+          : e,
       );
     }
+    const editavel = [
+      `Variantes: ${[
+        tipo ? 'Tipo (Primário, Secundário, Terciário, Destrutivo)' : '',
+        tamanho ? 'Tamanho (P, M, G)' : '',
+        ds ? 'Estado (Padrão, Hover, Pressionado, Foco, Desativado)' : 'Estado (Padrão, Hover)',
+      ]
+        .filter(Boolean)
+        .join(' × ')}`,
+      ds
+        ? 'Protótipo: While hovering → Hover e While pressing → Pressionado (Smart Animate)'
+        : 'Protótipo: While hovering → Hover (Smart Animate)',
+      'Auto Layout: o botão cresce com o texto',
+    ];
+    if (comIcones)
+      editavel.push(
+        'Ícones à esquerda e à direita: liga/desliga e troca de ícone (Instance swap) com a biblioteca KCX Ícone',
+      );
     return {
       html,
       css,
       estrutura,
       estados,
-      interacoes: s.interacoes,
+      interacoes: ds ? ds.interacoes('botao') : s.interacoes,
+      eixos: [tipo, tamanho].filter((x): x is string => !!x),
       animacao: {
         nome: BOTAO.animacoes.find((a) => a.id === cfg.animacao)?.nome ?? 'Hover',
         tecnica:
@@ -203,14 +490,11 @@ ${anims[cfg.animacao] ?? anims['elevar']}`;
             : 'css-transition',
         variaveis: ['duracao', 'easing', 'forcaSombra'],
         descricao:
-          'Transição de transform e box-shadow (ou keyframes contínuos). No Figma: variantes Padrão e Hover com “While hovering”.',
+          'Transição de transform e box-shadow (ou keyframes contínuos). No Figma: uma variante por estado com While hovering e While pressing.',
       },
-      editavel: [
-        'Variantes Padrão e Hover; no protótipo, o hover troca sozinho (Smart Animate)',
-        'Auto Layout: o botão cresce com o texto',
-      ],
+      editavel,
       naoSuportado: ['Movimento contínuo (pulsar e brilho)'],
-      tags: ['button', 'cta'],
+      tags: ['button', 'cta', 'design system'],
     };
   },
 };
@@ -232,6 +516,20 @@ export const CARD_FOTO: DefinicaoTipo = {
       padrao: 'Toda quinta, 19h, com turma iniciante e avançada.',
     },
     { id: 'botao', rotulo: 'Botão', padrao: 'Ver mais' },
+  ],
+  recursos: [
+    {
+      id: 'partes',
+      nome: 'Partes liga/desliga',
+      descricao: 'Mostrar ou ocultar cada parte do card na instância do Figma.',
+      padrao: true,
+    },
+  ],
+  partes: [
+    { no: 'imagem', nome: 'Imagem', classe: 'midia' },
+    { no: 't-titulo', nome: 'Título', classe: 'titulo' },
+    { no: 't-texto', nome: 'Descrição', classe: 'texto' },
+    { no: 'acao', nome: 'Botão', classe: 'acao' },
   ],
   animacoes: [
     { id: 'zoom', nome: 'Zoom na imagem', descricao: 'A imagem aproxima devagar no hover.' },
@@ -364,6 +662,19 @@ export const CARD_VIDEO: DefinicaoTipo = {
     { id: 'titulo', rotulo: 'Título', padrao: 'Passo básico do forró' },
     { id: 'texto', rotulo: 'Descrição', padrao: 'Aula rápida para treinar em casa.' },
     { id: 'tempo', rotulo: 'Duração', padrao: '3:42' },
+  ],
+  recursos: [
+    {
+      id: 'partes',
+      nome: 'Partes liga/desliga',
+      descricao: 'Mostrar ou ocultar cada parte do card na instância do Figma.',
+      padrao: true,
+    },
+  ],
+  partes: [
+    { no: 't-tempo', nome: 'Duração', classe: 'tempo' },
+    { no: 't-titulo', nome: 'Título', classe: 'titulo' },
+    { no: 't-texto', nome: 'Descrição', classe: 'texto' },
   ],
   animacoes: [
     { id: 'play', nome: 'Play pulsando', descricao: 'O botão de play pulsa até a pessoa clicar.' },
@@ -1004,6 +1315,19 @@ export const CARD_PRECO: DefinicaoTipo = {
     min: 1,
     max: 8,
   },
+  recursos: [
+    {
+      id: 'partes',
+      nome: 'Partes liga/desliga',
+      descricao: 'Mostrar ou ocultar cada parte do card na instância do Figma.',
+      padrao: true,
+    },
+  ],
+  partes: [
+    { no: 't-descricao', nome: 'Descrição', classe: 'descricao' },
+    { no: 'lista', nome: 'Vantagens', classe: 'lista' },
+    { no: 'acao', nome: 'Botão', classe: 'acao' },
+  ],
   animacoes: [
     { id: 'elevar', nome: 'Card sobe', descricao: 'Sobe e ganha sombra colorida no hover.' },
     { id: 'destaque', nome: 'Borda que brilha', descricao: 'A borda acende no hover.' },
@@ -1127,11 +1451,6 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
 /* ============================== Conjunto de botões (variantes) ============================== */
 
 const PALETA_BOTOES = ['#d4119f', '#7c3aed', '#22e3ff', '#3ddc97', '#ffb547', '#ff5c7a'];
-const TAMANHOS = [
-  { valor: 'p', rotulo: 'P', px: 16, py: 8, fonte: 14 },
-  { valor: 'm', rotulo: 'M', px: 24, py: 12, fonte: 16 },
-  { valor: 'g', rotulo: 'G', px: 32, py: 16, fonte: 20 },
-];
 
 /** Cor do botão i: a escolhida, ou a principal (1º) e a paleta (demais). */
 export function corDoBotao(cfg: ConfigConstrutor, i: number): string {
@@ -1150,6 +1469,14 @@ export const BOTOES: DefinicaoTipo = {
     'Vários botões num componente só: no Figma, variantes por botão (nome e cor), tamanho (P, M, G) e estado (Padrão, Hover).',
   textos: [],
   itens: { rotulo: 'Botão', padrao: ['Entrar', 'Criar conta'], min: 1, max: 6 },
+  recursos: [
+    {
+      id: 'estados',
+      nome: 'Estados',
+      descricao: 'Pressionado, Foco (teclado) e Desativado, além de Padrão e Hover.',
+      padrao: true,
+    },
+  ],
   animacoes: [
     {
       id: 'elevar',
@@ -1262,7 +1589,8 @@ export const BOTOES: DefinicaoTipo = {
 }
 .${C}__btn:active { transform: translateY(0) scale(.98); }
 ${TAMANHOS.map((t) => `.${C}[data-tamanho="${t.valor}"] .${C}__btn { padding: ${t.py}px ${t.px}px; font-size: ${t.fonte}px; }`).join('\n')}
-${efeito[cfg.animacao] ?? efeito['elevar']}`;
+${efeito[cfg.animacao] ?? efeito['elevar']}
+${b.tem('estados') ? estadosCss(b, `.${C}__btn`) : ''}`;
     /** Valor que depende do botão (variante): escolhe a variável do botão atual. */
     const doBotao = (prefixo: string, nome: string, extra: KcxOperacao[] = []) =>
       ({
@@ -1291,6 +1619,7 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
       }) as never;
     const preencher = cfg.animacao === 'preencher';
     const p = preencher ? varsPreencher(b) : undefined;
+    const ds = b.tem('estados') ? estadosDs(b) : undefined;
     const corAtual = p
       ? doBotao('corBotao', 'botao-cor', [{ op: 'alpha', variavel: p.cheio }])
       : doBotao('corBotao', 'botao-cor');
@@ -1313,6 +1642,7 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
             transformar: [{ op: 'multiplicar', fator: 48 }],
           },
         },
+        ...(ds ? [ds.efeitoAnel(doBotao('corBotao', 'anel-base'))] : []),
       ],
       autoLayout: {
         direcao: 'horizontal',
@@ -1320,7 +1650,16 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
         paddingX: porTamanho('px', 'botao-px'),
         paddingY: porTamanho('py', 'botao-py'),
       },
+      opacidade: ds ? { $var: ds.opacidade } : undefined,
       filhos: [
+        ...(ds
+          ? [
+              ds.noRealce(
+                p ? doBotao('corBotao', 'realce-base') : { $var: 'corFundo' },
+                'realce-cor',
+              ),
+            ]
+          : []),
         {
           id: 'rotulo',
           nome: 'Rótulo',
@@ -1349,32 +1688,42 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
       css,
       estrutura,
       eixos: [acao, tamanho],
-      estados: [
-        {
-          id: 'padrao',
-          nome: 'Padrão',
-          gatilho: 'padrao',
-          descricao: 'Em repouso.',
-          valores: { [forca]: 0, ...(p ? { [p.cheio]: 0, [p.vazio]: 1 } : {}) },
-        },
-        {
-          id: 'hover',
-          nome: 'Hover',
-          gatilho: 'hover',
-          descricao: 'Mouse por cima: sombra na cor do botão.',
-          valores: { [forca]: 0.5 },
-        },
-      ],
-      interacoes: [
-        {
-          no: 'botao',
-          gatilho: 'hover',
-          de: 'padrao',
-          para: 'hover',
-          transicao: 'smart-animate',
-          duracao: 300,
-        },
-      ],
+      estados: ds
+        ? ds
+            .estados({
+              padrao: { [forca]: 0, ...(p ? { [p.cheio]: 0, [p.vazio]: 1 } : {}) },
+              hover: { [forca]: 0.5 },
+              pressionado: { [forca]: 0, ...(p ? { [p.cheio]: 1, [p.vazio]: 0 } : {}) },
+            })
+            .map((e) => (e.id === 'pressionado' ? { ...e, valores: { ...e.valores } } : e))
+        : [
+            {
+              id: 'padrao',
+              nome: 'Padrão',
+              gatilho: 'padrao',
+              descricao: 'Em repouso.',
+              valores: { [forca]: 0, ...(p ? { [p.cheio]: 0, [p.vazio]: 1 } : {}) },
+            },
+            {
+              id: 'hover',
+              nome: 'Hover',
+              gatilho: 'hover',
+              descricao: 'Mouse por cima: sombra na cor do botão.',
+              valores: { [forca]: 0.5 },
+            },
+          ],
+      interacoes: ds
+        ? ds.interacoes('botao')
+        : [
+            {
+              no: 'botao',
+              gatilho: 'hover',
+              de: 'padrao',
+              para: 'hover',
+              transicao: 'smart-animate',
+              duracao: 300,
+            },
+          ],
       animacao: {
         nome: BOTOES.animacoes.find((a) => a.id === cfg.animacao)?.nome ?? 'Hover',
         tecnica: 'css-transition',
@@ -1382,7 +1731,7 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
         descricao: 'Transição de transform, sombra e cor no hover.',
       },
       editavel: [
-        `Variantes: Botão (${cfg.itens.join(', ')}) × Tamanho (P, M, G) × Estado (Padrão, Hover)`,
+        `Variantes: Botão (${cfg.itens.join(', ')}) × Tamanho (P, M, G) × Estado (${ds ? 'Padrão, Hover, Pressionado, Foco, Desativado' : 'Padrão, Hover'})`,
         'Cada variante com a cor e o nome do seu botão; o tamanho muda padding e texto',
         'Protótipo: o hover troca para a variante Hover (Smart Animate)',
       ],

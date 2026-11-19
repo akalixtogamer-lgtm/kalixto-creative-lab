@@ -5,6 +5,7 @@
  * lado a lado antes de salvar.
  */
 import type { FigmaCor, PlanoEfeito, PlanoNo, PlanoPaint } from './figma-plano';
+import { ICONES_KCX } from './icones';
 
 const esc = (s: unknown) =>
   String(s ?? '').replace(
@@ -41,7 +42,8 @@ function sombras(efeitos: PlanoEfeito[]): { sombra: string; filtro: string; fund
   let fundo = '';
   for (const e of efeitos) {
     if (e.tipo === 'DROP_SHADOW') {
-      if (Number(e.raio.valor) <= 0 && e.x === 0 && e.y === 0) continue;
+      if (Number(e.raio.valor) <= 0 && Number(e.espalhar.valor) <= 0 && e.x === 0 && e.y === 0)
+        continue;
       sombra.push(
         `${px(e.x)} ${px(e.y)} ${px(Number(e.raio.valor) / 2)} ${px(e.espalhar.valor)} ${corCss(e.cor.valor)}`,
       );
@@ -121,6 +123,12 @@ function no(p: PlanoNo, paiAuto: boolean, paiDirecao?: 'HORIZONTAL' | 'VERTICAL'
     if (t.espacamento) s.push(`letter-spacing:${px(t.espacamento.valor)}`);
     if (t.caixaAlta) s.push('text-transform:uppercase');
     return `<div style="${s.join(';')}">${esc(t.conteudo.valor)}</div>`;
+  }
+  if (p.tipo === 'icone' && p.icone) {
+    const t = p.icone.tamanho;
+    const d = ICONES_KCX[p.icone.nome] ?? '';
+    s.push(`width:${px(t)}`, `height:${px(t)}`, 'line-height:0');
+    return `<div style="${s.join(';')}"><svg viewBox="0 0 24 24" width="100%" height="100%" fill="none"><path d="${esc(d)}" stroke="${corCss(p.icone.cor.valor)}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`;
   }
   if (p.tipo === 'svg') {
     const cor = p.svgTraco?.cor.valor !== undefined ? `color:${corCss(p.svgTraco.cor.valor)};` : '';

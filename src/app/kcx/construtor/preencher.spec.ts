@@ -24,8 +24,9 @@ describe('Preenche no hover — Figma: vazado no Padrão, cheio no Hover', () =>
       expect(solido(hover).a).toBe(1);
       expect(padrao.traco).toBeDefined();
       // Texto: no Padrão a camada de cor por cima aparece; no Hover some.
-      expect(solido(padrao.filhos[0], 1).a).toBe(1);
-      expect(solido(hover.filhos[0], 1).a).toBe(0);
+      const rot = (n: PlanoNo) => n.filhos.find((f) => f.texto)!;
+      expect(solido(rot(padrao), 1).a).toBe(1);
+      expect(solido(rot(hover), 1).a).toBe(0);
     });
   }
 });

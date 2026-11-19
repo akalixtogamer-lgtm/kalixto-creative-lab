@@ -521,3 +521,65 @@
 dd .kcxc__aviso-figma {
   margin-top: 6px;
 }
+
+/* ---------- Recursos do Figma ---------- */
+.kcxc__recursos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--kx-space-2, 8px);
+}
+
+.kcxc__recurso {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md, 12px);
+  cursor: pointer;
+}
+
+.kcxc__recurso span {
+  display: grid;
+  gap: 2px;
+}
+
+.kcxc__recurso input {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--kx-roxo);
+}
+
+.kcxc__recurso:has(input:checked) {
+  border-color: var(--kx-ciano);
+  background: var(--kx-surface-active);
+}
+
+.kcxc__recurso--off {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.kcxc__icones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-3, 12px);
+}
+
+.kcxc__icone-sel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border: 1px solid var(--kx-border-strong);
+  border-radius: 10px;
+  background: var(--kx-input-bg);
+}
+
+.kcxc__icone-sel select {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
