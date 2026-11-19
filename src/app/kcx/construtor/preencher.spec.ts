@@ -29,3 +29,19 @@ describe('Preenche no hover — Figma: vazado no Padrão, cheio no Hover', () =>
     });
   }
 });
+
+import { valoresDaVariante } from '../figma-plano';
+
+describe('Preview do código com a variante Padrão escolhida', () => {
+  it('mantém a sombra do hover (o CSS faz o :hover)', () => {
+    const def = TIPOS_CONSTRUTOR.find((t) => t.id === 'botao')!;
+    const comp = montarDoConstrutor({ ...configPadrao(def), animacao: 'elevar' });
+    const v = valoresDaVariante(comp, 'Estado=Padrão');
+    expect(v['forcaSombra']).toBeGreaterThan(0);
+  });
+  it('estados que não são hover continuam valendo (menu aberto)', () => {
+    const def = TIPOS_CONSTRUTOR.find((t) => t.id === 'menu-sanduiche')!;
+    const comp = montarDoConstrutor(configPadrao(def));
+    expect(valoresDaVariante(comp, 'Estado=Aberto')['aberto']).toBe(true);
+  });
+});

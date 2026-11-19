@@ -788,6 +788,32 @@ export function variantesDoComponente(comp: KcxComponente, valores: Valores = {}
   return combinacoes(comp, valoresAtuais(comp.variaveis, valores));
 }
 
+/**
+ * Valores de variáveis da variante `nome` (ou da primeira), para o preview do
+ * CÓDIGO. Nos componentes com estado Hover, as variáveis que o par Padrão/Hover
+ * muda (ex.: força da sombra) ficam com o valor atual: no código quem faz o
+ * hover é o CSS (:hover), e zerar a sombra do Padrão apagaria a sombra do hover.
+ */
+export function valoresDaVariante(
+  comp: KcxComponente,
+  nome: string,
+  valores: Valores = {},
+): Valores {
+  const vs = variantesDoComponente(comp, valores);
+  const v = vs.find((x) => x.nome === nome) ?? vs[0];
+  if (!v) return valores;
+  const hover = comp.estados.filter((e) => e.gatilho === 'hover');
+  if (!hover.length) return v.valores;
+  const doCss = new Set<string>();
+  for (const e of comp.estados)
+    if (e.gatilho === 'hover' || e.gatilho === 'padrao')
+      for (const k of Object.keys(e.valores)) doCss.add(k);
+  const base = valoresAtuais(comp.variaveis, valores);
+  const r: Valores = { ...v.valores };
+  for (const k of doCss) r[k] = base[k];
+  return r;
+}
+
 /** Eixos das variantes (Estado + eixos enum), na ordem em que aparecem no nome. */
 export function eixosDoComponente(comp: KcxComponente): { nome: string; opcoes: string[] }[] {
   const vs = variantesDoComponente(comp);

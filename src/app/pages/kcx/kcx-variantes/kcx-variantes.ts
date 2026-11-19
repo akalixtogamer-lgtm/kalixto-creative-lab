@@ -116,12 +116,4 @@ function comValores(c: KcxComponente, valores: Valores): KcxComponente['variavei
   return c.variaveis.map((v) => (v.id in valores ? { ...v, valor: valores[v.id] } : v));
 }
 
-/** Valores de variáveis da variante `nome` (ou da primeira). */
-export function valoresDaVariante(
-  comp: KcxComponente,
-  nome: string,
-  valores: Valores = {},
-): Valores {
-  const vs = variantesDoComponente(comp, valores);
-  return (vs.find((v) => v.nome === nome) ?? vs[0])?.valores ?? valores;
-}
+export { valoresDaVariante } from '../../../kcx/figma-plano';

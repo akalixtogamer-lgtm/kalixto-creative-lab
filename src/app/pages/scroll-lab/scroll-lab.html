@@ -34,8 +34,7 @@
             <p class="s-painel__titulo">Habilidades</p>
             @for (h of ['HTML', 'CSS', 'GSAP', 'Angular']; track h) {
               <div class="s-barra">
-                <span>{{ h }}</span
-                ><i><b class="s-barra-fill"></b></i>
+                <span>{{ h }}</span><i><b class="s-barra-fill"></b></i>
               </div>
             }
           </section>
@@ -56,8 +55,7 @@
             <div class="s-faixa">
               @for (n of paineis(); track n) {
                 <div class="s-paineltz" [attr.data-n]="n">
-                  <strong>{{ n }}</strong
-                  ><small>painel</small>
+                  <strong>{{ n }}</strong><small>painel</small>
                 </div>
               }
             </div>

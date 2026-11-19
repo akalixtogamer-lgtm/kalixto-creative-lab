@@ -22,6 +22,10 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ### Corrigido
 
+- **Sobe com sombra** sem sombra no preview: com a variante Padrão escolhida, o preview do código
+  zerava a força da sombra e o :hover ficava sem sombra. Agora as variáveis do par Padrão/Hover
+  ficam com o valor atual no código (quem faz o hover é o CSS); a prévia do Figma continua mostrando
+  cada variante como ela é.
 - **Preenche no hover** (Botão e Conjunto de botões): no Figma a variante Padrão agora é vazada
   (contorno e texto na cor do botão) e a Hover é preenchida (texto na cor de fundo). Antes as duas
   saíam cheias. O Smart Animate faz a transição entre elas.
