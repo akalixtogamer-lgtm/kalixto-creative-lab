@@ -234,7 +234,19 @@ export interface KcxNo {
     paddingY: KcxRef<number>;
     /** Alinhamento no eixo cruzado (padrão: centro). */
     alinhar?: 'inicio' | 'centro' | 'fim';
+    /** Quebra de linha (Wrap): os filhos passam para a linha de baixo. */
+    quebrar?: boolean;
+    /** Padding diferente em cada lado (substitui paddingX/paddingY onde houver). */
+    lados?: {
+      cima?: KcxRef<number>;
+      baixo?: KcxRef<number>;
+      esquerda?: KcxRef<number>;
+      direita?: KcxRef<number>;
+    };
   };
+  /** Largura mínima e máxima (Auto Layout: min/max width). */
+  larguraMin?: KcxRef<number>;
+  larguraMax?: KcxRef<number>;
   /** Clip de conteúdo em frames. */
   recortar?: boolean;
   /**

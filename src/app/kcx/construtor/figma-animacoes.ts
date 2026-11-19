@@ -235,6 +235,112 @@ export const NOTAS_FIGMA: Record<string, NotaFigma> = {
     nivel: 'codigo',
     texto: 'Os links subindo no hover ficam só no código — no Figma o rodapé é estático.',
   },
+  // Controles (Fase 2)
+  'checkbox:check': {
+    nivel: 'igual',
+    texto: 'Clicar marca e desmarca; a caixa enche e o check aparece com Smart Animate.',
+  },
+  'checkbox:pop': {
+    nivel: 'parcial',
+    texto: 'Clicar marca e desmarca com Smart Animate; o pequeno salto fica só no código.',
+  },
+  'checkbox:cor': {
+    nivel: 'igual',
+    texto: 'Clicar marca e desmarca; a cor troca com Smart Animate.',
+  },
+  'radio:ponto': {
+    nivel: 'igual',
+    texto: 'Uma variante por opção; clicar escolhe e o ponto aparece com Smart Animate.',
+  },
+  'radio:anel': {
+    nivel: 'parcial',
+    texto: 'Uma variante por opção; o anel grosso aparece como borda colorida.',
+  },
+  'radio:cartao': {
+    nivel: 'igual',
+    texto: 'Uma variante por opção; a linha escolhida ganha fundo com Smart Animate.',
+  },
+  'switch:deslizar': {
+    nivel: 'igual',
+    texto: 'Clicar liga e desliga; a bolinha desliza com Smart Animate.',
+  },
+  'switch:mola': {
+    nivel: 'igual',
+    texto: 'Clicar liga e desliga; a bolinha desliza com curva de mola (Gentle).',
+  },
+  'switch:esticar': {
+    nivel: 'parcial',
+    texto: 'A bolinha desliza com Smart Animate; o esticar ao apertar fica só no código.',
+  },
+  'breadcrumb:sublinhado': {
+    nivel: 'codigo',
+    texto: 'O sublinhado no hover fica só no código; no Figma a trilha é estática.',
+  },
+  'breadcrumb:cor': {
+    nivel: 'codigo',
+    texto: 'A cor no hover fica só no código; no Figma a trilha é estática.',
+  },
+  'breadcrumb:seta': {
+    nivel: 'codigo',
+    texto: 'A seta andando no hover fica só no código; no Figma a trilha é estática.',
+  },
+  'paginacao:pilula': {
+    nivel: 'igual',
+    texto: 'Uma variante por página; números e setas trocam com Smart Animate.',
+  },
+  'paginacao:contorno': {
+    nivel: 'igual',
+    texto: 'Uma variante por página; números e setas trocam com Smart Animate.',
+  },
+  'paginacao:sublinhado': {
+    nivel: 'parcial',
+    texto: 'Uma variante por página; no Figma a página atual aparece com borda, não com linha.',
+  },
+  'stepper:linha': {
+    nivel: 'parcial',
+    texto: 'Uma variante por etapa; a linha que enche entre as etapas fica só no código.',
+  },
+  'stepper:pulso': {
+    nivel: 'parcial',
+    texto: 'Uma variante por etapa; o pulso da etapa atual fica só no código.',
+  },
+  'stepper:simples': {
+    nivel: 'igual',
+    texto: 'Uma variante por etapa; Continuar avança com Smart Animate.',
+  },
+  'tooltip:fade': {
+    nivel: 'igual',
+    texto: 'Mouse enter mostra e Mouse leave esconde a dica, com Smart Animate.',
+  },
+  'tooltip:subir': {
+    nivel: 'parcial',
+    texto: 'Mouse enter mostra e Mouse leave esconde a dica; a subida fica só no código.',
+  },
+  'tooltip:zoom': {
+    nivel: 'parcial',
+    texto: 'Mouse enter mostra e Mouse leave esconde a dica; o zoom fica só no código.',
+  },
+  'banner:deslizar': {
+    nivel: 'igual',
+    texto: 'Clicar no X fecha; a faixa sobe e some com Smart Animate.',
+  },
+  'banner:fade': { nivel: 'igual', texto: 'Clicar no X fecha; a faixa some com Smart Animate.' },
+  'banner:brilho': {
+    nivel: 'parcial',
+    texto: 'Clicar no X fecha; o brilho passando (contínuo) fica só no código.',
+  },
+  'dropdown:cair': {
+    nivel: 'parcial',
+    texto: 'Clicar abre e fecha, Esc fecha; a lista aparece com Smart Animate (sem a descida).',
+  },
+  'dropdown:fade': {
+    nivel: 'igual',
+    texto: 'Clicar abre e fecha, Esc fecha; a lista aparece com Smart Animate.',
+  },
+  'dropdown:escala': {
+    nivel: 'parcial',
+    texto: 'Clicar abre e fecha, Esc fecha; o crescer a partir do botão fica só no código.',
+  },
 };
 
 export function notaFigma(tipo: string, animacao: string): NotaFigma | undefined {

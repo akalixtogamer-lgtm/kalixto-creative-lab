@@ -173,7 +173,16 @@ export interface PlanoNo {
     paddingX: PlanoProp<number>;
     paddingY: PlanoProp<number>;
     alinhar?: 'MIN' | 'CENTER' | 'MAX';
+    quebrar?: boolean;
+    lados?: {
+      cima?: PlanoProp<number>;
+      baixo?: PlanoProp<number>;
+      esquerda?: PlanoProp<number>;
+      direita?: PlanoProp<number>;
+    };
   };
+  larguraMin?: PlanoProp<number>;
+  larguraMax?: PlanoProp<number>;
   recortar: boolean;
   absoluto: boolean;
   encher?: boolean;
@@ -394,7 +403,11 @@ function valoresPorModo(
   const out: Record<string, FigmaValor> = {};
   for (const m of modos) {
     const bruto =
-      m === 'Light' && v.modos?.light !== undefined && atual === v.valor ? v.modos.light : atual;
+      m === 'Light' && v.modos?.light !== undefined && atual === v.valor
+        ? v.modos.light
+        : m === 'Dark' && v.modos?.dark !== undefined && atual === v.valor
+          ? v.modos.dark
+          : atual;
     out[m] = valorFigma(v, t(bruto), campo);
   }
   return out;
@@ -789,8 +802,24 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
         onde('padding vertical'),
         ctx,
       )!,
+      quebrar: no.autoLayout.quebrar || undefined,
     };
+    const l = no.autoLayout.lados;
+    if (l) {
+      const lado = (r: KcxRef<number> | undefined, nome: string) =>
+        r === undefined ? undefined : resolverRef(r, CAMPOS['padding'], onde(nome), ctx);
+      p.autoLayout.lados = {
+        cima: lado(l.cima, 'padding de cima'),
+        baixo: lado(l.baixo, 'padding de baixo'),
+        esquerda: lado(l.esquerda, 'padding da esquerda'),
+        direita: lado(l.direita, 'padding da direita'),
+      };
+    }
   }
+  if (no.larguraMin !== undefined)
+    p.larguraMin = resolverRef(no.larguraMin, CAMPOS['largura'], onde('largura mínima'), ctx);
+  if (no.larguraMax !== undefined)
+    p.larguraMax = resolverRef(no.larguraMax, CAMPOS['largura'], onde('largura máxima'), ctx);
   p.filhos = (no.filhos ?? []).map((f) => planejarNo(f, ctx, `${caminho} › ${f.nome}`));
   return p;
 }

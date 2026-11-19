@@ -223,6 +223,10 @@ export function refsDoNo(no: KcxNo): { campo: string; ref: KcxRef<unknown> }[] {
     add('texto.tamanho', no.texto.tamanho);
     add('texto.espacamento', no.texto.espacamento);
   }
+  add('larguraMin', no.larguraMin);
+  add('larguraMax', no.larguraMax);
+  if (no.autoLayout?.lados)
+    for (const [k, r] of Object.entries(no.autoLayout.lados)) add(`autoLayout.lados.${k}`, r);
   if (no.autoLayout) {
     add('autoLayout.espaco', no.autoLayout.espaco);
     add('autoLayout.paddingX', no.autoLayout.paddingX);

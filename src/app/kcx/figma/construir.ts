@@ -654,10 +654,26 @@ class Construtor {
       no.paddingLeft = no.paddingRight = Number(p.autoLayout.paddingX.valor);
       no.paddingTop = no.paddingBottom = Number(p.autoLayout.paddingY.valor);
       this.vincular(no, 'itemSpacing', p.autoLayout.espaco, local);
-      for (const lado of ['paddingLeft', 'paddingRight'])
-        this.vincular(no, lado, p.autoLayout.paddingX, local);
-      for (const lado of ['paddingTop', 'paddingBottom'])
-        this.vincular(no, lado, p.autoLayout.paddingY, local);
+      const lados = p.autoLayout.lados ?? {};
+      const porLado: [string, PlanoProp<number>][] = [
+        ['paddingLeft', lados.esquerda ?? p.autoLayout.paddingX],
+        ['paddingRight', lados.direita ?? p.autoLayout.paddingX],
+        ['paddingTop', lados.cima ?? p.autoLayout.paddingY],
+        ['paddingBottom', lados.baixo ?? p.autoLayout.paddingY],
+      ];
+      for (const [campo, prop] of porLado) {
+        no[campo] = Number(prop.valor);
+        this.vincular(no, campo, prop, local);
+      }
+      if (p.autoLayout.quebrar) {
+        try {
+          no.layoutWrap = 'WRAP';
+          no.counterAxisSpacing = Number(p.autoLayout.espaco.valor);
+          this.vincular(no, 'counterAxisSpacing', p.autoLayout.espaco, local);
+        } catch {
+          /* wrap só em Auto Layout horizontal */
+        }
+      }
       // Eixo com medida definida fica FIXED; o outro abraça o conteúdo (Hug).
       const hor = p.autoLayout.direcao === 'HORIZONTAL';
       const principal = hor ? p.largura : p.altura;
@@ -682,6 +698,18 @@ class Construtor {
       }
       if (p.largura) this.vincular(no, 'width', p.largura, local);
       if (p.altura) this.vincular(no, 'height', p.altura, local);
+    }
+    for (const [campo, prop] of [
+      ['minWidth', p.larguraMin],
+      ['maxWidth', p.larguraMax],
+    ] as const) {
+      if (!prop) continue;
+      try {
+        no[campo] = Number(prop.valor);
+        this.vincular(no, campo, prop, local);
+      } catch {
+        this.rel.avisos.push(`${local}: ${campo} só vale em Auto Layout.`);
+      }
     }
     if (!paiAutoLayout || p.absoluto) {
       if (p.x !== undefined) no.x = p.x;

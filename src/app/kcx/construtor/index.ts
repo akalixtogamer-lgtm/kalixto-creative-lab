@@ -4,6 +4,7 @@ import { ConfigConstrutor, DefinicaoTipo, construirComponente } from './montar';
 import { TIPOS_CONTEUDO } from './tipos-conteudo';
 import { TIPOS_NAVEGACAO } from './tipos-navegacao';
 import { TIPOS_SECOES } from './tipos-secoes';
+import { TIPOS_CONTROLES } from './tipos-controles';
 
 export * from './montar';
 export { corDoBotao } from './tipos-conteudo';
@@ -14,6 +15,7 @@ export const TIPOS_CONSTRUTOR: DefinicaoTipo[] = [
   ...TIPOS_NAVEGACAO,
   ...TIPOS_CONTEUDO,
   ...TIPOS_SECOES,
+  ...TIPOS_CONTROLES,
 ];
 
 export function tipoConstrutor(id: string): DefinicaoTipo | undefined {

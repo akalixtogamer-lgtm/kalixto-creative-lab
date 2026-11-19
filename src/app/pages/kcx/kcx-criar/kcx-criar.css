@@ -583,3 +583,16 @@ dd .kcxc__aviso-figma {
   color: inherit;
   font: inherit;
 }
+
+.kcxc__recurso--linha {
+  border-style: dashed;
+}
+
+.kcxc__campo select {
+  padding: 0.55em 0.75em;
+  border: 1px solid var(--kx-border-strong);
+  border-radius: var(--kx-radius-sm, 8px);
+  background: var(--kx-input-bg);
+  color: inherit;
+  font: inherit;
+}

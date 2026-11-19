@@ -93,6 +93,13 @@ export class KcxCriar {
   private readonly router = inject(Router);
 
   protected readonly paletas = PALETAS;
+  protected readonly curvas = [
+    { id: '', nome: 'Suave (padrão)' },
+    { id: 'entrada-saida', nome: 'Entrada e saída suaves' },
+    { id: 'linear', nome: 'Linear' },
+    { id: 'mola', nome: 'Mola (passa e volta)' },
+    { id: 'quique', nome: 'Quique' },
+  ];
 
   /** Etapa: 1 tipo · 2 personalizar · 3 revisar e salvar. */
   protected readonly passo = linkedSignal<PassoCriar>(() => (this.de() || this.tipo() ? 2 : 1));
@@ -215,6 +222,10 @@ export class KcxCriar {
     this.passo.set(p);
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  protected readonly textosVisiveis = computed(() =>
+    this.def().textos.filter((t) => !t.recurso || this.recursoLigado(t.recurso)),
+  );
 
   /* ---------- Recursos do Figma ---------- */
   protected readonly recursosLigados = computed(() =>

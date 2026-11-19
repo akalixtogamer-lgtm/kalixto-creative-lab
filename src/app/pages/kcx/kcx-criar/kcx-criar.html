@@ -70,7 +70,7 @@
               (input)="mudar('nome', valor($event))"
             />
           </label>
-          @for (t of def().textos; track t.id) {
+          @for (t of textosVisiveis(); track t.id) {
             <label class="kcxc__campo">
               <span>{{ t.rotulo }}</span>
               <input
@@ -317,6 +317,29 @@
               [value]="cfg().raio"
               (input)="mudar('raio', +valor($event))"
             />
+          </label>
+          <label class="kcxc__recurso kcxc__recurso--linha">
+            <input
+              type="checkbox"
+              [checked]="!!cfg().modos"
+              (change)="mudar('modos', $any($event.target).checked)"
+            />
+            <span>
+              <strong>Modos Claro e Escuro no Figma</strong>
+              <small class="kx-muted"
+                >As variáveis de cor ganham os dois modos (troque o tema da página no Figma).</small
+              >
+            </span>
+          </label>
+          <label class="kcxc__campo">
+            <span>Movimento no protótipo do Figma</span>
+            <select (change)="mudar('curva', $any(valor($event) || undefined))">
+              @for (c of curvas; track c.id) {
+                <option [value]="c.id" [selected]="(cfg().curva ?? '') === c.id">
+                  {{ c.nome }}
+                </option>
+              }
+            </select>
           </label>
           @if (def().midia; as tipoMidia) {
             <label class="kcxc__campo">

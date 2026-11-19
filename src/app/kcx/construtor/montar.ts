@@ -46,6 +46,22 @@ export interface ConfigConstrutor {
   recursos?: Record<string, boolean>;
   /** Ícone escolhido para cada lugar (`DefinicaoTipo.icones`), da biblioteca KCX. */
   icones?: Record<string, string>;
+  /** Criar os modos Claro e Escuro nas variáveis de cor do Figma. */
+  modos?: boolean;
+  /** Curva das interações no protótipo do Figma. */
+  curva?: 'suave' | 'linear' | 'entrada-saida' | 'mola' | 'quique';
+}
+
+/** Tema oposto (para o modo Claro/Escuro). */
+const TEMA_CLARO = { fundo: '#ffffff', superficie: '#f3f1fb', texto: '#1a1530', suave: '#5b5675' };
+const TEMA_ESCURO = { fundo: '#0b0a14', superficie: '#1a1530', texto: '#f4f2ff', suave: '#a9a3c9' };
+
+function ehClaro(hex: string): boolean {
+  const m = /^#?([0-9a-f]{6})/i.exec(hex);
+  if (!m) return false;
+  const n = parseInt(m[1], 16);
+  const lum = (0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
+  return lum > 0.6;
 }
 
 /** Recurso opcional de um tipo (vira variantes, propriedades ou interações no Figma). */
@@ -62,6 +78,8 @@ export interface CampoTexto {
   id: string;
   rotulo: string;
   padrao: string;
+  /** Só existe com este recurso ligado. */
+  recurso?: string;
 }
 
 export interface OpcaoAnimacao {
@@ -716,7 +734,7 @@ function variaveisBase(b: Blocos, def: DefinicaoTipo): KcxVariavel[] {
       ],
     }),
   ];
-  for (const t of def.textos)
+  for (const t of def.textos.filter((x) => !x.recurso || b.tem(x.recurso)))
     vars.push(
       variavel({
         id: b.idTexto(t.id),
@@ -748,6 +766,18 @@ function variaveisBase(b: Blocos, def: DefinicaoTipo): KcxVariavel[] {
       }),
     ),
   );
+  if (cfg.modos) {
+    const claro = ehClaro(cfg.cores.fundo);
+    const outro = claro ? TEMA_ESCURO : TEMA_CLARO;
+    const mapa: Record<string, string> = {
+      corFundo: outro.fundo,
+      corSuperficie: outro.superficie,
+      corTexto: outro.texto,
+      corSuave: outro.suave,
+    };
+    for (const v of vars)
+      if (v.id in mapa) v.modos = claro ? { dark: mapa[v.id] } : { light: mapa[v.id] };
+  }
   return vars;
 }
 
@@ -868,7 +898,9 @@ export function construirComponente(def: DefinicaoTipo, cfg: ConfigConstrutor): 
         eixosVariante: partes.eixos,
       },
     },
-    interacoes: partes.interacoes,
+    interacoes: cfg.curva
+      ? partes.interacoes?.map((i) => ({ ...i, curva: i.curva ?? cfg.curva }))
+      : partes.interacoes,
     origemCriacao: { tipo: 'construtor', config: cfg },
   };
 }

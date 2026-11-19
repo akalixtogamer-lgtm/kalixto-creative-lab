@@ -71,6 +71,8 @@ function no(p: PlanoNo, paiAuto: boolean, paiDirecao?: 'HORIZONTAL' | 'VERTICAL'
     if (p.largura && p.restricoes?.horizontal !== 'STRETCH') s.push(`width:${px(p.largura.valor)}`);
     if (p.altura && p.restricoes?.vertical !== 'STRETCH') s.push(`height:${px(p.altura.valor)}`);
   }
+  if (p.larguraMin) s.push(`min-width:${px(p.larguraMin.valor)}`);
+  if (p.larguraMax) s.push(`max-width:${px(p.larguraMax.valor)}`);
   if (p.rotacao) s.push(`transform:rotate(${-p.rotacao}deg)`, 'transform-origin:0 0');
   if (p.opacidade) s.push(`opacity:${Math.min(1, Math.max(0, Number(p.opacidade.valor)))}`);
   if (p.raio) s.push(`border-radius:${px(p.raio.valor)}`);
@@ -98,7 +100,8 @@ function no(p: PlanoNo, paiAuto: boolean, paiDirecao?: 'HORIZONTAL' | 'VERTICAL'
       'display:flex',
       `flex-direction:${a.direcao === 'HORIZONTAL' ? 'row' : 'column'}`,
       `gap:${px(a.espaco.valor)}`,
-      `padding:${px(a.paddingY.valor)} ${px(a.paddingX.valor)}`,
+      `padding:${px((a.lados?.cima ?? a.paddingY).valor)} ${px((a.lados?.direita ?? a.paddingX).valor)} ${px((a.lados?.baixo ?? a.paddingY).valor)} ${px((a.lados?.esquerda ?? a.paddingX).valor)}`,
+      a.quebrar ? 'flex-wrap:wrap' : '',
       'justify-content:center',
       `align-items:${ALINHAR[a.alinhar ?? 'CENTER']}`,
     );

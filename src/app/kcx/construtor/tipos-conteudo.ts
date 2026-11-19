@@ -130,7 +130,10 @@ export const BOTAO: DefinicaoTipo = {
   uso: 'site e app',
   descricao:
     'Botão de design system: tipos (primário, secundário, terciário, destrutivo), tamanhos P/M/G, estados e ícones trocáveis.',
-  textos: [{ id: 'rotulo', rotulo: 'Texto do botão', padrao: 'Começar agora' }],
+  textos: [
+    { id: 'rotulo', rotulo: 'Texto do botão', padrao: 'Começar agora' },
+    { id: 'contador', rotulo: 'Contador', padrao: '3', recurso: 'contador' },
+  ],
   recursos: [
     {
       id: 'tipos',
@@ -145,6 +148,18 @@ export const BOTAO: DefinicaoTipo = {
       nome: 'Estados',
       descricao: 'Pressionado, Foco (teclado) e Desativado, além de Padrão e Hover.',
       padrao: true,
+    },
+    {
+      id: 'carregando',
+      nome: 'Carregando',
+      descricao: 'Mais um estado: o texto dá lugar a um ícone girando (spinner).',
+      padrao: false,
+    },
+    {
+      id: 'contador',
+      nome: 'Contador',
+      descricao: 'Selo com número no canto (notificações, carrinho), liga/desliga.',
+      padrao: false,
     },
     {
       id: 'icones',
@@ -256,6 +271,44 @@ export const BOTAO: DefinicaoTipo = {
           },
         ],
       });
+    const comCarregando = b.tem('carregando');
+    const carregando = comCarregando
+      ? b.extra({
+          id: 'carregando',
+          nome: 'Carregando',
+          tipo: 'boolean',
+          padrao: false,
+          descricao: 'Mostra o spinner no lugar do texto (enquanto envia).',
+          grupo: 'components',
+          secao: 'comportamento',
+          vinculos: [
+            {
+              propriedade: 'data-carregando',
+              alvo: { tipo: 'atributo', seletor: `.${C}`, atributo: 'data-carregando' },
+              transformar: [{ op: 'mapa', valores: { true: 'true', false: 'false' } }],
+            },
+          ],
+        })
+      : undefined;
+    const comContador = b.tem('contador');
+    const mostrarContador = comContador
+      ? b.extra({
+          id: 'mostrarContador',
+          nome: 'Mostrar contador',
+          tipo: 'boolean',
+          padrao: true,
+          descricao: 'Liga e desliga o selo com número. No Figma é uma propriedade liga/desliga.',
+          grupo: 'components',
+          secao: 'aparencia',
+          vinculos: [
+            {
+              propriedade: 'data-contador',
+              alvo: { tipo: 'atributo', seletor: `.${C}`, atributo: 'data-contador' },
+              transformar: [{ op: 'mapa', valores: { true: 'true', false: 'false' } }],
+            },
+          ],
+        })
+      : undefined;
     const ie = comIcones ? iconeLado('esquerda', false) : undefined;
     const id = comIcones ? iconeLado('direita', true) : undefined;
     const nomeIe = b.nomeIcone('esquerda', 'mais');
@@ -387,7 +440,23 @@ ${anims[cfg.animacao] ?? anims['elevar']}
 ${cssTipos}
 ${cssTamanhos}
 ${cssIcones}
-${ds ? ds.css(`.${C}`, v('primaria')) : ''}`;
+${ds ? ds.css(`.${C}`, v('primaria')) : ''}${
+      comCarregando
+        ? `
+.${C}__spinner { display: none; width: 1.15em; height: 1.15em; animation: ${C}-gira .8s linear infinite; }
+.${C}[data-carregando="true"] { pointer-events: none; }
+.${C}[data-carregando="true"] .${C}__spinner { display: block; }
+.${C}[data-carregando="true"] > :not(.${C}__spinner):not(.${C}__contador) { visibility: hidden; }
+.${C}[data-carregando="true"] .${C}__spinner { position: absolute; inset: 0; margin: auto; }
+@keyframes ${C}-gira { to { transform: rotate(1turn); } }`
+        : ''
+    }${
+      comContador
+        ? `
+.${C}__contador { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: ${v('perigo-contador')}; color: #fff; font-size: 12px; line-height: 20px; text-align: center; }
+.${C}[data-contador="false"] .${C}__contador { display: none; }`
+        : ''
+    }`;
     const attrs = [
       tipo ? 'data-tipo="primario"' : '',
       tamanho ? 'data-tamanho="m"' : '',
@@ -397,7 +466,9 @@ ${ds ? ds.css(`.${C}`, v('primaria')) : ''}`;
       .join(' ');
     const html = `<button class="${C}" type="button"${attrs ? ' ' + attrs : ''}>${
       comIcones ? b.svgKcx(nomeIe, `${C}__icone ${C}__icone--esquerda`) : ''
-    }${b.span('rotulo')}${comIcones ? b.svgKcx(nomeId, `${C}__icone ${C}__icone--direita`) : ''}</button>`;
+    }${b.span('rotulo')}${comIcones ? b.svgKcx(nomeId, `${C}__icone ${C}__icone--direita`) : ''}${
+      comCarregando ? b.svgKcx('carregando', `${C}__spinner`) : ''
+    }${comContador ? b.span('contador') : ''}</button>`;
 
     /* ---------- Figma ---------- */
     const texto = b.noTexto('rotulo', 'Texto do botão', {
@@ -422,6 +493,59 @@ ${ds ? ds.css(`.${C}`, v('primaria')) : ''}`;
         }),
       ];
     }
+    if (carregando) {
+      texto.visivel = b.nao(carregando, 'texto-visivel');
+      filhos = [
+        ...filhos,
+        b.noIcone(
+          'spinner',
+          'Carregando',
+          'carregando',
+          corTexto,
+          tamanho ? porTamanho('icone', 'botao-icone') : 18,
+          {
+            visivel: { $var: carregando },
+          },
+        ),
+      ];
+    }
+    if (comContador) {
+      filhos = [
+        ...filhos,
+        b.pilha(
+          'contador',
+          'Contador',
+          'horizontal',
+          [
+            b.noTexto('contador', 'Contador', {
+              estilo: 'Bold',
+              tamanho: 12,
+              cor: '#ffffff',
+            }),
+          ],
+          {
+            px: 6,
+            py: 2,
+            raio: 10,
+            preenchimentos: [{ tipo: 'solido', cor: { $var: 'corContador' } }],
+            visivel: { $var: mostrarContador! },
+            propriedadeVisivel: 'Mostrar contador',
+          },
+        ),
+      ];
+      b.extra({
+        id: 'corContador',
+        nome: 'Cor do contador',
+        tipo: 'color',
+        padrao: '#ff5c7a',
+        descricao: 'Fundo do selo com número.',
+        grupo: 'colors',
+        secao: 'aparencia',
+        vinculos: [
+          { propriedade: 'contador', alvo: { tipo: 'css-var', nome: `${b.P}-perigo-contador` } },
+        ],
+      });
+    }
     if (ds) filhos = [ds.noRealce(corTexto), ...filhos];
     const efeitos: KcxEfeito[] = [
       { ...(s.efeito as KcxEfeito & { tipo: 'sombra' }), cor: sombraCor },
@@ -441,6 +565,16 @@ ${ds ? ds.css(`.${C}`, v('primaria')) : ''}`;
     let estados = ds
       ? ds.estados({ padrao: { [s.id]: 0 }, pressionado: { [s.id]: 0 } })
       : s.estados;
+    if (carregando) {
+      estados = estados.map((e) => ({ ...e, valores: { ...e.valores, [carregando]: false } }));
+      estados.push({
+        id: 'carregando',
+        nome: 'Carregando',
+        gatilho: 'final',
+        descricao: 'Enviando: spinner no lugar do texto.',
+        valores: { ...estados[0].valores, [carregando]: true },
+      });
+    }
     if (preencher) {
       const p = varsPreencher(b);
       estrutura.preenchimentos = [
@@ -480,7 +614,31 @@ ${ds ? ds.css(`.${C}`, v('primaria')) : ''}`;
       css,
       estrutura,
       estados,
-      interacoes: ds ? ds.interacoes('botao') : s.interacoes,
+      interacoes: [
+        ...(ds ? ds.interacoes('botao') : s.interacoes),
+        // Clicar (pressionado) mostra o carregando.
+        ...(carregando && ds
+          ? [
+              {
+                no: 'botao',
+                gatilho: 'clique' as const,
+                de: 'pressionado',
+                para: 'carregando',
+                transicao: 'smart-animate' as const,
+                duracao: 150,
+              },
+              {
+                no: 'botao',
+                gatilho: 'atraso' as const,
+                atraso: 1500,
+                de: 'carregando',
+                para: 'padrao',
+                transicao: 'smart-animate' as const,
+                duracao: 200,
+              },
+            ]
+          : []),
+      ],
       eixos: [tipo, tamanho].filter((x): x is string => !!x),
       animacao: {
         nome: BOTAO.animacoes.find((a) => a.id === cfg.animacao)?.nome ?? 'Hover',
@@ -863,6 +1021,20 @@ export const CARROSSEL: DefinicaoTipo = {
     min: 2,
     max: 6,
   },
+  recursos: [
+    {
+      id: 'automatico',
+      nome: 'Passa sozinho',
+      descricao: 'No protótipo do Figma, o slide avança sozinho a cada 3 s (After delay).',
+      padrao: true,
+    },
+    {
+      id: 'teclado',
+      nome: 'Setas do teclado',
+      descricao: 'No protótipo do Figma, ← e → trocam o slide (gatilho de tecla).',
+      padrao: true,
+    },
+  ],
   animacoes: [
     { id: 'deslizar', nome: 'Desliza', descricao: 'Os slides andam para o lado.' },
     { id: 'fade', nome: 'Troca com fade', descricao: 'Um slide some e o outro aparece.' },
@@ -1067,6 +1239,25 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
     for (let i = 1; i <= n; i++) {
       interacoes.push(interacao('seta-prox', `slide${i}`, `slide${(i % n) + 1}`));
       interacoes.push(interacao('seta-ant', `slide${i}`, `slide${((i - 2 + n) % n) + 1}`));
+      if (b.tem('automatico'))
+        interacoes.push({
+          ...interacao('carrossel', `slide${i}`, `slide${(i % n) + 1}`),
+          gatilho: 'atraso',
+          atraso: 3000,
+          duracao: 500,
+        });
+      if (b.tem('teclado')) {
+        interacoes.push({
+          ...interacao('carrossel', `slide${i}`, `slide${(i % n) + 1}`),
+          gatilho: 'tecla',
+          tecla: 'ArrowRight',
+        });
+        interacoes.push({
+          ...interacao('carrossel', `slide${i}`, `slide${((i - 2 + n) % n) + 1}`),
+          gatilho: 'tecla',
+          tecla: 'ArrowLeft',
+        });
+      }
     }
     return {
       html,
