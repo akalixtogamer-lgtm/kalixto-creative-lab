@@ -61,6 +61,8 @@
   display: block;
   width: 100%;
   border: 0;
+  /* Mesmo esquema do documento interno: sem isso, no modo escuro o navegador pinta o iframe de branco. */
+  color-scheme: normal;
 }
 
 .kcxv__previa {
