@@ -9,16 +9,16 @@ export class StepUnlock {
   protected readonly passos = [
     {
       titulo: 'Design system',
-      detalhe: 'Cores, fontes e componentes'
+      detalhe: 'Cores, fontes e componentes',
     },
     {
       titulo: 'Página',
-      detalhe: 'Copy, layout e animações'
+      detalhe: 'Copy, layout e animações',
     },
     {
       titulo: 'Publicação',
-      detalhe: 'Domínio e site no ar'
-    }
+      detalhe: 'Domínio e site no ar',
+    },
   ];
   protected readonly automatico = true;
   private readonly intervalo = 1300;
@@ -48,11 +48,14 @@ export class StepUnlock {
     const i = this.livres();
     if (i >= this.passos.length || this.tremendo() !== -1) return;
     this.tremendo.set(i);
-    setTimeout(() => {
-      this.tremendo.set(-1);
-      this.livres.set(i + 1);
-      if (this.automatico && i + 1 < this.passos.length) this.agendar();
-    }, this.reduzir.matches ? 0 : 350);
+    setTimeout(
+      () => {
+        this.tremendo.set(-1);
+        this.livres.set(i + 1);
+        if (this.automatico && i + 1 < this.passos.length) this.agendar();
+      },
+      this.reduzir.matches ? 0 : 350,
+    );
   }
 
   private recomecar(): void {

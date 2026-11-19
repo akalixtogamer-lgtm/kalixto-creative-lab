@@ -4,7 +4,9 @@
   gap: 24px;
 }
 
-.filtros { position: absolute; }
+.filtros {
+  position: absolute;
+}
 
 .papel {
   position: relative;
@@ -36,8 +38,12 @@
   animation: vagar calc(5s + var(--i) * 0.7s) ease-in-out calc(var(--i) * -1.3s) infinite alternate;
 }
 @keyframes vagar {
-  from { translate: calc(var(--dx) * -0.6) calc(var(--dy) * -0.6); }
-  to { translate: calc(var(--dx) * 2) calc(var(--dy) * 2); }
+  from {
+    translate: calc(var(--dx) * -0.6) calc(var(--dy) * -0.6);
+  }
+  to {
+    translate: calc(var(--dx) * 2) calc(var(--dy) * 2);
+  }
 }
 
 /* Gota pingada pelo clique: nasce pequena e se espalha */
@@ -47,22 +53,36 @@
   animation: espalhar 1400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @keyframes espalhar {
-  from { scale: 0.1; }
-  to { scale: 1; }
+  from {
+    scale: 0.1;
+  }
+  to {
+    scale: 1;
+  }
 }
 
 /* Texto que inverte sobre a tinta */
 .sopro {
   position: relative;
   margin: 0;
-  font: 900 clamp(3rem, 16vw, 8rem) / 1 'Arial Black', system-ui, sans-serif;
+  font:
+    900 clamp(3rem, 16vw, 8rem) / 1 'Arial Black',
+    system-ui,
+    sans-serif;
   letter-spacing: -0.04em;
   color: #fff;
   mix-blend-mode: difference;
   pointer-events: none;
 }
-.dica { margin: 0; color: #c9c3ea; font-size: 14px; }
+.dica {
+  margin: 0;
+  color: #c9c3ea;
+  font-size: 14px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .gota, .gota.pingo { animation: none; }
+  .gota,
+  .gota.pingo {
+    animation: none;
+  }
 }

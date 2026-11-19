@@ -1,0 +1,84 @@
+.kcxv {
+  display: grid;
+  gap: var(--kx-space-3, 12px);
+}
+
+.kcxv__eixo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kx-space-2, 8px);
+}
+
+.kcxv__nome {
+  min-width: 5.5rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--kx-text-muted);
+}
+
+.kcxv__opcoes {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--kx-border);
+  border-radius: 999px;
+  background: var(--kx-input-bg);
+}
+
+.kcxv__op {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--kx-text-soft);
+  font: inherit;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.kcxv__op:hover {
+  background: var(--kx-surface-hover);
+  color: var(--kx-text);
+}
+
+.kcxv__op[aria-checked='true'] {
+  background: var(--kx-gradient-btn);
+  color: #fff;
+  font-weight: 600;
+}
+
+.kcxv__op:focus-visible,
+.kcxv__mini:focus-visible {
+  outline: 2px solid var(--kx-ciano);
+  outline-offset: 2px;
+}
+
+.kcxv__grade {
+  display: block;
+  width: 100%;
+  border: 0;
+  /* Mesmo esquema do documento interno: sem isso, no modo escuro o navegador pinta o iframe de branco. */
+  color-scheme: normal;
+}
+
+.kcxv__previa {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.kcxv__previa iframe {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md, 12px);
+}
+
+.kcxv__previa figcaption {
+  font-size: 0.8125rem;
+  color: var(--kx-text-muted);
+}

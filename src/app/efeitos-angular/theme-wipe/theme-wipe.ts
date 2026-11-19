@@ -25,23 +25,23 @@ export class ThemeWipe {
     {
       nome: 'Lima',
       fundo: '#c6ff3d',
-      tinta: '#0b0a14'
+      tinta: '#0b0a14',
     },
     {
       nome: 'Fogo',
       fundo: '#ff5a1f',
-      tinta: '#1a0800'
+      tinta: '#1a0800',
     },
     {
       nome: 'Gelo',
       fundo: '#bfe3ff',
-      tinta: '#0a2540'
+      tinta: '#0a2540',
     },
     {
       nome: 'Noite',
       fundo: '#2a1f6b',
-      tinta: '#f4f2ff'
-    }
+      tinta: '#f4f2ff',
+    },
   ];
   private readonly vitrine = viewChild.required<ElementRef<HTMLElement>>('vitrine');
   private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -57,7 +57,13 @@ export class ThemeWipe {
     const b = botao.getBoundingClientRect();
     const x = b.left + b.width / 2 - v.left + 'px';
     const y = b.top + b.height / 2 - v.top + 'px';
-    const novo: Mundo = { id: this.proximo++, tema: this.temas[i], x, y, entrando: !this.reduzir.matches };
+    const novo: Mundo = {
+      id: this.proximo++,
+      tema: this.temas[i],
+      x,
+      y,
+      entrando: !this.reduzir.matches,
+    };
     this.mundos.update((lista) => (novo.entrando ? [...lista, novo] : [novo]));
     this.atual.set(i);
   }

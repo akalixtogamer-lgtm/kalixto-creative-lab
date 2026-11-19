@@ -1,7 +1,14 @@
 <section class="painel-ia" [class.is-pronto]="estado() === 'pronto'" [style.--p]="p()">
-  <p class="campo" [attr.aria-label]="texto"><span class="digitado" aria-hidden="true">{{ digitado() }}</span></p>
+  <p class="campo" [attr.aria-label]="texto">
+    <span class="digitado" aria-hidden="true">{{ digitado() }}</span>
+  </p>
   <div class="rodape">
-    <button class="gerar" type="button" [attr.data-estado]="estado()" [disabled]="estado() === 'digitando'">
+    <button
+      class="gerar"
+      type="button"
+      [attr.data-estado]="estado()"
+      [disabled]="estado() === 'digitando'"
+    >
       {{ rotulos[estado()] }}
     </button>
     <div class="progresso" aria-hidden="true"><span class="barra"></span></div>

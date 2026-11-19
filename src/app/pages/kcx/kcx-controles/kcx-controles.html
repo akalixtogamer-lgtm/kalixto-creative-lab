@@ -1,0 +1,186 @@
+@for (s of secoes(); track s.id) {
+  <fieldset class="kcxc__secao" [disabled]="desabilitado()">
+    <legend class="kcxc__legenda">{{ s.nome }}</legend>
+    @for (v of s.vars; track v.id) {
+      <div
+        class="kcxc__ctrl"
+        [class.kcxc__ctrl--herdada]="herdadas()[v.id]"
+        [attr.data-variavel]="v.id"
+      >
+        <div class="kcxc__topo">
+          <label class="kcxc__rotulo" [for]="id(v)">{{ v.nome }}</label>
+          <code class="kcxc__id">{{ v.id }}</code>
+        </div>
+
+        @if (herdadas()[v.id]) {
+          <p class="kcxc__herdada">
+            Vem da variável compartilhada <code>{{ herdadas()[v.id] }}</code>.
+          </p>
+        }
+
+        @switch (v.tipo) {
+          @case ('color') {
+            <div class="kcxc__linha">
+              <input
+                class="kcxc__cor"
+                type="color"
+                [id]="id(v)"
+                [value]="hex6(texto(v))"
+                [disabled]="!!herdadas()[v.id]"
+                (input)="emitirCor(v, $any($event.target).value)"
+              />
+              <input
+                class="kcxc__txt kcxc__txt--hex"
+                type="text"
+                [attr.aria-label]="v.nome + ' (hexadecimal)'"
+                [value]="texto(v)"
+                [disabled]="!!herdadas()[v.id]"
+                spellcheck="false"
+                (change)="emitirCor(v, $any($event.target).value)"
+              />
+            </div>
+          }
+          @case ('boolean') {
+            <label class="kcxc__switch">
+              <input
+                type="checkbox"
+                role="switch"
+                [id]="id(v)"
+                [checked]="bool(v)"
+                [disabled]="!!herdadas()[v.id]"
+                (change)="emitir(v, $any($event.target).checked)"
+              />
+              <span>{{ bool(v) ? 'ligado' : 'desligado' }}</span>
+            </label>
+          }
+          @case ('string') {
+            <input
+              class="kcxc__txt"
+              type="text"
+              [id]="id(v)"
+              [value]="texto(v)"
+              [disabled]="!!herdadas()[v.id]"
+              (input)="emitir(v, $any($event.target).value)"
+            />
+          }
+          @case ('enum') {
+            <select
+              class="kcxc__select"
+              [id]="id(v)"
+              [disabled]="!!herdadas()[v.id]"
+              (change)="emitir(v, $any($event.target).value)"
+            >
+              @for (o of v.opcoes ?? []; track o.valor) {
+                <option [value]="o.valor" [selected]="o.valor === texto(v)">{{ o.rotulo }}</option>
+              }
+            </select>
+          }
+          @case ('gradient') {
+            <div
+              class="kcxc__grad"
+              [style.background-image]="fundoGrad(v)"
+              aria-hidden="true"
+            ></div>
+            <label class="kcxc__sub" [for]="id(v)"
+              >ângulo <output>{{ grad(v).angulo }}°</output></label
+            >
+            <input
+              class="kcxc__range"
+              type="range"
+              [id]="id(v)"
+              min="0"
+              max="360"
+              step="5"
+              [value]="grad(v).angulo"
+              [disabled]="!!herdadas()[v.id]"
+              (input)="mudarAngulo(v, $any($event.target).value)"
+            />
+            @for (p of grad(v).paradas; track $index) {
+              <div class="kcxc__parada">
+                <input
+                  class="kcxc__cor"
+                  type="color"
+                  [attr.aria-label]="'Cor da parada ' + ($index + 1)"
+                  [value]="hex6(p.cor)"
+                  (input)="mudarParada(v, $index, 'cor', $any($event.target).value)"
+                />
+                <input
+                  class="kcxc__range"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  [attr.aria-label]="'Posição da parada ' + ($index + 1)"
+                  [value]="p.posicao * 100"
+                  (input)="mudarParada(v, $index, 'posicao', $any($event.target).value)"
+                />
+                <output class="kcxc__pos">{{ (p.posicao * 100).toFixed(0) }}%</output>
+                <button
+                  type="button"
+                  class="kcxc__mini"
+                  [disabled]="grad(v).paradas.length <= 2"
+                  [attr.aria-label]="'Remover parada ' + ($index + 1)"
+                  (click)="removerParada(v, $index)"
+                >
+                  ×
+                </button>
+              </div>
+            }
+            <button
+              type="button"
+              class="kcxc__mini kcxc__mini--add"
+              [disabled]="grad(v).paradas.length >= 6"
+              (click)="adicionarParada(v)"
+            >
+              + parada
+            </button>
+          }
+          @case ('transform') {
+            <div class="kcxc__trans">
+              @for (c of ['x', 'y', 'escala', 'rotacao']; track c) {
+                <label>
+                  <span>{{ c }}</span>
+                  <input
+                    class="kcxc__num"
+                    type="number"
+                    step="0.1"
+                    [value]="$any(trans(v))[c]"
+                    (change)="mudarTrans(v, $any(c), $any($event.target).value)"
+                  />
+                </label>
+              }
+            </div>
+          }
+          @default {
+            <div class="kcxc__linha">
+              <input
+                class="kcxc__range"
+                type="range"
+                [id]="id(v)"
+                [min]="v.min ?? 0"
+                [max]="v.max ?? 100"
+                [step]="v.passo ?? 1"
+                [value]="num(v)"
+                [disabled]="!!herdadas()[v.id]"
+                (input)="emitirNumero(v, $any($event.target).value)"
+              />
+              <input
+                class="kcxc__num"
+                type="number"
+                [attr.aria-label]="v.nome + ' (valor exato)'"
+                [min]="v.min ?? null"
+                [max]="v.max ?? null"
+                [step]="v.passo ?? 1"
+                [value]="num(v)"
+                [disabled]="!!herdadas()[v.id]"
+                (change)="emitirNumero(v, $any($event.target).value)"
+              />
+            </div>
+            <output class="kcxc__valor" [for]="id(v)">{{ exibir(v) }}</output>
+          }
+        }
+        <p class="kcxc__controla"><span>controla:</span> {{ controla(v) }}</p>
+      </div>
+    }
+  </fieldset>
+}

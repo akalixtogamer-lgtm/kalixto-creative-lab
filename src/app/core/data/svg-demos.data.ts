@@ -14,7 +14,16 @@ const EASES = [
 ];
 
 const DUR = (padrao: number) =>
-  ({ id: 'dur', rotulo: 'duration', tipo: 'range', min: 0.3, max: 4, passo: 0.1, unidade: 's', padrao }) as const;
+  ({
+    id: 'dur',
+    rotulo: 'duration',
+    tipo: 'range',
+    min: 0.3,
+    max: 4,
+    passo: 0.1,
+    unidade: 's',
+    padrao,
+  }) as const;
 
 export const FORMAS_MORPH: Record<string, { rotulo: string; d: string }> = {
   circulo: {
@@ -55,10 +64,31 @@ export const SVG_DEMOS: LabDemo[] = [
       { nome: 'Trecho no meio', valores: { inicio: 40, fim: 60 } },
       { nome: 'Assinatura lenta', valores: { inicio: 0, fim: 100, dur: 3.5, ease: 'none' } },
     ],
-    desafio: { enunciado: 'Desenhe só a segunda metade do traço (50% a 100%) em 2 s.', meta: { inicio: 50, fim: 100, dur: 2 } },
+    desafio: {
+      enunciado: 'Desenhe só a segunda metade do traço (50% a 100%) em 2 s.',
+      meta: { inicio: 50, fim: 100, dur: 2 },
+    },
     params: [
-      { id: 'inicio', rotulo: 'início do trecho', tipo: 'range', min: 0, max: 100, passo: 5, unidade: '%', padrao: 0 },
-      { id: 'fim', rotulo: 'fim do trecho', tipo: 'range', min: 0, max: 100, passo: 5, unidade: '%', padrao: 100 },
+      {
+        id: 'inicio',
+        rotulo: 'início do trecho',
+        tipo: 'range',
+        min: 0,
+        max: 100,
+        passo: 5,
+        unidade: '%',
+        padrao: 0,
+      },
+      {
+        id: 'fim',
+        rotulo: 'fim do trecho',
+        tipo: 'range',
+        min: 0,
+        max: 100,
+        passo: 5,
+        unidade: '%',
+        padrao: 100,
+      },
       DUR(1.6),
       { id: 'ease', rotulo: 'ease', tipo: 'select', opcoes: EASES, padrao: 'power2.inOut' },
     ],
@@ -92,9 +122,21 @@ gsap.fromTo("#assinatura",
       { nome: 'Holofote', valores: { raio: 50, origem: 'centro' } },
       { nome: 'Do canto', valores: { raio: 300, origem: 'canto' } },
     ],
-    desafio: { enunciado: 'Revele a imagem inteira a partir do canto em 1,5 s.', meta: { origem: 'canto', raio: 300, dur: 1.5 } },
+    desafio: {
+      enunciado: 'Revele a imagem inteira a partir do canto em 1,5 s.',
+      meta: { origem: 'canto', raio: 300, dur: 1.5 },
+    },
     params: [
-      { id: 'raio', rotulo: 'raio final', tipo: 'range', min: 20, max: 300, passo: 10, unidade: '', padrao: 160 },
+      {
+        id: 'raio',
+        rotulo: 'raio final',
+        tipo: 'range',
+        min: 20,
+        max: 300,
+        passo: 10,
+        unidade: '',
+        padrao: 160,
+      },
       {
         id: 'origem',
         rotulo: 'origem',
@@ -138,8 +180,16 @@ gsap.to("#furo", {
     dica: 'Formas com quantidade parecida de pontos geram transições mais limpas.',
     acao: 'Transformar',
     instrucao: 'Escolha a forma de destino e clique em “Transformar”.',
-    presets: [{ nome: 'Coração elástico', valores: { destino: 'coracao', ease: 'elastic.out(1, 0.5)', dur: 1.6 } }],
-    desafio: { enunciado: 'Transforme o círculo num raio em menos de 1 s (0,6 s).', meta: { destino: 'raio', dur: 0.6 } },
+    presets: [
+      {
+        nome: 'Coração elástico',
+        valores: { destino: 'coracao', ease: 'elastic.out(1, 0.5)', dur: 1.6 },
+      },
+    ],
+    desafio: {
+      enunciado: 'Transforme o círculo num raio em menos de 1 s (0,6 s).',
+      meta: { destino: 'raio', dur: 0.6 },
+    },
     params: [
       {
         id: 'destino',
@@ -180,10 +230,31 @@ gsap.to("#forma", {
       { nome: 'Água', valores: { freq: 0.02, escala: 20 } },
       { nome: 'Glitch', valores: { freq: 0.09, escala: 50 } },
     ],
-    desafio: { enunciado: 'Crie uma distorção forte (escala 60) com ondas largas (frequência 0.01).', meta: { escala: 60, freq: 0.01 } },
+    desafio: {
+      enunciado: 'Crie uma distorção forte (escala 60) com ondas largas (frequência 0.01).',
+      meta: { escala: 60, freq: 0.01 },
+    },
     params: [
-      { id: 'freq', rotulo: 'baseFrequency', tipo: 'range', min: 0.01, max: 0.1, passo: 0.01, unidade: '', padrao: 0.03 },
-      { id: 'escala', rotulo: 'scale máximo', tipo: 'range', min: 0, max: 60, passo: 5, unidade: '', padrao: 30 },
+      {
+        id: 'freq',
+        rotulo: 'baseFrequency',
+        tipo: 'range',
+        min: 0.01,
+        max: 0.1,
+        passo: 0.01,
+        unidade: '',
+        padrao: 0.03,
+      },
+      {
+        id: 'escala',
+        rotulo: 'scale máximo',
+        tipo: 'range',
+        min: 0,
+        max: 60,
+        passo: 5,
+        unidade: '',
+        padrao: 30,
+      },
       DUR(1.4),
     ],
     codigo: (v) => `<filter id="onda">
@@ -212,7 +283,10 @@ gsap.timeline()
     acao: 'Percorrer',
     instrucao: 'Escolha se o foguete gira na curva e clique em “Percorrer”.',
     presets: [{ nome: 'Volta lenta', valores: { dur: 4, ease: 'none', girar: 'true' } }],
-    desafio: { enunciado: 'Percorra o caminho sem girar o objeto, em 2,5 s e linear.', meta: { girar: 'false', dur: 2.5, ease: 'none' } },
+    desafio: {
+      enunciado: 'Percorra o caminho sem girar o objeto, em 2,5 s e linear.',
+      meta: { girar: 'false', dur: 2.5, ease: 'none' },
+    },
     params: [
       {
         id: 'girar',

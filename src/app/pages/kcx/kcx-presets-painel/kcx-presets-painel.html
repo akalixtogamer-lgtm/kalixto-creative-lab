@@ -1,0 +1,95 @@
+<p class="kx-muted kcxp__nota">
+  Presets são conjuntos de valores das variáveis — o componente continua o mesmo.
+</p>
+
+<h3 class="kcxp__h3">Do componente</h3>
+<ul class="kcxp__lista">
+  @for (p of comp().presets; track p.id) {
+    <li class="kcxp__item" [class.kcxp__item--ativo]="ativo() === p.id">
+      <button
+        type="button"
+        class="kcxp__usar"
+        [attr.aria-pressed]="ativo() === p.id"
+        (click)="usar(p)"
+      >
+        <strong>{{ p.nome }}</strong>
+        <span>{{ resumo(p) }}</span>
+      </button>
+      <button
+        type="button"
+        class="kcxp__acao"
+        (click)="duplicar(p)"
+        [attr.aria-label]="'Duplicar ' + p.nome"
+      >
+        duplicar
+      </button>
+    </li>
+  }
+</ul>
+
+<h3 class="kcxp__h3">Meus presets</h3>
+@if (meus().length === 0) {
+  <p class="kx-muted kcxp__nota">Nenhum ainda. Ajuste as variáveis e salve abaixo.</p>
+}
+<ul class="kcxp__lista">
+  @for (p of meus(); track p.id) {
+    <li class="kcxp__item" [class.kcxp__item--ativo]="ativo() === p.id">
+      @if (editando() === p.id) {
+        <form
+          class="kcxp__renomear"
+          (submit)="$event.preventDefault(); renomear(p, nomeNovo.value)"
+        >
+          <input #nomeNovo class="kcxp__input" [value]="p.nome" aria-label="Novo nome do preset" />
+          <button type="submit" class="kcxp__acao">ok</button>
+          <button type="button" class="kcxp__acao" (click)="editando.set(null)">cancelar</button>
+        </form>
+      } @else {
+        <button
+          type="button"
+          class="kcxp__usar"
+          [attr.aria-pressed]="ativo() === p.id"
+          (click)="usar(p)"
+        >
+          <strong>{{ p.nome }}</strong>
+          <span>{{ resumo(p) }}</span>
+        </button>
+        <div class="kcxp__acoes">
+          <button type="button" class="kcxp__acao" (click)="salvarAtuais(p)">salvar atuais</button>
+          <button type="button" class="kcxp__acao" (click)="editando.set(p.id)">renomear</button>
+          <button type="button" class="kcxp__acao" (click)="duplicar(p)">duplicar</button>
+          <button type="button" class="kcxp__acao kcxp__acao--perigo" (click)="remover(p)">
+            excluir
+          </button>
+        </div>
+      }
+    </li>
+  }
+</ul>
+
+<form class="kcxp__novo" (submit)="$event.preventDefault(); criar(nome.value); nome.value = ''">
+  <label class="sr-only" for="kcxp-nome">Nome do novo preset</label>
+  <input
+    #nome
+    id="kcxp-nome"
+    class="kcxp__input"
+    placeholder="Nome do preset (ex.: Meu neon)"
+    required
+  />
+  <button type="submit" class="kx-btn kx-btn--primary">Salvar valores atuais</button>
+</form>
+
+<div class="kcxp__barra">
+  <button type="button" class="kx-btn kx-btn--ghost" (click)="restaurar.emit()">
+    <kx-icon name="reset" /> Restaurar padrão
+  </button>
+  <button type="button" class="kx-btn kx-btn--ghost" (click)="exportar()">
+    <kx-icon name="download" /> Exportar presets
+  </button>
+  <label class="kx-btn kx-btn--ghost kcxp__arquivo">
+    <kx-icon name="upload" /> Importar presets
+    <input type="file" accept=".json,application/json" (change)="importar($event)" />
+  </label>
+</div>
+@if (mensagem()) {
+  <p class="kcxp__msg" role="status">{{ mensagem() }}</p>
+}

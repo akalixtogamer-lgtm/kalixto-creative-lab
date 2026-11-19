@@ -23,16 +23,14 @@ export const DEMOS_POR_LAB: Record<string, LabDemo[]> = {
 };
 
 export const EFFECTS: Effect[] = Object.entries(DEMOS_POR_LAB).flatMap(([labId, demos]) =>
-  demos.map(
-    (d): Effect => ({
-      id: `${labId}-${d.id}`,
-      nome: d.titulo,
-      labId,
-      topico: d.topico,
-      nivel: d.nivel,
-      descricao: d.resumo,
-      demoId: d.id,
-      implementado: true,
-    }),
-  ),
+  demos.map((d): Effect => ({
+    id: `${labId}-${d.id}`,
+    nome: d.titulo,
+    labId,
+    topico: d.topico,
+    nivel: d.nivel,
+    descricao: d.resumo,
+    demoId: d.id,
+    implementado: true,
+  })),
 );

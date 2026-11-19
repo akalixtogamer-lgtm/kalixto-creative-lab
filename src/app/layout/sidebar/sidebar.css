@@ -17,7 +17,10 @@
   color: var(--kx-text);
   text-decoration: none;
 }
-.sidebar__tema { display: block; margin-bottom: var(--kx-space-3); }
+.sidebar__tema {
+  display: block;
+  margin-bottom: var(--kx-space-3);
+}
 .sidebar__brand-text {
   display: flex;
   flex-direction: column;
@@ -60,7 +63,10 @@
   color: var(--kx-text-soft);
   font-size: var(--kx-fs-sm);
   text-decoration: none;
-  transition: background var(--kx-dur-fast), color var(--kx-dur-fast), border-color var(--kx-dur-fast);
+  transition:
+    background var(--kx-dur-fast),
+    color var(--kx-dur-fast),
+    border-color var(--kx-dur-fast);
 }
 .sidebar__link:hover {
   background: var(--kx-surface-hover);

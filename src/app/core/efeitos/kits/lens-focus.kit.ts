@@ -12,41 +12,92 @@ export const LENS_FOCUS: EffectKit = {
     nomeAmigavel: 'Lente de foco',
     categoria: 'cursor',
     subcategoria: 'Máscaras guiadas pelo ponteiro',
-    descricao: 'A página fica desfocada e uma lente (ou um par de óculos) segue o ponteiro mostrando, dentro dela, o conteúdo nítido e levemente ampliado.',
-    objetivoVisual: 'Fazer o usuário "experimentar" o produto — enxergar com a lente — e transformar a navegação numa descoberta.',
-    aplicacoes: ['Óticas e produtos de visão', 'Heros interativos com lupa', 'Revelar detalhes de uma foto ou mapa'],
+    descricao:
+      'A página fica desfocada e uma lente (ou um par de óculos) segue o ponteiro mostrando, dentro dela, o conteúdo nítido e levemente ampliado.',
+    objetivoVisual:
+      'Fazer o usuário "experimentar" o produto — enxergar com a lente — e transformar a navegação numa descoberta.',
+    aplicacoes: [
+      'Óticas e produtos de visão',
+      'Heros interativos com lupa',
+      'Revelar detalhes de uma foto ou mapa',
+    ],
     nivel: 'avancado',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['mouse', 'touch', 'click', 'keyboard'],
-    tags: ['lente', 'lupa', 'óculos', 'blur', 'foco', 'mask-image', 'zoom', 'magnifier', 'referência em vídeo'],
+    tags: [
+      'lente',
+      'lupa',
+      'óculos',
+      'blur',
+      'foco',
+      'mask-image',
+      'zoom',
+      'magnifier',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Existem duas cópias do mesmo conteúdo, uma em cima da outra. A de baixo tem filter: blur() — é a "visão sem óculos".',
       'A de cima é nítida, mas uma mask-image com radial-gradient só deixa aparecer um círculo em volta do ponteiro (dois círculos no modo óculos).',
       'Dentro da camada nítida, o conteúdo recebe scale() com transform-origin no próprio ponteiro: o ponto sob a lente fica parado e o resto cresce em volta dele, como numa lupa.',
       'O aro é só desenho: bordas e sombras que seguem o mesmo --x/--y. O botão "Tudo em foco" tira a máscara e mostra tudo nítido.',
     ],
-    alternativa: 'backdrop-filter numa lente que se move faz o oposto (desfoca o que está atrás dela). Para refração real, com distorção nas bordas, use um shader de lente em WebGL (Three.js + MeshTransmissionMaterial ou um fragment shader).',
-    compatibilidade: 'mask-image sem prefixo: Chrome e Edge 120+, Firefox 53+, Safari 15.4+ (o CSS também traz -webkit-mask-image). filter: blur(): todos os navegadores atuais.',
-    responsividade: 'A lente segue o dedo (touch-action: none só na cena). O tamanho da fonte usa clamp() e a cena mantém a proporção 16:10.',
-    acessibilidade: 'Só a camada nítida é lida pelo leitor de tela (a desfocada é aria-hidden). O botão "Tudo em foco" é a alternativa a quem não usa ponteiro. Não há movimento automático.',
-    performance: 'O blur é estático (desenhado uma vez). A cada movimento mudam duas variáveis CSS, uma vez por quadro (requestAnimationFrame): o navegador repinta só a máscara e o aro.',
+    alternativa:
+      'backdrop-filter numa lente que se move faz o oposto (desfoca o que está atrás dela). Para refração real, com distorção nas bordas, use um shader de lente em WebGL (Three.js + MeshTransmissionMaterial ou um fragment shader).',
+    compatibilidade:
+      'mask-image sem prefixo: Chrome e Edge 120+, Firefox 53+, Safari 15.4+ (o CSS também traz -webkit-mask-image). filter: blur(): todos os navegadores atuais.',
+    responsividade:
+      'A lente segue o dedo (touch-action: none só na cena). O tamanho da fonte usa clamp() e a cena mantém a proporção 16:10.',
+    acessibilidade:
+      'Só a camada nítida é lida pelo leitor de tela (a desfocada é aria-hidden). O botão "Tudo em foco" é a alternativa a quem não usa ponteiro. Não há movimento automático.',
+    performance:
+      'O blur é estático (desenhado uma vez). A cada movimento mudam duas variáveis CSS, uma vez por quadro (requestAnimationFrame): o navegador repinta só a máscara e o aro.',
     limitacoes: [
       'O conteúdo existe em dobro no DOM: para páginas inteiras, prefira aplicar o efeito só no hero.',
       'A ampliação é de imagem plana: não há a distorção de borda de uma lente de vidro (veja a alternativa em WebGL).',
     ],
     referencias: [
       MDN.mask,
-      { titulo: 'MDN — filter: blur()', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/blur' },
+      {
+        titulo: 'MDN — filter: blur()',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/blur',
+      },
       MDN.pointer,
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'raio', rotulo: 'raio da lente', tipo: 'range', min: 50, max: 160, passo: 5, unidade: 'px', padrao: 85 },
-    { id: 'desfoque', rotulo: 'desfoque fora da lente', tipo: 'range', min: 2, max: 16, passo: 1, unidade: 'px', padrao: 8 },
-    { id: 'zoom', rotulo: 'ampliação', tipo: 'range', min: 1, max: 1.6, passo: 0.05, unidade: '×', padrao: 1.15 },
+    {
+      id: 'raio',
+      rotulo: 'raio da lente',
+      tipo: 'range',
+      min: 50,
+      max: 160,
+      passo: 5,
+      unidade: 'px',
+      padrao: 85,
+    },
+    {
+      id: 'desfoque',
+      rotulo: 'desfoque fora da lente',
+      tipo: 'range',
+      min: 2,
+      max: 16,
+      passo: 1,
+      unidade: 'px',
+      padrao: 8,
+    },
+    {
+      id: 'zoom',
+      rotulo: 'ampliação',
+      tipo: 'range',
+      min: 1,
+      max: 1.6,
+      passo: 0.05,
+      unidade: '×',
+      padrao: 1.15,
+    },
     {
       id: 'formato',
       rotulo: 'formato',
@@ -63,8 +114,11 @@ export const LENS_FOCUS: EffectKit = {
     const oculos = v['formato'] === 'oculos';
     // distância do centro de cada lente até o meio dos óculos
     const d = Math.round(r * 1.12);
-    const furo = (x: string) => `radial-gradient(circle at ${x} var(--y), #000 ${r}px, transparent ${r + 1}px)`;
-    const mascara = oculos ? `${furo(`calc(var(--x) - ${d}px)`)}, ${furo(`calc(var(--x) + ${d}px)`)}` : furo('var(--x)');
+    const furo = (x: string) =>
+      `radial-gradient(circle at ${x} var(--y), #000 ${r}px, transparent ${r + 1}px)`;
+    const mascara = oculos
+      ? `${furo(`calc(var(--x) - ${d}px)`)}, ${furo(`calc(var(--x) + ${d}px)`)}`
+      : furo('var(--x)');
     const aro = (deslocamento: number) => `left: ${deslocamento - r}px;`;
     return {
       html: `<section class="cena-lente">
@@ -277,7 +331,10 @@ export class ${nomeClasse('lens-focus')} {
   glossario: [
     { termo: 'filter: blur(', explicacao: 'Desfoca a camada de baixo (a visão sem lente).' },
     { termo: 'mask-image', explicacao: 'Só deixa aparecer a camada nítida dentro das lentes.' },
-    { termo: 'transform-origin: var(--x) var(--y)', explicacao: 'Centro da ampliação = posição do ponteiro.' },
+    {
+      termo: 'transform-origin: var(--x) var(--y)',
+      explicacao: 'Centro da ampliação = posição do ponteiro.',
+    },
     { termo: 'touch-action: none', explicacao: 'O dedo move a lente em vez de rolar a página.' },
   ],
 };

@@ -59,20 +59,38 @@ export const CORES = [
 ] as const;
 
 export const MDN = {
-  animation: { titulo: 'MDN — animation', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/animation' },
-  keyframes: { titulo: 'MDN — @keyframes', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes' },
-  transform: { titulo: 'MDN — transform', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/transform' },
-  transition: { titulo: 'MDN — transition', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/transition' },
+  animation: {
+    titulo: 'MDN — animation',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/animation',
+  },
+  keyframes: {
+    titulo: 'MDN — @keyframes',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes',
+  },
+  transform: {
+    titulo: 'MDN — transform',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/transform',
+  },
+  transition: {
+    titulo: 'MDN — transition',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/transition',
+  },
   reduzir: {
     titulo: 'MDN — prefers-reduced-motion',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion',
   },
-  pointer: { titulo: 'MDN — Pointer events', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events' },
+  pointer: {
+    titulo: 'MDN — Pointer events',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events',
+  },
   raf: {
     titulo: 'MDN — requestAnimationFrame',
     url: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame',
   },
-  boxShadow: { titulo: 'MDN — box-shadow', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow' },
+  boxShadow: {
+    titulo: 'MDN — box-shadow',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow',
+  },
   linearGradient: {
     titulo: 'MDN — linear-gradient()',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient',
@@ -81,8 +99,14 @@ export const MDN = {
     titulo: 'MDN — conic-gradient()',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/conic-gradient',
   },
-  property: { titulo: 'MDN — @property', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@property' },
-  perspective: { titulo: 'MDN — perspective', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/perspective' },
+  property: {
+    titulo: 'MDN — @property',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@property',
+  },
+  perspective: {
+    titulo: 'MDN — perspective',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/perspective',
+  },
   wcagMovimento: {
     titulo: 'WCAG 2.2 — 2.3.3 Animation from Interactions',
     url: 'https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html',
@@ -91,12 +115,18 @@ export const MDN = {
     titulo: 'MDN — animation-delay',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/animation-delay',
   },
-  io: { titulo: 'MDN — Intersection Observer API', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API' },
+  io: {
+    titulo: 'MDN — Intersection Observer API',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API',
+  },
   scrollTimeline: {
     titulo: 'MDN — CSS scroll-driven animations',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_scroll-driven_animations',
   },
-  mask: { titulo: 'MDN — mask-image', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/mask-image' },
+  mask: {
+    titulo: 'MDN — mask-image',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/mask-image',
+  },
   displacement: {
     titulo: 'MDN — <feDisplacementMap>',
     url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap',
@@ -105,14 +135,26 @@ export const MDN = {
     titulo: 'MDN — <feTurbulence>',
     url: 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence',
   },
-  scrollTrigger: { titulo: 'GSAP — ScrollTrigger', url: 'https://gsap.com/docs/v3/Plugins/ScrollTrigger/' },
-  gsapMatchMedia: { titulo: 'GSAP — gsap.matchMedia()', url: 'https://gsap.com/docs/v3/GSAP/gsap.matchMedia()' },
-  lenis: { titulo: 'Lenis — repositório oficial', url: 'https://github.com/darkroomengineering/lenis' },
+  scrollTrigger: {
+    titulo: 'GSAP — ScrollTrigger',
+    url: 'https://gsap.com/docs/v3/Plugins/ScrollTrigger/',
+  },
+  gsapMatchMedia: {
+    titulo: 'GSAP — gsap.matchMedia()',
+    url: 'https://gsap.com/docs/v3/GSAP/gsap.matchMedia()',
+  },
+  lenis: {
+    titulo: 'Lenis — repositório oficial',
+    url: 'https://github.com/darkroomengineering/lenis',
+  },
   scrollBehavior: {
     titulo: 'MDN — scroll-behavior',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-behavior',
   },
-  cursor: { titulo: 'MDN — cursor', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/cursor' },
+  cursor: {
+    titulo: 'MDN — cursor',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/cursor',
+  },
   pointerMedia: {
     titulo: 'MDN — @media (pointer)',
     url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/pointer',

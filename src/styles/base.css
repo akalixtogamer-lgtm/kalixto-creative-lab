@@ -17,8 +17,7 @@ body {
   background:
     radial-gradient(1000px 600px at 85% -10%, var(--kx-brilho-1), transparent 60%),
     radial-gradient(800px 500px at -10% 110%, var(--kx-brilho-2), transparent 60%),
-    radial-gradient(900px 600px at 30% 50%, var(--kx-brilho-3), transparent 70%),
-    var(--kx-bg);
+    radial-gradient(900px 600px at 30% 50%, var(--kx-brilho-3), transparent 70%), var(--kx-bg);
   background-attachment: fixed;
   color: var(--kx-text);
   font-family: var(--kx-font-body);

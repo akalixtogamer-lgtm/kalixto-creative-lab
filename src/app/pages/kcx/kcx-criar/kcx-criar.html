@@ -1,0 +1,523 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kcxc__topo">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Construtor</p>
+    <h1 class="kx-title">{{ original() ? 'Editar componente' : 'Criar componente' }}</h1>
+
+    <ol class="kcxc__passos" aria-label="Etapas">
+      @for (p of [1, 2, 3]; track p) {
+        <li>
+          <button
+            type="button"
+            class="kcxc__passo"
+            [attr.aria-current]="passo() === p ? 'step' : null"
+            [class.kcxc__passo--feito]="passo() > p"
+            [disabled]="(p === 1 && !!de()) || (p === 3 && !resultado().comp)"
+            (click)="irPara($any(p))"
+          >
+            <span class="kcxc__num">{{ passo() > p ? '✓' : p }}</span>
+            {{ p === 1 ? 'Escolher tipo' : p === 2 ? 'Personalizar' : 'Revisar e salvar' }}
+          </button>
+        </li>
+      }
+    </ol>
+  </header>
+
+  <!-- ============ 1. Tipo ============ -->
+  @if (passo() === 1) {
+    <section aria-labelledby="kcxc-tipo">
+      <h2 id="kcxc-tipo" class="kcxc__h2">O que você quer criar?</h2>
+      <p class="kx-muted">Clique num tipo. Depois você troca nomes, cores e animação.</p>
+      @for (cat of categorias; track cat.id) {
+        <h3 class="kcxc__cat">{{ cat.nome }}</h3>
+        <div class="kcxc__tipos">
+          @for (t of cat.tipos; track t.id) {
+            <button
+              type="button"
+              class="kcxc__tipo kx-glass"
+              [attr.aria-pressed]="def().id === t.id"
+              (click)="escolherTipo(t)"
+            >
+              <strong>{{ t.nome }}</strong>
+              <span class="kx-muted">{{ t.descricao }}</span>
+              <span class="kx-chip">{{ t.uso }}</span>
+            </button>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  <!-- ============ 2. Personalizar ============ -->
+  @if (passo() === 2) {
+    <div class="kcxc__grade">
+      <form class="kcxc__form" (submit)="$event.preventDefault(); irPara(3)">
+        <p class="kcxc__tipo-atual">
+          <span class="kx-chip">{{ def().nome }}</span>
+          @if (!de()) {
+            <button type="button" class="kcxc__link" (click)="irPara(1)">trocar tipo</button>
+          }
+        </p>
+
+        <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-nomes">
+          <h2 id="kcxc-nomes" class="kcxc__titulo"><span>Aa</span> Textos</h2>
+          <label class="kcxc__campo">
+            <span>Nome do componente</span>
+            <input
+              type="text"
+              maxlength="60"
+              required
+              [value]="cfg().nome"
+              (input)="mudar('nome', valor($event))"
+            />
+          </label>
+          @for (t of textosVisiveis(); track t.id) {
+            <label class="kcxc__campo">
+              <span>{{ t.rotulo }}</span>
+              <input
+                type="text"
+                maxlength="120"
+                [value]="cfg().textos[t.id] ?? ''"
+                (input)="mudarTexto(t.id, valor($event))"
+              />
+            </label>
+          }
+          @if (def().itens; as d) {
+            <fieldset class="kcxc__itens">
+              <legend>
+                {{ d.rotulo }}s
+                <small class="kx-muted">({{ cfg().itens.length }} de no máximo {{ d.max }})</small>
+              </legend>
+              @for (item of cfg().itens; track $index; let i = $index) {
+                <div class="kcxc__item">
+                  @if (def().coresPorItem) {
+                    <input
+                      type="color"
+                      class="kcxc__cor-item"
+                      [value]="corItem(i)"
+                      (input)="mudarCorItem(i, valor($event))"
+                      [attr.aria-label]="'Cor de ' + item"
+                    />
+                  }
+                  <input
+                    type="text"
+                    maxlength="60"
+                    [attr.aria-label]="d.rotulo + ' ' + (i + 1)"
+                    [value]="item"
+                    (input)="mudarItem(i, valor($event))"
+                  />
+                  <div class="kcxc__item-acoes">
+                    <button
+                      type="button"
+                      class="kcxc__mini"
+                      [disabled]="i === 0"
+                      (click)="moverItem(i, -1)"
+                      [attr.aria-label]="'Subir ' + item"
+                      title="Subir"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      class="kcxc__mini"
+                      [disabled]="i === cfg().itens.length - 1"
+                      (click)="moverItem(i, 1)"
+                      [attr.aria-label]="'Descer ' + item"
+                      title="Descer"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      type="button"
+                      class="kcxc__mini"
+                      [disabled]="cfg().itens.length <= d.min"
+                      (click)="removerItem(i)"
+                      [attr.aria-label]="'Remover ' + item"
+                      title="Remover"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              }
+              @if (cfg().itens.length < d.max) {
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--ghost kcxc__add"
+                  (click)="adicionarItem()"
+                >
+                  + Adicionar {{ d.rotulo.toLowerCase() }}
+                </button>
+              }
+            </fieldset>
+          }
+        </section>
+
+        @if (def().recursos?.length) {
+          <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-rec">
+            <h2 id="kcxc-rec" class="kcxc__titulo"><span>◇</span> Recursos do Figma</h2>
+            <p class="kx-muted kcxc__dica">
+              Cada recurso ligado vira variantes, propriedades ou interações no Figma (e funciona no
+              código).
+            </p>
+            <div class="kcxc__recursos">
+              @for (r of def().recursos; track r.id) {
+                <label class="kcxc__recurso" [class.kcxc__recurso--off]="recursoBloqueado(r)">
+                  <input
+                    type="checkbox"
+                    [checked]="recursoLigado(r.id) && !recursoBloqueado(r)"
+                    [disabled]="recursoBloqueado(r)"
+                    (change)="mudarRecurso(r.id, $any($event.target).checked)"
+                  />
+                  <span>
+                    <strong>{{ r.nome }}</strong>
+                    <small class="kx-muted">{{
+                      recursoBloqueado(r) ? 'Não combina com a animação escolhida.' : r.descricao
+                    }}</small>
+                  </span>
+                </label>
+              }
+            </div>
+            @if (def().icones?.length) {
+              <div class="kcxc__icones">
+                @for (lugar of def().icones; track lugar.id) {
+                  @if (lugarVisivel(lugar)) {
+                    <label class="kcxc__campo kcxc__icone-campo">
+                      <span>{{ lugar.rotulo }}</span>
+                      <span class="kcxc__icone-sel">
+                        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                          <path
+                            [attr.d]="caminhoIcone(iconeEscolhido(lugar.id, lugar.padrao))"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        <select
+                          [value]="iconeEscolhido(lugar.id, lugar.padrao)"
+                          (change)="mudarIcone(lugar.id, valor($event))"
+                        >
+                          @for (n of nomesIcones; track n) {
+                            <option
+                              [value]="n"
+                              [selected]="n === iconeEscolhido(lugar.id, lugar.padrao)"
+                            >
+                              {{ n }}
+                            </option>
+                          }
+                        </select>
+                      </span>
+                    </label>
+                  }
+                }
+              </div>
+            }
+            @if (figma(); as f) {
+              <p class="kcxc__dica">
+                No Figma: <strong>{{ f.variantes.length }} variantes</strong> ·
+                {{ f.interacoes }} interações · {{ f.propriedades }} propriedades
+              </p>
+            }
+          </section>
+        }
+
+        <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-anim">
+          <h2 id="kcxc-anim" class="kcxc__titulo"><span>✦</span> Animação</h2>
+          <div class="kcxc__anims" role="radiogroup" aria-labelledby="kcxc-anim">
+            @for (a of def().animacoes; track a.id) {
+              <label class="kcxc__anim">
+                <input
+                  type="radio"
+                  name="animacao"
+                  [value]="a.id"
+                  [checked]="cfg().animacao === a.id"
+                  (change)="mudar('animacao', a.id)"
+                />
+                <span
+                  ><strong>{{ a.nome }}</strong
+                  ><small class="kx-muted">{{ a.descricao }}</small>
+                  @if (nivelDe(a.id); as n) {
+                    <em class="kcxc__nivel" [attr.data-nivel]="n">{{ rotuloNivel[n] }}</em>
+                  }
+                </span>
+              </label>
+            }
+          </div>
+          @if (notaAnimacao(); as nota) {
+            <p class="kcxc__aviso-figma" [attr.data-nivel]="nota.nivel" role="status">
+              <strong>No Figma:</strong> {{ nota.texto }}
+            </p>
+          }
+        </section>
+
+        <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-cores">
+          <h2 id="kcxc-cores" class="kcxc__titulo"><span>●</span> Cores e formato</h2>
+          <div class="kcxc__paletas" role="group" aria-label="Paletas prontas">
+            @for (p of paletas; track p.nome) {
+              <button
+                type="button"
+                class="kcxc__paleta"
+                [attr.aria-pressed]="paletaAtiva(p.cores)"
+                (click)="aplicarPaleta(p.cores)"
+              >
+                <span class="kcxc__amostras" aria-hidden="true">
+                  <i [style.background]="p.cores.fundo"></i>
+                  <i [style.background]="p.cores.superficie"></i>
+                  <i [style.background]="p.cores.primaria"></i>
+                  <i [style.background]="p.cores.texto"></i>
+                </span>
+                {{ p.nome }}
+              </button>
+            }
+          </div>
+          <details class="kcxc__mais">
+            <summary>Escolher cada cor</summary>
+            <div class="kcxc__cores">
+              <label
+                ><input
+                  type="color"
+                  [value]="cfg().cores.primaria"
+                  (input)="mudarCor('primaria', valor($event))"
+                />
+                Principal</label
+              >
+              <label
+                ><input
+                  type="color"
+                  [value]="cfg().cores.fundo"
+                  (input)="mudarCor('fundo', valor($event))"
+                />
+                Fundo</label
+              >
+              <label
+                ><input
+                  type="color"
+                  [value]="cfg().cores.superficie"
+                  (input)="mudarCor('superficie', valor($event))"
+                />
+                Superfície</label
+              >
+              <label
+                ><input
+                  type="color"
+                  [value]="cfg().cores.texto"
+                  (input)="mudarCor('texto', valor($event))"
+                />
+                Texto</label
+              >
+            </div>
+          </details>
+          <label class="kcxc__campo">
+            <span>Cantos arredondados: {{ cfg().raio }} px</span>
+            <input
+              type="range"
+              min="0"
+              max="40"
+              [value]="cfg().raio"
+              (input)="mudar('raio', +valor($event))"
+            />
+          </label>
+          <label class="kcxc__recurso kcxc__recurso--linha">
+            <input
+              type="checkbox"
+              [checked]="!!cfg().modos"
+              (change)="mudar('modos', $any($event.target).checked)"
+            />
+            <span>
+              <strong>Modos Claro e Escuro no Figma</strong>
+              <small class="kx-muted"
+                >As variáveis de cor ganham os dois modos (troque o tema da página no Figma).</small
+              >
+            </span>
+          </label>
+          <label class="kcxc__recurso kcxc__recurso--linha">
+            <input
+              type="checkbox"
+              [checked]="!!cfg().telas"
+              (change)="mudar('telas', $any($event.target).checked)"
+            />
+            <span>
+              <strong>Modos Desktop e Celular no Figma</strong>
+              <small class="kx-muted"
+                >Espaços e textos ficam menores no modo Celular das variáveis.</small
+              >
+            </span>
+          </label>
+          <label class="kcxc__campo">
+            <span>Movimento no protótipo do Figma</span>
+            <select (change)="mudar('curva', $any(valor($event) || undefined))">
+              @for (c of curvas; track c.id) {
+                <option [value]="c.id" [selected]="(cfg().curva ?? '') === c.id">
+                  {{ c.nome }}
+                </option>
+              }
+            </select>
+          </label>
+          @if (def().midia; as tipoMidia) {
+            <label class="kcxc__campo">
+              <span>{{
+                tipoMidia === 'video'
+                  ? 'Vídeo (endereço https://… .mp4 ou .webm)'
+                  : 'Imagem (endereço https://… ou envie um arquivo)'
+              }}</span>
+              <input
+                type="url"
+                [value]="
+                  cfg().midia?.startsWith('data:') ? '(imagem enviada)' : (cfg().midia ?? '')
+                "
+                (change)="mudar('midia', valor($event))"
+                placeholder="https://"
+              />
+            </label>
+            @if (tipoMidia === 'imagem') {
+              <label class="kx-btn kx-btn--ghost kcxc__arquivo">
+                <kx-icon name="upload" /> Enviar imagem
+                <input type="file" accept="image/*" (change)="enviarMidia($event)" />
+              </label>
+            }
+            @if (avisoImagem()) {
+              <p class="kcxc__erro" role="alert">{{ avisoImagem() }}</p>
+            }
+          }
+        </section>
+
+        <div class="kcxc__acoes">
+          <button type="submit" class="kx-btn kx-btn--primary" [disabled]="!resultado().comp">
+            Revisar tudo <kx-icon name="arrow-right" />
+          </button>
+          <a class="kx-btn kx-btn--ghost" routerLink="/kcx">Cancelar</a>
+        </div>
+      </form>
+
+      <aside class="kcxc__lado" aria-label="Preview">
+        @if (resultado().erro; as erro) {
+          <p class="kcxc__erro" role="alert">{{ erro }}</p>
+        }
+        @if (resultado().comp; as c) {
+          <div class="kx-glass kcxc__bloco">
+            <kx-kcx-preview
+              [documento]="documento()"
+              [saidas]="saidas()"
+              [titulo]="'Preview: ' + cfg().nome"
+              altura="clamp(200px, 30vh, 320px)"
+            />
+            <p class="kcxc__dica">
+              Acima, o código funcionando (passe o mouse e clique). Abaixo, escolha uma variante
+              para ver como ela fica no Figma:
+            </p>
+            <kx-kcx-variantes [comp]="c" [(selecionada)]="variante" />
+          </div>
+        }
+      </aside>
+    </div>
+  }
+
+  <!-- ============ 3. Revisar e salvar ============ -->
+  @if (passo() === 3) {
+    @if (resultado().comp; as c) {
+      <section class="kcxc__revisao" aria-labelledby="kcxc-rev">
+        <h2 id="kcxc-rev" class="kcxc__h2">Confira tudo antes de salvar</h2>
+        <p class="kx-muted">
+          Estas são todas as variantes que vão para o Figma. Clique numa para vê-la funcionando no
+          preview.
+        </p>
+
+        <div class="kcxc__rev-topo">
+          <div class="kx-glass kcxc__bloco">
+            <kx-kcx-preview
+              [documento]="documento()"
+              [saidas]="saidas()"
+              [titulo]="'Preview: ' + cfg().nome"
+              altura="clamp(240px, 36vh, 380px)"
+            />
+            <p class="kcxc__dica">
+              Variante no preview: <strong>{{ rotuloVariante() }}</strong>
+            </p>
+          </div>
+
+          <div class="kx-glass kcxc__bloco kcxc__resumo">
+            <h3 class="kcxc__titulo">Resumo</h3>
+            <dl>
+              <dt>Nome</dt>
+              <dd>{{ cfg().nome }}</dd>
+              <dt>Tipo</dt>
+              <dd>{{ def().nome }}</dd>
+              @if (def().itens) {
+                <dt>{{ def().itens!.rotulo }}s</dt>
+                <dd>
+                  <ul class="kcxc__lista-itens">
+                    @for (item of cfg().itens; track $index; let i = $index) {
+                      <li>
+                        @if (def().coresPorItem) {
+                          <i class="kcxc__bolinha" [style.background]="corItem(i)"></i>
+                        }
+                        {{ item }}
+                      </li>
+                    }
+                  </ul>
+                </dd>
+              }
+              <dt>Animação</dt>
+              <dd>
+                {{ nomeAnimacao() }}
+                @if (notaAnimacao(); as nota) {
+                  <small class="kcxc__aviso-figma" [attr.data-nivel]="nota.nivel"
+                    ><strong>No Figma:</strong> {{ nota.texto }}</small
+                  >
+                }
+              </dd>
+              @if (recursosLigados().length) {
+                <dt>Recursos</dt>
+                <dd>{{ recursosLigados().join(' · ') }}</dd>
+              }
+              <dt>Cores</dt>
+              <dd class="kcxc__amostras kcxc__amostras--grande">
+                <i [style.background]="cfg().cores.fundo" title="Fundo"></i>
+                <i [style.background]="cfg().cores.superficie" title="Superfície"></i>
+                <i [style.background]="cfg().cores.primaria" title="Principal"></i>
+                <i [style.background]="cfg().cores.texto" title="Texto"></i>
+              </dd>
+              @if (figma(); as f) {
+                <dt>No Figma</dt>
+                <dd>
+                  {{ f.variantes.length }} variante{{ f.variantes.length > 1 ? 's' : '' }} ·
+                  {{ f.interacoes }} interaç{{ f.interacoes === 1 ? 'ão' : 'ões' }} ·
+                  {{ f.variaveis }} variáveis
+                </dd>
+              }
+            </dl>
+          </div>
+        </div>
+
+        <div class="kx-glass kcxc__bloco">
+          <h3 class="kcxc__titulo">Todas as variantes</h3>
+          <kx-kcx-variantes
+            [comp]="c"
+            [(selecionada)]="variante"
+            [grade]="true"
+            [previa]="false"
+            [seletores]="false"
+          />
+        </div>
+
+        @if (erros().length) {
+          <ul class="kcxc__erro" role="alert">
+            @for (e of erros(); track e) {
+              <li>{{ e }}</li>
+            }
+          </ul>
+        }
+        <div class="kcxc__acoes kcxc__acoes--fim">
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="irPara(2)">
+            <kx-icon name="arrow-left" /> Voltar e ajustar
+          </button>
+          <button type="button" class="kx-btn kx-btn--primary" (click)="salvar()">
+            <kx-icon name="check" />
+            {{ original() ? 'Salvar alterações' : 'Está tudo certo, salvar' }}
+          </button>
+        </div>
+      </section>
+    }
+  }
+</div>

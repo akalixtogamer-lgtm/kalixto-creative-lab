@@ -65,34 +65,89 @@ export const PARTICLE_HELIX: EffectKit = {
     nomeAmigavel: 'Hélice de DNA em partículas',
     categoria: 'particulas',
     subcategoria: 'Partículas 2D com profundidade',
-    descricao: 'Duas fitas de pontos de luz, rosa e azul, giram em volta de um eixo como um DNA, ligadas por degraus finos e cercadas de poeira brilhante.',
-    objetivoVisual: 'Simbolizar "a essência da marca", ciência ou crescimento; fundo vivo para vitrines de projetos e heros escuros.',
-    aplicacoes: ['Fundo de portfólio e proposta comercial', 'Saúde, biotecnologia e ciência', 'Telas de abertura'],
+    descricao:
+      'Duas fitas de pontos de luz, rosa e azul, giram em volta de um eixo como um DNA, ligadas por degraus finos e cercadas de poeira brilhante.',
+    objetivoVisual:
+      'Simbolizar "a essência da marca", ciência ou crescimento; fundo vivo para vitrines de projetos e heros escuros.',
+    aplicacoes: [
+      'Fundo de portfólio e proposta comercial',
+      'Saúde, biotecnologia e ciência',
+      'Telas de abertura',
+    ],
     nivel: 'avancado',
     tecnologias: ['HTML', 'CSS', 'JavaScript', 'Canvas'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['dna', 'hélice', 'helix', 'partículas', 'canvas', '3d falso', 'profundidade', 'referência em vídeo'],
+    tags: [
+      'dna',
+      'hélice',
+      'helix',
+      'partículas',
+      'canvas',
+      '3d falso',
+      'profundidade',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Cada fita é uma sequência de pontos ao longo de um eixo. A posição "vertical" de cada ponto é cos(ângulo) × raio; as duas fitas estão defasadas em meia volta (π).',
       'sin(ângulo) é usado como profundidade (z): pontos com z positivo estão "na frente", então ficam maiores e mais opacos. É um 3D falso, sem WebGL.',
       'Somar a "fase" ao ângulo a cada quadro faz a hélice girar. O canvas inteiro é rotacionado pela inclinação para deitar o DNA na diagonal.',
       'Os degraus ligam o mesmo ponto das duas fitas a cada 8 pontos; a poeira é sorteada uma vez e acompanha a fita.',
     ],
-    alternativa: 'Em Three.js: Points com BufferGeometry para os pontos e LineSegments para os degraus, com câmera de verdade e profundidade real (e milhares de pontos).',
+    alternativa:
+      'Em Three.js: Points com BufferGeometry para os pontos e LineSegments para os degraus, com câmera de verdade e profundidade real (e milhares de pontos).',
     compatibilidade: 'Canvas 2D: todos os navegadores atuais.',
-    responsividade: 'O canvas pega o tamanho do palco × devicePixelRatio; raio e comprimento são proporcionais ao palco.',
-    acessibilidade: 'Decorativo (aria-hidden). Movimento infinito com botão Pausar (WCAG 2.2.2). Com prefers-reduced-motion, um quadro parado é desenhado.',
-    performance: '~520 pontos + degraus + poeira por quadro: leve em canvas 2D. Pare o loop quando o palco sair da tela (IntersectionObserver).',
-    limitacoes: ['Profundidade só no tamanho/opacidade: os pontos não se escondem uns atrás dos outros de verdade (não há z-buffer).'],
-    referencias: [MDN.raf, { titulo: 'MDN — Canvas: transformações', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations' }, MDN.wcagMovimento],
+    responsividade:
+      'O canvas pega o tamanho do palco × devicePixelRatio; raio e comprimento são proporcionais ao palco.',
+    acessibilidade:
+      'Decorativo (aria-hidden). Movimento infinito com botão Pausar (WCAG 2.2.2). Com prefers-reduced-motion, um quadro parado é desenhado.',
+    performance:
+      '~520 pontos + degraus + poeira por quadro: leve em canvas 2D. Pare o loop quando o palco sair da tela (IntersectionObserver).',
+    limitacoes: [
+      'Profundidade só no tamanho/opacidade: os pontos não se escondem uns atrás dos outros de verdade (não há z-buffer).',
+    ],
+    referencias: [
+      MDN.raf,
+      {
+        titulo: 'MDN — Canvas: transformações',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations',
+      },
+      MDN.wcagMovimento,
+    ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'voltas', rotulo: 'voltas da hélice', tipo: 'range', min: 2, max: 6, passo: 1, unidade: '', padrao: 3 },
-    { id: 'velocidade', rotulo: 'velocidade do giro', tipo: 'range', min: 0.002, max: 0.03, passo: 0.002, unidade: '', padrao: 0.01 },
-    { id: 'inclinacao', rotulo: 'inclinação', tipo: 'range', min: -60, max: 60, passo: 5, unidade: 'deg', padrao: -30 },
+    {
+      id: 'voltas',
+      rotulo: 'voltas da hélice',
+      tipo: 'range',
+      min: 2,
+      max: 6,
+      passo: 1,
+      unidade: '',
+      padrao: 3,
+    },
+    {
+      id: 'velocidade',
+      rotulo: 'velocidade do giro',
+      tipo: 'range',
+      min: 0.002,
+      max: 0.03,
+      passo: 0.002,
+      unidade: '',
+      padrao: 0.01,
+    },
+    {
+      id: 'inclinacao',
+      rotulo: 'inclinação',
+      tipo: 'range',
+      min: -60,
+      max: 60,
+      passo: 5,
+      unidade: 'deg',
+      padrao: -30,
+    },
   ],
   gerar: (v) => ({
     html: `<section class="helice-palco">
@@ -223,7 +278,10 @@ export class ${nomeClasse('particle-helix')} {
 
 ${NUCLEO(Number(v['voltas']), Number(v['inclinacao']))
   .replace('const POEIRA = Array.from', 'const POEIRA: Grao[] = Array.from')
-  .replace('function desenharHelice(ctx, w, h, fase) {', 'function desenharHelice(ctx: CanvasRenderingContext2D, w: number, h: number, fase: number): void {')
+  .replace(
+    'function desenharHelice(ctx, w, h, fase) {',
+    'function desenharHelice(ctx: CanvasRenderingContext2D, w: number, h: number, fase: number): void {',
+  )
   .replace('const ponto = (t, lado) => {', 'const ponto = (t: number, lado: number) => {')}
 `,
     html: `<section #palco class="helice-palco">

@@ -27,7 +27,7 @@ export class TileGridReveal {
     for (let l = 0; l < linhas; l++) {
       for (let c = 0; c < colunas; c++) {
         lista.push({
-          d: (Math.random()).toFixed(3),
+          d: Math.random().toFixed(3),
           l: 8 + Math.round(Math.random() * 24) + '%',
         });
       }

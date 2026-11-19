@@ -6,6 +6,11 @@
   </div>
   <div class="objeto" role="img" aria-label="Esfera dourada"></div>
 </section>
-<button class="pausar" type="button" [attr.aria-pressed]="pausado()" (click)="pausado.set(!pausado())">
+<button
+  class="pausar"
+  type="button"
+  [attr.aria-pressed]="pausado()"
+  (click)="pausado.set(!pausado())"
+>
   {{ pausado() ? 'Continuar' : 'Pausar' }}
 </button>

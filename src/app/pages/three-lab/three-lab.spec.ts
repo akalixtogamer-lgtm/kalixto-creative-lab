@@ -18,7 +18,9 @@ describe('Three.js Lab', () => {
 
   beforeEach(async () => {
     localStorage.clear();
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
@@ -31,7 +33,9 @@ describe('Three.js Lab', () => {
 
   it.each(THREE_DEMOS.map((d) => d.id))('abre a demo "%s" com código Three.js', async (id) => {
     await harness.navigateByUrl(`/labs/three?demo=${id}`);
-    expect(el().querySelector('#demo-titulo')?.textContent).toContain(THREE_DEMOS.find((d) => d.id === id)!.titulo);
+    expect(el().querySelector('#demo-titulo')?.textContent).toContain(
+      THREE_DEMOS.find((d) => d.id === id)!.titulo,
+    );
     expect(codigo().length).toBeGreaterThan(40);
   });
 

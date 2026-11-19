@@ -1,0 +1,48 @@
+<div class="kcxv">
+  @for (e of seletores() ? eixos() : []; track e.nome) {
+    @if (e.opcoes.length > 1) {
+      <div class="kcxv__eixo" role="radiogroup" [attr.aria-label]="e.nome">
+        <span class="kcxv__nome">{{ e.nome }}</span>
+        <div class="kcxv__opcoes">
+          @for (o of e.opcoes; track o) {
+            <button
+              type="button"
+              role="radio"
+              class="kcxv__op"
+              [attr.aria-checked]="atual()?.props[e.nome] === o"
+              (click)="escolher(e.nome, o)"
+            >
+              {{ o }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  @if (previaAtual(); as m) {
+    <figure class="kcxv__previa">
+      <iframe
+        sandbox="allow-scripts"
+        [style.height.px]="alturaPrevia()"
+        [srcdoc]="m.doc"
+        [title]="'Variante ' + rotulo(m.props) + ' como fica no Figma'"
+      ></iframe>
+      <figcaption>
+        <strong>{{ rotulo(m.props) }}</strong> · como fica no Figma
+      </figcaption>
+    </figure>
+  }
+
+  @if (grade() && gradeDoc(); as doc) {
+    <iframe
+      #gradeFrame
+      class="kcxv__grade"
+      sandbox="allow-scripts"
+      title="Todas as variantes"
+      [style.height.px]="alturaGrade()"
+      [srcdoc]="doc"
+      (load)="enviarSelecao()"
+    ></iframe>
+  }
+</div>

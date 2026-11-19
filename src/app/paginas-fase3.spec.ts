@@ -1,28 +1,34 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { routes } from '../app.routes';
-import { EXERCICIOS } from '../core/data/exercicios.data';
-import { SVG_DEMOS } from '../core/data/svg-demos.data';
-import { ProgressoService } from '../core/services/progresso.service';
+import { routes } from './app.routes';
+import { EXERCICIOS } from './core/data/exercicios.data';
+import { SVG_DEMOS } from './core/data/svg-demos.data';
+import { ProgressoService } from './core/services/progresso.service';
 
 /** Testes da Fase 3 — organização educacional. */
 describe('Fase 3', () => {
   let harness: RouterTestingHarness;
   const el = () => harness.routeNativeElement as HTMLElement;
   const botao = (texto: string) =>
-    [...el().querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent?.includes(texto))!;
+    [...el().querySelectorAll<HTMLButtonElement>('button')].find((b) =>
+      b.textContent?.includes(texto),
+    )!;
 
   beforeEach(async () => {
     localStorage.clear();
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
   describe('SVG Lab', () => {
     it.each(SVG_DEMOS.map((d) => d.id))('abre a demo "%s"', async (id) => {
       await harness.navigateByUrl(`/labs/svg?demo=${id}`);
-      expect(el().querySelector('#demo-titulo')?.textContent).toContain(SVG_DEMOS.find((d) => d.id === id)!.titulo);
+      expect(el().querySelector('#demo-titulo')?.textContent).toContain(
+        SVG_DEMOS.find((d) => d.id === id)!.titulo,
+      );
       expect(el().querySelector('.palco svg')).toBeTruthy();
     });
   });
@@ -90,7 +96,9 @@ describe('Fase 3', () => {
     it('corrige a resposta e mostra a explicação', async () => {
       await harness.navigateByUrl('/exercicios?lab=css');
       const q = EXERCICIOS.find((x) => x.labId === 'css')!;
-      const alternativas = el().querySelectorAll<HTMLButtonElement>('.questao')[0].querySelectorAll('.alternativa');
+      const alternativas = el()
+        .querySelectorAll<HTMLButtonElement>('.questao')[0]
+        .querySelectorAll('.alternativa');
       (alternativas[q.correta] as HTMLButtonElement).click();
       harness.detectChanges();
       expect(el().textContent).toContain('Correto!');

@@ -48,6 +48,9 @@ export class CustomCursor {
     this.ax += (this.mx - this.ax) * s;
     this.ay += (this.my - this.ay) * s;
     this.anel().nativeElement.style.transform = `translate(${this.ax}px, ${this.ay}px)`;
-    this.quadro = Math.hypot(this.mx - this.ax, this.my - this.ay) > 0.1 ? requestAnimationFrame(() => this.seguir()) : 0;
+    this.quadro =
+      Math.hypot(this.mx - this.ax, this.my - this.ay) > 0.1
+        ? requestAnimationFrame(() => this.seguir())
+        : 0;
   }
 }

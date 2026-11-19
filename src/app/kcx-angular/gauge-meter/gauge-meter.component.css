@@ -1,0 +1,92 @@
+/* Gauge Meter — KCX (os valores chegam como custom properties no elemento kcx-gauge-meter) */
+kcx-gauge-meter {
+  display: contents;
+}
+
+/* Gauge Meter — controlado pelas variáveis KCX, só CSS e SVG */
+/* Inteiro registrado: o navegador anima de 0 até a nota e o contador mostra. */
+@property --kcx-gauge-meter-n {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: true;
+}
+@property --kcx-gauge-meter-f {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+.kcx-gauge-meter {
+  --kcx-gauge-meter-n: var(--kcx-gauge-meter-value);
+  --kcx-gauge-meter-f: var(--kcx-gauge-meter-frac);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(80vw, var(--kcx-gauge-meter-size));
+  aspect-ratio: 1;
+  animation: var(--kcx-gauge-meter-animation) var(--kcx-gauge-meter-duration)
+    var(--kcx-gauge-meter-easing) both;
+}
+
+.kcx-gauge-meter svg {
+  width: 100%;
+  rotate: 135deg;
+} /* começa embaixo à esquerda */
+
+.kcx-gauge-meter circle {
+  fill: none;
+  stroke-width: var(--kcx-gauge-meter-thickness);
+  stroke-linecap: round;
+  stroke-dasharray: 377 1000; /* arco de 270° + vazio que esconde o resto */
+}
+.kcx-gauge-meter__trilho {
+  stroke: var(--kcx-gauge-meter-track);
+}
+.kcx-gauge-meter__valor {
+  stroke: var(--kcx-gauge-meter-arc);
+  stroke-dashoffset: calc(377 * (1 - var(--kcx-gauge-meter-f)));
+  filter: drop-shadow(0 0 var(--kcx-gauge-meter-glow) var(--kcx-gauge-meter-arc));
+}
+
+.kcx-gauge-meter__leitura {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+}
+.kcx-gauge-meter__numero {
+  counter-reset: kcx-nota var(--kcx-gauge-meter-n);
+  color: var(--kcx-gauge-meter-arc);
+  font:
+    800 calc(var(--kcx-gauge-meter-size) * 0.27) / 1 Inter,
+    system-ui,
+    sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.kcx-gauge-meter__numero::after {
+  content: counter(kcx-nota);
+}
+.kcx-gauge-meter__rotulo {
+  max-width: 9em;
+  color: var(--kcx-gauge-meter-label);
+  font:
+    600 11px/1.3 Inter,
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@keyframes kcx-gauge-meter-encher {
+  from {
+    --kcx-gauge-meter-n: 0;
+    --kcx-gauge-meter-f: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kcx-gauge-meter {
+    animation: none;
+  }
+}

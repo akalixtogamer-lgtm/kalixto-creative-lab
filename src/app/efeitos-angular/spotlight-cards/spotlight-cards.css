@@ -19,8 +19,15 @@
   border-radius: 16px;
   background: #13111f;
 }
-.card-luz h2 { margin: 0 0 6px; font-size: 20px; }
-.card-luz p { margin: 0; color: #a9a3c9; font-size: 15px; }
+.card-luz h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+.card-luz p {
+  margin: 0;
+  color: #a9a3c9;
+  font-size: 15px;
+}
 
 /* luz na borda: o gradiente só aparece na moldura de 1px */
 .card-luz::before,
@@ -35,19 +42,34 @@
 .card-luz::before {
   inset: -1px;
   padding: 1px;
-  background: radial-gradient(280px circle at var(--mx) var(--my), rgb(139 92 246 / 0.9), transparent 60%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  background: radial-gradient(
+    280px circle at var(--mx) var(--my),
+    rgb(139 92 246 / 0.9),
+    transparent 60%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
 /* brilho fraco no interior */
 .card-luz::after {
   inset: 0;
-  background: radial-gradient(392px circle at var(--mx) var(--my), rgb(139 92 246 / 0.15), transparent 60%);
+  background: radial-gradient(
+    392px circle at var(--mx) var(--my),
+    rgb(139 92 246 / 0.15),
+    transparent 60%
+  );
 }
 .grade-luz:hover .card-luz::before,
-.grade-luz:hover .card-luz::after { opacity: 1; }
+.grade-luz:hover .card-luz::after {
+  opacity: 1;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .card-luz::before, .card-luz::after { transition: none; }
+  .card-luz::before,
+  .card-luz::after {
+    transition: none;
+  }
 }

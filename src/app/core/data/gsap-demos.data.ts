@@ -18,9 +18,19 @@ const EASES = [
 ];
 
 const DURACAO = (padrao: number) =>
-  ({ id: 'dur', rotulo: 'duration', tipo: 'range', min: 0.2, max: 3, passo: 0.1, unidade: 's', padrao }) as const;
+  ({
+    id: 'dur',
+    rotulo: 'duration',
+    tipo: 'range',
+    min: 0.2,
+    max: 3,
+    passo: 0.1,
+    unidade: 's',
+    padrao,
+  }) as const;
 
-const EASE = (padrao: string) => ({ id: 'ease', rotulo: 'ease', tipo: 'select', opcoes: EASES, padrao }) as const;
+const EASE = (padrao: string) =>
+  ({ id: 'ease', rotulo: 'ease', tipo: 'select', opcoes: EASES, padrao }) as const;
 
 /** Monta o texto da ease do demo de easing (ex.: "power2.out"). */
 export function easeDoDemo(v: Valores): string {
@@ -43,11 +53,35 @@ export const GSAP_DEMOS: LabDemo[] = [
     dica: 'Use x/y em vez de left/top: transform não força o navegador a recalcular o layout.',
     acao: 'Executar tween',
     instrucao: 'Ajuste os valores e clique em “Executar tween”.',
-    presets: [{ nome: 'Pião', valores: { x: 0, rot: 720, dur: 1.5, ease: 'power4.inOut' } }, { nome: 'Mola', valores: { x: 200, rot: 0, dur: 1.5, ease: 'elastic.out(1, 0.4)' } }],
-    desafio: { enunciado: 'Leve a caixa a 120px, sem girar, quicando no final (bounce.out).', meta: { x: 120, rot: 0, ease: 'bounce.out' } },
+    presets: [
+      { nome: 'Pião', valores: { x: 0, rot: 720, dur: 1.5, ease: 'power4.inOut' } },
+      { nome: 'Mola', valores: { x: 200, rot: 0, dur: 1.5, ease: 'elastic.out(1, 0.4)' } },
+    ],
+    desafio: {
+      enunciado: 'Leve a caixa a 120px, sem girar, quicando no final (bounce.out).',
+      meta: { x: 120, rot: 0, ease: 'bounce.out' },
+    },
     params: [
-      { id: 'x', rotulo: 'x', tipo: 'range', min: 0, max: 220, passo: 10, unidade: 'px', padrao: 180 },
-      { id: 'rot', rotulo: 'rotation', tipo: 'range', min: 0, max: 720, passo: 45, unidade: 'deg', padrao: 360 },
+      {
+        id: 'x',
+        rotulo: 'x',
+        tipo: 'range',
+        min: 0,
+        max: 220,
+        passo: 10,
+        unidade: 'px',
+        padrao: 180,
+      },
+      {
+        id: 'rot',
+        rotulo: 'rotation',
+        tipo: 'range',
+        min: 0,
+        max: 720,
+        passo: 45,
+        unidade: 'deg',
+        padrao: 360,
+      },
       DURACAO(1),
       EASE('power2.out'),
     ],
@@ -74,10 +108,31 @@ export const GSAP_DEMOS: LabDemo[] = [
     acao: 'Executar entrada',
     instrucao: 'Escolha de onde o título vem e clique em “Executar entrada”.',
     presets: [{ nome: 'Cai do céu', valores: { y: -150, op: 0, dur: 1.2, ease: 'bounce.out' } }],
-    desafio: { enunciado: 'Faça o título surgir de 100px abaixo, invisível, em 0.5s.', meta: { y: 100, op: 0, dur: 0.5 } },
+    desafio: {
+      enunciado: 'Faça o título surgir de 100px abaixo, invisível, em 0.5s.',
+      meta: { y: 100, op: 0, dur: 0.5 },
+    },
     params: [
-      { id: 'y', rotulo: 'y', tipo: 'range', min: -150, max: 150, passo: 10, unidade: 'px', padrao: 80 },
-      { id: 'op', rotulo: 'opacity', tipo: 'range', min: 0, max: 1, passo: 0.1, unidade: '', padrao: 0 },
+      {
+        id: 'y',
+        rotulo: 'y',
+        tipo: 'range',
+        min: -150,
+        max: 150,
+        passo: 10,
+        unidade: 'px',
+        padrao: 80,
+      },
+      {
+        id: 'op',
+        rotulo: 'opacity',
+        tipo: 'range',
+        min: 0,
+        max: 1,
+        passo: 0.1,
+        unidade: '',
+        padrao: 0,
+      },
       DURACAO(0.9),
       EASE('back.out(1.7)'),
     ],
@@ -103,12 +158,47 @@ export const GSAP_DEMOS: LabDemo[] = [
     dica: 'Se a mesma animação roda várias vezes, fromTo() evita resultados diferentes a cada clique.',
     acao: 'Executar fromTo',
     instrucao: 'Defina posição e tamanho iniciais e finais.',
-    presets: [{ nome: 'Cresce no lugar', valores: { xDe: 0, xPara: 0, escDe: 0, dur: 0.8, ease: 'back.out(1.7)' } }],
-    desafio: { enunciado: 'Saia de -150px e chegue em 150px, começando do tamanho zero.', meta: { xDe: -150, xPara: 150, escDe: 0 } },
+    presets: [
+      {
+        nome: 'Cresce no lugar',
+        valores: { xDe: 0, xPara: 0, escDe: 0, dur: 0.8, ease: 'back.out(1.7)' },
+      },
+    ],
+    desafio: {
+      enunciado: 'Saia de -150px e chegue em 150px, começando do tamanho zero.',
+      meta: { xDe: -150, xPara: 150, escDe: 0 },
+    },
     params: [
-      { id: 'xDe', rotulo: 'x inicial', tipo: 'range', min: -150, max: 0, passo: 10, unidade: 'px', padrao: -120 },
-      { id: 'xPara', rotulo: 'x final', tipo: 'range', min: 0, max: 150, passo: 10, unidade: 'px', padrao: 120 },
-      { id: 'escDe', rotulo: 'scale inicial', tipo: 'range', min: 0, max: 1, passo: 0.1, unidade: '', padrao: 0.3 },
+      {
+        id: 'xDe',
+        rotulo: 'x inicial',
+        tipo: 'range',
+        min: -150,
+        max: 0,
+        passo: 10,
+        unidade: 'px',
+        padrao: -120,
+      },
+      {
+        id: 'xPara',
+        rotulo: 'x final',
+        tipo: 'range',
+        min: 0,
+        max: 150,
+        passo: 10,
+        unidade: 'px',
+        padrao: 120,
+      },
+      {
+        id: 'escDe',
+        rotulo: 'scale inicial',
+        tipo: 'range',
+        min: 0,
+        max: 1,
+        passo: 0.1,
+        unidade: '',
+        padrao: 0.3,
+      },
       DURACAO(1.2),
       EASE('elastic.out(1, 0.4)'),
     ],
@@ -137,11 +227,35 @@ export const GSAP_DEMOS: LabDemo[] = [
     dica: 'Prefira timelines a vários delays: mudar a duração de um passo reajusta todos os seguintes.',
     acao: 'Tocar sequência',
     instrucao: 'Mude a sobreposição para ver os passos se encavalarem.',
-    presets: [{ nome: 'Em fila', valores: { dur: 0.5, sob: 0, rep: '0', yoyo: 'false' } }, { nome: 'Onda infinita', valores: { dur: 0.6, sob: 0.4, rep: '-1', yoyo: 'true' } }],
-    desafio: { enunciado: 'Monte uma sequência sem sobreposição que toca uma vez só.', meta: { sob: 0, rep: '0' } },
+    presets: [
+      { nome: 'Em fila', valores: { dur: 0.5, sob: 0, rep: '0', yoyo: 'false' } },
+      { nome: 'Onda infinita', valores: { dur: 0.6, sob: 0.4, rep: '-1', yoyo: 'true' } },
+    ],
+    desafio: {
+      enunciado: 'Monte uma sequência sem sobreposição que toca uma vez só.',
+      meta: { sob: 0, rep: '0' },
+    },
     params: [
-      { id: 'dur', rotulo: 'duration de cada passo', tipo: 'range', min: 0.2, max: 1.5, passo: 0.1, unidade: 's', padrao: 0.6 },
-      { id: 'sob', rotulo: 'sobreposição', tipo: 'range', min: 0, max: 0.6, passo: 0.1, unidade: 's', padrao: 0.2 },
+      {
+        id: 'dur',
+        rotulo: 'duration de cada passo',
+        tipo: 'range',
+        min: 0.2,
+        max: 1.5,
+        passo: 0.1,
+        unidade: 's',
+        padrao: 0.6,
+      },
+      {
+        id: 'sob',
+        rotulo: 'sobreposição',
+        tipo: 'range',
+        min: 0,
+        max: 0.6,
+        passo: 0.1,
+        unidade: 's',
+        padrao: 0.2,
+      },
       {
         id: 'rep',
         rotulo: 'repeat',
@@ -188,10 +302,25 @@ tl.to(".circulo",   { x: 180, duration: ${v['dur']} })
     dica: 'Valores pequenos de each (0,03 a 0,1 s) dão a sensação de fluidez sem deixar o usuário esperando.',
     acao: 'Executar cascata',
     instrucao: 'Troque o ponto de partida (from) e veja a onda mudar.',
-    presets: [{ nome: 'Chuva', valores: { each: 0.04, from: 'random', ease: 'power2.out' } }, { nome: 'Explosão', valores: { each: 0.06, from: 'center', ease: 'elastic.out(1, 0.4)' } }],
-    desafio: { enunciado: 'Faça a onda começar pelas bordas com 0.1s entre cada ponto.', meta: { from: 'edges', each: 0.1 } },
+    presets: [
+      { nome: 'Chuva', valores: { each: 0.04, from: 'random', ease: 'power2.out' } },
+      { nome: 'Explosão', valores: { each: 0.06, from: 'center', ease: 'elastic.out(1, 0.4)' } },
+    ],
+    desafio: {
+      enunciado: 'Faça a onda começar pelas bordas com 0.1s entre cada ponto.',
+      meta: { from: 'edges', each: 0.1 },
+    },
     params: [
-      { id: 'each', rotulo: 'each', tipo: 'range', min: 0.02, max: 0.3, passo: 0.02, unidade: 's', padrao: 0.08 },
+      {
+        id: 'each',
+        rotulo: 'each',
+        tipo: 'range',
+        min: 0.02,
+        max: 0.3,
+        passo: 0.02,
+        unidade: 's',
+        padrao: 0.08,
+      },
       {
         id: 'from',
         rotulo: 'from',
@@ -235,8 +364,14 @@ tl.to(".circulo",   { x: 180, duration: ${v['dur']} })
     dica: 'Entradas na tela costumam ficar melhores com .out; saídas, com .in.',
     acao: 'Executar',
     instrucao: 'Escolha a curva: o gráfico atualiza na hora. Depois execute.',
-    presets: [{ nome: 'Entrada clássica', valores: { tipo: 'power2', direcao: 'out', dur: 1 } }, { nome: 'Desenho animado', valores: { tipo: 'back', direcao: 'inOut', dur: 1.2 } }],
-    desafio: { enunciado: 'Escolha a curva que quica no final e rode em 2s.', meta: { tipo: 'bounce', direcao: 'out', dur: 2 } },
+    presets: [
+      { nome: 'Entrada clássica', valores: { tipo: 'power2', direcao: 'out', dur: 1 } },
+      { nome: 'Desenho animado', valores: { tipo: 'back', direcao: 'inOut', dur: 1.2 } },
+    ],
+    desafio: {
+      enunciado: 'Escolha a curva que quica no final e rode em 2s.',
+      meta: { tipo: 'bounce', direcao: 'out', dur: 2 },
+    },
     params: [
       {
         id: 'tipo',
@@ -290,10 +425,25 @@ tl.to(".circulo",   { x: 180, duration: ${v['dur']} })
     dica: 'Guarde a timeline numa variável para ligar os métodos a botões, rolagem ou eventos.',
     acao: 'Play',
     instrucao: 'Use os botões do player e arraste a barra de progresso.',
-    presets: [{ nome: 'Câmera lenta', valores: { vel: 0.25 } }, { nome: 'Acelerado', valores: { vel: 3 } }],
-    desafio: { enunciado: 'Deixe a timeline com metade da velocidade e dê play.', meta: { vel: 0.5 } },
+    presets: [
+      { nome: 'Câmera lenta', valores: { vel: 0.25 } },
+      { nome: 'Acelerado', valores: { vel: 3 } },
+    ],
+    desafio: {
+      enunciado: 'Deixe a timeline com metade da velocidade e dê play.',
+      meta: { vel: 0.5 },
+    },
     params: [
-      { id: 'vel', rotulo: 'timeScale (velocidade)', tipo: 'range', min: 0.25, max: 3, passo: 0.25, unidade: 'x', padrao: 1 },
+      {
+        id: 'vel',
+        rotulo: 'timeScale (velocidade)',
+        tipo: 'range',
+        min: 0.25,
+        max: 3,
+        passo: 0.25,
+        unidade: 'x',
+        padrao: 1,
+      },
     ],
     codigo: (v) => `const tl = gsap.timeline({ paused: true });
 
@@ -325,10 +475,16 @@ barra.oninput        = () => tl.progress(barra.value);`,
     acao: 'Revelar texto',
     instrucao: 'Escolha como dividir e o efeito, e clique em “Revelar texto”.',
     presets: [
-      { nome: 'Máquina de escrever', valores: { dividir: 'chars', efeito: 'surgir', stagger: 0.04 } },
+      {
+        nome: 'Máquina de escrever',
+        valores: { dividir: 'chars', efeito: 'surgir', stagger: 0.04 },
+      },
       { nome: 'Cinema', valores: { dividir: 'lines', efeito: 'subir', stagger: 0.15, dur: 1.2 } },
     ],
-    desafio: { enunciado: 'Espalhe as palavras com 0,08 s entre cada uma.', meta: { dividir: 'words', efeito: 'espalhar', stagger: 0.08 } },
+    desafio: {
+      enunciado: 'Espalhe as palavras com 0,08 s entre cada uma.',
+      meta: { dividir: 'words', efeito: 'espalhar', stagger: 0.08 },
+    },
     params: [
       {
         id: 'dividir',
@@ -353,14 +509,33 @@ barra.oninput        = () => tl.progress(barra.value);`,
         ],
         padrao: 'subir',
       },
-      { id: 'stagger', rotulo: 'stagger', tipo: 'range', min: 0.01, max: 0.2, passo: 0.01, unidade: 's', padrao: 0.03 },
-      { id: 'dur', rotulo: 'duration', tipo: 'range', min: 0.3, max: 1.5, passo: 0.1, unidade: 's', padrao: 0.8 },
+      {
+        id: 'stagger',
+        rotulo: 'stagger',
+        tipo: 'range',
+        min: 0.01,
+        max: 0.2,
+        passo: 0.01,
+        unidade: 's',
+        padrao: 0.03,
+      },
+      {
+        id: 'dur',
+        rotulo: 'duration',
+        tipo: 'range',
+        min: 0.3,
+        max: 1.5,
+        passo: 0.1,
+        unidade: 's',
+        padrao: 0.8,
+      },
     ],
     codigo: (v) => {
       const de: Record<string, string> = {
         subir: 'yPercent: 110',
         girar: 'rotationX: -90, opacity: 0, transformOrigin: "50% 50% -20px"',
-        espalhar: 'x: () => gsap.utils.random(-120, 120), y: () => gsap.utils.random(-80, 80), opacity: 0',
+        espalhar:
+          'x: () => gsap.utils.random(-120, 120), y: () => gsap.utils.random(-80, 80), opacity: 0',
         surgir: 'opacity: 0',
       };
       const mascara = v['efeito'] === 'subir' ? `\n  mask: "${v['dividir']}",` : '';
@@ -379,4 +554,3 @@ gsap.from(split.${v['dividir']}, {
     },
   },
 ];
-

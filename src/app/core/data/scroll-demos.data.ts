@@ -55,7 +55,8 @@ export const SCROLL_DEMOS: LabDemo[] = [
       { nome: 'Depurar', valores: { markers: 'true' } },
     ],
     desafio: {
-      enunciado: 'Faça a animação reiniciar toda vez que o card entrar, disparando no centro da janela.',
+      enunciado:
+        'Faça a animação reiniciar toda vez que o card entrar, disparando no centro da janela.',
       meta: { acoes: 'restart none none reset', start: 'top center' },
     },
     params: [
@@ -122,8 +123,26 @@ gsap.from(".card", {
     },
     params: [
       SCRUB('true'),
-      { id: 'voltas', rotulo: 'voltas', tipo: 'range', min: 0, max: 4, passo: 0.5, unidade: '', padrao: 1 },
-      { id: 'dist', rotulo: 'x final', tipo: 'range', min: 0, max: 200, passo: 10, unidade: 'px', padrao: 160 },
+      {
+        id: 'voltas',
+        rotulo: 'voltas',
+        tipo: 'range',
+        min: 0,
+        max: 4,
+        passo: 0.5,
+        unidade: '',
+        padrao: 1,
+      },
+      {
+        id: 'dist',
+        rotulo: 'x final',
+        tipo: 'range',
+        min: 0,
+        max: 200,
+        passo: 10,
+        unidade: 'px',
+        padrao: 160,
+      },
     ],
     codigo: (v) => `gsap.to(".forma", {
   x: ${v['dist']},
@@ -155,7 +174,16 @@ gsap.from(".card", {
     presets: [{ nome: 'Pin longo', valores: { dist: 1200, scrub: '0.5' } }],
     desafio: { enunciado: 'Prenda a seção por exatos 400px de rolagem.', meta: { dist: 400 } },
     params: [
-      { id: 'dist', rotulo: 'end: "+=…"', tipo: 'range', min: 200, max: 1200, passo: 100, unidade: 'px', padrao: 600 },
+      {
+        id: 'dist',
+        rotulo: 'end: "+=…"',
+        tipo: 'range',
+        min: 200,
+        max: 1200,
+        passo: 100,
+        unidade: 'px',
+        padrao: 600,
+      },
       SCRUB('true'),
       MARKERS,
     ],
@@ -196,11 +224,40 @@ tl.from(".barra", { scaleX: 0, stagger: 0.3, transformOrigin: "left" });`,
       meta: { fundo: 0, frente: 80 },
     },
     params: [
-      { id: 'fundo', rotulo: 'fundo (yPercent)', tipo: 'range', min: -80, max: 80, passo: 10, unidade: '%', padrao: 20 },
-      { id: 'meio', rotulo: 'meio (yPercent)', tipo: 'range', min: -80, max: 80, passo: 10, unidade: '%', padrao: 50 },
-      { id: 'frente', rotulo: 'frente (yPercent)', tipo: 'range', min: -80, max: 80, passo: 10, unidade: '%', padrao: -40 },
+      {
+        id: 'fundo',
+        rotulo: 'fundo (yPercent)',
+        tipo: 'range',
+        min: -80,
+        max: 80,
+        passo: 10,
+        unidade: '%',
+        padrao: 20,
+      },
+      {
+        id: 'meio',
+        rotulo: 'meio (yPercent)',
+        tipo: 'range',
+        min: -80,
+        max: 80,
+        passo: 10,
+        unidade: '%',
+        padrao: 50,
+      },
+      {
+        id: 'frente',
+        rotulo: 'frente (yPercent)',
+        tipo: 'range',
+        min: -80,
+        max: 80,
+        passo: 10,
+        unidade: '%',
+        padrao: -40,
+      },
     ],
-    codigo: (v) => `const camadas = { ".fundo": ${v['fundo']}, ".meio": ${v['meio']}, ".frente": ${v['frente']} };
+    codigo: (
+      v,
+    ) => `const camadas = { ".fundo": ${v['fundo']}, ".meio": ${v['meio']}, ".frente": ${v['frente']} };
 
 for (const [seletor, yPercent] of Object.entries(camadas)) {
   gsap.to(seletor, {
@@ -231,7 +288,10 @@ for (const [seletor, yPercent] of Object.entries(camadas)) {
     acao: ROLAR,
     instrucao: 'Role para baixo: os painéis passam para o lado.',
     presets: [{ nome: 'Com encaixe', valores: { snap: 'true', paineis: '4' } }],
-    desafio: { enunciado: 'Monte uma galeria com 5 painéis que encaixa em cada um.', meta: { paineis: '5', snap: 'true' } },
+    desafio: {
+      enunciado: 'Monte uma galeria com 5 painéis que encaixa em cada um.',
+      meta: { paineis: '5', snap: 'true' },
+    },
     params: [
       {
         id: 'paineis',
@@ -295,9 +355,21 @@ gsap.to(faixa, {
       { nome: 'Fina', valores: { altura: 2 } },
       { nome: 'Grossa e suave', valores: { altura: 12, scrub: '0.5' } },
     ],
-    desafio: { enunciado: 'Deixe a barra com 8px de altura e suavização de 2 s.', meta: { altura: 8, scrub: '2' } },
+    desafio: {
+      enunciado: 'Deixe a barra com 8px de altura e suavização de 2 s.',
+      meta: { altura: 8, scrub: '2' },
+    },
     params: [
-      { id: 'altura', rotulo: 'altura da barra', tipo: 'range', min: 2, max: 12, passo: 1, unidade: 'px', padrao: 4 },
+      {
+        id: 'altura',
+        rotulo: 'altura da barra',
+        tipo: 'range',
+        min: 2,
+        max: 12,
+        passo: 1,
+        unidade: 'px',
+        padrao: 4,
+      },
       SCRUB('true'),
     ],
     codigo: (v) => `gsap.to(".barra-progresso", {
@@ -337,7 +409,10 @@ gsap.to(faixa, {
     acao: ROLAR,
     instrucao: 'Role pelos 3 capítulos: Dança → Código → Criação.',
     presets: [{ nome: 'Cinema', valores: { scrub: '2', snap: 'true' } }],
-    desafio: { enunciado: 'Faça a rolagem parar em cada capítulo, sem suavização extra.', meta: { snap: 'true', scrub: 'true' } },
+    desafio: {
+      enunciado: 'Faça a rolagem parar em cada capítulo, sem suavização extra.',
+      meta: { snap: 'true', scrub: 'true' },
+    },
     params: [
       SCRUB('0.5'),
       {
@@ -418,11 +493,24 @@ tl.addLabel("danca")
         ],
         padrao: 'vidro',
       },
-      { id: 'sombra', rotulo: 'Sombra', tipo: 'range', min: 0, max: 40, passo: 4, unidade: 'px', padrao: 24 },
+      {
+        id: 'sombra',
+        rotulo: 'Sombra',
+        tipo: 'range',
+        min: 0,
+        max: 40,
+        passo: 4,
+        unidade: 'px',
+        padrao: 24,
+      },
     ],
     codigo: (v) => {
-      const fundo = v['estilo'] === 'vidro' ? 'rgb(7 5 15 / 0.85);\n  backdrop-filter: blur(12px)' : '#0e0a1d';
-      const sombra = Number(v['sombra']) > 0 ? `0 ${Number(v['sombra']) / 3}px ${v['sombra']}px rgb(0 0 0 / 0.5)` : 'none';
+      const fundo =
+        v['estilo'] === 'vidro' ? 'rgb(7 5 15 / 0.85);\n  backdrop-filter: blur(12px)' : '#0e0a1d';
+      const sombra =
+        Number(v['sombra']) > 0
+          ? `0 ${Number(v['sombra']) / 3}px ${v['sombra']}px rgb(0 0 0 / 0.5)`
+          : 'none';
       const esconde =
         v['comportamento'] === 'esconde'
           ? `
@@ -470,7 +558,8 @@ ScrollTrigger.create({
     topico: 'Capítulos com linha do tempo',
     titulo: 'Página em capítulos com linha do tempo',
     nivel: 'avancado',
-    resumo: 'Uma linha vertical se preenche com a rolagem e cada capítulo acende ao chegar no centro da tela.',
+    resumo:
+      'Uma linha vertical se preenche com a rolagem e cada capítulo acende ao chegar no centro da tela.',
     explicacao: [
       'A linha do tempo é um elemento fino com scaleY animado de 0 a 1 por um ScrollTrigger com scrub que cobre toda a lista.',
       'Cada capítulo tem seu próprio ScrollTrigger: onToggle acende o ponto, o número "0N / 05" e o texto quando ele passa pelo centro.',
@@ -483,7 +572,10 @@ ScrollTrigger.create({
       { nome: 'Cinema', valores: { imagem: 'zoom', scrub: '2' } },
       { nome: 'Direto', valores: { imagem: 'nenhum', scrub: 'true' } },
     ],
-    desafio: { enunciado: 'Use parallax nas imagens com suavização de 0,5 s.', meta: { imagem: 'parallax', scrub: '0.5' } },
+    desafio: {
+      enunciado: 'Use parallax nas imagens com suavização de 0,5 s.',
+      meta: { imagem: 'parallax', scrub: '0.5' },
+    },
     params: [
       {
         id: 'imagem',
@@ -530,5 +622,3 @@ document.querySelectorAll(".capitulo").forEach((cap) => {
     },
   },
 ];
-
-

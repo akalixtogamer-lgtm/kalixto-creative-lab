@@ -59,7 +59,10 @@
   color: var(--kx-text-soft);
   font: 600 var(--kx-fs-sm) var(--kx-font-body);
   cursor: pointer;
-  transition: background var(--kx-dur-fast), border-color var(--kx-dur-fast), color var(--kx-dur-fast);
+  transition:
+    background var(--kx-dur-fast),
+    border-color var(--kx-dur-fast),
+    color var(--kx-dur-fast);
 }
 .pg__demo-btn:hover {
   border-color: var(--kx-border-strong);
@@ -88,10 +91,19 @@
   gap: var(--kx-space-5);
   align-items: start;
 }
-.pg__palco-wrap { grid-area: palco; }
-.pg__controles { grid-area: controles; }
-.pg__codigo { grid-area: codigo; min-width: 0; }
-.pg__explica { grid-area: explica; }
+.pg__palco-wrap {
+  grid-area: palco;
+}
+.pg__controles {
+  grid-area: controles;
+}
+.pg__codigo {
+  grid-area: codigo;
+  min-width: 0;
+}
+.pg__explica {
+  grid-area: explica;
+}
 
 @media (min-width: 1300px) {
   .pg__demos {
@@ -181,4 +193,3 @@
   gap: var(--kx-space-2);
   font-size: var(--kx-fs-sm);
 }
-

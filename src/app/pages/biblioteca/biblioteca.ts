@@ -82,11 +82,7 @@ export class Biblioteca {
   );
 
   protected readonly efeitos = computed(() => {
-    const termo = this.busca()
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '');
+    const termo = this.busca().trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
     const lab = this.filtroLab();
     const cat = this.filtroCategoria();
     const nivel = this.filtroNivel();
@@ -115,7 +111,8 @@ export class Biblioteca {
     if (ordem === 'az') return [...lista].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
     if (ordem === 'nivel')
       return [...lista].sort(
-        (a, b) => NIVEL_ORDEM[a.nivel] - NIVEL_ORDEM[b.nivel] || a.nome.localeCompare(b.nome, 'pt-BR'),
+        (a, b) =>
+          NIVEL_ORDEM[a.nivel] - NIVEL_ORDEM[b.nivel] || a.nome.localeCompare(b.nome, 'pt-BR'),
       );
     return lista;
   });

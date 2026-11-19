@@ -9,6 +9,11 @@
     <strong>24h por dia</strong>
   </article>
 </section>
-<button class="pausar" type="button" [attr.aria-pressed]="pausado()" (click)="pausado.set(!pausado())">
+<button
+  class="pausar"
+  type="button"
+  [attr.aria-pressed]="pausado()"
+  (click)="pausado.set(!pausado())"
+>
   {{ pausado() ? 'Continuar' : 'Pausar' }}
 </button>

@@ -1,4 +1,15 @@
-import { Component, ElementRef, computed, effect, inject, input, output, signal, untracked, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { vizinhos } from '../../../core/data/labs.data';
 import {
@@ -67,7 +78,9 @@ export class LabLayout {
   protected readonly anterior = computed(() => this.demos()[this.indice() - 1]);
   protected readonly proxima = computed(() => this.demos()[this.indice() + 1]);
 
-  protected readonly meusPresets = computed(() => this.progresso.presets(this.lab().id, this.atual().id));
+  protected readonly meusPresets = computed(() =>
+    this.progresso.presets(this.lab().id, this.atual().id),
+  );
   protected readonly desafioFeito = computed(() =>
     this.progresso.desafios().has(`${this.lab().id}:${this.atual().id}`),
   );

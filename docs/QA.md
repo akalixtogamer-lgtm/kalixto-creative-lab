@@ -13,7 +13,7 @@ Data: 16/11/2026 · Versão: `1.0.0-rc.1`
 | `css-playground.spec.ts` | 8 demos, controles → código, Executar/Reiniciar, biblioteca → demo |
 | `gsap-studio.spec.ts` | 7 demos, from() aplica estado inicial, Reiniciar desfaz, curva de easing, player |
 | `scroll-lab.spec.ts` | 7 demos, painéis do horizontal, presets |
-| `fase3.spec.ts` | SVG Lab, progresso salvo, desafios, presets do usuário, Trilha, Exercícios, Comparador |
+| `paginas-fase3.spec.ts` | SVG Lab, progresso salvo, desafios, presets do usuário, Trilha, Exercícios, Comparador |
 | `three-lab.spec.ts` | 9 demos, código, demos ao vivo, desafio automático, aviso sem WebGL |
 | `glsl-lab.spec.ts` | 7 demos; todo uniform controlado existe no shader |
 | `efeitos.spec.ts` | 15 categorias; 10 kits: ficha completa, padrões válidos, código sem `undefined`/`NaN`, **cada controle altera o código**, `prefers-reduced-motion`; todas as demos classificadas; sandbox/CSP; páginas `/efeitos/:id` e Biblioteca |

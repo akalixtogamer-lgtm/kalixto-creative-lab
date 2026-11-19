@@ -23,13 +23,22 @@
   animation: girar 4s linear infinite;
 }
 
-.borda h2 { margin: 0 0 6px; }
-.borda p { margin: 0; color: #c9c3ea; }
+.borda h2 {
+  margin: 0 0 6px;
+}
+.borda p {
+  margin: 0;
+  color: #c9c3ea;
+}
 
 @keyframes girar {
-  to { --angulo: 360deg; }
+  to {
+    --angulo: 360deg;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .borda { animation: none; }
+  .borda {
+    animation: none;
+  }
 }

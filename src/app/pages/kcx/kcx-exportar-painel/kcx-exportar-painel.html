@@ -1,0 +1,202 @@
+<fieldset class="kcxx__modos">
+  <legend class="kcxx__legenda">O que exportar</legend>
+  @for (m of modos; track m.id) {
+    <label class="kcxx__modo" [class.kcxx__modo--ativo]="modo() === m.id">
+      <input
+        type="radio"
+        name="kcxx-modo"
+        [value]="m.id"
+        [checked]="modo() === m.id"
+        (change)="modo.set(m.id)"
+      />
+      <span
+        ><strong>{{ m.nome }}</strong
+        ><small>{{ m.descricao }}</small></span
+      >
+    </label>
+  }
+</fieldset>
+
+<div class="kcxx__grid">
+  <figure class="kcxx__preview">
+    <img [src]="svgUrl()" [alt]="'Estrutura visual de ' + comp().nome + ' (primeira variante)'" />
+    <figcaption>Estrutura que vira camadas no Figma (primeira variante, valores atuais)</figcaption>
+  </figure>
+
+  <dl class="kcxx__dl">
+    <div>
+      <dt>Nome</dt>
+      <dd>
+        {{ comp().nome }} <code>v{{ comp().versao }}</code>
+      </dd>
+    </div>
+    <div>
+      <dt>Dimensões</dt>
+      <dd>{{ comp().metadados.largura }} × {{ comp().metadados.altura }} px</dd>
+    </div>
+    <div>
+      <dt>Compatibilidade</dt>
+      <dd>
+        Nível {{ comp().compatibilidade.figma.nivel }} —
+        {{
+          comp().compatibilidade.figma.nivel === 1
+            ? 'nativo editável'
+            : comp().compatibilidade.figma.nivel === 2
+              ? 'parcialmente editável'
+              : 'pacote de desenvolvimento'
+        }}
+      </dd>
+    </div>
+    <div>
+      <dt>Tipo de conversão</dt>
+      <dd>
+        @for (a of comp().animacoes; track a.id) {
+          <span class="kcxx__conv"
+            >{{ a.nome }}: {{ tecnica[a.tecnica] }} →
+            {{ a.figma === 'variantes' ? 'variantes (quadros-chave)' : 'documentada' }}</span
+          >
+        }
+      </dd>
+    </div>
+    <div>
+      <dt>Elementos que serão criados</dt>
+      <dd>
+        @if (plano().colecoes.length) {
+          {{ plano().colecoes.length }} coleção(ões): {{ colecoesTexto() }}.
+        }
+        @if (plano().componentes.length) {
+          1 conjunto de componentes com {{ plano().resumo.variantes }} variante(s),
+          {{ plano().resumo.camadas }} camadas no total.
+        }
+        @if (plano().documentacao) {
+          Quadro de documentação com código-fonte, limitações e variáveis documentais.
+        }
+      </dd>
+    </div>
+    @if (eixos().length || comPropriedadeTexto().length) {
+      <div>
+        <dt>Propriedades editáveis</dt>
+        <dd>
+          @for (e of eixos(); track e) {
+            <span class="kcxx__conv">Variante — {{ e }}</span>
+          }
+          @for (t of comPropriedadeTexto(); track t) {
+            <span class="kcxx__conv">Texto — {{ t }}</span>
+          }
+        </dd>
+      </div>
+    }
+  </dl>
+</div>
+
+@if (plano().colecoes.length) {
+  <h3 class="kcxx__h3">
+    Variáveis detectadas — {{ plano().resumo.variaveis }} ({{
+      plano().resumo.vinculadas
+    }}
+    vinculadas, {{ plano().resumo.documentais }} documentais)
+  </h3>
+  <div class="kcxx__tabela-wrap">
+    <table class="kcxx__tabela">
+      <thead>
+        <tr>
+          <th scope="col">Variável no Figma</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Coleção</th>
+          <th scope="col">Valor</th>
+          <th scope="col">Situação</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (v of variaveis(); track v.nome) {
+          <tr [class.kcxx__doc]="!v.vinculadaA.length">
+            <td>
+              <code>{{ v.nome }}</code>
+            </td>
+            <td>{{ v.tipo }}</td>
+            <td>{{ v.colecao.replace('KCX · ', '') }}</td>
+            <td>{{ valoresDe(v) }}</td>
+            <td>
+              @if (v.vinculadaA.length) {
+                <span class="kcxx__ok">vinculada</span> a {{ v.vinculadaA.length }} propriedade(s)
+                @if (v.origem === 'derivada') {
+                  <small>· calculada no lab</small>
+                }
+                @if (v.origem === 'estado') {
+                  <small>· valor de variante</small>
+                }
+                @if (v.origem === 'parada') {
+                  <small>· parada de gradiente</small>
+                }
+              } @else {
+                <span class="kcxx__aviso">documental</span> — não controla nada no Figma
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+<div class="kcxx__listas">
+  <div>
+    <h3 class="kcxx__h3">Continua editável no Figma</h3>
+    <ul>
+      @for (x of comp().compatibilidade.figma.editavel; track x) {
+        <li>{{ x }}</li>
+      }
+    </ul>
+  </div>
+  <div>
+    <h3 class="kcxx__h3">Representado, mas não executa</h3>
+    <ul>
+      @for (x of comp().compatibilidade.figma.parcial; track x) {
+        <li>{{ x }}</li>
+      }
+    </ul>
+  </div>
+  <div>
+    <h3 class="kcxx__h3">Fica só no código</h3>
+    <ul>
+      @for (x of comp().compatibilidade.figma.naoSuportado; track x) {
+        <li>{{ x }}</li>
+      }
+    </ul>
+  </div>
+</div>
+
+<h3 class="kcxx__h3">Limitações</h3>
+<ul class="kcxx__limites">
+  @for (l of comp().compatibilidade.figma.limitacoes; track l) {
+    <li>{{ l }}</li>
+  }
+  @for (l of plano().avisos; track l) {
+    <li>{{ l }}</li>
+  }
+</ul>
+
+<div class="kcxx__barra">
+  <button type="button" class="kx-btn kx-btn--primary" (click)="baixarKcx()">
+    <kx-icon name="download" /> Baixar {{ comp().id }}.kcx.json
+  </button>
+  <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarCodigo()">
+    <kx-icon name="download" /> Código-fonte (.zip)
+  </button>
+  <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarTokens()">
+    <kx-icon name="download" /> Tokens (W3C)
+  </button>
+  <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarSvg()">
+    <kx-icon name="download" /> SVG
+  </button>
+  <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarPlugin()">
+    <kx-icon name="kcx" /> Plugin Figma Bridge
+  </button>
+</div>
+@if (msgPlugin()) {
+  <p class="kx-muted kcxx__nota" role="status">{{ msgPlugin() }}</p>
+}
+<p class="kx-muted kcxx__nota">
+  No Figma, abra o plugin <strong>Kalixto Creative Lab — Figma Bridge</strong> e escolha o arquivo
+  <code>.kcx.json</code>. O plugin mostra este mesmo resumo antes de criar qualquer coisa.
+</p>

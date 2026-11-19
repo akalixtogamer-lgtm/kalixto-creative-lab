@@ -31,17 +31,28 @@
   font: 700 var(--kx-fs-md) var(--kx-font-display);
   text-decoration: none;
 }
-.tabela tbody th a:hover { color: var(--kx-ciano); }
-.tabela tbody tr:last-child > * { border-bottom: 0; }
-.nota { display: inline-flex; gap: 3px; }
+.tabela tbody th a:hover {
+  color: var(--kx-ciano);
+}
+.tabela tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.nota {
+  display: inline-flex;
+  gap: 3px;
+}
 .nota i {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: var(--kx-border-strong);
 }
-.nota i.on { background: var(--kx-magenta); }
-.nota--ciano i.on { background: var(--kx-ciano); }
+.nota i.on {
+  background: var(--kx-magenta);
+}
+.nota--ciano i.on {
+  background: var(--kx-ciano);
+}
 
 /* Lado a lado */
 .cmp-barra {
@@ -99,7 +110,9 @@
   background: var(--kx-acento);
   box-shadow: 0 0 24px var(--kx-acento);
 }
-.cmp-cena--sequencia { width: 150px; }
+.cmp-cena--sequencia {
+  width: 150px;
+}
 .cmp-bola {
   display: block;
   width: 26px;
@@ -109,17 +122,34 @@
 }
 
 /* Versões em CSS puro (só rodam com .rodando) */
-.rodando.cmp-cena--entrada .cmp-caixa { animation: cmp-entrar 0.8s ease-out; }
-.rodando.cmp-cena--pulso .cmp-caixa { animation: cmp-pulsar 0.5s ease-in-out 3; }
-.rodando.cmp-cena--sequencia .cmp-bola { animation: cmp-andar 0.5s ease-in-out forwards; }
-.rodando.cmp-cena--sequencia .cmp-bola-2 { animation-delay: 0.5s; }
-.rodando.cmp-cena--sequencia .cmp-bola-3 { animation-delay: 1s; }
+.rodando.cmp-cena--entrada .cmp-caixa {
+  animation: cmp-entrar 0.8s ease-out;
+}
+.rodando.cmp-cena--pulso .cmp-caixa {
+  animation: cmp-pulsar 0.5s ease-in-out 3;
+}
+.rodando.cmp-cena--sequencia .cmp-bola {
+  animation: cmp-andar 0.5s ease-in-out forwards;
+}
+.rodando.cmp-cena--sequencia .cmp-bola-2 {
+  animation-delay: 0.5s;
+}
+.rodando.cmp-cena--sequencia .cmp-bola-3 {
+  animation-delay: 1s;
+}
 @keyframes cmp-entrar {
-  from { opacity: 0; transform: translateY(40px); }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
 }
 @keyframes cmp-pulsar {
-  50% { transform: scale(1.2); }
+  50% {
+    transform: scale(1.2);
+  }
 }
 @keyframes cmp-andar {
-  to { transform: translateX(120px); }
+  to {
+    transform: translateX(120px);
+  }
 }

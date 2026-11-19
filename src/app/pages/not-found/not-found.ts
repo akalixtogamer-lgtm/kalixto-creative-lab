@@ -8,8 +8,14 @@ import { PageHeader } from '../../shared/components/page-header/page-header';
   imports: [RouterLink, PageHeader],
   template: `
     <div class="kx-page">
-      <kx-page-header eyebrow="Erro 404" titulo="Página não encontrada" descricao="Esse experimento ainda não existe." />
-      <a class="kx-btn kx-btn--primary" routerLink="/" style="align-self: flex-start">Voltar ao Dashboard</a>
+      <kx-page-header
+        eyebrow="Erro 404"
+        titulo="Página não encontrada"
+        descricao="Esse experimento ainda não existe."
+      />
+      <a class="kx-btn kx-btn--primary" routerLink="/" style="align-self: flex-start"
+        >Voltar ao Dashboard</a
+      >
     </div>
   `,
 })

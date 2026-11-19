@@ -22,12 +22,18 @@ export const ANIMATED_GRADIENT: EffectKit = {
       'A animação move background-position de um lado para o outro, então a parte visível do gradiente muda.',
       'Este efeito não usa JavaScript.',
     ],
-    alternativa: 'Com @property é possível animar as próprias cores ou o ângulo do gradiente (veja o kit Borda animada).',
+    alternativa:
+      'Com @property é possível animar as próprias cores ou o ângulo do gradiente (veja o kit Borda animada).',
     compatibilidade: 'Todos os navegadores atuais.',
-    responsividade: 'O fundo acompanha o tamanho da caixa; a porcentagem de background-size mantém a proporção em qualquer tela.',
-    acessibilidade: 'O movimento é lento e para com prefers-reduced-motion. O texto sobre o fundo usa sombra para manter a leitura em todas as cores.',
-    performance: 'Animar background-position repinta a área a cada quadro. Em uma seção é leve; em telas grandes e celulares fracos, prefira velocidades mais lentas.',
-    limitacoes: ['Cores muito diferentes entre si podem deixar o texto ilegível em algum momento da animação.'],
+    responsividade:
+      'O fundo acompanha o tamanho da caixa; a porcentagem de background-size mantém a proporção em qualquer tela.',
+    acessibilidade:
+      'O movimento é lento e para com prefers-reduced-motion. O texto sobre o fundo usa sombra para manter a leitura em todas as cores.',
+    performance:
+      'Animar background-position repinta a área a cada quadro. Em uma seção é leve; em telas grandes e celulares fracos, prefira velocidades mais lentas.',
+    limitacoes: [
+      'Cores muito diferentes entre si podem deixar o texto ilegível em algum momento da animação.',
+    ],
     referencias: [MDN.linearGradient, MDN.animation, MDN.reduzir],
     validadoEm: VALIDADO_EM,
     status: 'validado',
@@ -36,9 +42,36 @@ export const ANIMATED_GRADIENT: EffectKit = {
     { id: 'c1', rotulo: 'cor 1', tipo: 'select', opcoes: CORES, padrao: '#ff2bd6' },
     { id: 'c2', rotulo: 'cor 2', tipo: 'select', opcoes: CORES, padrao: '#8b5cf6' },
     { id: 'c3', rotulo: 'cor 3', tipo: 'select', opcoes: CORES, padrao: '#22e3ff' },
-    { id: 'angulo', rotulo: 'ângulo', tipo: 'range', min: 0, max: 360, passo: 5, unidade: '°', padrao: 120 },
-    { id: 'dur', rotulo: 'duração do ciclo', tipo: 'range', min: 3, max: 30, passo: 1, unidade: 's', padrao: 10 },
-    { id: 'tam', rotulo: 'tamanho do gradiente', tipo: 'range', min: 150, max: 600, passo: 25, unidade: '%', padrao: 300 },
+    {
+      id: 'angulo',
+      rotulo: 'ângulo',
+      tipo: 'range',
+      min: 0,
+      max: 360,
+      passo: 5,
+      unidade: '°',
+      padrao: 120,
+    },
+    {
+      id: 'dur',
+      rotulo: 'duração do ciclo',
+      tipo: 'range',
+      min: 3,
+      max: 30,
+      passo: 1,
+      unidade: 's',
+      padrao: 10,
+    },
+    {
+      id: 'tam',
+      rotulo: 'tamanho do gradiente',
+      tipo: 'range',
+      min: 150,
+      max: 600,
+      passo: 25,
+      unidade: '%',
+      padrao: 300,
+    },
   ],
   gerar: (v) => ({
     html: `<section class="gradiente">
@@ -94,9 +127,18 @@ export const ANIMATED_GRADIENT: EffectKit = {
   },
   glossario: [
     { termo: 'linear-gradient', explicacao: 'Cria o degradê em linha reta, no ângulo indicado.' },
-    { termo: 'background-size', explicacao: 'Tamanho do fundo; maior que 100% deixa parte dele escondida.' },
-    { termo: 'background-position', explicacao: 'Qual parte do fundo aparece — é o que a animação move.' },
-    { termo: 'text-shadow', explicacao: 'Sombra no texto para manter a leitura sobre cores claras.' },
+    {
+      termo: 'background-size',
+      explicacao: 'Tamanho do fundo; maior que 100% deixa parte dele escondida.',
+    },
+    {
+      termo: 'background-position',
+      explicacao: 'Qual parte do fundo aparece — é o que a animação move.',
+    },
+    {
+      termo: 'text-shadow',
+      explicacao: 'Sombra no texto para manter a leitura sobre cores claras.',
+    },
     { termo: 'alternate', explicacao: 'O movimento vai e volta, sem salto.' },
   ],
 };

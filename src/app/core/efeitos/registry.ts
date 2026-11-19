@@ -228,23 +228,21 @@ export interface ItemCatalogo {
 }
 
 export const CATALOGO: ItemCatalogo[] = [
-  ...EFFECT_REGISTRY.map(
-    ({ ficha: f }): ItemCatalogo => ({
-      chave: `kit:${f.id}`,
-      tipo: 'kit',
-      nome: f.nomeAmigavel,
-      descricao: f.descricao,
-      categoria: f.categoria,
-      nivel: f.nivel,
-      tecnologias: f.tecnologias,
-      dependencias: f.dependencias,
-      interacoes: f.interacoes,
-      tags: [f.nomeTecnico, ...f.tags],
-      aplicacoes: f.aplicacoes,
-      origem: `Kit · ${f.nomeTecnico}`,
-      rota: ['/efeitos', f.id],
-    }),
-  ),
+  ...EFFECT_REGISTRY.map(({ ficha: f }): ItemCatalogo => ({
+    chave: `kit:${f.id}`,
+    tipo: 'kit',
+    nome: f.nomeAmigavel,
+    descricao: f.descricao,
+    categoria: f.categoria,
+    nivel: f.nivel,
+    tecnologias: f.tecnologias,
+    dependencias: f.dependencias,
+    interacoes: f.interacoes,
+    tags: [f.nomeTecnico, ...f.tags],
+    aplicacoes: f.aplicacoes,
+    origem: `Kit · ${f.nomeTecnico}`,
+    rota: ['/efeitos', f.id],
+  })),
   ...EFFECTS.map((e): ItemCatalogo => {
     const t = TEC_DO_LAB[e.labId] ?? { tec: [], dep: [] };
     return {

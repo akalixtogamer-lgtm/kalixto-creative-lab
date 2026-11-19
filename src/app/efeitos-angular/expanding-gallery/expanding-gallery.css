@@ -34,21 +34,38 @@
   text-shadow: 0 2px 10px rgb(0 0 0 / 0.4);
   opacity: 0;
   translate: 0 12px;
-  transition: opacity 300ms ease, translate 300ms ease;
+  transition:
+    opacity 300ms ease,
+    translate 300ms ease;
 }
 
 /* aberta: a do hover/foco; sem hover, a fixada pelo clique */
 .faixa:hover,
 .faixa:focus-visible,
-.sanfona:not(:hover) .faixa.is-ativa { flex-grow: 5; }
+.sanfona:not(:hover) .faixa.is-ativa {
+  flex-grow: 5;
+}
 .faixa:hover span,
 .faixa:focus-visible span,
-.sanfona:not(:hover) .faixa.is-ativa span { opacity: 1; translate: 0 0; transition-delay: 200ms; }
-.faixa:focus-visible { outline: 3px solid #22e3ff; outline-offset: 3px; }
+.sanfona:not(:hover) .faixa.is-ativa span {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: 200ms;
+}
+.faixa:focus-visible {
+  outline: 3px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 @media (max-width: 560px) {
-  .sanfona { flex-direction: column; height: 520px; }
+  .sanfona {
+    flex-direction: column;
+    height: 520px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .faixa, .faixa span { transition: none; }
+  .faixa,
+  .faixa span {
+    transition: none;
+  }
 }

@@ -1,4 +1,12 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 
 interface Particula {
   x: number;
@@ -86,7 +94,13 @@ function criarParticulas(w: number, h: number): Particula[] {
   }));
 }
 
-function passo(ctx: CanvasRenderingContext2D, ps: Particula[], w: number, h: number, mouse: Mouse): void {
+function passo(
+  ctx: CanvasRenderingContext2D,
+  ps: Particula[],
+  w: number,
+  h: number,
+  mouse: Mouse,
+): void {
   ctx.clearRect(0, 0, w, h);
   for (const p of ps) {
     // reação ao mouse dentro de um raio de 140px

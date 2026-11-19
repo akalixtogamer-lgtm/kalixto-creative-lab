@@ -1,4 +1,14 @@
-import { Component, ElementRef, OnDestroy, computed, effect, input, signal, untracked, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  computed,
+  effect,
+  input,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { gsap } from 'gsap';
 import { findLab } from '../../core/data/labs.data';
 import { SVG_DEMOS } from '../../core/data/svg-demos.data';
@@ -22,7 +32,9 @@ export class SvgLab implements OnDestroy {
   protected readonly demos = SVG_DEMOS;
   protected readonly circulo = FORMAS_MORPH['circulo'].d;
 
-  protected readonly atual = computed<LabDemo>(() => SVG_DEMOS.find((d) => d.id === this.demo()) ?? SVG_DEMOS[0]);
+  protected readonly atual = computed<LabDemo>(
+    () => SVG_DEMOS.find((d) => d.id === this.demo()) ?? SVG_DEMOS[0],
+  );
   private readonly todosValores = signal<Record<string, Valores>>(
     Object.fromEntries(SVG_DEMOS.map((d) => [d.id, valoresPadrao(d)])),
   );

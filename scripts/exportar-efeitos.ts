@@ -15,5 +15,12 @@ const kits = EFFECT_REGISTRY.map((k) => {
     glossario: k.glossario,
   };
 });
-const catalogo = CATALOGO.map(({ chave, tipo, nome, categoria, nivel, origem }) => ({ chave, tipo, nome, categoria, nivel, origem }));
+const catalogo = CATALOGO.map(({ chave, tipo, nome, categoria, nivel, origem }) => ({
+  chave,
+  tipo,
+  nome,
+  categoria,
+  nivel,
+  origem,
+}));
 console.log(JSON.stringify({ kits, catalogo, categorias: CATEGORIAS }));

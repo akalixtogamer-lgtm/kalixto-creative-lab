@@ -23,7 +23,9 @@
   gap: var(--kx-space-1);
   color: var(--kx-text-soft);
 }
-.resumo__texto strong { color: var(--kx-text); }
+.resumo__texto strong {
+  color: var(--kx-text);
+}
 .resumo__acoes {
   display: flex;
   flex-wrap: wrap;
@@ -65,8 +67,13 @@
   color: var(--kx-bg);
   font-weight: 700;
 }
-.modulo__info { flex: 1; min-width: 180px; }
-.modulo__meta { font-size: var(--kx-fs-sm); }
+.modulo__info {
+  flex: 1;
+  min-width: 180px;
+}
+.modulo__meta {
+  font-size: var(--kx-fs-sm);
+}
 .passos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
@@ -91,7 +98,9 @@
   border-color: var(--kx-acento);
   color: var(--kx-text);
 }
-.passo.is-feito { color: var(--kx-text); }
+.passo.is-feito {
+  color: var(--kx-text);
+}
 .passo__check {
   display: grid;
   place-items: center;
@@ -106,7 +115,16 @@
   border-color: var(--kx-success);
   background: var(--kx-success);
 }
-.passo__nome { flex: 1; }
-.passo__nivel { font-size: var(--kx-fs-xs); white-space: nowrap; }
-.passo__estrela { color: var(--kx-border-strong); }
-.passo__estrela.is-feito { color: var(--kx-warning); }
+.passo__nome {
+  flex: 1;
+}
+.passo__nivel {
+  font-size: var(--kx-fs-xs);
+  white-space: nowrap;
+}
+.passo__estrela {
+  color: var(--kx-border-strong);
+}
+.passo__estrela.is-feito {
+  color: var(--kx-warning);
+}

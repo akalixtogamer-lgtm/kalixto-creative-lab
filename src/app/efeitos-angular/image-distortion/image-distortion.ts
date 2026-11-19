@@ -1,4 +1,11 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, inject, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  inject,
+  viewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'app-image-distortion',

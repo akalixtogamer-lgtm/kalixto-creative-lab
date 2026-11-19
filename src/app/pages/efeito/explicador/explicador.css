@@ -1,4 +1,6 @@
-:host { display: block; }
+:host {
+  display: block;
+}
 
 .ex__niveis {
   display: grid;
@@ -26,18 +28,48 @@
   margin: 0;
   cursor: pointer;
 }
-.ex__nivel:has(input:focus-visible) { outline: 2px solid var(--kx-ciano); outline-offset: 2px; }
-.ex__nivel.is-ativo { border-color: var(--kx-roxo); background: var(--kx-surface-active); }
-.ex__rotulo { font-size: var(--kx-fs-sm); font-weight: 600; }
-.ex__desc { color: var(--kx-text-muted); font-size: var(--kx-fs-xs); }
+.ex__nivel:has(input:focus-visible) {
+  outline: 2px solid var(--kx-ciano);
+  outline-offset: 2px;
+}
+.ex__nivel.is-ativo {
+  border-color: var(--kx-roxo);
+  background: var(--kx-surface-active);
+}
+.ex__rotulo {
+  font-size: var(--kx-fs-sm);
+  font-weight: 600;
+}
+.ex__desc {
+  color: var(--kx-text-muted);
+  font-size: var(--kx-fs-xs);
+}
 
-.ex__lista li + li { margin-top: var(--kx-space-2); }
+.ex__lista li + li {
+  margin-top: var(--kx-space-2);
+}
 
-.ex__titulo { margin: var(--kx-space-5) 0 var(--kx-space-3); font-size: var(--kx-fs-md); }
-.ex__glossario { display: grid; gap: var(--kx-space-3); margin: 0; }
-.ex__glossario dt code { color: var(--kx-ciano); font-size: var(--kx-fs-sm); }
-.ex__glossario dd { margin: 2px 0 0; color: var(--kx-text-soft); font-size: var(--kx-fs-sm); }
+.ex__titulo {
+  margin: var(--kx-space-5) 0 var(--kx-space-3);
+  font-size: var(--kx-fs-md);
+}
+.ex__glossario {
+  display: grid;
+  gap: var(--kx-space-3);
+  margin: 0;
+}
+.ex__glossario dt code {
+  color: var(--kx-ciano);
+  font-size: var(--kx-fs-sm);
+}
+.ex__glossario dd {
+  margin: 2px 0 0;
+  color: var(--kx-text-soft);
+  font-size: var(--kx-fs-sm);
+}
 
 @media (max-width: 480px) {
-  .ex__niveis { grid-template-columns: minmax(0, 1fr); }
+  .ex__niveis {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

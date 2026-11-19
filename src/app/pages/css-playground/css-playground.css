@@ -6,7 +6,6 @@
    --amp, --persp, --rx, --ry
    ========================================================= */
 
-
 /* 1 · Transitions */
 .d-trans {
   width: 72px;
@@ -36,27 +35,60 @@
   animation-iteration-count: var(--rep);
   animation-timing-function: ease-in-out;
 }
-.d-key--pulsar { animation-name: pulsar; }
-.d-key--quicar { animation-name: quicar; }
-.d-key--girar { animation-name: girar; animation-timing-function: linear; }
-.d-key--tremer { animation-name: tremer; }
+.d-key--pulsar {
+  animation-name: pulsar;
+}
+.d-key--quicar {
+  animation-name: quicar;
+}
+.d-key--girar {
+  animation-name: girar;
+  animation-timing-function: linear;
+}
+.d-key--tremer {
+  animation-name: tremer;
+}
 
 @keyframes pulsar {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.25); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
 }
 @keyframes quicar {
-  0%, 100% { transform: translateY(0); }
-  40%, 60% { transform: translateY(-60px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40%,
+  60% {
+    transform: translateY(-60px);
+  }
 }
 @keyframes girar {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @keyframes tremer {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-12px); }
-  40%, 80% { transform: translateX(12px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-12px);
+  }
+  40%,
+  80% {
+    transform: translateX(12px);
+  }
 }
 
 /* 3 · Transform */
@@ -99,7 +131,9 @@
   color: var(--kx-magenta);
 }
 .d-hover--brilho:is(:hover, :focus-visible, .forcar) {
-  box-shadow: 0 0 28px var(--kx-magenta), 0 0 6px var(--kx-magenta) inset;
+  box-shadow:
+    0 0 28px var(--kx-magenta),
+    0 0 6px var(--kx-magenta) inset;
   color: #fff;
 }
 .d-hover--preencher {
@@ -121,7 +155,12 @@
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fff 0 6%, var(--kx-ciano) 18%, var(--kx-roxo) 70%);
+  background: radial-gradient(
+    circle at 30% 30%,
+    #fff 0 6%,
+    var(--kx-ciano) 18%,
+    var(--kx-roxo) 70%
+  );
   box-shadow: 0 0 40px rgb(34 227 255 / 0.4);
   animation: flutuar var(--dur) ease-in-out infinite alternate;
 }
@@ -137,11 +176,18 @@
   animation-play-state: paused;
 }
 @keyframes flutuar {
-  from { transform: translateY(0) rotate(0deg); }
-  to { transform: translateY(calc(var(--amp) * -1)) rotate(var(--rot)); }
+  from {
+    transform: translateY(0) rotate(0deg);
+  }
+  to {
+    transform: translateY(calc(var(--amp) * -1)) rotate(var(--rot));
+  }
 }
 @keyframes sombra {
-  to { transform: scale(0.7); opacity: 0.5; }
+  to {
+    transform: scale(0.7);
+    opacity: 0.5;
+  }
 }
 
 /* 6 · Perspective */
@@ -202,8 +248,7 @@
 }
 .d-clip {
   background:
-    radial-gradient(circle at 20% 20%, rgb(255 255 255 / 0.35), transparent 40%),
-    var(--kx-gradient);
+    radial-gradient(circle at 20% 20%, rgb(255 255 255 / 0.35), transparent 40%), var(--kx-gradient);
   font: 700 var(--kx-fs-xl) var(--kx-font-display);
   transition: clip-path var(--dur) ease-in-out;
 }
@@ -232,7 +277,9 @@
   fill: transparent;
   stroke: currentColor;
   stroke-width: 1.8;
-  transition: fill var(--dur) ease, color var(--dur) ease;
+  transition:
+    fill var(--dur) ease,
+    color var(--dur) ease;
 }
 .d-curtir.ativo {
   color: var(--kx-magenta);
@@ -243,7 +290,9 @@
   animation: pop var(--dur) ease-out;
 }
 @keyframes pop {
-  50% { transform: scale(var(--esc)); }
+  50% {
+    transform: scale(var(--esc));
+  }
 }
 .d-switch {
   display: flex;
@@ -308,7 +357,10 @@
   position: relative;
   padding-top: calc(var(--kx-space-5) + 40px);
   background: var(--kx-bg-elev);
-  transition: clip-path 300ms ease, border-radius 300ms ease, margin-top 300ms ease;
+  transition:
+    clip-path 300ms ease,
+    border-radius 300ms ease,
+    margin-top 300ms ease;
 }
 .d-div small {
   color: var(--kx-text-soft);

@@ -20,36 +20,75 @@ export const STEP_UNLOCK: EffectKit = {
     nomeAmigavel: 'Etapas que se desbloqueiam',
     categoria: 'componentes-dados',
     subcategoria: 'Progresso e estados',
-    descricao: 'Uma trilha de etapas bloqueadas, com cadeado e "?"; uma a uma, o cadeado treme e abre, o nome da etapa aparece e um selo "FEITO" é carimbado, enquanto o contador sobe.',
-    objetivoVisual: 'Mostrar um método em passos de um jeito de jogo: cada etapa concluída é uma pequena conquista.',
-    aplicacoes: ['Apresentar um método ou processo de trabalho', 'Onboarding e cursos (trilhas)', 'Vídeos explicativos de serviço'],
+    descricao:
+      'Uma trilha de etapas bloqueadas, com cadeado e "?"; uma a uma, o cadeado treme e abre, o nome da etapa aparece e um selo "FEITO" é carimbado, enquanto o contador sobe.',
+    objetivoVisual:
+      'Mostrar um método em passos de um jeito de jogo: cada etapa concluída é uma pequena conquista.',
+    aplicacoes: [
+      'Apresentar um método ou processo de trabalho',
+      'Onboarding e cursos (trilhas)',
+      'Vídeos explicativos de serviço',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click', 'keyboard'],
-    tags: ['etapas', 'passos', 'steps', 'desbloquear', 'cadeado', 'gamificação', 'progresso', 'selo', 'referência em vídeo'],
+    tags: [
+      'etapas',
+      'passos',
+      'steps',
+      'desbloquear',
+      'cadeado',
+      'gamificação',
+      'progresso',
+      'selo',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Cada etapa é um <li> com um estado em data-estado: "bloqueado" ou "livre". Todo o visual (cadeado, título escondido, selo) sai do CSS conforme esse atributo.',
       'Ao desbloquear, a etapa recebe primeiro a classe de "tremer" (o cadeado balança), e só depois de 350 ms passa a "livre": o cadeado vira ✓, o título aparece e o selo carimba.',
       'No modo automático, um temporizador desbloqueia a próxima etapa a cada intervalo; no modo clique, o botão faz isso.',
       'O contador "0/3" é atualizado a cada etapa e anunciado ao leitor de tela.',
     ],
-    alternativa: 'Com GSAP: uma timeline com uma etapa por passo (shake → troca de estado → selo), boa para sincronizar com narração de vídeo.',
-    compatibilidade: 'Atributos data-*, seletores de atributo e animações CSS: todos os navegadores atuais.',
+    alternativa:
+      'Com GSAP: uma timeline com uma etapa por passo (shake → troca de estado → selo), boa para sincronizar com narração de vídeo.',
+    compatibilidade:
+      'Atributos data-*, seletores de atributo e animações CSS: todos os navegadores atuais.',
     responsividade: 'Lista em coluna única com largura máxima: igual no celular e no computador.',
-    acessibilidade: 'Cada etapa diz o próprio estado em texto ("bloqueada" / "concluída", visível para o leitor de tela). O contador está numa região aria-live. Com prefers-reduced-motion não há tremor nem carimbo animado.',
+    acessibilidade:
+      'Cada etapa diz o próprio estado em texto ("bloqueada" / "concluída", visível para o leitor de tela). O contador está numa região aria-live. Com prefers-reduced-motion não há tremor nem carimbo animado.',
     performance: 'Só trocas de atributo e animações curtas de transform.',
-    limitacoes: ['Etapas com títulos longos: o título escondido ("?") reserva pouco espaço; ajuste a largura mínima.'],
+    limitacoes: [
+      'Etapas com títulos longos: o título escondido ("?") reserva pouco espaço; ajuste a largura mínima.',
+    ],
     referencias: [
-      { titulo: 'MDN — Seletores de atributo', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors' },
-      { titulo: 'MDN — aria-live', url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live' },
-      { titulo: 'MDN — prefers-reduced-motion', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion' },
+      {
+        titulo: 'MDN — Seletores de atributo',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors',
+      },
+      {
+        titulo: 'MDN — aria-live',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live',
+      },
+      {
+        titulo: 'MDN — prefers-reduced-motion',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion',
+      },
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'intervalo', rotulo: 'intervalo entre etapas', tipo: 'range', min: 600, max: 2500, passo: 100, unidade: 'ms', padrao: 1300 },
+    {
+      id: 'intervalo',
+      rotulo: 'intervalo entre etapas',
+      tipo: 'range',
+      min: 600,
+      max: 2500,
+      passo: 100,
+      unidade: 'ms',
+      padrao: 1300,
+    },
     {
       id: 'modo',
       rotulo: 'como desbloqueia',
@@ -220,7 +259,10 @@ if (AUTOMATICO) temporizador = setTimeout(desbloquear, INTERVALO);`,
   styleUrl: './step-unlock.css',
 })
 export class ${nomeClasse('step-unlock')} {
-  protected readonly passos = ${JSON.stringify(PASSOS, null, 2).replace(/\n/g, '\n  ').replace(/"(\w+)":/g, '$1:').replace(/"/g, "'")};
+  protected readonly passos = ${JSON.stringify(PASSOS, null, 2)
+    .replace(/\n/g, '\n  ')
+    .replace(/"(\w+)":/g, '$1:')
+    .replace(/"/g, "'")};
   protected readonly automatico = ${auto};
   private readonly intervalo = ${v['intervalo']};
   private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -300,7 +342,10 @@ export class ${nomeClasse('step-unlock')} {
   },
   glossario: [
     { termo: 'data-estado', explicacao: 'Guarda se a etapa está bloqueada ou livre.' },
-    { termo: "[data-estado='livre']", explicacao: 'Seletor de atributo: estilos da etapa liberada.' },
+    {
+      termo: "[data-estado='livre']",
+      explicacao: 'Seletor de atributo: estilos da etapa liberada.',
+    },
     { termo: 'color-mix', explicacao: 'Mistura a cor de destaque com o fundo.' },
     { termo: 'aria-live', explicacao: 'Anuncia o contador quando uma etapa é liberada.' },
   ],

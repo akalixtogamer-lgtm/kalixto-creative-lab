@@ -4,7 +4,9 @@
   gap: 24px;
 }
 
-.cena { perspective: 800px; }
+.cena {
+  perspective: 800px;
+}
 
 /* O efeito */
 .card {
@@ -22,11 +24,18 @@
   overflow: hidden;
 }
 
-.card h2 { margin: 0 0 4px; }
-.card p { margin: 0; color: #c9c3ea; }
+.card h2 {
+  margin: 0 0 4px;
+}
+.card p {
+  margin: 0;
+  color: #c9c3ea;
+}
 
 /* enquanto o mouse está em cima, acompanha sem atraso */
-.card.is-ativo { transition-duration: 80ms; }
+.card.is-ativo {
+  transition-duration: 80ms;
+}
 
 .card:focus-visible {
   outline: 2px solid #22e3ff;
@@ -39,13 +48,21 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgb(255 255 255 / 0.22), transparent 55%);
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgb(255 255 255 / 0.22),
+    transparent 55%
+  );
   opacity: 0;
   transition: opacity 300ms ease;
   pointer-events: none;
 }
-.card.is-ativo::after { opacity: 1; }
+.card.is-ativo::after {
+  opacity: 1;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .card { transform: none; }
+  .card {
+    transform: none;
+  }
 }

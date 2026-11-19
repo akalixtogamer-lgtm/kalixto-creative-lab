@@ -42,7 +42,6 @@ describe('Fase 1 · Navegação', () => {
     expect(h1?.textContent).toContain(lab.titulo);
   });
 
-
   it('id de laboratório inválido mostra mensagem de não encontrado', async () => {
     await harness.navigateByUrl('/labs/nao-existe');
     expect(harness.routeNativeElement?.textContent).toContain('Laboratório não encontrado');

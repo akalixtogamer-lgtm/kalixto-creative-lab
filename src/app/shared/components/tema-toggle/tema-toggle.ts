@@ -25,8 +25,15 @@ import { Icon } from '../icon/icon';
     </button>
   `,
   styles: `
-    .tema-toggle { width: 100%; justify-content: flex-start; }
-    .tema-toggle--compacto { width: auto; min-width: 44px; justify-content: center; }
+    .tema-toggle {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .tema-toggle--compacto {
+      width: auto;
+      min-width: 44px;
+      justify-content: center;
+    }
   `,
 })
 export class TemaToggle {

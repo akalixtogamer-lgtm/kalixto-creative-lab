@@ -2,7 +2,13 @@
   <legend class="sr-only">Nível da explicação</legend>
   @for (n of niveis; track n.id) {
     <label class="ex__nivel" [class.is-ativo]="nivel() === n.id">
-      <input type="radio" name="nivel-explicacao" [value]="n.id" [checked]="nivel() === n.id" (change)="nivel.set(n.id)" />
+      <input
+        type="radio"
+        name="nivel-explicacao"
+        [value]="n.id"
+        [checked]="nivel() === n.id"
+        (change)="nivel.set(n.id)"
+      />
       <span class="ex__rotulo">{{ n.rotulo }}</span>
       <span class="ex__desc">{{ n.descricao }}</span>
     </label>
@@ -21,7 +27,9 @@
 <dl class="ex__glossario">
   @for (g of kit().glossario; track g.termo) {
     <div>
-      <dt><code>{{ g.termo }}</code></dt>
+      <dt>
+        <code>{{ g.termo }}</code>
+      </dt>
       <dd>{{ g.explicacao }}</dd>
     </div>
   }

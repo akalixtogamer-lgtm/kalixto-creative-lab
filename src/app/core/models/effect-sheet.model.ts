@@ -12,15 +12,7 @@ import { ParamDef, Valores } from './demo.model';
 export type NivelFicha = EffectNivel | 'experimental';
 
 export type Interacao =
-  | 'hover'
-  | 'click'
-  | 'scroll'
-  | 'drag'
-  | 'mouse'
-  | 'touch'
-  | 'autoplay'
-  | 'keyboard'
-  | 'audio';
+  'hover' | 'click' | 'scroll' | 'drag' | 'mouse' | 'touch' | 'autoplay' | 'keyboard' | 'audio';
 
 export type Tecnologia =
   | 'HTML'

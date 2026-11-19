@@ -1,7 +1,11 @@
-:host { display: block; }
+:host {
+  display: block;
+}
 
 /* A seção alta é a "trilha" do vídeo; o canvas fica preso no meio dela */
-.sequencia { height: 400vh; }
+.sequencia {
+  height: 400vh;
+}
 .fixo {
   position: sticky;
   top: 0;

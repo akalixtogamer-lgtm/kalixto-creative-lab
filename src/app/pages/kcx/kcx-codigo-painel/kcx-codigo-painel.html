@@ -1,0 +1,72 @@
+<div class="kcxk__topo">
+  <div class="kcxk__abas" role="tablist" aria-label="Arquivos do componente">
+    @for (a of abas; track a.id) {
+      <button
+        type="button"
+        role="tab"
+        class="kcxk__aba"
+        [attr.aria-selected]="aba() === a.id"
+        [disabled]="avancado()"
+        (click)="aba.set(a.id)"
+      >
+        {{ a.rotulo }}
+      </button>
+    }
+  </div>
+  <label class="kcxk__modo">
+    <input
+      type="checkbox"
+      role="switch"
+      [checked]="avancado()"
+      (change)="avancado.set($any($event.target).checked)"
+    />
+    Edição avançada
+  </label>
+</div>
+
+@if (!avancado()) {
+  <kx-code-viewer
+    [codigo]="texto()"
+    [linguagem]="linguagem()"
+    [titulo]="comp().id + ' · ' + aba()"
+  />
+  <p class="kx-muted kcxk__nota">
+    O bloco <code>:root</code> é gerado das variáveis; o CSS usa <code>var(--kcx-…)</code>. Código,
+    variáveis e preview são o mesmo estado.
+  </p>
+} @else {
+  <div class="kcxk__editor">
+    <label for="kcxk-root"
+      >Variáveis (<code>:root</code>) — mudar um valor aqui muda a variável</label
+    >
+    <textarea #tRoot id="kcxk-root" spellcheck="false" rows="10" [value]="root()"></textarea>
+    <label for="kcxk-html">HTML</label>
+    <textarea #tHtml id="kcxk-html" spellcheck="false" rows="6" [value]="codigo().html"></textarea>
+    <label for="kcxk-css">CSS do componente</label>
+    <textarea #tCss id="kcxk-css" spellcheck="false" rows="14" [value]="codigo().css"></textarea>
+    <label for="kcxk-js">JS</label>
+    <textarea #tJs id="kcxk-js" spellcheck="false" rows="4" [value]="codigo().js"></textarea>
+    <div class="kcxk__barra">
+      <button
+        type="button"
+        class="kx-btn kx-btn--primary"
+        (click)="aplicarEdicao(tRoot.value, tHtml.value, tCss.value, tJs.value)"
+      >
+        Aplicar e sincronizar
+      </button>
+      <button
+        type="button"
+        class="kx-btn kx-btn--ghost"
+        [disabled]="!codigoEditado()"
+        (click)="restaurarCodigo()"
+      >
+        Restaurar código original
+      </button>
+    </div>
+  </div>
+}
+@if (status(); as s) {
+  <p class="kcxk__status" [class.kcxk__status--erro]="s.tipo === 'erro'" role="status">
+    {{ s.texto }}
+  </p>
+}

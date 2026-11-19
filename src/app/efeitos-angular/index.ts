@@ -9,23 +9,34 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'slide-in': () => import('./slide-in/slide-in').then((m) => m.SlideIn),
   'scale-reveal': () => import('./scale-reveal/scale-reveal').then((m) => m.ScaleReveal),
   'button-hover': () => import('./button-hover/button-hover').then((m) => m.ButtonHover),
-  'magnetic-button': () => import('./magnetic-button/magnetic-button').then((m) => m.MagneticButton),
+  'magnetic-button': () =>
+    import('./magnetic-button/magnetic-button').then((m) => m.MagneticButton),
   'glow-button': () => import('./glow-button/glow-button').then((m) => m.GlowButton),
-  'animated-gradient': () => import('./animated-gradient/animated-gradient').then((m) => m.AnimatedGradient),
+  'animated-gradient': () =>
+    import('./animated-gradient/animated-gradient').then((m) => m.AnimatedGradient),
   'text-reveal': () => import('./text-reveal/text-reveal').then((m) => m.TextReveal),
   'card-tilt': () => import('./card-tilt/card-tilt').then((m) => m.CardTilt),
-  'animated-border': () => import('./animated-border/animated-border').then((m) => m.AnimatedBorder),
+  'animated-border': () =>
+    import('./animated-border/animated-border').then((m) => m.AnimatedBorder),
   'scroll-reveal': () => import('./scroll-reveal/scroll-reveal').then((m) => m.ScrollReveal),
-  'scroll-progress': () => import('./scroll-progress/scroll-progress').then((m) => m.ScrollProgress),
-  'layered-parallax': () => import('./layered-parallax/layered-parallax').then((m) => m.LayeredParallax),
-  'gsap-scroll-reveal': () => import('./gsap-scroll-reveal/gsap-scroll-reveal').then((m) => m.GsapScrollReveal),
+  'scroll-progress': () =>
+    import('./scroll-progress/scroll-progress').then((m) => m.ScrollProgress),
+  'layered-parallax': () =>
+    import('./layered-parallax/layered-parallax').then((m) => m.LayeredParallax),
+  'gsap-scroll-reveal': () =>
+    import('./gsap-scroll-reveal/gsap-scroll-reveal').then((m) => m.GsapScrollReveal),
   'smooth-scroll': () => import('./smooth-scroll/smooth-scroll').then((m) => m.SmoothScroll),
   'custom-cursor': () => import('./custom-cursor/custom-cursor').then((m) => m.CustomCursor),
-  'spotlight-reveal': () => import('./spotlight-reveal/spotlight-reveal').then((m) => m.SpotlightReveal),
-  'image-distortion': () => import('./image-distortion/image-distortion').then((m) => m.ImageDistortion),
-  'kinetic-captions': () => import('./kinetic-captions/kinetic-captions').then((m) => m.KineticCaptions),
-  'isometric-layers': () => import('./isometric-layers/isometric-layers').then((m) => m.IsometricLayers),
-  'neon-handwriting': () => import('./neon-handwriting/neon-handwriting').then((m) => m.NeonHandwriting),
+  'spotlight-reveal': () =>
+    import('./spotlight-reveal/spotlight-reveal').then((m) => m.SpotlightReveal),
+  'image-distortion': () =>
+    import('./image-distortion/image-distortion').then((m) => m.ImageDistortion),
+  'kinetic-captions': () =>
+    import('./kinetic-captions/kinetic-captions').then((m) => m.KineticCaptions),
+  'isometric-layers': () =>
+    import('./isometric-layers/isometric-layers').then((m) => m.IsometricLayers),
+  'neon-handwriting': () =>
+    import('./neon-handwriting/neon-handwriting').then((m) => m.NeonHandwriting),
   'theme-wipe': () => import('./theme-wipe/theme-wipe').then((m) => m.ThemeWipe),
   'image-ribbon': () => import('./image-ribbon/image-ribbon').then((m) => m.ImageRibbon),
   'lens-focus': () => import('./lens-focus/lens-focus').then((m) => m.LensFocus),
@@ -34,27 +45,37 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'gooey-ink': () => import('./gooey-ink/gooey-ink').then((m) => m.GooeyInk),
   'room-3d': () => import('./room-3d/room-3d').then((m) => m.Room3d),
   'sticky-stack': () => import('./sticky-stack/sticky-stack').then((m) => m.StickyStack),
-  'scroll-zoom-hero': () => import('./scroll-zoom-hero/scroll-zoom-hero').then((m) => m.ScrollZoomHero),
+  'scroll-zoom-hero': () =>
+    import('./scroll-zoom-hero/scroll-zoom-hero').then((m) => m.ScrollZoomHero),
   'text-scramble': () => import('./text-scramble/text-scramble').then((m) => m.TextScramble),
-  'preloader-counter': () => import('./preloader-counter/preloader-counter').then((m) => m.PreloaderCounter),
-  'hover-image-list': () => import('./hover-image-list/hover-image-list').then((m) => m.HoverImageList),
-  'spotlight-cards': () => import('./spotlight-cards/spotlight-cards').then((m) => m.SpotlightCards),
-  'expanding-gallery': () => import('./expanding-gallery/expanding-gallery').then((m) => m.ExpandingGallery),
+  'preloader-counter': () =>
+    import('./preloader-counter/preloader-counter').then((m) => m.PreloaderCounter),
+  'hover-image-list': () =>
+    import('./hover-image-list/hover-image-list').then((m) => m.HoverImageList),
+  'spotlight-cards': () =>
+    import('./spotlight-cards/spotlight-cards').then((m) => m.SpotlightCards),
+  'expanding-gallery': () =>
+    import('./expanding-gallery/expanding-gallery').then((m) => m.ExpandingGallery),
   'pixel-text': () => import('./pixel-text/pixel-text').then((m) => m.PixelText),
   'particle-field': () => import('./particle-field/particle-field').then((m) => m.ParticleField),
-  'tile-grid-reveal': () => import('./tile-grid-reveal/tile-grid-reveal').then((m) => m.TileGridReveal),
-  'liquid-glass-lens': () => import('./liquid-glass-lens/liquid-glass-lens').then((m) => m.LiquidGlassLens),
+  'tile-grid-reveal': () =>
+    import('./tile-grid-reveal/tile-grid-reveal').then((m) => m.TileGridReveal),
+  'liquid-glass-lens': () =>
+    import('./liquid-glass-lens/liquid-glass-lens').then((m) => m.LiquidGlassLens),
   'particle-helix': () => import('./particle-helix/particle-helix').then((m) => m.ParticleHelix),
   'echo-text': () => import('./echo-text/echo-text').then((m) => m.EchoText),
   'light-beams': () => import('./light-beams/light-beams').then((m) => m.LightBeams),
   'glitch-text': () => import('./glitch-text/glitch-text').then((m) => m.GlitchText),
   'curtain-reveal': () => import('./curtain-reveal/curtain-reveal').then((m) => m.CurtainReveal),
   'ripple-halo': () => import('./ripple-halo/ripple-halo').then((m) => m.RippleHalo),
-  'rotating-headline': () => import('./rotating-headline/rotating-headline').then((m) => m.RotatingHeadline),
-  'typewriter-prompt': () => import('./typewriter-prompt/typewriter-prompt').then((m) => m.TypewriterPrompt),
+  'rotating-headline': () =>
+    import('./rotating-headline/rotating-headline').then((m) => m.RotatingHeadline),
+  'typewriter-prompt': () =>
+    import('./typewriter-prompt/typewriter-prompt').then((m) => m.TypewriterPrompt),
   'gauge-meter': () => import('./gauge-meter/gauge-meter').then((m) => m.GaugeMeter),
   'step-unlock': () => import('./step-unlock/step-unlock').then((m) => m.StepUnlock),
-  'device-switcher': () => import('./device-switcher/device-switcher').then((m) => m.DeviceSwitcher),
+  'device-switcher': () =>
+    import('./device-switcher/device-switcher').then((m) => m.DeviceSwitcher),
   'glass-card': () => import('./glass-card/glass-card').then((m) => m.GlassCard),
   'frosted-navbar': () => import('./frosted-navbar/frosted-navbar').then((m) => m.FrostedNavbar),
   'blur-modal': () => import('./blur-modal/blur-modal').then((m) => m.BlurModal),

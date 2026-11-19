@@ -19,7 +19,11 @@ export class TypewriterPrompt {
   protected readonly estado = signal<Estado>('digitando');
   protected readonly p = signal(0);
 
-  protected readonly rotulos: Record<Estado, string> = { digitando: 'Escrevendo…', gerando: 'Gerando…', pronto: 'Pronto' };
+  protected readonly rotulos: Record<Estado, string> = {
+    digitando: 'Escrevendo…',
+    gerando: 'Gerando…',
+    pronto: 'Pronto',
+  };
 
   constructor() {
     afterNextRender(() => this.comecar());
@@ -41,7 +45,10 @@ export class TypewriterPrompt {
     let n = 0;
     const digitar = () => {
       this.digitado.set(this.texto.slice(0, ++n));
-      this.temporizador = window.setTimeout(n < this.texto.length ? digitar : () => this.gerar(), n < this.texto.length ? this.velocidade : 400);
+      this.temporizador = window.setTimeout(
+        n < this.texto.length ? digitar : () => this.gerar(),
+        n < this.texto.length ? this.velocidade : 400,
+      );
     };
     digitar();
   }

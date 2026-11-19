@@ -1,0 +1,74 @@
+<div class="kx-page" data-acento="roxo">
+  <kx-breadcrumb [itens]="[{ rotulo: 'KCX Studio', rota: '/kcx' }, { rotulo: 'Composição' }]" />
+  <header class="kx-page-header">
+    <p class="kx-eyebrow">KCX · Composição</p>
+    <h1 class="kx-title">{{ composicao.nome }}</h1>
+    <p class="kx-lead">
+      Três efeitos num componente: Animated Gradient (fundo), SVG Motion e Neon Glow. Cada camada
+      guarda as próprias variáveis; as variáveis compartilhadas mudam várias camadas de uma vez.
+    </p>
+  </header>
+
+  <div class="kcxm__grid">
+    <section class="kcxm__palco kx-glass" aria-label="Preview da composição">
+      <kx-kcx-preview
+        [documento]="documento()"
+        [saidas]="saidas()"
+        titulo="Preview da composição"
+        altura="clamp(340px, 56vh, 520px)"
+      />
+      <div class="kcxm__barra">
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="restaurar()">
+          <kx-icon name="reset" /> Restaurar
+        </button>
+        <button type="button" class="kx-btn kx-btn--primary" (click)="baixar()">
+          <kx-icon name="download" /> Baixar composição .kcx.json
+        </button>
+      </div>
+      <p class="kx-muted kcxm__nota">
+        No Figma: {{ plano().resumo.componentes }} componentes ({{
+          plano().resumo.variantes
+        }}
+        variantes), {{ plano().resumo.variaveis }} variáveis — as compartilhadas viram variáveis de
+        <em>KCX · Components</em> e as das camadas apontam para elas (alias), e um quadro “{{
+          composicao.nome
+        }}” com uma instância de cada camada.
+      </p>
+    </section>
+
+    <section class="kcxm__ctrl kx-glass" aria-labelledby="kcxm-comp">
+      <h2 id="kcxm-comp" class="kcxm__h2">Variáveis compartilhadas</h2>
+      <kx-kcx-controles
+        prefixo="comp"
+        [variaveis]="varsCompartilhadas()"
+        [valores]="valoresCompartilhados()"
+        (mudou)="mudarCompartilhada($event)"
+      />
+
+      <h2 class="kcxm__h2">Camadas</h2>
+      @for (c of camadas(); track c.prefixo) {
+        <details
+          class="kcxm__camada"
+          [open]="aberta() === c.prefixo"
+          (toggle)="$any($event.target).open && aberta.set(c.prefixo)"
+        >
+          <summary>
+            <strong>{{ c.componente.nome }}</strong>&nbsp;<span class="kx-muted"
+              >· {{ c.papel }} · prefixo {{ c.prefixo }}</span
+            >
+          </summary>
+          <kx-kcx-controles
+            [prefixo]="c.prefixo"
+            [variaveis]="c.componente.variaveis"
+            [valores]="c.valores"
+            [herdadas]="c.herdadas"
+            (mudou)="mudarCamada(c.prefixo, $event)"
+          />
+          <a class="kcxm__link" [routerLink]="['/kcx', c.componente.id]"
+            >Abrir {{ c.componente.nome }} no editor</a
+          >
+        </details>
+      }
+    </section>
+  </div>
+</div>

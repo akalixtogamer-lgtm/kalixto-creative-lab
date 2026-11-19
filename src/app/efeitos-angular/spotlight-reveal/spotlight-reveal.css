@@ -23,8 +23,13 @@
     radial-gradient(circle at 80% 70%, #22e3ff, transparent 45%),
     linear-gradient(135deg, #2a1f6b, #7c3aed);
 }
-.conteudo h1 { margin: 0 0 8px; font-size: clamp(1.5rem, 6vw, 2.6rem); }
-.conteudo p { margin: 0; }
+.conteudo h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.5rem, 6vw, 2.6rem);
+}
+.conteudo p {
+  margin: 0;
+}
 
 /* O efeito: uma camada escura com um "furo" redondo onde está o ponteiro */
 .sombra {
@@ -38,7 +43,9 @@
   mask-image: radial-gradient(circle at var(--x) var(--y), transparent 110px, #000 150px);
   transition: opacity 400ms ease;
 }
-.palco-luz.is-acesa .sombra { opacity: 0; }
+.palco-luz.is-acesa .sombra {
+  opacity: 0;
+}
 
 .acender {
   padding: 10px 20px;
@@ -49,8 +56,13 @@
   font: inherit;
   cursor: pointer;
 }
-.acender:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.acender:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .sombra { transition: none; }
+  .sombra {
+    transition: none;
+  }
 }

@@ -1,4 +1,11 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, inject, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  inject,
+  viewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'app-pixel-text',
@@ -23,7 +30,8 @@ export class PixelText {
     if (!ctx) return;
     cancelAnimationFrame(this.quadro);
     const amostra = amostrar(canvas.width, canvas.height, this.texto);
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return desenhar(ctx, amostra, 1);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      return desenhar(ctx, amostra, 1);
     const inicio = performance.now();
     const passo = (agora: number) => {
       const t = Math.min(1, (agora - inicio) / this.duracao);

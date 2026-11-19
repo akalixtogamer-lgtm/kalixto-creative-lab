@@ -1,5 +1,6 @@
-:host { display: block; }
-
+:host {
+  display: block;
+}
 
 /* O efeito */
 .progresso {
@@ -23,11 +24,17 @@
     animation-timeline: scroll(root);
   }
   @keyframes encher {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .progresso { transition: none; }
+  .progresso {
+    transition: none;
+  }
 }

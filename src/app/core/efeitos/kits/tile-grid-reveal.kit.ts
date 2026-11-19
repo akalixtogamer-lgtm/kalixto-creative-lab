@@ -5,7 +5,8 @@ import { MDN, VALIDADO_EM, cssAngular, cssPalco, nomeClasse } from './_base';
 const ORDENS: Record<string, string> = {
   aleatorio: 'Math.random()',
   diagonal: '(c / (colunas - 1) + l / (linhas - 1)) / 2',
-  centro: 'Math.hypot(c - (colunas - 1) / 2, l - (linhas - 1) / 2) / Math.hypot((colunas - 1) / 2, (linhas - 1) / 2)',
+  centro:
+    'Math.hypot(c - (colunas - 1) / 2, l - (linhas - 1) / 2) / Math.hypot((colunas - 1) / 2, (linhas - 1) / 2)',
 };
 
 export const TILE_GRID_REVEAL: EffectKit = {
@@ -15,32 +16,78 @@ export const TILE_GRID_REVEAL: EffectKit = {
     nomeAmigavel: 'Mosaico de células que acendem',
     categoria: 'backgrounds',
     subcategoria: 'Grades e mosaicos animados',
-    descricao: 'Uma parede de pequenas células em vários tons acende aos poucos (aleatório, em diagonal ou do centro para fora) e forma o fundo de um título; passar o mouse acende as células de novo.',
-    objetivoVisual: 'Visualizar "muitos dados" ou "muitos testes" — como uma plantação vista de cima ou uma planilha viva — atrás de uma frase de impacto.',
-    aplicacoes: ['Seções sobre dados e pesquisa', 'Fundo de hero de tecnologia', 'Transições entre seções'],
+    descricao:
+      'Uma parede de pequenas células em vários tons acende aos poucos (aleatório, em diagonal ou do centro para fora) e forma o fundo de um título; passar o mouse acende as células de novo.',
+    objetivoVisual:
+      'Visualizar "muitos dados" ou "muitos testes" — como uma plantação vista de cima ou uma planilha viva — atrás de uma frase de impacto.',
+    aplicacoes: [
+      'Seções sobre dados e pesquisa',
+      'Fundo de hero de tecnologia',
+      'Transições entre seções',
+    ],
     nivel: 'iniciante',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'hover', 'click'],
-    tags: ['grid', 'mosaico', 'tiles', 'células', 'stagger', 'pixel', 'fundo animado', 'referência em vídeo'],
+    tags: [
+      'grid',
+      'mosaico',
+      'tiles',
+      'células',
+      'stagger',
+      'pixel',
+      'fundo animado',
+      'referência em vídeo',
+    ],
     explicacao: [
       'O JavaScript cria as células numa CSS Grid e dá a cada uma duas variáveis: --d (o atraso, de 0 a 1, conforme o padrão) e --l (a luminosidade, sorteada, para variar o tom).',
       'Toda a animação é CSS: cada célula entra com animation-delay = --d × duração. O padrão "diagonal" soma coluna e linha; o "centro" usa a distância até o meio.',
       'No hover, a célula ganha brilho na hora e volta devagar (transição só na saída), deixando um rastro por onde o mouse passa.',
     ],
-    alternativa: 'Em canvas, desenhando retângulos num loop — melhor para grades com milhares de células. Com GSAP: gsap.from(celulas, { opacity: 0, stagger: { grid: [linhas, colunas], from: "center" } }).',
+    alternativa:
+      'Em canvas, desenhando retângulos num loop — melhor para grades com milhares de células. Com GSAP: gsap.from(celulas, { opacity: 0, stagger: { grid: [linhas, colunas], from: "center" } }).',
     compatibilidade: 'CSS Grid, variáveis em calc() e animações: todos os navegadores atuais.',
-    responsividade: 'As colunas são fixas e as células quadradas (aspect-ratio), então a grade escala com a largura do palco.',
-    acessibilidade: 'A grade é decorativa (aria-hidden); o título é texto real por cima. Com prefers-reduced-motion as células aparecem prontas, sem animação.',
-    performance: 'Só opacity e scale animados. Com 16 colunas × 10 linhas são 160 elementos — leve. Acima de ~1000 células, prefira canvas.',
-    limitacoes: ['Muitas células = muitos elementos no DOM; mantenha a grade moderada ou use canvas.'],
-    referencias: [{ titulo: 'MDN — CSS Grid Layout', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout' }, MDN.animationDelay, MDN.reduzir],
+    responsividade:
+      'As colunas são fixas e as células quadradas (aspect-ratio), então a grade escala com a largura do palco.',
+    acessibilidade:
+      'A grade é decorativa (aria-hidden); o título é texto real por cima. Com prefers-reduced-motion as células aparecem prontas, sem animação.',
+    performance:
+      'Só opacity e scale animados. Com 16 colunas × 10 linhas são 160 elementos — leve. Acima de ~1000 células, prefira canvas.',
+    limitacoes: [
+      'Muitas células = muitos elementos no DOM; mantenha a grade moderada ou use canvas.',
+    ],
+    referencias: [
+      {
+        titulo: 'MDN — CSS Grid Layout',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout',
+      },
+      MDN.animationDelay,
+      MDN.reduzir,
+    ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'colunas', rotulo: 'colunas', tipo: 'range', min: 8, max: 24, passo: 2, unidade: '', padrao: 16 },
-    { id: 'duracao', rotulo: 'tempo total', tipo: 'range', min: 600, max: 3000, passo: 100, unidade: 'ms', padrao: 1800 },
+    {
+      id: 'colunas',
+      rotulo: 'colunas',
+      tipo: 'range',
+      min: 8,
+      max: 24,
+      passo: 2,
+      unidade: '',
+      padrao: 16,
+    },
+    {
+      id: 'duracao',
+      rotulo: 'tempo total',
+      tipo: 'range',
+      min: 600,
+      max: 3000,
+      passo: 100,
+      unidade: 'ms',
+      padrao: 1800,
+    },
     {
       id: 'padrao',
       rotulo: 'ordem das células',
@@ -211,6 +258,9 @@ export class ${nomeClasse('tile-grid-reveal')} {
     { termo: 'grid-template-columns: repeat(', explicacao: 'Quantidade de colunas da grade.' },
     { termo: 'calc(var(--d) *', explicacao: 'Atraso de cada célula conforme o padrão.' },
     { termo: 'hsl(95 70% var(--l))', explicacao: 'Mesmo verde em luminosidades sorteadas.' },
-    { termo: 'replaceChildren', explicacao: 'Troca todas as células de uma vez (reinicia a animação).' },
+    {
+      termo: 'replaceChildren',
+      explicacao: 'Troca todas as células de uma vez (reinicia a animação).',
+    },
   ],
 };

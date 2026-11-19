@@ -24,21 +24,63 @@ export const SCROLL_REVEAL: EffectKit = {
       'threshold define quanto do card precisa aparecer para contar como "visível" (0,2 = 20%).',
       'Cada card recebe --i (sua posição) para o atraso em cascata; no modo "uma vez", o observador para de vigiar o card depois que ele aparece.',
     ],
-    alternativa: 'GSAP ScrollTrigger com ScrollTrigger.batch() faz o mesmo e permite atrelar a animação à barra de rolagem (scrub) — veja o kit "Revelar ao rolar com GSAP".',
+    alternativa:
+      'GSAP ScrollTrigger com ScrollTrigger.batch() faz o mesmo e permite atrelar a animação à barra de rolagem (scrub) — veja o kit "Revelar ao rolar com GSAP".',
     compatibilidade: 'IntersectionObserver funciona em todos os navegadores atuais.',
     responsividade: 'Funciona em qualquer largura; o grid de cards se reorganiza sozinho.',
-    acessibilidade: 'O conteúdo está no HTML desde o início. Com prefers-reduced-motion, os cards aparecem sem deslocamento. Se o JavaScript falhar, a classe .js nunca é aplicada e tudo fica visível.',
-    performance: 'Nenhum trabalho por quadro de rolagem: o navegador só chama o observador quando a visibilidade muda. Só transform e opacity são animadas.',
-    limitacoes: ['Elementos que já estão visíveis ao carregar animam imediatamente.', 'No modo "sempre", rolar rápido para cima e para baixo repete muitas animações.'],
+    acessibilidade:
+      'O conteúdo está no HTML desde o início. Com prefers-reduced-motion, os cards aparecem sem deslocamento. Se o JavaScript falhar, a classe .js nunca é aplicada e tudo fica visível.',
+    performance:
+      'Nenhum trabalho por quadro de rolagem: o navegador só chama o observador quando a visibilidade muda. Só transform e opacity são animadas.',
+    limitacoes: [
+      'Elementos que já estão visíveis ao carregar animam imediatamente.',
+      'No modo "sempre", rolar rápido para cima e para baixo repete muitas animações.',
+    ],
     referencias: [MDN.io, MDN.transition, MDN.reduzir],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'limiar', rotulo: 'quanto precisa aparecer', tipo: 'range', min: 0, max: 1, passo: 0.05, unidade: '', padrao: 0.2 },
-    { id: 'dist', rotulo: 'distância', tipo: 'range', min: 0, max: 120, passo: 4, unidade: 'px', padrao: 40 },
-    { id: 'dur', rotulo: 'duração', tipo: 'range', min: 200, max: 1500, passo: 50, unidade: 'ms', padrao: 700 },
-    { id: 'cascata', rotulo: 'intervalo entre cards', tipo: 'range', min: 0, max: 300, passo: 10, unidade: 'ms', padrao: 80 },
+    {
+      id: 'limiar',
+      rotulo: 'quanto precisa aparecer',
+      tipo: 'range',
+      min: 0,
+      max: 1,
+      passo: 0.05,
+      unidade: '',
+      padrao: 0.2,
+    },
+    {
+      id: 'dist',
+      rotulo: 'distância',
+      tipo: 'range',
+      min: 0,
+      max: 120,
+      passo: 4,
+      unidade: 'px',
+      padrao: 40,
+    },
+    {
+      id: 'dur',
+      rotulo: 'duração',
+      tipo: 'range',
+      min: 200,
+      max: 1500,
+      passo: 50,
+      unidade: 'ms',
+      padrao: 700,
+    },
+    {
+      id: 'cascata',
+      rotulo: 'intervalo entre cards',
+      tipo: 'range',
+      min: 0,
+      max: 300,
+      passo: 10,
+      unidade: 'ms',
+      padrao: 80,
+    },
     {
       id: 'repetir',
       rotulo: 'animar',
@@ -49,7 +91,13 @@ export const SCROLL_REVEAL: EffectKit = {
       ],
       padrao: 'uma',
     },
-    { id: 'easing', rotulo: 'curva (easing)', tipo: 'select', opcoes: EASINGS, padrao: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+    {
+      id: 'easing',
+      rotulo: 'curva (easing)',
+      tipo: 'select',
+      opcoes: EASINGS,
+      padrao: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    },
   ],
   gerar: (v) => ({
     html: `<section class="intro"><p>Role para baixo ↓</p></section>
@@ -166,7 +214,10 @@ export class ${nomeClasse('scroll-reveal')} {
   }
 </section>
 `,
-    css: cssAngularPagina(SCROLL_REVEAL.gerar(v).css).replace(/\.js \.revelar/g, ':host(.js) .revelar'),
+    css: cssAngularPagina(SCROLL_REVEAL.gerar(v).css).replace(
+      /\.js \.revelar/g,
+      ':host(.js) .revelar',
+    ),
   }),
   previewAngular: false,
   niveis: {
@@ -184,11 +235,26 @@ export class ${nomeClasse('scroll-reveal')} {
     ],
   },
   glossario: [
-    { termo: 'IntersectionObserver', explicacao: 'API que avisa quando um elemento entra ou sai da área visível.' },
-    { termo: 'threshold', explicacao: 'Quanto do elemento precisa estar visível para disparar (0 a 1).' },
-    { termo: 'isIntersecting', explicacao: 'true quando o elemento está visível segundo o threshold.' },
-    { termo: 'unobserve', explicacao: 'Para de vigiar o elemento (usado no modo "só na primeira vez").' },
+    {
+      termo: 'IntersectionObserver',
+      explicacao: 'API que avisa quando um elemento entra ou sai da área visível.',
+    },
+    {
+      termo: 'threshold',
+      explicacao: 'Quanto do elemento precisa estar visível para disparar (0 a 1).',
+    },
+    {
+      termo: 'isIntersecting',
+      explicacao: 'true quando o elemento está visível segundo o threshold.',
+    },
+    {
+      termo: 'unobserve',
+      explicacao: 'Para de vigiar o elemento (usado no modo "só na primeira vez").',
+    },
     { termo: 'transition-delay', explicacao: 'Atraso de cada card, calculado pela posição --i.' },
-    { termo: "classList.add('js')", explicacao: 'Marca que o JavaScript está ativo; só então os cards começam escondidos.' },
+    {
+      termo: "classList.add('js')",
+      explicacao: 'Marca que o JavaScript está ativo; só então os cards começam escondidos.',
+    },
   ],
 };

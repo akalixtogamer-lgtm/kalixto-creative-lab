@@ -40,7 +40,9 @@ export class ThreeLab implements OnDestroy {
   protected readonly demos = THREE_DEMOS;
   protected readonly suportado = temWebGL();
 
-  protected readonly atual = computed<LabDemo>(() => THREE_DEMOS.find((d) => d.id === this.demo()) ?? THREE_DEMOS[0]);
+  protected readonly atual = computed<LabDemo>(
+    () => THREE_DEMOS.find((d) => d.id === this.demo()) ?? THREE_DEMOS[0],
+  );
   private readonly todosValores = signal<Record<string, Valores>>(
     Object.fromEntries(THREE_DEMOS.map((d) => [d.id, valoresPadrao(d)])),
   );

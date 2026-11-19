@@ -15,7 +15,9 @@ const padrao = (id: string): Valores =>
 
 describe('Fase 2 · versão Angular dos kits', () => {
   it('existe um componente Angular para cada kit', () => {
-    expect(Object.keys(COMPONENTES_ANGULAR).sort()).toEqual(EFFECT_REGISTRY.map((k) => k.ficha.id).sort());
+    expect(Object.keys(COMPONENTES_ANGULAR).sort()).toEqual(
+      EFFECT_REGISTRY.map((k) => k.ficha.id).sort(),
+    );
   });
 
   for (const kit of EFFECT_REGISTRY) {
@@ -37,10 +39,13 @@ describe('Fase 2 · versão Angular dos kits', () => {
       const css = kit.angular(v).css;
       // o CSS do efeito (sem o palco) é o mesmo da versão HTML/CSS/JS
       // o bloco da página rolável (body, intro/fim) fica de fora do componente
-      const cssKit = kit.gerar(v).css.replace(/\/\* Página da demonstração[\s\S]*?\n}\n\.intro, \.fim \{[\s\S]*?\n}\n*/, '');
+      const cssKit = kit
+        .gerar(v)
+        .css.replace(/\/\* Página da demonstração[\s\S]*?\n}\n\.intro, \.fim \{[\s\S]*?\n}\n*/, '');
       for (const linha of cssKit.split('\n').filter((l) => l.includes('ms') || l.includes('px'))) {
         // linhas em vh são do conteúdo de demonstração (texto longo), não do efeito
-        if (!/height: 100%|padding: 24px|gap: 24px|vh;/.test(linha)) expect(css).toContain(linha.trim());
+        if (!/height: 100%|padding: 24px|gap: 24px|vh;/.test(linha))
+          expect(css).toContain(linha.trim());
       }
     });
   }
@@ -49,7 +54,9 @@ describe('Fase 2 · versão Angular dos kits', () => {
     const f = TestBed.createComponent(await COMPONENTES_ANGULAR['text-reveal']());
     f.detectChanges();
     const el = f.nativeElement as HTMLElement;
-    expect(el.querySelector('h1')!.getAttribute('aria-label')).toBe('Experimente. Entenda. Codifique.');
+    expect(el.querySelector('h1')!.getAttribute('aria-label')).toBe(
+      'Experimente. Entenda. Codifique.',
+    );
     expect(el.querySelectorAll('.palavra').length).toBe(3);
     expect(el.querySelectorAll('.parte').length).toBe('Experimente.Entenda.Codifique.'.length);
   });
@@ -64,7 +71,8 @@ describe('Fase 2 · Code Explainer', () => {
       expect(kit.glossario.length).toBeGreaterThan(2);
       const c = kit.gerar(padrao(kit.ficha.id));
       const tudo = `${c.html}\n${c.css}\n${c.js}`;
-      for (const g of kit.glossario) expect(tudo, `"${g.termo}" não aparece no código`).toContain(g.termo);
+      for (const g of kit.glossario)
+        expect(tudo, `"${g.termo}" não aparece no código`).toContain(g.termo);
     });
   }
 });
@@ -116,7 +124,9 @@ describe('Fase 2 · utilitários', () => {
 describe('Fase 2 · Code Lab na página', () => {
   let harness: RouterTestingHarness;
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter(routes, withComponentInputBinding())] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes, withComponentInputBinding())],
+    });
     harness = await RouterTestingHarness.create();
   });
 
@@ -124,7 +134,9 @@ describe('Fase 2 · Code Lab na página', () => {
     await harness.navigateByUrl('/efeitos/fade-in');
     const el = harness.routeNativeElement!;
     const botao = (t: string) =>
-      [...el.querySelectorAll('button')].find((b) => b.textContent?.includes(t)) as HTMLButtonElement;
+      [...el.querySelectorAll('button')].find((b) =>
+        b.textContent?.includes(t),
+      ) as HTMLButtonElement;
 
     expect(el.querySelectorAll('[role="tab"]').length).toBe(6);
     botao('Editar código').click();
@@ -152,7 +164,11 @@ describe('Fase 2 · Code Lab na página', () => {
   it('modo Angular carrega o componente compilado', async () => {
     await harness.navigateByUrl('/efeitos/glow-button');
     const el = harness.routeNativeElement!;
-    ([...el.querySelectorAll('.ef__modo-btn')].find((b) => b.textContent?.includes('Angular')) as HTMLButtonElement).click();
+    (
+      [...el.querySelectorAll('.ef__modo-btn')].find((b) =>
+        b.textContent?.includes('Angular'),
+      ) as HTMLButtonElement
+    ).click();
     harness.detectChanges();
     await new Promise((r) => setTimeout(r, 0));
     await harness.fixture.whenStable();

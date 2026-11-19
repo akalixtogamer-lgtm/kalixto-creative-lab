@@ -27,10 +27,12 @@ export class TextReveal {
 
   private dividir(): Parte[][] {
     let i = 0;
-    return this.texto.split(' ').map((palavra) =>
-      this.modo === 'letras'
-        ? [...palavra].map((letra) => ({ texto: letra, i: i++ }))
-        : [{ texto: palavra, i: i++ }],
-    );
+    return this.texto
+      .split(' ')
+      .map((palavra) =>
+        this.modo === 'letras'
+          ? [...palavra].map((letra) => ({ texto: letra, i: i++ }))
+          : [{ texto: palavra, i: i++ }],
+      );
   }
 }

@@ -66,33 +66,79 @@ export const PARTICLE_FIELD: EffectKit = {
     nomeAmigavel: 'Campo de partículas com constelação',
     categoria: 'particulas',
     subcategoria: 'Partículas 2D',
-    descricao: 'Pontos de luz flutuam devagar sobre o fundo; os que estão perto se ligam por linhas finas, e o mouse empurra (ou atrai) as partículas.',
-    objetivoVisual: 'Sugerir dados, conexões e ciência — o fundo "vivo" de heros de tecnologia, agro, saúde e IA.',
-    aplicacoes: ['Fundo de hero de tecnologia', 'Seções sobre dados e redes', 'Telas de login e espera'],
+    descricao:
+      'Pontos de luz flutuam devagar sobre o fundo; os que estão perto se ligam por linhas finas, e o mouse empurra (ou atrai) as partículas.',
+    objetivoVisual:
+      'Sugerir dados, conexões e ciência — o fundo "vivo" de heros de tecnologia, agro, saúde e IA.',
+    aplicacoes: [
+      'Fundo de hero de tecnologia',
+      'Seções sobre dados e redes',
+      'Telas de login e espera',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript', 'Canvas'],
     dependencias: [],
     interacoes: ['autoplay', 'mouse', 'click'],
-    tags: ['partículas', 'particles', 'constelação', 'canvas', 'network', 'vagalumes', 'fundo animado', 'referência em vídeo'],
+    tags: [
+      'partículas',
+      'particles',
+      'constelação',
+      'canvas',
+      'network',
+      'vagalumes',
+      'fundo animado',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Cada partícula é um objeto com posição (x, y), velocidade (vx, vy) e raio. A cada quadro, a posição soma a velocidade.',
       'O atrito (× 0,98) faz o empurrão do mouse passar aos poucos; o resto (%) faz a partícula que sai de um lado voltar pelo outro.',
       'Para as linhas, comparamos todos os pares: se a distância é menor que o limite, desenhamos uma linha cuja opacidade cai com a distância.',
       'O mouse aplica uma força na direção dele (atrair) ou contrária (repelir), mais forte quanto mais perto.',
     ],
-    alternativa: 'Para milhares de partículas: Three.js com Points e BufferGeometry (GPU), ou um fragment shader. Bibliotecas prontas: tsParticles.',
+    alternativa:
+      'Para milhares de partículas: Three.js com Points e BufferGeometry (GPU), ou um fragment shader. Bibliotecas prontas: tsParticles.',
     compatibilidade: 'Canvas 2D: todos os navegadores atuais.',
-    responsividade: 'O canvas é redimensionado para o tamanho real do palco (vezes devicePixelRatio) ao carregar, então fica nítido em qualquer tela.',
-    acessibilidade: 'Decorativo (aria-hidden). Movimento automático tem botão Pausar (WCAG 2.2.2). Com prefers-reduced-motion, um quadro estático é desenhado e a animação não começa.',
-    performance: 'As linhas comparam todos os pares (n²): 90 partículas = ~4 mil comparações por quadro, tranquilo. Acima de ~250, use uma grade espacial ou WebGL.',
-    limitacoes: ['shadowBlur é caro em alguns navegadores; para muitos pontos, desenhe o brilho com um gradiente radial pré-pronto (sprite).'],
-    referencias: [MDN.raf, { titulo: 'MDN — Canvas API: tutorial de animação', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Basic_animations' }, MDN.wcagMovimento],
+    responsividade:
+      'O canvas é redimensionado para o tamanho real do palco (vezes devicePixelRatio) ao carregar, então fica nítido em qualquer tela.',
+    acessibilidade:
+      'Decorativo (aria-hidden). Movimento automático tem botão Pausar (WCAG 2.2.2). Com prefers-reduced-motion, um quadro estático é desenhado e a animação não começa.',
+    performance:
+      'As linhas comparam todos os pares (n²): 90 partículas = ~4 mil comparações por quadro, tranquilo. Acima de ~250, use uma grade espacial ou WebGL.',
+    limitacoes: [
+      'shadowBlur é caro em alguns navegadores; para muitos pontos, desenhe o brilho com um gradiente radial pré-pronto (sprite).',
+    ],
+    referencias: [
+      MDN.raf,
+      {
+        titulo: 'MDN — Canvas API: tutorial de animação',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Basic_animations',
+      },
+      MDN.wcagMovimento,
+    ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'quantidade', rotulo: 'partículas', tipo: 'range', min: 30, max: 200, passo: 10, unidade: '', padrao: 90 },
-    { id: 'distancia', rotulo: 'alcance das linhas', tipo: 'range', min: 0, max: 160, passo: 10, unidade: 'px', padrao: 90 },
+    {
+      id: 'quantidade',
+      rotulo: 'partículas',
+      tipo: 'range',
+      min: 30,
+      max: 200,
+      passo: 10,
+      unidade: '',
+      padrao: 90,
+    },
+    {
+      id: 'distancia',
+      rotulo: 'alcance das linhas',
+      tipo: 'range',
+      min: 0,
+      max: 160,
+      passo: 10,
+      unidade: 'px',
+      padrao: 90,
+    },
     {
       id: 'reacao',
       rotulo: 'reação ao mouse',
@@ -253,8 +299,14 @@ export class ${nomeClasse('particle-field')} {
 }
 
 ${NUCLEO(Number(v['quantidade']), Number(v['distancia']), String(v['reacao']))
-  .replace('function criarParticulas(w, h) {', 'function criarParticulas(w: number, h: number): Particula[] {')
-  .replace('function passo(ctx, ps, w, h, mouse) {', 'function passo(ctx: CanvasRenderingContext2D, ps: Particula[], w: number, h: number, mouse: Mouse): void {')}
+  .replace(
+    'function criarParticulas(w, h) {',
+    'function criarParticulas(w: number, h: number): Particula[] {',
+  )
+  .replace(
+    'function passo(ctx, ps, w, h, mouse) {',
+    'function passo(ctx: CanvasRenderingContext2D, ps: Particula[], w: number, h: number, mouse: Mouse): void {',
+  )}
 `,
     html: `<section #campo class="campo" (pointermove)="mover($event)" (pointerleave)="sair()">
   <canvas #canvas class="particulas" aria-hidden="true"></canvas>
@@ -282,7 +334,10 @@ ${NUCLEO(Number(v['quantidade']), Number(v['distancia']), String(v['reacao']))
   glossario: [
     { termo: 'Math.hypot', explicacao: 'Distância entre dois pontos (teorema de Pitágoras).' },
     { termo: 'shadowBlur', explicacao: 'Brilho em volta de cada ponto.' },
-    { termo: 'devicePixelRatio', explicacao: 'Densidade de pixels da tela, para o canvas ficar nítido.' },
+    {
+      termo: 'devicePixelRatio',
+      explicacao: 'Densidade de pixels da tela, para o canvas ficar nítido.',
+    },
     { termo: 'aria-pressed', explicacao: 'Indica se a animação está pausada.' },
   ],
 };

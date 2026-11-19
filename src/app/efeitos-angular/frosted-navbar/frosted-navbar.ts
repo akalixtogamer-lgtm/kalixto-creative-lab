@@ -1,4 +1,12 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'app-frosted-navbar',
@@ -13,7 +21,9 @@ export class FrostedNavbar {
     const destroyRef = inject(DestroyRef);
     afterNextRender(() => {
       // quando o sensor do topo sai da tela, a pessoa rolou: liga o vidro
-      const observador = new IntersectionObserver(([entrada]) => this.vidro.set(!entrada.isIntersecting));
+      const observador = new IntersectionObserver(([entrada]) =>
+        this.vidro.set(!entrada.isIntersecting),
+      );
       observador.observe(this.sensor().nativeElement);
       destroyRef.onDestroy(() => observador.disconnect());
     });

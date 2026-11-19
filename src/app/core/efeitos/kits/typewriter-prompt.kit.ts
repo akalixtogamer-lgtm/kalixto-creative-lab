@@ -16,37 +16,87 @@ export const TYPEWRITER_PROMPT: EffectKit = {
     nomeAmigavel: 'Prompt digitado até o "pronto"',
     categoria: 'componentes-dados',
     subcategoria: 'Progresso e estados',
-    descricao: 'Um campo de prompt é digitado letra por letra com cursor piscando; o botão vira "gerando", uma barra enche de 0 a 100% e um selo "PRONTO" carimba o resultado.',
-    objetivoVisual: 'Mostrar um processo (gerar, enviar, publicar) como uma pequena história: pedido → trabalho → resultado.',
-    aplicacoes: ['Demonstração de produto de IA', 'Onboarding e tutoriais', 'Vídeos de divulgação gravados da tela'],
+    descricao:
+      'Um campo de prompt é digitado letra por letra com cursor piscando; o botão vira "gerando", uma barra enche de 0 a 100% e um selo "PRONTO" carimba o resultado.',
+    objetivoVisual:
+      'Mostrar um processo (gerar, enviar, publicar) como uma pequena história: pedido → trabalho → resultado.',
+    aplicacoes: [
+      'Demonstração de produto de IA',
+      'Onboarding e tutoriais',
+      'Vídeos de divulgação gravados da tela',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['typewriter', 'máquina de escrever', 'prompt', 'ia', 'progresso', 'loading', 'selo', 'carimbo', 'referência em vídeo'],
+    tags: [
+      'typewriter',
+      'máquina de escrever',
+      'prompt',
+      'ia',
+      'progresso',
+      'loading',
+      'selo',
+      'carimbo',
+      'referência em vídeo',
+    ],
     explicacao: [
       'A digitação é um setTimeout encadeado: a cada intervalo, o texto visível ganha mais uma letra (slice(0, n)). O cursor é um ::after com animação de piscar (steps).',
       'Ao terminar de digitar, o botão muda de texto e de estado (data-estado="gerando") e começa a contagem: requestAnimationFrame calcula o progresso pelo tempo decorrido.',
       'A barra usa scaleX(progresso) e o número mostra o mesmo valor arredondado.',
       'No fim, o selo "PRONTO" entra com uma animação de carimbo: começa grande e girado e "bate" no lugar com um leve tremor.',
     ],
-    alternativa: 'Com GSAP: TextPlugin para digitar e uma timeline com três etapas (digitar, progresso, selo) — fácil de repetir, pausar e sincronizar com áudio.',
-    compatibilidade: 'requestAnimationFrame, setTimeout e animações CSS: todos os navegadores atuais.',
-    responsividade: 'O cartão usa largura máxima e o texto do prompt quebra em várias linhas no celular.',
-    acessibilidade: 'O texto completo do prompt está no aria-label do campo; o status (gerando / pronto) é anunciado por role="status". Com prefers-reduced-motion o texto aparece inteiro e a barra pula para 100%.',
-    performance: 'Uma troca de texto por letra e um transform por quadro durante o progresso. Desprezível.',
-    limitacoes: ['É uma simulação: num produto real, ligue a barra ao progresso verdadeiro do pedido.'],
+    alternativa:
+      'Com GSAP: TextPlugin para digitar e uma timeline com três etapas (digitar, progresso, selo) — fácil de repetir, pausar e sincronizar com áudio.',
+    compatibilidade:
+      'requestAnimationFrame, setTimeout e animações CSS: todos os navegadores atuais.',
+    responsividade:
+      'O cartão usa largura máxima e o texto do prompt quebra em várias linhas no celular.',
+    acessibilidade:
+      'O texto completo do prompt está no aria-label do campo; o status (gerando / pronto) é anunciado por role="status". Com prefers-reduced-motion o texto aparece inteiro e a barra pula para 100%.',
+    performance:
+      'Uma troca de texto por letra e um transform por quadro durante o progresso. Desprezível.',
+    limitacoes: [
+      'É uma simulação: num produto real, ligue a barra ao progresso verdadeiro do pedido.',
+    ],
     referencias: [
-      { titulo: 'MDN — setTimeout()', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout' },
-      { titulo: 'MDN — ARIA: status role', url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/status_role' },
-      { titulo: 'MDN — prefers-reduced-motion', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion' },
+      {
+        titulo: 'MDN — setTimeout()',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout',
+      },
+      {
+        titulo: 'MDN — ARIA: status role',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/status_role',
+      },
+      {
+        titulo: 'MDN — prefers-reduced-motion',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion',
+      },
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'velocidade', rotulo: 'tempo por letra', tipo: 'range', min: 20, max: 120, passo: 5, unidade: 'ms', padrao: 45 },
-    { id: 'geracao', rotulo: 'tempo gerando', tipo: 'range', min: 1000, max: 4000, passo: 250, unidade: 'ms', padrao: 2000 },
+    {
+      id: 'velocidade',
+      rotulo: 'tempo por letra',
+      tipo: 'range',
+      min: 20,
+      max: 120,
+      passo: 5,
+      unidade: 'ms',
+      padrao: 45,
+    },
+    {
+      id: 'geracao',
+      rotulo: 'tempo gerando',
+      tipo: 'range',
+      min: 1000,
+      max: 4000,
+      passo: 250,
+      unidade: 'ms',
+      padrao: 2000,
+    },
     { id: 'acento', rotulo: 'cor de destaque', tipo: 'select', opcoes: ACENTOS, padrao: '#ff6a1a' },
   ],
   gerar: (v) => {

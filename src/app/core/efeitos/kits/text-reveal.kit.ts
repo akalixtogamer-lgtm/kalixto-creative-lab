@@ -28,12 +28,19 @@ export const TEXT_REVEAL: EffectKit = {
       'O título recebe aria-label com o texto completo e os spans ficam com aria-hidden, para o leitor de tela ler a frase inteira e não letra por letra.',
       'Os espaços entre as palavras ficam como texto normal, então a quebra de linha continua natural em qualquer largura.',
     ],
-    alternativa: 'GSAP SplitText faz a divisão (inclusive por linhas, respeitando a quebra real do texto) e anima com stagger — veja a demo no GSAP Studio.',
+    alternativa:
+      'GSAP SplitText faz a divisão (inclusive por linhas, respeitando a quebra real do texto) e anima com stagger — veja a demo no GSAP Studio.',
     compatibilidade: 'Todos os navegadores atuais.',
-    responsividade: 'O texto continua quebrando linha normalmente, porque cada palavra fica num bloco próprio.',
-    acessibilidade: 'aria-label preserva a leitura da frase. Com redução de movimento, as partes só aparecem (sem deslocar, desfocar ou girar).',
-    performance: 'Uma animação por letra. Para títulos curtos não há problema; em parágrafos longos prefira o modo palavras.',
-    limitacoes: ['A divisão por letras quebra ligaduras tipográficas e o kerning entre letras.', 'Não divide por linhas: para isso é preciso medir a quebra real (SplitText faz isso).'],
+    responsividade:
+      'O texto continua quebrando linha normalmente, porque cada palavra fica num bloco próprio.',
+    acessibilidade:
+      'aria-label preserva a leitura da frase. Com redução de movimento, as partes só aparecem (sem deslocar, desfocar ou girar).',
+    performance:
+      'Uma animação por letra. Para títulos curtos não há problema; em parágrafos longos prefira o modo palavras.',
+    limitacoes: [
+      'A divisão por letras quebra ligaduras tipográficas e o kerning entre letras.',
+      'Não divide por linhas: para isso é preciso medir a quebra real (SplitText faz isso).',
+    ],
     referencias: [MDN.animationDelay, MDN.keyframes, MDN.reduzir],
     validadoEm: VALIDADO_EM,
     status: 'validado',
@@ -60,9 +67,33 @@ export const TEXT_REVEAL: EffectKit = {
       ],
       padrao: 'subir',
     },
-    { id: 'stagger', rotulo: 'intervalo entre partes', tipo: 'range', min: 10, max: 200, passo: 5, unidade: 'ms', padrao: 35 },
-    { id: 'dur', rotulo: 'duração de cada parte', tipo: 'range', min: 200, max: 1500, passo: 50, unidade: 'ms', padrao: 600 },
-    { id: 'easing', rotulo: 'curva (easing)', tipo: 'select', opcoes: EASINGS, padrao: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+    {
+      id: 'stagger',
+      rotulo: 'intervalo entre partes',
+      tipo: 'range',
+      min: 10,
+      max: 200,
+      passo: 5,
+      unidade: 'ms',
+      padrao: 35,
+    },
+    {
+      id: 'dur',
+      rotulo: 'duração de cada parte',
+      tipo: 'range',
+      min: 200,
+      max: 1500,
+      passo: 50,
+      unidade: 'ms',
+      padrao: 600,
+    },
+    {
+      id: 'easing',
+      rotulo: 'curva (easing)',
+      tipo: 'select',
+      opcoes: EASINGS,
+      padrao: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    },
   ],
   gerar: (v) => ({
     html: `<h1 class="titulo">Experimente. Entenda. Codifique.</h1>
@@ -204,10 +235,19 @@ export class ${nomeClasse('text-reveal')} {
   },
   glossario: [
     { termo: '--i', explicacao: 'Variável CSS com a posição de cada parte na sequência.' },
-    { termo: 'calc(var(--i)', explicacao: 'Multiplica a posição pelo intervalo para calcular o atraso de cada parte.' },
+    {
+      termo: 'calc(var(--i)',
+      explicacao: 'Multiplica a posição pelo intervalo para calcular o atraso de cada parte.',
+    },
     { termo: 'aria-label', explicacao: 'Texto que o leitor de tela lê no lugar das partes.' },
-    { termo: 'aria-hidden', explicacao: 'Esconde as partes do leitor de tela (evita leitura letra por letra).' },
+    {
+      termo: 'aria-hidden',
+      explicacao: 'Esconde as partes do leitor de tela (evita leitura letra por letra).',
+    },
     { termo: 'white-space: nowrap', explicacao: 'Impede a palavra de quebrar no meio.' },
-    { termo: 'inline-block', explicacao: 'Permite usar transform em cada parte, que é um elemento de texto.' },
+    {
+      termo: 'inline-block',
+      explicacao: 'Permite usar transform em cada parte, que é um elemento de texto.',
+    },
   ],
 };

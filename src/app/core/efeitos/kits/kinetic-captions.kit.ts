@@ -23,25 +23,43 @@ export const KINETIC_CAPTIONS: EffectKit = {
     nomeAmigavel: 'Legenda cinética',
     categoria: 'tipografia',
     subcategoria: 'Legendas e texto falado',
-    descricao: 'As palavras entram uma por vez, no ritmo da fala, e a palavra "da vez" acende com a cor de destaque — o estilo de legenda dos Reels.',
-    objetivoVisual: 'Prender o olhar no texto e dar ritmo de fala a uma frase, como nas legendas de vídeos curtos.',
-    aplicacoes: ['Heros com frase de impacto', 'Vídeos e Reels gravados da tela', 'Apresentações e manifestos'],
+    descricao:
+      'As palavras entram uma por vez, no ritmo da fala, e a palavra "da vez" acende com a cor de destaque — o estilo de legenda dos Reels.',
+    objetivoVisual:
+      'Prender o olhar no texto e dar ritmo de fala a uma frase, como nas legendas de vídeos curtos.',
+    aplicacoes: [
+      'Heros com frase de impacto',
+      'Vídeos e Reels gravados da tela',
+      'Apresentações e manifestos',
+    ],
     nivel: 'iniciante',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['legenda', 'caption', 'reels', 'kinetic typography', 'palavra por palavra', 'karaokê', 'referência em vídeo'],
+    tags: [
+      'legenda',
+      'caption',
+      'reels',
+      'kinetic typography',
+      'palavra por palavra',
+      'karaokê',
+      'referência em vídeo',
+    ],
     explicacao: [
       'O JavaScript só divide a frase em palavras (um <span> para cada) e grava a posição de cada uma na variável --i.',
       'Toda palavra tem duas animações com o mesmo atraso: calc(var(--i) * ritmo). A primeira faz a palavra entrar; a segunda pinta a palavra com a cor de destaque durante uma "batida".',
       'A animação de destaque não tem fill-mode: quando ela termina, a cor volta ao branco. Por isso só uma palavra fica acesa por vez.',
       'O aria-label no parágrafo guarda a frase inteira; os <span> são aria-hidden para o leitor de tela não soletrar palavra por palavra.',
     ],
-    alternativa: 'Com GSAP: SplitText divide as palavras e uma timeline com stagger controla entrada e destaque — útil para sincronizar com um áudio real.',
+    alternativa:
+      'Com GSAP: SplitText divide as palavras e uma timeline com stagger controla entrada e destaque — útil para sincronizar com um áudio real.',
     compatibilidade: 'Animações CSS e variáveis em calc(): todos os navegadores atuais.',
-    responsividade: 'O tamanho da fonte usa clamp() e a largura é limitada em ch, então a frase quebra em poucas linhas no celular.',
-    acessibilidade: 'A frase completa fica no aria-label. Com prefers-reduced-motion, todas as palavras aparecem paradas, sem destaque piscando.',
-    performance: 'Só opacity, transform e color são animados; não há JavaScript rodando durante a animação.',
+    responsividade:
+      'O tamanho da fonte usa clamp() e a largura é limitada em ch, então a frase quebra em poucas linhas no celular.',
+    acessibilidade:
+      'A frase completa fica no aria-label. Com prefers-reduced-motion, todas as palavras aparecem paradas, sem destaque piscando.',
+    performance:
+      'Só opacity, transform e color são animados; não há JavaScript rodando durante a animação.',
     limitacoes: [
       'O ritmo é fixo por palavra: palavras longas e curtas ganham o mesmo tempo. Para sincronizar com áudio, use os tempos reais de cada palavra em --i.',
     ],
@@ -50,7 +68,16 @@ export const KINETIC_CAPTIONS: EffectKit = {
     status: 'validado',
   },
   params: [
-    { id: 'ritmo', rotulo: 'ritmo (por palavra)', tipo: 'range', min: 120, max: 600, passo: 20, unidade: 'ms', padrao: 260 },
+    {
+      id: 'ritmo',
+      rotulo: 'ritmo (por palavra)',
+      tipo: 'range',
+      min: 120,
+      max: 600,
+      passo: 20,
+      unidade: 'ms',
+      padrao: 260,
+    },
     { id: 'cor', rotulo: 'cor de destaque', tipo: 'select', opcoes: DESTAQUES, padrao: '#ff2e3e' },
     {
       id: 'entrada',
@@ -167,9 +194,15 @@ export class ${nomeClasse('kinetic-captions')} {
     ],
   },
   glossario: [
-    { termo: 'calc(var(--i) *', explicacao: 'Atraso de cada palavra: a posição dela vezes o ritmo.' },
+    {
+      termo: 'calc(var(--i) *',
+      explicacao: 'Atraso de cada palavra: a posição dela vezes o ritmo.',
+    },
     { termo: 'steps(1)', explicacao: 'Troca a cor de uma vez, sem degradê entre os estados.' },
     { termo: 'aria-label', explicacao: 'Frase completa para o leitor de tela.' },
-    { termo: 'replaceChildren', explicacao: 'Troca todos os filhos do parágrafo de uma vez (recria as palavras).' },
+    {
+      termo: 'replaceChildren',
+      explicacao: 'Troca todos os filhos do parágrafo de uma vez (recria as palavras).',
+    },
   ],
 };

@@ -23,36 +23,73 @@ export const CURTAIN_REVEAL: EffectKit = {
     nomeAmigavel: 'Cortina que se abre',
     categoria: 'transicoes',
     subcategoria: 'Revelação de página',
-    descricao: 'Duas metades de cortina de tecido, com dobras e sombra, se recolhem para os lados (ou sobem) e revelam o conteúdo — como a abertura de um palco.',
-    objetivoVisual: 'Fazer da entrada da página um "momento de estreia", com cara de teatro, museu ou campanha artística.',
-    aplicacoes: ['Abertura de portfólio e campanha', 'Lançamentos e eventos', 'Revelar um produto ou resultado'],
+    descricao:
+      'Duas metades de cortina de tecido, com dobras e sombra, se recolhem para os lados (ou sobem) e revelam o conteúdo — como a abertura de um palco.',
+    objetivoVisual:
+      'Fazer da entrada da página um "momento de estreia", com cara de teatro, museu ou campanha artística.',
+    aplicacoes: [
+      'Abertura de portfólio e campanha',
+      'Lançamentos e eventos',
+      'Revelar um produto ou resultado',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['click', 'keyboard', 'autoplay'],
-    tags: ['cortina', 'curtain', 'palco', 'reveal', 'tecido', 'scaleX', 'transform-origin', 'referência em vídeo'],
+    tags: [
+      'cortina',
+      'curtain',
+      'palco',
+      'reveal',
+      'tecido',
+      'scaleX',
+      'transform-origin',
+      'referência em vídeo',
+    ],
     explicacao: [
       'Cada metade é um painel que ocupa metade do palco. O "tecido" é um repeating-linear-gradient horizontal alternando faixas claras e escuras: são as dobras.',
       'Para abrir, o painel não desliza: ele encolhe na largura (scaleX) a partir da borda de fora (transform-origin). As dobras se apertam, como pano sendo recolhido.',
       'Um gradiente por cima escurece a borda de dentro e o pé da cortina, dando volume.',
       'A cortina abre sozinha ao carregar e o botão abre e fecha de novo; o conteúdo atrás é HTML normal.',
     ],
-    alternativa: 'Com WebGL, um plano subdividido com ondas no vertex shader dá o balanço do tecido; em vídeo, um loop de cortina com fundo transparente (WebM com alfa).',
+    alternativa:
+      'Com WebGL, um plano subdividido com ondas no vertex shader dá o balanço do tecido; em vídeo, um loop de cortina com fundo transparente (WebM com alfa).',
     compatibilidade: 'Transformações e gradientes repetidos: todos os navegadores atuais.',
     responsividade: 'Painéis em %, então a cortina cobre qualquer proporção de palco.',
-    acessibilidade: 'O conteúdo atrás existe no HTML desde o início (a cortina é aria-hidden). O botão informa o estado com aria-pressed. Com prefers-reduced-motion a cortina já começa aberta, sem animação.',
+    acessibilidade:
+      'O conteúdo atrás existe no HTML desde o início (a cortina é aria-hidden). O botão informa o estado com aria-pressed. Com prefers-reduced-motion a cortina já começa aberta, sem animação.',
     performance: 'Só transform anima; os gradientes são desenhados uma vez.',
-    limitacoes: ['scaleX achata as dobras em vez de enrugá-las de verdade; para pano realista, use vídeo ou WebGL.'],
+    limitacoes: [
+      'scaleX achata as dobras em vez de enrugá-las de verdade; para pano realista, use vídeo ou WebGL.',
+    ],
     referencias: [
-      { titulo: 'MDN — repeating-linear-gradient()', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/repeating-linear-gradient' },
-      { titulo: 'MDN — transform-origin', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin' },
-      { titulo: 'MDN — prefers-reduced-motion', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion' },
+      {
+        titulo: 'MDN — repeating-linear-gradient()',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/repeating-linear-gradient',
+      },
+      {
+        titulo: 'MDN — transform-origin',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin',
+      },
+      {
+        titulo: 'MDN — prefers-reduced-motion',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion',
+      },
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'duracao', rotulo: 'tempo para abrir', tipo: 'range', min: 600, max: 2500, passo: 100, unidade: 'ms', padrao: 1400 },
+    {
+      id: 'duracao',
+      rotulo: 'tempo para abrir',
+      tipo: 'range',
+      min: 600,
+      max: 2500,
+      passo: 100,
+      unidade: 'ms',
+      padrao: 1400,
+    },
     {
       id: 'abertura',
       rotulo: 'como abre',
@@ -188,7 +225,10 @@ export class ${nomeClasse('curtain-reveal')} {
     ],
   },
   glossario: [
-    { termo: 'repeating-linear-gradient', explicacao: 'Faixas repetidas claras e escuras: as dobras do tecido.' },
+    {
+      termo: 'repeating-linear-gradient',
+      explicacao: 'Faixas repetidas claras e escuras: as dobras do tecido.',
+    },
     { termo: 'transform-origin', explicacao: 'A metade encolhe a partir da borda de fora.' },
     { termo: 'scaleX(0.08)', explicacao: 'Cortina recolhida: quase sem largura.' },
     { termo: 'aria-pressed', explicacao: 'Informa se a cortina está fechada.' },

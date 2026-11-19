@@ -24,41 +24,85 @@ export const PUFFY_TEXT: EffectKit = {
     nomeAmigavel: 'Tipografia inflada',
     categoria: 'tipografia',
     subcategoria: 'Volume e tipografia 3D',
-    descricao: 'Letras grossas que parecem infladas, com volume feito de sombras empilhadas; cada letra "respira" e estufa quando o mouse passa por cima.',
-    objetivoVisual: 'Dar um ar tátil e divertido a títulos de seção, como letras de balão ou de borracha.',
-    aplicacoes: ['Títulos de seção ("Trabalhos", "Contato")', 'Marcas jovens e de entretenimento', 'Posters e capas em HTML'],
+    descricao:
+      'Letras grossas que parecem infladas, com volume feito de sombras empilhadas; cada letra "respira" e estufa quando o mouse passa por cima.',
+    objetivoVisual:
+      'Dar um ar tátil e divertido a títulos de seção, como letras de balão ou de borracha.',
+    aplicacoes: [
+      'Títulos de seção ("Trabalhos", "Contato")',
+      'Marcas jovens e de entretenimento',
+      'Posters e capas em HTML',
+    ],
     nivel: 'iniciante',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['hover', 'autoplay'],
-    tags: ['puffy', 'inflado', 'inflated', '3d text', 'text-shadow', 'balão', 'tipografia 3d', 'referência em vídeo'],
+    tags: [
+      'puffy',
+      'inflado',
+      'inflated',
+      '3d text',
+      'text-shadow',
+      'balão',
+      'tipografia 3d',
+      'referência em vídeo',
+    ],
     explicacao: [
       'O volume é uma pilha de text-shadow: cada sombra desce 1px a mais, numa cor mais escura que a letra. Juntas, parecem a lateral de um objeto.',
       'Uma última sombra, borrada e transparente, faz a sombra no "chão". -webkit-text-stroke claro desenha o brilho na borda de cima.',
       'Cada letra é um <span> com a posição --i. A animação "respirar" mexe na propriedade scale com atraso por letra, como uma onda.',
       'No hover, a letra ganha transform: scale() com uma curva elástica. Como respirar usa scale e o hover usa transform, um não apaga o outro.',
     ],
-    alternativa: 'Para volume real com luz e reflexo, use Three.js com TextGeometry (bevel alto) ou um modelo 3D exportado do Spline/Blender.',
-    compatibilidade: 'text-shadow múltiplo, -webkit-text-stroke e a propriedade individual scale: todos os navegadores atuais.',
-    responsividade: 'O tamanho da fonte usa clamp(); a profundidade é em px fixos e continua proporcional nas telas menores.',
-    acessibilidade: 'O título tem aria-label com a palavra inteira e as letras são aria-hidden. A respiração é lenta e de baixa amplitude; com prefers-reduced-motion ela para e o hover não anima.',
-    performance: 'Sombras de texto com muitas camadas custam na pintura. A respiração anima só scale (composição), sem repintar as sombras a cada quadro.',
+    alternativa:
+      'Para volume real com luz e reflexo, use Three.js com TextGeometry (bevel alto) ou um modelo 3D exportado do Spline/Blender.',
+    compatibilidade:
+      'text-shadow múltiplo, -webkit-text-stroke e a propriedade individual scale: todos os navegadores atuais.',
+    responsividade:
+      'O tamanho da fonte usa clamp(); a profundidade é em px fixos e continua proporcional nas telas menores.',
+    acessibilidade:
+      'O título tem aria-label com a palavra inteira e as letras são aria-hidden. A respiração é lenta e de baixa amplitude; com prefers-reduced-motion ela para e o hover não anima.',
+    performance:
+      'Sombras de texto com muitas camadas custam na pintura. A respiração anima só scale (composição), sem repintar as sombras a cada quadro.',
     limitacoes: [
       'Sombras empilhadas criam volume para baixo apenas; não há luz que muda com o ângulo.',
       'Com volume muito alto em fontes finas, as camadas aparecem como "degraus". Use fontes bem pesadas (900).',
     ],
     referencias: [
-      { titulo: 'MDN — text-shadow', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/text-shadow' },
-      { titulo: 'MDN — scale (propriedade)', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/scale' },
+      {
+        titulo: 'MDN — text-shadow',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/text-shadow',
+      },
+      {
+        titulo: 'MDN — scale (propriedade)',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/scale',
+      },
       MDN.reduzir,
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'volume', rotulo: 'volume (camadas)', tipo: 'range', min: 2, max: 12, passo: 1, unidade: 'px', padrao: 7 },
+    {
+      id: 'volume',
+      rotulo: 'volume (camadas)',
+      tipo: 'range',
+      min: 2,
+      max: 12,
+      passo: 1,
+      unidade: 'px',
+      padrao: 7,
+    },
     { id: 'cor', rotulo: 'cor', tipo: 'select', opcoes: CORES_INFLADAS, padrao: '#8fd3ff' },
-    { id: 'estufar', rotulo: 'estufar no hover', tipo: 'range', min: 1, max: 1.4, passo: 0.02, unidade: '×', padrao: 1.18 },
+    {
+      id: 'estufar',
+      rotulo: 'estufar no hover',
+      tipo: 'range',
+      min: 1,
+      max: 1.4,
+      passo: 0.02,
+      unidade: '×',
+      padrao: 1.18,
+    },
   ],
   gerar: (v) => {
     const cor = String(v['cor']);
@@ -147,8 +191,14 @@ export class ${nomeClasse('puffy-text')} {
   },
   glossario: [
     { termo: 'text-shadow', explicacao: 'Sombras do texto; empilhadas, viram o volume da letra.' },
-    { termo: '-webkit-text-stroke', explicacao: 'Contorno das letras — aqui, claro, faz o brilho da borda.' },
+    {
+      termo: '-webkit-text-stroke',
+      explicacao: 'Contorno das letras — aqui, claro, faz o brilho da borda.',
+    },
     { termo: 'scale: 1.04 0.97', explicacao: 'Achata e alarga a letra: a respiração.' },
-    { termo: 'cubic-bezier(0.34, 1.56, 0.64, 1)', explicacao: 'Curva que passa do ponto e volta: o "estufar" elástico.' },
+    {
+      termo: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      explicacao: 'Curva que passa do ponto e volta: o "estufar" elástico.',
+    },
   ],
 };

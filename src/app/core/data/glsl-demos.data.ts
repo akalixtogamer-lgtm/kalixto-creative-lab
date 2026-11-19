@@ -94,7 +94,12 @@ void main() {
   vec3 cor = mix(uCorA, uCorB, clamp(t, 0.0, 1.0));
   gl_FragColor = vec4(cor, 1.0);
 }`,
-    uniforms: (v) => ({ uCorA: v['corA'], uCorB: v['corB'], uAngulo: v['angulo'], uVelocidade: v['vel'] }),
+    uniforms: (v) => ({
+      uCorA: v['corA'],
+      uCorB: v['corB'],
+      uAngulo: v['angulo'],
+      uVelocidade: v['vel'],
+    }),
   },
   // ---------------------------------------------------------------- 2
   vertex: {
@@ -191,7 +196,14 @@ void main() {
         fogo: ['#1a0500', '#ff4d00', '#ffd400'],
       };
       const [a, b, c] = paletas[String(v['paleta'])];
-      return { uEscala: v['escala'], uOitavas: v['oitavas'], uVelocidade: v['vel'], uCor1: a, uCor2: b, uCor3: c };
+      return {
+        uEscala: v['escala'],
+        uOitavas: v['oitavas'],
+        uVelocidade: v['vel'],
+        uCor1: a,
+        uCor2: b,
+        uCor3: c,
+      };
     },
   },
   // ---------------------------------------------------------------- 5
@@ -275,7 +287,11 @@ void main() {
   }
   gl_FragColor = vec4(cor, 1.0);
 }`,
-    uniforms: (v) => ({ uPadrao: v['padrao'] === 'voronoi' ? 1 : 0, uEscala: v['escala'], uVelocidade: v['vel'] }),
+    uniforms: (v) => ({
+      uPadrao: v['padrao'] === 'voronoi' ? 1 : 0,
+      uEscala: v['escala'],
+      uVelocidade: v['vel'],
+    }),
   },
   // ---------------------------------------------------------------- 7
   transicao: {
@@ -319,9 +335,15 @@ function codigoShader(id: string, v: Valores, extra = ''): string {
   const s = SHADERS[id];
   const u = s.uniforms(v);
   const linhas = Object.entries(u)
-    .map(([k, x]) => `    ${k}: { value: ${typeof x === 'string' && x.startsWith('#') ? `new THREE.Color("${x}")` : x} },`)
+    .map(
+      ([k, x]) =>
+        `    ${k}: { value: ${typeof x === 'string' && x.startsWith('#') ? `new THREE.Color("${x}")` : x} },`,
+    )
     .join('\n');
-  const shader = s.modo === '3d' ? `// ----- vertex shader -----\n${s.vertex}\n\n// ----- fragment shader -----\n${s.fragment}` : `// ----- fragment shader -----\n${s.fragment}`;
+  const shader =
+    s.modo === '3d'
+      ? `// ----- vertex shader -----\n${s.vertex}\n\n// ----- fragment shader -----\n${s.fragment}`
+      : `// ----- fragment shader -----\n${s.fragment}`;
   return `${shader}
 
 // ----- JavaScript (Three.js) -----
@@ -337,7 +359,16 @@ ${extra}`;
 }
 
 const VEL = (padrao: number) =>
-  ({ id: 'vel', rotulo: 'velocidade', tipo: 'range', min: 0, max: 3, passo: 0.25, unidade: 'x', padrao }) as const;
+  ({
+    id: 'vel',
+    rotulo: 'velocidade',
+    tipo: 'range',
+    min: 0,
+    max: 3,
+    passo: 0.25,
+    unidade: 'x',
+    padrao,
+  }) as const;
 
 export const GLSL_DEMOS: LabDemo[] = [
   // ---------------------------------------------------------------- 1
@@ -360,11 +391,23 @@ export const GLSL_DEMOS: LabDemo[] = [
       { nome: 'Pôr do sol', valores: { corA: '#ff2bd6', corB: '#2f7bff', angulo: 90 } },
       { nome: 'Estático', valores: { vel: 0 } },
     ],
-    desafio: { enunciado: 'Faça um gradiente de ciano para roxo na diagonal (45°).', meta: { corA: '#22e3ff', corB: '#8b5cf6', angulo: 45 } },
+    desafio: {
+      enunciado: 'Faça um gradiente de ciano para roxo na diagonal (45°).',
+      meta: { corA: '#22e3ff', corB: '#8b5cf6', angulo: 45 },
+    },
     params: [
       { id: 'corA', rotulo: 'uCorA', tipo: 'select', opcoes: CORES, padrao: '#ff2bd6' },
       { id: 'corB', rotulo: 'uCorB', tipo: 'select', opcoes: CORES, padrao: '#22e3ff' },
-      { id: 'angulo', rotulo: 'uAngulo', tipo: 'range', min: 0, max: 360, passo: 15, unidade: '°', padrao: 0 },
+      {
+        id: 'angulo',
+        rotulo: 'uAngulo',
+        tipo: 'range',
+        min: 0,
+        max: 360,
+        passo: 15,
+        unidade: '°',
+        padrao: 0,
+      },
       VEL(1),
     ],
     codigo: (v) => codigoShader('fragment', v),
@@ -389,10 +432,31 @@ export const GLSL_DEMOS: LabDemo[] = [
       { nome: 'Mar calmo', valores: { amp: 0.15, freq: 1.5, vel: 0.5 } },
       { nome: 'Tempestade', valores: { amp: 0.8, freq: 4, vel: 2.5 } },
     ],
-    desafio: { enunciado: 'Crie ondas bem baixas (0.1) e bem apertadas (frequência 6).', meta: { amp: 0.1, freq: 6 } },
+    desafio: {
+      enunciado: 'Crie ondas bem baixas (0.1) e bem apertadas (frequência 6).',
+      meta: { amp: 0.1, freq: 6 },
+    },
     params: [
-      { id: 'amp', rotulo: 'uAmplitude', tipo: 'range', min: 0, max: 1, passo: 0.05, unidade: '', padrao: 0.35 },
-      { id: 'freq', rotulo: 'uFrequencia', tipo: 'range', min: 0.5, max: 6, passo: 0.5, unidade: '', padrao: 2.5 },
+      {
+        id: 'amp',
+        rotulo: 'uAmplitude',
+        tipo: 'range',
+        min: 0,
+        max: 1,
+        passo: 0.05,
+        unidade: '',
+        padrao: 0.35,
+      },
+      {
+        id: 'freq',
+        rotulo: 'uFrequencia',
+        tipo: 'range',
+        min: 0.5,
+        max: 6,
+        passo: 0.5,
+        unidade: '',
+        padrao: 2.5,
+      },
       VEL(1),
     ],
     codigo: (v) =>
@@ -422,11 +486,41 @@ export const GLSL_DEMOS: LabDemo[] = [
       { nome: 'Borda dura', valores: { borda: 0, raio: 0.3 } },
       { nome: 'Hipnose', valores: { aneis: 30, raio: 0.1 } },
     ],
-    desafio: { enunciado: 'Desenhe um círculo grande (raio 0.4) com borda bem suave (0.1).', meta: { raio: 0.4, borda: 0.1 } },
+    desafio: {
+      enunciado: 'Desenhe um círculo grande (raio 0.4) com borda bem suave (0.1).',
+      meta: { raio: 0.4, borda: 0.1 },
+    },
     params: [
-      { id: 'raio', rotulo: 'uRaio', tipo: 'range', min: 0.05, max: 0.5, passo: 0.05, unidade: '', padrao: 0.25 },
-      { id: 'borda', rotulo: 'uBorda', tipo: 'range', min: 0, max: 0.2, passo: 0.01, unidade: '', padrao: 0.02 },
-      { id: 'aneis', rotulo: 'uAneis', tipo: 'range', min: 2, max: 30, passo: 1, unidade: '', padrao: 10 },
+      {
+        id: 'raio',
+        rotulo: 'uRaio',
+        tipo: 'range',
+        min: 0.05,
+        max: 0.5,
+        passo: 0.05,
+        unidade: '',
+        padrao: 0.25,
+      },
+      {
+        id: 'borda',
+        rotulo: 'uBorda',
+        tipo: 'range',
+        min: 0,
+        max: 0.2,
+        passo: 0.01,
+        unidade: '',
+        padrao: 0.02,
+      },
+      {
+        id: 'aneis',
+        rotulo: 'uAneis',
+        tipo: 'range',
+        min: 2,
+        max: 30,
+        passo: 1,
+        unidade: '',
+        padrao: 10,
+      },
     ],
     codigo: (v) => codigoShader('glsl', v),
   },
@@ -450,7 +544,10 @@ export const GLSL_DEMOS: LabDemo[] = [
       { nome: 'Nuvem', valores: { paleta: 'oceano', escala: 2, oitavas: 6, vel: 0.25 } },
       { nome: 'Lava', valores: { paleta: 'fogo', escala: 4, oitavas: 4, vel: 1 } },
     ],
-    desafio: { enunciado: 'Deixe o ruído "liso": só 1 oitava, na paleta oceano.', meta: { oitavas: 1, paleta: 'oceano' } },
+    desafio: {
+      enunciado: 'Deixe o ruído "liso": só 1 oitava, na paleta oceano.',
+      meta: { oitavas: 1, paleta: 'oceano' },
+    },
     params: [
       {
         id: 'paleta',
@@ -463,8 +560,26 @@ export const GLSL_DEMOS: LabDemo[] = [
         ],
         padrao: 'kalixto',
       },
-      { id: 'escala', rotulo: 'uEscala', tipo: 'range', min: 1, max: 8, passo: 0.5, unidade: '', padrao: 3 },
-      { id: 'oitavas', rotulo: 'uOitavas', tipo: 'range', min: 1, max: 8, passo: 1, unidade: '', padrao: 5 },
+      {
+        id: 'escala',
+        rotulo: 'uEscala',
+        tipo: 'range',
+        min: 1,
+        max: 8,
+        passo: 0.5,
+        unidade: '',
+        padrao: 3,
+      },
+      {
+        id: 'oitavas',
+        rotulo: 'uOitavas',
+        tipo: 'range',
+        min: 1,
+        max: 8,
+        passo: 1,
+        unidade: '',
+        padrao: 5,
+      },
       VEL(0.5),
     ],
     codigo: (v) => codigoShader('noise', v),
@@ -489,10 +604,31 @@ export const GLSL_DEMOS: LabDemo[] = [
       { nome: 'Calor', valores: { forca: 0.01, freq: 30, vel: 3 } },
       { nome: 'Bandeira', valores: { forca: 0.04, freq: 6, vel: 1.5 } },
     ],
-    desafio: { enunciado: 'Desligue as ondas (força 0) e deixe só o efeito do mouse.', meta: { forca: 0 } },
+    desafio: {
+      enunciado: 'Desligue as ondas (força 0) e deixe só o efeito do mouse.',
+      meta: { forca: 0 },
+    },
     params: [
-      { id: 'forca', rotulo: 'uForca', tipo: 'range', min: 0, max: 0.06, passo: 0.005, unidade: '', padrao: 0.02 },
-      { id: 'freq', rotulo: 'uFrequencia', tipo: 'range', min: 2, max: 40, passo: 2, unidade: '', padrao: 12 },
+      {
+        id: 'forca',
+        rotulo: 'uForca',
+        tipo: 'range',
+        min: 0,
+        max: 0.06,
+        passo: 0.005,
+        unidade: '',
+        padrao: 0.02,
+      },
+      {
+        id: 'freq',
+        rotulo: 'uFrequencia',
+        tipo: 'range',
+        min: 2,
+        max: 40,
+        passo: 2,
+        unidade: '',
+        padrao: 12,
+      },
       VEL(1.5),
     ],
     codigo: (v) =>
@@ -522,7 +658,10 @@ export const GLSL_DEMOS: LabDemo[] = [
       { nome: 'Células grandes', valores: { padrao: 'voronoi', escala: 3 } },
       { nome: 'Plasma lento', valores: { padrao: 'plasma', vel: 0.25, escala: 4 } },
     ],
-    desafio: { enunciado: 'Mostre um Voronoi com muitas células (escala 12).', meta: { padrao: 'voronoi', escala: 12 } },
+    desafio: {
+      enunciado: 'Mostre um Voronoi com muitas células (escala 12).',
+      meta: { padrao: 'voronoi', escala: 12 },
+    },
     params: [
       {
         id: 'padrao',
@@ -534,7 +673,16 @@ export const GLSL_DEMOS: LabDemo[] = [
         ],
         padrao: 'plasma',
       },
-      { id: 'escala', rotulo: 'uEscala', tipo: 'range', min: 2, max: 14, passo: 1, unidade: '', padrao: 6 },
+      {
+        id: 'escala',
+        rotulo: 'uEscala',
+        tipo: 'range',
+        min: 2,
+        max: 14,
+        passo: 1,
+        unidade: '',
+        padrao: 6,
+      },
       VEL(1),
     ],
     codigo: (v) => codigoShader('procedural', v),
@@ -558,11 +706,41 @@ export const GLSL_DEMOS: LabDemo[] = [
       { nome: 'Borda nítida', valores: { borda: 0.02, escala: 8 } },
       { nome: 'Dissolver', valores: { borda: 0.2, escala: 24 } },
     ],
-    desafio: { enunciado: 'Faça uma transição lenta (2.5 s) com ruído grande (escala 2).', meta: { dur: 2.5, escala: 2 } },
+    desafio: {
+      enunciado: 'Faça uma transição lenta (2.5 s) com ruído grande (escala 2).',
+      meta: { dur: 2.5, escala: 2 },
+    },
     params: [
-      { id: 'borda', rotulo: 'uBorda', tipo: 'range', min: 0.02, max: 0.3, passo: 0.02, unidade: '', padrao: 0.1 },
-      { id: 'escala', rotulo: 'uEscalaRuido', tipo: 'range', min: 2, max: 24, passo: 2, unidade: '', padrao: 6 },
-      { id: 'dur', rotulo: 'duração (GSAP)', tipo: 'range', min: 0.5, max: 3, passo: 0.5, unidade: 's', padrao: 1.5 },
+      {
+        id: 'borda',
+        rotulo: 'uBorda',
+        tipo: 'range',
+        min: 0.02,
+        max: 0.3,
+        passo: 0.02,
+        unidade: '',
+        padrao: 0.1,
+      },
+      {
+        id: 'escala',
+        rotulo: 'uEscalaRuido',
+        tipo: 'range',
+        min: 2,
+        max: 24,
+        passo: 2,
+        unidade: '',
+        padrao: 6,
+      },
+      {
+        id: 'dur',
+        rotulo: 'duração (GSAP)',
+        tipo: 'range',
+        min: 0.5,
+        max: 3,
+        passo: 0.5,
+        unidade: 's',
+        padrao: 1.5,
+      },
     ],
     codigo: (v) =>
       codigoShader(

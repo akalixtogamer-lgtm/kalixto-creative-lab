@@ -43,7 +43,9 @@
     background: var(--kx-bg-blur);
     backdrop-filter: blur(16px);
   }
-  .shell__tema { margin-left: auto; }
+  .shell__tema {
+    margin-left: auto;
+  }
   .shell__topbar-brand {
     display: flex;
     align-items: center;
@@ -96,6 +98,8 @@
 @media (max-width: 900px) {
   .shell:not(.menu-aberto) .shell__sidebar {
     visibility: hidden;
-    transition: transform var(--kx-dur-base) var(--kx-ease-out), visibility 0s linear var(--kx-dur-base);
+    transition:
+      transform var(--kx-dur-base) var(--kx-ease-out),
+      visibility 0s linear var(--kx-dur-base);
   }
 }

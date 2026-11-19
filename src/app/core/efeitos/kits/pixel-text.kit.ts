@@ -52,40 +52,83 @@ export const PIXEL_TEXT: EffectKit = {
     nomeAmigavel: 'Título que se monta em pixels',
     categoria: 'tipografia',
     subcategoria: 'Texto que se transforma',
-    descricao: 'O título surge bloco a bloco, como pixels acendendo num painel de LED, com uma "frente" colorida percorrendo as letras, até virar texto nítido.',
-    objetivoVisual: 'Dar um ar digital, de dados e tecnologia, a títulos de seção — como nos sites de agrotech e ciência.',
-    aplicacoes: ['Títulos de seção em sites de tecnologia', 'Telas de abertura', 'Manchetes de campanhas'],
+    descricao:
+      'O título surge bloco a bloco, como pixels acendendo num painel de LED, com uma "frente" colorida percorrendo as letras, até virar texto nítido.',
+    objetivoVisual:
+      'Dar um ar digital, de dados e tecnologia, a títulos de seção — como nos sites de agrotech e ciência.',
+    aplicacoes: [
+      'Títulos de seção em sites de tecnologia',
+      'Telas de abertura',
+      'Manchetes de campanhas',
+    ],
     nivel: 'avancado',
     tecnologias: ['HTML', 'CSS', 'JavaScript', 'Canvas'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['pixel', 'dissolve', 'glitch', 'led', 'canvas', 'getImageData', 'texto digital', 'referência em vídeo'],
+    tags: [
+      'pixel',
+      'dissolve',
+      'glitch',
+      'led',
+      'canvas',
+      'getImageData',
+      'texto digital',
+      'referência em vídeo',
+    ],
     explicacao: [
       'O texto é desenhado primeiro numa tela escondida. getImageData lê os pixels dela, e a gente percorre uma grade (de PIXEL em PIXEL) guardando só as células que caíram em cima de alguma letra.',
       'Cada célula recebe uma "ordem" de 0 a 1: aleatória (dissolver) ou crescendo da esquerda para a direita (varrer).',
       'A cada quadro, desenhamos os quadradinhos cuja ordem já passou do progresso t. Os mais recentes (até 0,08 atrás) saem em lima: é a frente da onda.',
       'Quando t chega a 1, a tela escondida inteira é copiada: o texto termina nítido, com as curvas das letras.',
     ],
-    alternativa: 'Sem canvas: cada letra como <span> com clip-path de "degraus" animado (steps()). Em WebGL: um shader que pixeliza (floor(uv × n) / n) diminuindo n até o texto ficar nítido.',
+    alternativa:
+      'Sem canvas: cada letra como <span> com clip-path de "degraus" animado (steps()). Em WebGL: um shader que pixeliza (floor(uv × n) / n) diminuindo n até o texto ficar nítido.',
     compatibilidade: 'Canvas 2D e getImageData: todos os navegadores atuais.',
-    responsividade: 'O canvas tem tamanho interno fixo e escala pelo CSS; em telas retina multiplique o tamanho por devicePixelRatio.',
-    acessibilidade: 'O texto real está num <h1> visualmente oculto; o canvas é aria-hidden. Com prefers-reduced-motion o texto aparece direto, já nítido.',
-    performance: 'getImageData roda uma vez. Por quadro, só fillRect das células visíveis (centenas) durante a duração escolhida.',
+    responsividade:
+      'O canvas tem tamanho interno fixo e escala pelo CSS; em telas retina multiplique o tamanho por devicePixelRatio.',
+    acessibilidade:
+      'O texto real está num <h1> visualmente oculto; o canvas é aria-hidden. Com prefers-reduced-motion o texto aparece direto, já nítido.',
+    performance:
+      'getImageData roda uma vez. Por quadro, só fillRect das células visíveis (centenas) durante a duração escolhida.',
     limitacoes: [
       'A fonte do canvas precisa estar carregada antes da amostragem (document.fonts.ready) — senão a amostra sai com a fonte de reserva.',
       'Texto longo vira milhares de células: use em títulos curtos.',
     ],
     referencias: [
-      { titulo: 'MDN — getImageData()', url: 'https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData' },
-      { titulo: 'MDN — fillText()', url: 'https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillText' },
+      {
+        titulo: 'MDN — getImageData()',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData',
+      },
+      {
+        titulo: 'MDN — fillText()',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillText',
+      },
       MDN.reduzir,
     ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'pixel', rotulo: 'tamanho do pixel', tipo: 'range', min: 4, max: 20, passo: 2, unidade: 'px', padrao: 8 },
-    { id: 'duracao', rotulo: 'duração', tipo: 'range', min: 600, max: 3000, passo: 100, unidade: 'ms', padrao: 1600 },
+    {
+      id: 'pixel',
+      rotulo: 'tamanho do pixel',
+      tipo: 'range',
+      min: 4,
+      max: 20,
+      passo: 2,
+      unidade: 'px',
+      padrao: 8,
+    },
+    {
+      id: 'duracao',
+      rotulo: 'duração',
+      tipo: 'range',
+      min: 600,
+      max: 3000,
+      passo: 100,
+      unidade: 'ms',
+      padrao: 1600,
+    },
     {
       id: 'modo',
       rotulo: 'como aparece',
@@ -194,10 +237,19 @@ interface Amostra {
 }
 
 ${NUCLEO(Number(v['pixel']), String(v['modo']))
-  .replace('function amostrar(w, h, texto) {', 'function amostrar(w: number, h: number, texto: string): Amostra {')
-  .replace("const o = tela.getContext('2d');", "const o = tela.getContext('2d') as CanvasRenderingContext2D;")
+  .replace(
+    'function amostrar(w, h, texto) {',
+    'function amostrar(w: number, h: number, texto: string): Amostra {',
+  )
+  .replace(
+    "const o = tela.getContext('2d');",
+    "const o = tela.getContext('2d') as CanvasRenderingContext2D;",
+  )
   .replace('const celulas = [];', 'const celulas: Celula[] = [];')
-  .replace('function desenhar(ctx, amostra, t) {', 'function desenhar(ctx: CanvasRenderingContext2D, amostra: Amostra, t: number): void {')}
+  .replace(
+    'function desenhar(ctx, amostra, t) {',
+    'function desenhar(ctx: CanvasRenderingContext2D, amostra: Amostra, t: number): void {',
+  )}
 `,
     html: `<h1 class="oculto">{{ texto }}</h1>
 <canvas #canvas class="painel" width="720" height="200" aria-hidden="true"></canvas>
@@ -221,7 +273,10 @@ ${NUCLEO(Number(v['pixel']), String(v['modo']))
   glossario: [
     { termo: 'getImageData', explicacao: 'Lê os pixels do texto desenhado na tela escondida.' },
     { termo: 'fillRect', explicacao: 'Desenha cada quadradinho (célula) do título.' },
-    { termo: 'document.fonts.ready', explicacao: 'Espera a fonte carregar antes de amostrar o texto.' },
+    {
+      termo: 'document.fonts.ready',
+      explicacao: 'Espera a fonte carregar antes de amostrar o texto.',
+    },
     { termo: 'drawImage', explicacao: 'No fim, copia o texto nítido para a tela visível.' },
   ],
 };

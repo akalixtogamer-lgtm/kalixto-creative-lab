@@ -29,7 +29,7 @@ const REGRAS: Record<Linguagem, [string, RegExp][]> = {
     ['texto', /"[^"]*"|'[^']*'/y],
     ['tag', /<\/?[\w-]+|\/?>/y],
     ['bloco', /@(?:for|if|else|switch|case)\b|\{\{|\}\}/y],
-    ['atributo', /[\w\-:.#\[\]()@]+(?==)/y],
+    ['atributo', /[\w\-:.#[\]()@]+(?==)/y],
   ],
 };
 

@@ -15,7 +15,12 @@
   background: #16110d;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
-.campo { min-height: 3.2em; margin: 0; font-size: 18px; color: #f4f2ff; }
+.campo {
+  min-height: 3.2em;
+  margin: 0;
+  font-size: 18px;
+  color: #f4f2ff;
+}
 /* cursor piscando */
 .digitado::after {
   content: '';
@@ -27,9 +32,17 @@
   background: #ff6a1a;
   animation: piscar 1s steps(1) infinite;
 }
-@keyframes piscar { 50% { opacity: 0; } }
+@keyframes piscar {
+  50% {
+    opacity: 0;
+  }
+}
 
-.rodape { display: flex; align-items: center; gap: 12px; }
+.rodape {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .gerar {
   padding: 8px 14px;
   border: 0;
@@ -40,12 +53,37 @@
   font-size: 13px;
   font-weight: 700;
 }
-.gerar[data-estado='digitando'] { opacity: 0.45; }
-.gerar[data-estado='gerando'] { animation: respirar 800ms ease-in-out infinite alternate; }
-@keyframes respirar { to { opacity: 0.6; } }
-.progresso { flex: 1; height: 6px; border-radius: 999px; background: rgb(255 255 255 / 0.1); overflow: hidden; }
-.barra { display: block; height: 100%; background: #ff6a1a; transform: scaleX(var(--p, 0)); transform-origin: left center; }
-.porcento { min-width: 4ch; color: #ff6a1a; font-variant-numeric: tabular-nums; text-align: right; }
+.gerar[data-estado='digitando'] {
+  opacity: 0.45;
+}
+.gerar[data-estado='gerando'] {
+  animation: respirar 800ms ease-in-out infinite alternate;
+}
+@keyframes respirar {
+  to {
+    opacity: 0.6;
+  }
+}
+.progresso {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  overflow: hidden;
+}
+.barra {
+  display: block;
+  height: 100%;
+  background: #ff6a1a;
+  transform: scaleX(var(--p, 0));
+  transform-origin: left center;
+}
+.porcento {
+  min-width: 4ch;
+  color: #ff6a1a;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
 
 /* Selo: começa grande e girado e "bate" no lugar */
 .selo {
@@ -62,13 +100,33 @@
   rotate: -8deg;
   opacity: 0;
 }
-.painel-ia.is-pronto .selo { animation: carimbar 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-@keyframes carimbar {
-  0% { opacity: 0; scale: 2.2; rotate: -24deg; }
-  70% { opacity: 1; scale: 0.92; rotate: -6deg; }
-  100% { opacity: 1; scale: 1; rotate: -8deg; }
+.painel-ia.is-pronto .selo {
+  animation: carimbar 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
-.status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@keyframes carimbar {
+  0% {
+    opacity: 0;
+    scale: 2.2;
+    rotate: -24deg;
+  }
+  70% {
+    opacity: 1;
+    scale: 0.92;
+    rotate: -6deg;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    rotate: -8deg;
+  }
+}
+.status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
 
 .repetir {
   padding: 8px 16px;
@@ -81,6 +139,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .digitado::after, .gerar[data-estado='gerando'] { animation: none; }
-  .painel-ia.is-pronto .selo { animation: none; opacity: 1; }
+  .digitado::after,
+  .gerar[data-estado='gerando'] {
+    animation: none;
+  }
+  .painel-ia.is-pronto .selo {
+    animation: none;
+    opacity: 1;
+  }
 }

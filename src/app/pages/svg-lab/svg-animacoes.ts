@@ -9,14 +9,19 @@ gsap.registerPlugin(DrawSVGPlugin, MorphSVGPlugin, MotionPathPlugin);
 
 /** Animações do SVG Lab — uma função por demo (rodam dentro de gsap.context). */
 type Construtor = (palco: HTMLElement, v: Valores) => gsap.core.Animation;
-const um = <T extends Element = SVGElement>(palco: HTMLElement, s: string) => palco.querySelector<T>(s)!;
+const um = <T extends Element = SVGElement>(palco: HTMLElement, s: string) =>
+  palco.querySelector<T>(s)!;
 
 export const ANIMACOES_SVG: Record<string, Construtor> = {
   stroke: (palco, v) =>
     gsap.fromTo(
       um(palco, '.v-assinatura'),
       { drawSVG: '0% 0%' },
-      { drawSVG: `${v['inicio']}% ${v['fim']}%`, duration: Number(v['dur']), ease: String(v['ease']) },
+      {
+        drawSVG: `${v['inicio']}% ${v['fim']}%`,
+        duration: Number(v['dur']),
+        ease: String(v['ease']),
+      },
     ),
 
   mascara: (palco, v) => {

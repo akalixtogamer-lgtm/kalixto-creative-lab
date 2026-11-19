@@ -4,7 +4,13 @@
     <span class="forma f2"></span>
     <span class="forma f3"></span>
   </div>
-  <article #vidro class="vidro" [style.--rx]="rx()" [style.--ry]="ry()" (pointermove)="mover($event, vidro)">
+  <article
+    #vidro
+    class="vidro"
+    [style.--rx]="rx()"
+    [style.--ry]="ry()"
+    (pointermove)="mover($event, vidro)"
+  >
     <p class="vidro__selo">Plano Pro</p>
     <h2>R$ 49<small>/mês</small></h2>
     <p>Tudo o que você precisa para publicar seus projetos.</p>

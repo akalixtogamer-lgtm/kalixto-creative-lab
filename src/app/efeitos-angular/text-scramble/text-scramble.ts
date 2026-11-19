@@ -35,7 +35,9 @@ export class TextScramble {
       let texto = '';
       for (let i = 0; i < final.length; i++) {
         const certo = final[i] === ' ' || i < p * final.length;
-        texto += certo ? final[i] : this.caracteres[Math.floor(Math.random() * this.caracteres.length)];
+        texto += certo
+          ? final[i]
+          : this.caracteres[Math.floor(Math.random() * this.caracteres.length)];
       }
       alvo.textContent = texto;
       if (p < 1) this.quadros.set(alvo, requestAnimationFrame(passo));

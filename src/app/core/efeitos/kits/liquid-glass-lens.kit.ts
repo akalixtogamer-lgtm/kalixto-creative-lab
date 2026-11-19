@@ -5,7 +5,8 @@ const NOME = 'Kalixto Lab';
 
 /** Como o texto aparece DENTRO da bolha de vidro. */
 const ESTILOS_DENTRO: Record<string, string> = {
-  serifa: "font-family: Georgia, 'Times New Roman', serif;\n  font-style: italic;\n  font-weight: 400;",
+  serifa:
+    "font-family: Georgia, 'Times New Roman', serif;\n  font-style: italic;\n  font-weight: 400;",
   contorno: 'color: transparent;\n  -webkit-text-stroke: 2px #fff;',
   negrito: 'font-weight: 900;\n  letter-spacing: -0.06em;',
 };
@@ -17,32 +18,70 @@ export const LIQUID_GLASS_LENS: EffectKit = {
     nomeAmigavel: 'Bolha de vidro que troca a fonte',
     categoria: 'cursor',
     subcategoria: 'Máscaras guiadas pelo ponteiro',
-    descricao: 'Uma bolha de vidro líquido segue o ponteiro sobre um título; dentro dela, as letras aparecem em outra fonte (itálico com serifa, contorno ou ultranegrito), levemente ampliadas.',
-    objetivoVisual: 'Dar um toque de "vidro líquido" (a estética de 2025–2026) e brincar com a identidade tipográfica de um nome ou marca.',
-    aplicacoes: ['Hero de proposta comercial ou portfólio', 'Nome de marca em destaque', 'Páginas de apresentação pessoal'],
+    descricao:
+      'Uma bolha de vidro líquido segue o ponteiro sobre um título; dentro dela, as letras aparecem em outra fonte (itálico com serifa, contorno ou ultranegrito), levemente ampliadas.',
+    objetivoVisual:
+      'Dar um toque de "vidro líquido" (a estética de 2025–2026) e brincar com a identidade tipográfica de um nome ou marca.',
+    aplicacoes: [
+      'Hero de proposta comercial ou portfólio',
+      'Nome de marca em destaque',
+      'Páginas de apresentação pessoal',
+    ],
     nivel: 'avancado',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['mouse', 'touch'],
-    tags: ['liquid glass', 'vidro líquido', 'bolha', 'lente', 'tipografia', 'mask-image', 'backdrop-filter', 'referência em vídeo'],
+    tags: [
+      'liquid glass',
+      'vidro líquido',
+      'bolha',
+      'lente',
+      'tipografia',
+      'mask-image',
+      'backdrop-filter',
+      'referência em vídeo',
+    ],
     explicacao: [
       'O título existe duas vezes, no mesmo lugar: a versão normal embaixo e a versão "alternativa" (outra fonte) em cima.',
       'As duas têm máscaras opostas na posição do ponteiro: a alternativa só aparece dentro do círculo, e a normal só fora dele — assim as letras nunca se sobrepõem.',
       'A bolha é só desenho: borda clara, brilhos com radial-gradient, sombra interna e backdrop-filter, que realça a cor do que está atrás — é isso que dá o aspecto de vidro.',
       'A versão alternativa recebe scale() com transform-origin no ponteiro, como a lente de aumento de uma gota d’água.',
     ],
-    alternativa: 'Para refração de verdade (as bordas "entortando" o fundo), use um filtro SVG feDisplacementMap no backdrop-filter (só Chromium) ou um shader de vidro em WebGL.',
-    compatibilidade: 'mask-image: Chrome/Edge 120+, Firefox 53+, Safari 15.4+ (com -webkit-mask-image). backdrop-filter: todos os navegadores atuais.',
-    responsividade: 'A bolha segue o dedo (touch-action: none só no palco). O título usa clamp() e quebra em telas estreitas.',
-    acessibilidade: 'Só o título normal é lido (a cópia é aria-hidden). Não há movimento automático. Com prefers-reduced-motion, a bolha anda sem transição de entrada.',
-    performance: 'Duas variáveis CSS por quadro (requestAnimationFrame). backdrop-filter numa área pequena é leve; evite bolhas enormes.',
-    limitacoes: ['As duas fontes têm larguras diferentes: as letras de dentro não coincidem exatamente com as de fora (faz parte do charme, como na referência).'],
-    referencias: [MDN.mask, { titulo: 'MDN — backdrop-filter', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter' }, MDN.pointer],
+    alternativa:
+      'Para refração de verdade (as bordas "entortando" o fundo), use um filtro SVG feDisplacementMap no backdrop-filter (só Chromium) ou um shader de vidro em WebGL.',
+    compatibilidade:
+      'mask-image: Chrome/Edge 120+, Firefox 53+, Safari 15.4+ (com -webkit-mask-image). backdrop-filter: todos os navegadores atuais.',
+    responsividade:
+      'A bolha segue o dedo (touch-action: none só no palco). O título usa clamp() e quebra em telas estreitas.',
+    acessibilidade:
+      'Só o título normal é lido (a cópia é aria-hidden). Não há movimento automático. Com prefers-reduced-motion, a bolha anda sem transição de entrada.',
+    performance:
+      'Duas variáveis CSS por quadro (requestAnimationFrame). backdrop-filter numa área pequena é leve; evite bolhas enormes.',
+    limitacoes: [
+      'As duas fontes têm larguras diferentes: as letras de dentro não coincidem exatamente com as de fora (faz parte do charme, como na referência).',
+    ],
+    referencias: [
+      MDN.mask,
+      {
+        titulo: 'MDN — backdrop-filter',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter',
+      },
+      MDN.pointer,
+    ],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'raio', rotulo: 'raio da bolha', tipo: 'range', min: 50, max: 140, passo: 5, unidade: 'px', padrao: 85 },
+    {
+      id: 'raio',
+      rotulo: 'raio da bolha',
+      tipo: 'range',
+      min: 50,
+      max: 140,
+      passo: 5,
+      unidade: 'px',
+      padrao: 85,
+    },
     {
       id: 'estilo',
       rotulo: 'fonte dentro da bolha',
@@ -54,7 +93,16 @@ export const LIQUID_GLASS_LENS: EffectKit = {
       ],
       padrao: 'serifa',
     },
-    { id: 'zoom', rotulo: 'aumento da gota', tipo: 'range', min: 1, max: 1.3, passo: 0.02, unidade: '×', padrao: 1.08 },
+    {
+      id: 'zoom',
+      rotulo: 'aumento da gota',
+      tipo: 'range',
+      min: 1,
+      max: 1.3,
+      passo: 0.02,
+      unidade: '×',
+      padrao: 1.08,
+    },
   ],
   gerar: (v) => {
     const r = Number(v['raio']);
@@ -213,7 +261,14 @@ export class ${nomeClasse('liquid-glass-lens')} {
   glossario: [
     { termo: 'mask-image', explicacao: 'Mostra o título alternativo só dentro do círculo.' },
     { termo: 'backdrop-filter', explicacao: 'Realça o que está atrás da bolha, como vidro.' },
-    { termo: 'place-self: stretch', explicacao: 'Cada título ocupa o palco inteiro: a máscara usa as mesmas coordenadas do ponteiro.' },
-    { termo: 'transform-origin: var(--x) var(--y)', explicacao: 'A ampliação parte do centro da bolha.' },
+    {
+      termo: 'place-self: stretch',
+      explicacao:
+        'Cada título ocupa o palco inteiro: a máscara usa as mesmas coordenadas do ponteiro.',
+    },
+    {
+      termo: 'transform-origin: var(--x) var(--y)',
+      explicacao: 'A ampliação parte do centro da bolha.',
+    },
   ],
 };

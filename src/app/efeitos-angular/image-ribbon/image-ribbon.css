@@ -37,14 +37,23 @@
   transform-style: preserve-3d;
   animation: girar 18s linear infinite;
 }
-@keyframes girar { to { transform: rotateY(-360deg); } }
+@keyframes girar {
+  to {
+    transform: rotateY(-360deg);
+  }
+}
 .cena:hover .giro,
-.cena.is-pausada .giro { animation-play-state: paused; }
+.cena.is-pausada .giro {
+  animation-play-state: paused;
+}
 
 .titulo {
   position: relative;
   margin: 0;
-  font: 700 clamp(2.4rem, 11vw, 5rem) / 0.95 Georgia, 'Times New Roman', serif;
+  font:
+    700 clamp(2.4rem, 11vw, 5rem) / 0.95 Georgia,
+    'Times New Roman',
+    serif;
   text-align: center;
   letter-spacing: -0.02em;
 }
@@ -58,8 +67,13 @@
   font: inherit;
   cursor: pointer;
 }
-.pausar:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.pausar:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .giro { animation: none; }
+  .giro {
+    animation: none;
+  }
 }

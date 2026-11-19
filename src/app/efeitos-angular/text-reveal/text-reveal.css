@@ -14,7 +14,10 @@
 }
 
 /* cada palavra é um bloco que não quebra no meio */
-.palavra { display: inline-block; white-space: nowrap; }
+.palavra {
+  display: inline-block;
+  white-space: nowrap;
+}
 
 /* O efeito: cada parte espera --i vezes o intervalo */
 .parte {
@@ -26,11 +29,19 @@
 }
 
 @keyframes revelar {
-  to { opacity: 1; transform: none; filter: none; }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .parte { transform: none; filter: none; animation-duration: 200ms; }
+  .parte {
+    transform: none;
+    filter: none;
+    animation-duration: 200ms;
+  }
 }
 
 .repetir {
@@ -42,4 +53,7 @@
   font: inherit;
   cursor: pointer;
 }
-.repetir:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.repetir:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}

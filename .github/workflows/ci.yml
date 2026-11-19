@@ -1,0 +1,41 @@
+# Verificação automática — roda em todo push e em todo pull request.
+# NÃO publica nada: a publicação continua manual (deploy-pages.yml).
+name: Verificar
+
+on:
+  push:
+    branches-ignore: [gh-pages]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Formatação (Prettier)
+        run: npm run format:check
+      - name: Lint (ESLint)
+        run: npm run lint
+      - name: Tipos do plugin do Figma
+        run: npm run figma:check
+      - name: Código gerado está em dia
+        run: |
+          npm run verificar:angular
+          npm run verificar:kcx-angular
+      - name: Testes
+        run: npm test
+      - name: Build de produção (com orçamentos de tamanho)
+        run: npm run build

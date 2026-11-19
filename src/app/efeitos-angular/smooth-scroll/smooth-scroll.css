@@ -1,4 +1,6 @@
-:host { display: block; }
+:host {
+  display: block;
+}
 /* no projeto real, coloque no styles.css global: */
 /* html { scroll-behavior: smooth; } */
 
@@ -21,7 +23,10 @@
   color: #f4f2ff;
   text-decoration: none;
 }
-.menu a:focus-visible { outline: 2px solid #22e3ff; outline-offset: 2px; }
+.menu a:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 2px;
+}
 
 .secao {
   display: grid;
@@ -29,13 +34,24 @@
   min-height: 90vh;
   border-bottom: 1px solid #221d3b;
 }
-.secao:nth-child(odd) { background: #120f22; }
-.secao h2 { font-size: clamp(1.6rem, 6vw, 3rem); }
+.secao:nth-child(odd) {
+  background: #120f22;
+}
+.secao h2 {
+  font-size: clamp(1.6rem, 6vw, 3rem);
+}
 
 /* Estilos recomendados pelo Lenis */
-html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+  }
 }

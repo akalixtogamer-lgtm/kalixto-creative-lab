@@ -74,7 +74,10 @@ export class ProgressoService {
     const k = chaveDemo(lab, demo);
     this.atualizar((e) => {
       const lista = (e.presets[k] ?? []).filter((p) => p.nome !== nome);
-      return { ...e, presets: { ...e.presets, [k]: [...lista, { nome, valores: { ...valores } }] } };
+      return {
+        ...e,
+        presets: { ...e.presets, [k]: [...lista, { nome, valores: { ...valores } }] },
+      };
     });
   }
 

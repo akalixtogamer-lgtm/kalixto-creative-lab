@@ -1,4 +1,12 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 
 interface Grao {
   t: number;
@@ -56,7 +64,7 @@ export class ParticleHelix {
 }
 
 const VOLTAS = 3;
-const INCLINACAO = -30 * Math.PI / 180;
+const INCLINACAO = (-30 * Math.PI) / 180;
 const PONTOS = 260;
 
 // poeira fixa em volta da hélice (sorteada uma vez)
@@ -83,7 +91,7 @@ function desenharHelice(ctx: CanvasRenderingContext2D, w: number, h: number, fas
     const t = i / PONTOS;
     const a = ponto(t, 0);
     const b = ponto(t, 1);
-    ctx.strokeStyle = 'rgb(255 255 255 / ' + (0.08 + 0.12 * (a.z + 1) / 2) + ')';
+    ctx.strokeStyle = 'rgb(255 255 255 / ' + (0.08 + (0.12 * (a.z + 1)) / 2) + ')';
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
@@ -94,9 +102,10 @@ function desenharHelice(ctx: CanvasRenderingContext2D, w: number, h: number, fas
     for (let i = 0; i < PONTOS; i++) {
       const p = ponto(i / PONTOS, lado);
       const frente = (p.z + 1) / 2;
-      ctx.fillStyle = lado === 0
-        ? 'rgb(255 154 213 / ' + (0.25 + 0.75 * frente) + ')'
-        : 'rgb(127 178 255 / ' + (0.25 + 0.75 * frente) + ')';
+      ctx.fillStyle =
+        lado === 0
+          ? 'rgb(255 154 213 / ' + (0.25 + 0.75 * frente) + ')'
+          : 'rgb(127 178 255 / ' + (0.25 + 0.75 * frente) + ')';
       ctx.beginPath();
       ctx.arc(p.x, p.y, 0.6 + 1.8 * frente, 0, Math.PI * 2);
       ctx.fill();

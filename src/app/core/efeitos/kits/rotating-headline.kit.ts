@@ -1,10 +1,18 @@
 import { EffectKit } from '../../models/effect-sheet.model';
 import { MDN, VALIDADO_EM, cssAngular, cssPalco, nomeClasse } from './_base';
 
-const FRASES = ['O mundo pode esperar.', 'Dias que começam sem pressa.', 'Sinta o lugar. Viva o agora.', 'Fique mais um instante.'];
+const FRASES = [
+  'O mundo pode esperar.',
+  'Dias que começam sem pressa.',
+  'Sinta o lugar. Viva o agora.',
+  'Fique mais um instante.',
+];
 
 const ENTRADAS: Record<string, { de: string; ate: string }> = {
-  desfocar: { de: 'opacity: 0; filter: blur(12px); translate: 0 0.2em;', ate: 'opacity: 0; filter: blur(12px); translate: 0 -0.2em;' },
+  desfocar: {
+    de: 'opacity: 0; filter: blur(12px); translate: 0 0.2em;',
+    ate: 'opacity: 0; filter: blur(12px); translate: 0 -0.2em;',
+  },
   subir: { de: 'opacity: 0; translate: 0 0.8em;', ate: 'opacity: 0; translate: 0 -0.8em;' },
 };
 
@@ -15,32 +23,62 @@ export const ROTATING_HEADLINE: EffectKit = {
     nomeAmigavel: 'Frases que se revezam no hero',
     categoria: 'tipografia',
     subcategoria: 'Legendas e texto falado',
-    descricao: 'Sobre a foto do hero, uma frase curta entra palavra por palavra, fica alguns segundos e sai, dando lugar à próxima — como as legendas de um filme de viagem.',
-    objetivoVisual: 'Contar a promessa da marca em várias frases sem ocupar espaço, criando um clima calmo e cinematográfico.',
-    aplicacoes: ['Hero de hotel, pousada e turismo', 'Marcas de bem-estar e lifestyle', 'Apresentações de manifesto'],
+    descricao:
+      'Sobre a foto do hero, uma frase curta entra palavra por palavra, fica alguns segundos e sai, dando lugar à próxima — como as legendas de um filme de viagem.',
+    objetivoVisual:
+      'Contar a promessa da marca em várias frases sem ocupar espaço, criando um clima calmo e cinematográfico.',
+    aplicacoes: [
+      'Hero de hotel, pousada e turismo',
+      'Marcas de bem-estar e lifestyle',
+      'Apresentações de manifesto',
+    ],
     nivel: 'intermediario',
     tecnologias: ['HTML', 'CSS', 'JavaScript'],
     dependencias: [],
     interacoes: ['autoplay', 'click'],
-    tags: ['headline', 'frases', 'revezamento', 'rotating text', 'hero', 'blur', 'palavra por palavra', 'referência em vídeo'],
+    tags: [
+      'headline',
+      'frases',
+      'revezamento',
+      'rotating text',
+      'hero',
+      'blur',
+      'palavra por palavra',
+      'referência em vídeo',
+    ],
     explicacao: [
       'O JavaScript guarda a lista de frases e, a cada intervalo, troca a frase visível: divide em palavras (um <span> para cada) e grava a posição de cada uma em --i.',
       'A entrada é CSS: cada palavra anima de "desfocada e um pouco abaixo" para nítida, com atraso --i × atraso por palavra.',
       'Antes de trocar, a frase atual recebe a classe de saída: as palavras sobem e desfocam, na mesma ordem. Só depois a próxima frase entra.',
       'Para o leitor de tela, todas as frases estão numa lista oculta; a frase animada é aria-hidden e não é anunciada a cada troca.',
     ],
-    alternativa: 'Com GSAP: uma timeline repetida com SplitText em cada frase (from e to com stagger) e um label por frase — permite sincronizar com vídeo de fundo.',
+    alternativa:
+      'Com GSAP: uma timeline repetida com SplitText em cada frase (from e to com stagger) e um label por frase — permite sincronizar com vídeo de fundo.',
     compatibilidade: 'Animações CSS e filter: blur(): todos os navegadores atuais.',
-    responsividade: 'O texto usa clamp() e quebra em duas linhas no celular; as palavras são inline-block e quebram naturalmente.',
-    acessibilidade: 'Texto rotativo automático precisa de pausa (WCAG 2.2.2): o botão Pausar congela a frase atual. Com prefers-reduced-motion, as frases trocam sem animação e mais devagar.',
-    performance: 'Uma troca de DOM a cada poucos segundos; a animação usa opacity, filter e translate.',
-    limitacoes: ['blur em texto grande pode pesar em celulares simples; a entrada "subir" é a mais leve.'],
+    responsividade:
+      'O texto usa clamp() e quebra em duas linhas no celular; as palavras são inline-block e quebram naturalmente.',
+    acessibilidade:
+      'Texto rotativo automático precisa de pausa (WCAG 2.2.2): o botão Pausar congela a frase atual. Com prefers-reduced-motion, as frases trocam sem animação e mais devagar.',
+    performance:
+      'Uma troca de DOM a cada poucos segundos; a animação usa opacity, filter e translate.',
+    limitacoes: [
+      'blur em texto grande pode pesar em celulares simples; a entrada "subir" é a mais leve.',
+    ],
     referencias: [MDN.animation, MDN.animationDelay, MDN.wcagMovimento],
     validadoEm: VALIDADO_EM,
     status: 'validado',
   },
   params: [
-    { id: 'tempo', rotulo: 'tempo de cada frase', tipo: 'range', min: 2000, max: 6000, passo: 250, unidade: 'ms', padrao: 3500 },
+    {
+      id: 'tempo',
+      rotulo: 'tempo de cada frase',
+      tipo: 'range',
+      min: 2000,
+      max: 6000,
+      passo: 250,
+      unidade: 'ms',
+      padrao: 3500,
+    },
     {
       id: 'entrada',
       rotulo: 'entrada das palavras',
@@ -51,7 +89,16 @@ export const ROTATING_HEADLINE: EffectKit = {
       ],
       padrao: 'desfocar',
     },
-    { id: 'atraso', rotulo: 'atraso entre palavras', tipo: 'range', min: 40, max: 200, passo: 10, unidade: 'ms', padrao: 90 },
+    {
+      id: 'atraso',
+      rotulo: 'atraso entre palavras',
+      tipo: 'range',
+      min: 40,
+      max: 200,
+      passo: 10,
+      unidade: 'ms',
+      padrao: 90,
+    },
   ],
   gerar: (v) => {
     const e = ENTRADAS[String(v['entrada'])];

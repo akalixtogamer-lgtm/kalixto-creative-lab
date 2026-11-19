@@ -1,0 +1,43 @@
+/* Hover Lift Button — KCX (os valores chegam como custom properties no elemento kcx-hover-lift) */
+kcx-hover-lift {
+  display: contents;
+}
+
+/* Hover Lift Button — controlado pelas variáveis KCX */
+.kcx-hover-lift {
+  padding: var(--kcx-hover-lift-py) var(--kcx-hover-lift-px);
+  border: 0;
+  border-radius: var(--kcx-hover-lift-radius);
+  background: linear-gradient(135deg, var(--kcx-hover-lift-c1), var(--kcx-hover-lift-c2));
+  color: var(--kcx-hover-lift-text);
+  font:
+    600 var(--kcx-hover-lift-font) / 1.2 Inter,
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+  transition:
+    transform var(--kcx-hover-lift-duration) ease,
+    box-shadow var(--kcx-hover-lift-duration) ease;
+}
+
+.kcx-hover-lift:hover,
+.kcx-hover-lift:focus-visible {
+  transform: translateY(calc(var(--kcx-hover-lift-lift) * -1)) scale(var(--kcx-hover-lift-scale));
+  box-shadow: 0 calc(var(--kcx-hover-lift-blur) / 3) var(--kcx-hover-lift-blur)
+    color-mix(in srgb, var(--kcx-hover-lift-shadow) var(--kcx-hover-lift-shadow-alpha), transparent);
+}
+
+.kcx-hover-lift:focus-visible {
+  outline: 2px solid var(--kcx-hover-lift-shadow);
+  outline-offset: 4px;
+}
+.kcx-hover-lift:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kcx-hover-lift:hover,
+  .kcx-hover-lift:focus-visible {
+    transform: none;
+  }
+}

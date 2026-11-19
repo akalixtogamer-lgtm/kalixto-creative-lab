@@ -23,11 +23,17 @@
   transform-style: preserve-3d;
   transition: transform 1200ms cubic-bezier(0.65, 0, 0.35, 1);
 }
-.palco-sala.is-dentro .sala { transform: translateZ(300px); }
+.palco-sala.is-dentro .sala {
+  transform: translateZ(300px);
+}
 
-.parede { position: absolute; }
+.parede {
+  position: absolute;
+}
 /* concreto: ruído suave feito com gradientes */
-.esquerda, .direita, .fundo {
+.esquerda,
+.direita,
+.fundo {
   background:
     radial-gradient(circle at 30% 40%, rgb(255 255 255 / 0.05), transparent 40%),
     linear-gradient(180deg, #8a8f96, #5b6066);
@@ -38,21 +44,44 @@
   place-items: center;
   transform: translateZ(-600px);
 }
-.esquerda { left: 0; top: 0; width: 600px; height: 100%; transform-origin: left center; transform: rotateY(90deg); }
-.direita { right: 0; top: 0; width: 600px; height: 100%; transform-origin: right center; transform: rotateY(-90deg); }
+.esquerda {
+  left: 0;
+  top: 0;
+  width: 600px;
+  height: 100%;
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+.direita {
+  right: 0;
+  top: 0;
+  width: 600px;
+  height: 100%;
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+}
 .teto {
-  left: 0; top: 0; width: 100%; height: 600px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 600px;
   transform-origin: center top;
   transform: rotateX(-90deg);
   /* luzes lineares no teto */
   background:
-    repeating-linear-gradient(180deg, transparent 0 70px, #f4f8ff 70px 76px, transparent 76px 140px) 50% 0 / 6px 100% no-repeat,
-    repeating-linear-gradient(180deg, transparent 0 70px, #f4f8ff 70px 76px, transparent 76px 140px) 20% 0 / 4px 100% no-repeat,
-    repeating-linear-gradient(180deg, transparent 0 70px, #f4f8ff 70px 76px, transparent 76px 140px) 80% 0 / 4px 100% no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 70px, #f4f8ff 70px 76px, transparent 76px 140px)
+      50% 0 / 6px 100% no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 70px, #f4f8ff 70px 76px, transparent 76px 140px)
+      20% 0 / 4px 100% no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 70px, #f4f8ff 70px 76px, transparent 76px 140px)
+      80% 0 / 4px 100% no-repeat,
     #6c7178;
 }
 .chao {
-  left: 0; bottom: 0; width: 100%; height: 600px;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 600px;
   transform-origin: center bottom;
   transform: rotateX(90deg);
   background: linear-gradient(0deg, #2b3036, #b9c2cc 120%);
@@ -70,7 +99,11 @@
   box-shadow: 0 0 60px rgb(34 227 255 / 0.45);
   animation: passar 6s linear infinite;
 }
-@keyframes passar { to { background-position: 300% 0; } }
+@keyframes passar {
+  to {
+    background-position: 300% 0;
+  }
+}
 
 .entrar {
   padding: 10px 20px;
@@ -81,9 +114,16 @@
   font: inherit;
   cursor: pointer;
 }
-.entrar:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
+.entrar:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .sala { transition: none; }
-  .tela { animation: none; }
+  .sala {
+    transition: none;
+  }
+  .tela {
+    animation: none;
+  }
 }

@@ -19,7 +19,9 @@
             <strong>Apareci!</strong>
             <small>start: "{{ valores()['start'] }}"</small>
           </div>
-          <div class="s-espaco s-espaco--fim"><span class="s-dica">↑ Volte para cima e role de novo</span></div>
+          <div class="s-espaco s-espaco--fim">
+            <span class="s-dica">↑ Volte para cima e role de novo</span>
+          </div>
         }
         @case ('scrub') {
           <div class="s-espaco"><span class="s-dica">↓ Role devagar</span></div>
@@ -31,7 +33,9 @@
           <section class="s-painel">
             <p class="s-painel__titulo">Habilidades</p>
             @for (h of ['HTML', 'CSS', 'GSAP', 'Angular']; track h) {
-              <div class="s-barra"><span>{{ h }}</span><i><b class="s-barra-fill"></b></i></div>
+              <div class="s-barra">
+                <span>{{ h }}</span><i><b class="s-barra-fill"></b></i>
+              </div>
             }
           </section>
           <div class="s-espaco"><span class="s-dica">Fim do pin ↑</span></div>
@@ -50,7 +54,9 @@
           <section class="s-horizontal">
             <div class="s-faixa">
               @for (n of paineis(); track n) {
-                <div class="s-paineltz" [attr.data-n]="n"><strong>{{ n }}</strong><small>painel</small></div>
+                <div class="s-paineltz" [attr.data-n]="n">
+                  <strong>{{ n }}</strong><small>painel</small>
+                </div>
               }
             </div>
           </section>
@@ -65,8 +71,9 @@
             <h3>Da dança ao código</h3>
             @for (p of paragrafos; track p) {
               <p>
-                Ritmo, repetição e precisão: o que a dança ensina sobre movimento serve também para animar
-                interfaces. Cada parágrafo aqui é só um texto de exemplo para você ter o que rolar.
+                Ritmo, repetição e precisão: o que a dança ensina sobre movimento serve também para
+                animar interfaces. Cada parágrafo aqui é só um texto de exemplo para você ter o que
+                rolar.
               </p>
             }
           </article>
@@ -74,7 +81,9 @@
         @case ('navbar') {
           <nav class="s-nav" aria-label="Navbar de exemplo">
             <span class="s-nav__marca">KALIXTO</span>
-            <span class="s-nav__links"><span>Início</span><span>Labs</span><span>Contato</span></span>
+            <span class="s-nav__links"
+              ><span>Início</span><span>Labs</span><span>Contato</span></span
+            >
           </nav>
           <header class="s-hero">
             <p class="s-hero__titulo">Hero em tela cheia</p>
@@ -82,12 +91,17 @@
           </header>
           <article class="s-artigo s-artigo--nav">
             @for (p of paragrafos; track p) {
-              <p>Conteúdo da página. Repare na barra do topo: agora ela tem fundo e sombra para continuar legível sobre o texto.</p>
+              <p>
+                Conteúdo da página. Repare na barra do topo: agora ela tem fundo e sombra para
+                continuar legível sobre o texto.
+              </p>
             }
           </article>
         }
         @case ('capitulos') {
-          <div class="s-espaco s-espaco--curto"><span class="s-dica">↓ Role pelos capítulos</span></div>
+          <div class="s-espaco s-espaco--curto">
+            <span class="s-dica">↓ Role pelos capítulos</span>
+          </div>
           <section class="s-capitulos">
             <span class="s-tempo" aria-hidden="true"><i class="s-tempo__fill"></i></span>
             @for (c of capitulos; track c.titulo; let i = $index) {
@@ -106,13 +120,17 @@
           <div class="s-espaco s-espaco--curto"><span class="s-dica">Fim ↑</span></div>
         }
         @case ('storytelling') {
-          <div class="s-espaco s-espaco--curto"><span class="s-dica">↓ Comece a história</span></div>
+          <div class="s-espaco s-espaco--curto">
+            <span class="s-dica">↓ Comece a história</span>
+          </div>
           <section class="s-historia">
             <span class="s-hforma"></span>
             <div class="s-caps">
               <p class="s-cap s-cap-1"><strong>1 · Dança</strong> Tudo começa no movimento.</p>
               <p class="s-cap s-cap-2"><strong>2 · Código</strong> O ritmo vira lógica.</p>
-              <p class="s-cap s-cap-3"><strong>3 · Criação</strong> Movimento + código = experiências.</p>
+              <p class="s-cap s-cap-3">
+                <strong>3 · Criação</strong> Movimento + código = experiências.
+              </p>
             </div>
           </section>
           <div class="s-espaco s-espaco--curto"><span class="s-dica">Fim ↑</span></div>

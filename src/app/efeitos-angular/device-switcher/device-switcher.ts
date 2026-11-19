@@ -20,22 +20,22 @@ export class DeviceSwitcher {
       rotulo: 'Computador',
       largura: '100%',
       proporcao: '16 / 10',
-      raio: '12px'
+      raio: '12px',
     },
     {
       id: 'tablet',
       rotulo: 'Tablet',
       largura: '48%',
       proporcao: '3 / 4',
-      raio: '22px'
+      raio: '22px',
     },
     {
       id: 'celular',
       rotulo: 'Celular',
       largura: '30%',
       proporcao: '9 / 19',
-      raio: '30px'
-    }
+      raio: '30px',
+    },
   ];
   private readonly botoes = viewChildren<ElementRef<HTMLButtonElement>>('opcao');
 

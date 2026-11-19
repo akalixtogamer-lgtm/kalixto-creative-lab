@@ -24,7 +24,9 @@ ${html}
 
 function valorTexto(p: ParamDef, v: Valores): string {
   const x = v[p.id];
-  return p.tipo === 'range' ? `${x}${p.unidade}` : (p.opcoes.find((o) => o.valor === x)?.rotulo ?? String(x));
+  return p.tipo === 'range'
+    ? `${x}${p.unidade}`
+    : (p.opcoes.find((o) => o.valor === x)?.rotulo ?? String(x));
 }
 
 /** README do pacote, gerado a partir da ficha técnica. */
@@ -46,8 +48,10 @@ Exportado do **Kalixto Creative Lab** · categoria ${findCategoria(f.categoria)?
 | \`styles.css\` | Estilos do efeito (inclui o palco escuro da demonstração) |
 | \`script.js\` | Comportamento do efeito${f.tecnologias.includes('JavaScript') ? '' : ' (este efeito não usa JavaScript)'} |
 | \`angular/${id}.ts\`, \`.html\`, \`.css\` | O mesmo efeito como componente Angular standalone |${
-  kit.bibliotecas?.length ? '\n| `vendor/` | Bibliotecas usadas pelo efeito (sem precisar de internet) |' : ''
-}
+    kit.bibliotecas?.length
+      ? '\n| `vendor/` | Bibliotecas usadas pelo efeito (sem precisar de internet) |'
+      : ''
+  }
 
 ${
   editado
@@ -75,7 +79,10 @@ ${
   kit.bibliotecas?.length
     ? kit.bibliotecas
         .map((id) => BIBLIOTECAS[id])
-        .map((b) => `- **${b.nome} ${b.versao}** — \`vendor/${b.nomeArquivo}\` (licença: [${b.licenca}](${b.licencaUrl})). Em projetos com npm: \`npm install ${b.pacoteNpm}\`.`)
+        .map(
+          (b) =>
+            `- **${b.nome} ${b.versao}** — \`vendor/${b.nomeArquivo}\` (licença: [${b.licenca}](${b.licencaUrl})). Em projetos com npm: \`npm install ${b.pacoteNpm}\`.`,
+        )
         .join('\n')
     : 'Nenhuma — só recursos nativos do navegador.'
 }
@@ -115,13 +122,20 @@ export function montarPacote(
     { nome: `${id}/README.md`, conteudo: readmeDoPacote(kit, valores, editado) },
     {
       nome: `${id}/index.html`,
-      conteudo: htmlDoPacote(kit.ficha.nomeAmigavel, codigo.html, bibliotecas.map((b) => b.biblioteca)),
+      conteudo: htmlDoPacote(
+        kit.ficha.nomeAmigavel,
+        codigo.html,
+        bibliotecas.map((b) => b.biblioteca),
+      ),
     },
     { nome: `${id}/styles.css`, conteudo: codigo.css + '\n' },
     { nome: `${id}/script.js`, conteudo: codigo.js + '\n' },
     { nome: `${id}/angular/${id}.ts`, conteudo: angular.ts },
     { nome: `${id}/angular/${id}.html`, conteudo: angular.html },
     { nome: `${id}/angular/${id}.css`, conteudo: angular.css },
-    ...bibliotecas.map((b) => ({ nome: `${id}/vendor/${b.biblioteca.nomeArquivo}`, conteudo: b.codigo })),
+    ...bibliotecas.map((b) => ({
+      nome: `${id}/vendor/${b.biblioteca.nomeArquivo}`,
+      conteudo: b.codigo,
+    })),
   ];
 }

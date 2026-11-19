@@ -13,11 +13,27 @@
   border-radius: 20px;
   background: linear-gradient(160deg, #2a1f6b, #0f0c1f);
 }
-.pagina-fundo h1 { margin: 0; font-size: clamp(1.6rem, 6vw, 2.4rem); }
-.miniaturas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-.miniaturas span { aspect-ratio: 4 / 3; border-radius: 12px; background: linear-gradient(135deg, #ff2bd6, #7c4ddb); }
-.miniaturas span:nth-child(2) { background: linear-gradient(135deg, #22e3ff, #2f7bff); }
-.miniaturas span:nth-child(3) { background: linear-gradient(135deg, #c6ff3d, #1f6b4a); }
+.pagina-fundo h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+}
+.miniaturas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+.miniaturas span {
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff2bd6, #7c4ddb);
+}
+.miniaturas span:nth-child(2) {
+  background: linear-gradient(135deg, #22e3ff, #2f7bff);
+}
+.miniaturas span:nth-child(3) {
+  background: linear-gradient(135deg, #c6ff3d, #1f6b4a);
+}
 
 button {
   padding: 10px 18px;
@@ -28,8 +44,16 @@ button {
   font: inherit;
   cursor: pointer;
 }
-button:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
-.principal { border-color: transparent; background: #ff2bd6; color: #1a0717; font-weight: 700; }
+button:focus-visible {
+  outline: 2px solid #22e3ff;
+  outline-offset: 3px;
+}
+.principal {
+  border-color: transparent;
+  background: #ff2bd6;
+  color: #1a0717;
+  font-weight: 700;
+}
 
 /* A janela de vidro */
 .janela {
@@ -50,10 +74,23 @@ button:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
     overlay 350ms allow-discrete,
     display 350ms allow-discrete;
 }
-.janela[open] { opacity: 1; scale: 1; }
-.janela h2 { margin: 0 0 8px; font-size: 22px; }
-.janela p { margin: 0 0 18px; color: #e7e3ff; }
-.acoes { display: flex; justify-content: flex-end; gap: 8px; }
+.janela[open] {
+  opacity: 1;
+  scale: 1;
+}
+.janela h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+.janela p {
+  margin: 0 0 18px;
+  color: #e7e3ff;
+}
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
 
 /* A página atrás: desfocada e escurecida */
 .janela::backdrop {
@@ -70,10 +107,19 @@ button:focus-visible { outline: 2px solid #22e3ff; outline-offset: 3px; }
 
 /* Estado de partida da animação de entrada */
 @starting-style {
-  .janela[open] { opacity: 0; scale: 0.9; }
-  .janela[open]::backdrop { background: rgb(5 3 12 / 0); backdrop-filter: blur(0px); }
+  .janela[open] {
+    opacity: 0;
+    scale: 0.9;
+  }
+  .janela[open]::backdrop {
+    background: rgb(5 3 12 / 0);
+    backdrop-filter: blur(0px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .janela, .janela::backdrop { transition: none; }
+  .janela,
+  .janela::backdrop {
+    transition: none;
+  }
 }

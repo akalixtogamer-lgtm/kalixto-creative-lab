@@ -20,9 +20,15 @@
   color: var(--kx-text);
   font: inherit;
 }
-.gl__input:focus-visible { border-color: var(--kx-ciano); }
+.gl__input:focus-visible {
+  border-color: var(--kx-ciano);
+}
 
-.gl__tipos { display: flex; flex-wrap: wrap; gap: var(--kx-space-2); }
+.gl__tipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2);
+}
 .gl__tipo {
   min-height: 36px;
   border: 1px solid var(--kx-border-strong);
@@ -32,7 +38,11 @@
   font: inherit;
   font-size: var(--kx-fs-sm);
 }
-.gl__tipo span { color: inherit; opacity: 0.85; font-weight: 700; }
+.gl__tipo span {
+  color: inherit;
+  opacity: 0.85;
+  font-weight: 700;
+}
 .gl__tipo[aria-pressed='true'] {
   border-color: var(--kx-ciano);
   color: var(--kx-text);
@@ -61,8 +71,14 @@
   font: 700 var(--kx-fs-sm) var(--kx-font-display, inherit);
   cursor: pointer;
 }
-.gl__letra:hover:not(:disabled) { border-color: var(--kx-ciano); color: var(--kx-ciano); }
-.gl__letra:disabled { opacity: 0.3; cursor: default; }
+.gl__letra:hover:not(:disabled) {
+  border-color: var(--kx-ciano);
+  color: var(--kx-ciano);
+}
+.gl__letra:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
 
 .gl__resultado {
   display: flex;
@@ -72,10 +88,14 @@
   flex-wrap: wrap;
   margin: var(--kx-space-3) 0;
 }
-.gl__resultado p { margin: 0; }
+.gl__resultado p {
+  margin: 0;
+}
 
 /* Grupos por letra */
-.gl__grupo { scroll-margin-top: 64px; }
+.gl__grupo {
+  scroll-margin-top: 64px;
+}
 .gl__titulo-letra {
   margin: var(--kx-space-6) 0 var(--kx-space-2);
   padding-bottom: var(--kx-space-2);
@@ -84,9 +104,15 @@
   font-size: var(--kx-fs-xl);
   scroll-margin-top: 64px;
 }
-.gl__titulo-letra:focus { outline: none; }
+.gl__titulo-letra:focus {
+  outline: none;
+}
 
-.gl__lista { display: grid; gap: var(--kx-space-2); margin: 0; }
+.gl__lista {
+  display: grid;
+  gap: var(--kx-space-2);
+  margin: 0;
+}
 .gl__item {
   display: grid;
   grid-template-columns: minmax(180px, 280px) 1fr;
@@ -94,11 +120,23 @@
   padding: var(--kx-space-3) var(--kx-space-2);
   border-bottom: 1px solid var(--kx-border);
 }
-.gl__item dt { display: flex; flex-direction: column; align-items: flex-start; gap: var(--kx-space-1); }
-.gl__item dd { margin: 0; }
-.gl__item dd p { margin: 0 0 var(--kx-space-1); }
+.gl__item dt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kx-space-1);
+}
+.gl__item dd {
+  margin: 0;
+}
+.gl__item dd p {
+  margin: 0 0 var(--kx-space-1);
+}
 
-.gl__nome { font-weight: 700; color: var(--kx-text); }
+.gl__nome {
+  font-weight: 700;
+  color: var(--kx-text);
+}
 .gl__nome--codigo {
   font-family: var(--kx-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-weight: 500;
@@ -112,13 +150,32 @@
   border: 1px solid var(--kx-border-strong);
   color: var(--kx-text-muted);
 }
-[data-tipo='efeito'] .gl__selo { border-color: rgb(34 227 255 / 0.5); color: var(--kx-ciano); }
-[data-tipo='demo'] .gl__selo { border-color: rgb(255 43 214 / 0.5); color: var(--kx-magenta-texto); }
+[data-tipo='efeito'] .gl__selo {
+  border-color: rgb(34 227 255 / 0.5);
+  color: var(--kx-ciano);
+}
+[data-tipo='demo'] .gl__selo {
+  border-color: rgb(255 43 214 / 0.5);
+  color: var(--kx-magenta-texto);
+}
 
-.gl__apelido { font-size: var(--kx-fs-sm); color: var(--kx-text-muted); font-style: italic; }
-.gl__origem { font-size: var(--kx-fs-xs); }
+.gl__apelido {
+  font-size: var(--kx-fs-sm);
+  color: var(--kx-text-muted);
+  font-style: italic;
+}
+.gl__origem {
+  font-size: var(--kx-fs-xs);
+}
 
-.gl__links { display: flex; flex-wrap: wrap; gap: var(--kx-space-2) var(--kx-space-4); margin: var(--kx-space-1) 0 0; padding: 0; list-style: none; }
+.gl__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2) var(--kx-space-4);
+  margin: var(--kx-space-1) 0 0;
+  padding: 0;
+  list-style: none;
+}
 .gl__links a {
   display: inline-flex;
   align-items: center;
@@ -129,8 +186,13 @@
   font-weight: 600;
   text-decoration: none;
 }
-.gl__links a:hover { text-decoration: underline; }
+.gl__links a:hover {
+  text-decoration: underline;
+}
 
 @media (max-width: 640px) {
-  .gl__item { grid-template-columns: 1fr; gap: var(--kx-space-1); }
+  .gl__item {
+    grid-template-columns: 1fr;
+    gap: var(--kx-space-1);
+  }
 }

@@ -12,13 +12,18 @@
 >
   <div palco class="palco palco3d">
     @if (suportado) {
-      <div #container class="palco3d__area" role="img" [attr.aria-label]="'Shader: ' + atual().titulo"></div>
+      <div
+        #container
+        class="palco3d__area"
+        role="img"
+        [attr.aria-label]="'Shader: ' + atual().titulo"
+      ></div>
     } @else {
       <div class="palco3d__aviso">
         <strong>Este navegador não conseguiu ativar o WebGL.</strong>
         <p class="kx-muted">
-          Os shaders precisam da placa de vídeo. Tente outro navegador ou ative a aceleração por hardware.
-          O código GLSL e a explicação continuam disponíveis abaixo.
+          Os shaders precisam da placa de vídeo. Tente outro navegador ou ative a aceleração por
+          hardware. O código GLSL e a explicação continuam disponíveis abaixo.
         </p>
       </div>
     }

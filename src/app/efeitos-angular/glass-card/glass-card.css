@@ -16,12 +16,39 @@
 }
 
 /* Formas coloridas atrás do vidro (sem elas, o vidro não aparece) */
-.forma { position: absolute; border-radius: 50%; animation: flutuar 9s ease-in-out infinite alternate; }
-.f1 { width: 42%; aspect-ratio: 1; left: 8%; top: 6%; background: radial-gradient(circle at 30% 30%, #ff8ad8, #c81a8c); }
-.f2 { width: 34%; aspect-ratio: 1; right: 10%; bottom: 4%; background: radial-gradient(circle at 30% 30%, #93c5fd, #2563eb); animation-delay: -3s; }
-.f3 { width: 22%; aspect-ratio: 1; right: 30%; top: 14%; background: radial-gradient(circle at 30% 30%, #ddd6fe, #7c4ddb); animation-delay: -6s; }
+.forma {
+  position: absolute;
+  border-radius: 50%;
+  animation: flutuar 9s ease-in-out infinite alternate;
+}
+.f1 {
+  width: 42%;
+  aspect-ratio: 1;
+  left: 8%;
+  top: 6%;
+  background: radial-gradient(circle at 30% 30%, #ff8ad8, #c81a8c);
+}
+.f2 {
+  width: 34%;
+  aspect-ratio: 1;
+  right: 10%;
+  bottom: 4%;
+  background: radial-gradient(circle at 30% 30%, #93c5fd, #2563eb);
+  animation-delay: -3s;
+}
+.f3 {
+  width: 22%;
+  aspect-ratio: 1;
+  right: 30%;
+  top: 14%;
+  background: radial-gradient(circle at 30% 30%, #ddd6fe, #7c4ddb);
+  animation-delay: -6s;
+}
 @keyframes flutuar {
-  to { translate: 6% 8%; scale: 1.08; }
+  to {
+    translate: 6% 8%;
+    scale: 1.08;
+  }
 }
 
 /* O vidro: fundo translúcido + backdrop-filter + borda clara + sombra */
@@ -38,7 +65,9 @@
   background: rgb(255 255 255 / 0.15);
   -webkit-backdrop-filter: blur(16px) saturate(1.6);
   backdrop-filter: blur(16px) saturate(1.6);
-  box-shadow: 0 20px 50px rgb(0 0 0 / 0.25), inset 0 1px 0 rgb(255 255 255 / 0.3);
+  box-shadow:
+    0 20px 50px rgb(0 0 0 / 0.25),
+    inset 0 1px 0 rgb(255 255 255 / 0.3);
   color: #ffffff;
   overflow: hidden;
 }
@@ -47,15 +76,35 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at var(--rx) var(--ry), rgb(255 255 255 / 0.35), transparent 45%);
+  background: radial-gradient(
+    circle at var(--rx) var(--ry),
+    rgb(255 255 255 / 0.35),
+    transparent 45%
+  );
   pointer-events: none;
   transition: opacity 300ms ease;
 }
-.vidro > * { position: relative; margin: 0; }
-.vidro__selo { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; }
-.vidro h2 { font-size: clamp(2rem, 8vw, 3rem); line-height: 1; }
-.vidro h2 small { font-size: 0.4em; font-weight: 400; }
-.vidro p { text-shadow: 0 1px 8px rgb(0 0 0 / 0.25); }
+.vidro > * {
+  position: relative;
+  margin: 0;
+}
+.vidro__selo {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.vidro h2 {
+  font-size: clamp(2rem, 8vw, 3rem);
+  line-height: 1;
+}
+.vidro h2 small {
+  font-size: 0.4em;
+  font-weight: 400;
+}
+.vidro p {
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.25);
+}
 .vidro button {
   justify-self: start;
   margin-top: 6px;
@@ -68,13 +117,21 @@
   font-weight: 600;
   cursor: pointer;
 }
-.vidro button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.vidro button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
 
 /* Sem backdrop-filter: vidro mais opaco para manter a leitura */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .vidro { background: rgb(255 255 255 / 0.75); color: #1d1530; }
+  .vidro {
+    background: rgb(255 255 255 / 0.75);
+    color: #1d1530;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .forma { animation: none; }
+  .forma {
+    animation: none;
+  }
 }

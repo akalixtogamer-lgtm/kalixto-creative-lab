@@ -1,0 +1,11 @@
+# Gerados por scripts ou de terceiros
+dist/
+.angular/
+figma-bridge/dist/
+docs/efeitos/
+docs/kcx/exemplos/
+package-lock.json
+public/
+# Documentação escrita à mão: tabelas largas ficam como estão
+docs/
+CHANGELOG.md

@@ -1,0 +1,62 @@
+/* Animated Border — KCX (os valores chegam como custom properties no elemento kcx-animated-border) */
+kcx-animated-border {
+  display: contents;
+}
+
+/* Animated Border — controlado pelas variáveis KCX */
+/* Registrar o ângulo permite animá-lo (sem isso o gradiente pularia). */
+@property --kcx-animated-border-giro {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.kcx-animated-border {
+  display: grid;
+  gap: var(--kcx-animated-border-gap);
+  width: min(100%, var(--kcx-animated-border-width));
+  padding: var(--kcx-animated-border-padding);
+  border: var(--kcx-animated-border-border) solid transparent;
+  border-radius: var(--kcx-animated-border-radius);
+  background:
+    linear-gradient(var(--kcx-animated-border-card), var(--kcx-animated-border-card)) padding-box,
+    conic-gradient(
+        from calc(var(--kcx-animated-border-start) + var(--kcx-animated-border-giro)),
+        var(--kcx-animated-border-c1),
+        var(--kcx-animated-border-c2),
+        var(--kcx-animated-border-c1)
+      )
+      border-box;
+  animation: var(--kcx-animated-border-animation)
+    calc(var(--kcx-animated-border-duration) / var(--kcx-animated-border-speed)) linear infinite
+    var(--kcx-animated-border-direction);
+}
+
+.kcx-animated-border__titulo {
+  margin: 0;
+  color: var(--kcx-animated-border-text);
+  font:
+    700 1.25rem/1.2 Inter,
+    system-ui,
+    sans-serif;
+}
+.kcx-animated-border__texto {
+  margin: 0;
+  color: var(--kcx-animated-border-muted);
+  font:
+    400 0.95rem/1.5 Inter,
+    system-ui,
+    sans-serif;
+}
+
+@keyframes kcx-animated-border-girar {
+  to {
+    --kcx-animated-border-giro: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kcx-animated-border {
+    animation: none;
+  }
+}

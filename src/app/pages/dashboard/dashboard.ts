@@ -22,33 +22,50 @@ export class Dashboard {
   /** Resumo do progresso salvo no navegador. */
   protected readonly meuProgresso = computed(() => {
     const feitas = this.servicoProgresso.executadas();
-    const todas = Object.entries(DEMOS_POR_LAB).flatMap(([lab, demos]) => demos.map((d) => ({ lab, demo: d })));
+    const todas = Object.entries(DEMOS_POR_LAB).flatMap(([lab, demos]) =>
+      demos.map((d) => ({ lab, demo: d })),
+    );
     const proxima = todas.find((x) => !feitas.has(`${x.lab}:${x.demo.id}`));
     return {
       feitas: todas.filter((x) => feitas.has(`${x.lab}:${x.demo.id}`)).length,
       total: todas.length,
       desafios: this.servicoProgresso.desafios().size,
       proxima,
-      pct: Math.round((todas.filter((x) => feitas.has(`${x.lab}:${x.demo.id}`)).length / todas.length) * 100),
+      pct: Math.round(
+        (todas.filter((x) => feitas.has(`${x.lab}:${x.demo.id}`)).length / todas.length) * 100,
+      ),
     };
   });
 
   /** Fase em andamento; quando todas estão prontas, mostra a última. */
-  protected readonly faseAtual = FASES.find((f) => f.situacao === 'em-andamento') ?? FASES[FASES.length - 1];
+  protected readonly faseAtual =
+    FASES.find((f) => f.situacao === 'em-andamento') ?? FASES[FASES.length - 1];
   protected readonly roadmapCompleto = FASES.every((f) => f.situacao === 'concluida');
   protected readonly labsMvp = LABS.filter((l) => l.fase === 2);
   protected readonly labsFuturos = LABS.filter((l) => l.fase > 2);
   protected readonly primeiroDisponivel = LABS.find((l) => l.disponivel);
 
   protected readonly passos = [
-    { titulo: 'Escolha um laboratório', texto: 'Comece pelos que estão marcados como “Pronto para testar”.' },
-    { titulo: 'Ajuste e execute', texto: 'Mexa nos controles e clique em Executar para ver o efeito.' },
-    { titulo: 'Entenda e copie', texto: 'O código muda junto com os controles. Leia a explicação e copie.' },
+    {
+      titulo: 'Escolha um laboratório',
+      texto: 'Comece pelos que estão marcados como “Pronto para testar”.',
+    },
+    {
+      titulo: 'Ajuste e execute',
+      texto: 'Mexa nos controles e clique em Executar para ver o efeito.',
+    },
+    {
+      titulo: 'Entenda e copie',
+      texto: 'O código muda junto com os controles. Leia a explicação e copie.',
+    },
   ];
 
   protected readonly stats = [
     { valor: EFFECTS.filter((e) => e.implementado).length, rotulo: 'demos interativas' },
-    { valor: LABS.filter((l) => l.disponivel).length, rotulo: `de ${LABS.length} laboratórios prontos` },
+    {
+      valor: LABS.filter((l) => l.disponivel).length,
+      rotulo: `de ${LABS.length} laboratórios prontos`,
+    },
     { valor: `${this.faseAtual.numero}/${FASES.length}`, rotulo: 'fase do roadmap' },
   ];
 

@@ -36,7 +36,10 @@ export const THREE_DEMOS: LabDemo[] = [
       { nome: 'Esqueleto', valores: { forma: 'icosaedro', wireframe: 'true', vel: 0.5 } },
       { nome: 'Nó rápido', valores: { forma: 'no', wireframe: 'false', vel: 2 } },
     ],
-    desafio: { enunciado: 'Mostre um toro em wireframe parado (velocidade 0).', meta: { forma: 'toro', wireframe: 'true', vel: 0 } },
+    desafio: {
+      enunciado: 'Mostre um toro em wireframe parado (velocidade 0).',
+      meta: { forma: 'toro', wireframe: 'true', vel: 0 },
+    },
     params: [
       {
         id: 'forma',
@@ -62,7 +65,16 @@ export const THREE_DEMOS: LabDemo[] = [
         ],
         padrao: 'false',
       },
-      { id: 'vel', rotulo: 'velocidade de giro', tipo: 'range', min: 0, max: 3, passo: 0.25, unidade: 'x', padrao: 1 },
+      {
+        id: 'vel',
+        rotulo: 'velocidade de giro',
+        tipo: 'range',
+        min: 0,
+        max: 3,
+        passo: 0.25,
+        unidade: 'x',
+        padrao: 1,
+      },
     ],
     codigo: (v) => {
       const geo: Record<string, string> = {
@@ -114,13 +126,45 @@ renderer.setAnimationLoop(() => {
       { nome: 'Teleobjetiva', valores: { fov: 20, dist: 12 } },
       { nome: 'Olho de peixe', valores: { fov: 110, dist: 3 } },
     ],
-    desafio: { enunciado: 'Monte uma grande-angular: fov 90 e câmera a 4 unidades.', meta: { fov: 90, dist: 4 } },
+    desafio: {
+      enunciado: 'Monte uma grande-angular: fov 90 e câmera a 4 unidades.',
+      meta: { fov: 90, dist: 4 },
+    },
     params: [
-      { id: 'fov', rotulo: 'fov', tipo: 'range', min: 20, max: 110, passo: 5, unidade: '°', padrao: 50 },
-      { id: 'dist', rotulo: 'distância', tipo: 'range', min: 3, max: 12, passo: 0.5, unidade: '', padrao: 7 },
-      { id: 'alt', rotulo: 'altura', tipo: 'range', min: 0, max: 6, passo: 0.5, unidade: '', padrao: 2.5 },
+      {
+        id: 'fov',
+        rotulo: 'fov',
+        tipo: 'range',
+        min: 20,
+        max: 110,
+        passo: 5,
+        unidade: '°',
+        padrao: 50,
+      },
+      {
+        id: 'dist',
+        rotulo: 'distância',
+        tipo: 'range',
+        min: 3,
+        max: 12,
+        passo: 0.5,
+        unidade: '',
+        padrao: 7,
+      },
+      {
+        id: 'alt',
+        rotulo: 'altura',
+        tipo: 'range',
+        min: 0,
+        max: 6,
+        passo: 0.5,
+        unidade: '',
+        padrao: 2.5,
+      },
     ],
-    codigo: (v) => `const camera = new THREE.PerspectiveCamera(${v['fov']}, largura / altura, 0.1, 100);
+    codigo: (
+      v,
+    ) => `const camera = new THREE.PerspectiveCamera(${v['fov']}, largura / altura, 0.1, 100);
 camera.position.set(0, ${v['alt']}, ${v['dist']});
 camera.lookAt(0, 0, 0);
 
@@ -160,11 +204,41 @@ gsap.to(angulo, {
       { nome: 'Noite neon', valores: { ambiente: 0.1, direcional: 0, ponto: 3, cor: '#ff2bd6' } },
       { nome: 'Dia claro', valores: { ambiente: 0.8, direcional: 2.5, ponto: 0 } },
     ],
-    desafio: { enunciado: 'Ilumine a cena só com a lâmpada ciano (ambiente e direcional em 0).', meta: { ambiente: 0, direcional: 0, cor: '#22e3ff' } },
+    desafio: {
+      enunciado: 'Ilumine a cena só com a lâmpada ciano (ambiente e direcional em 0).',
+      meta: { ambiente: 0, direcional: 0, cor: '#22e3ff' },
+    },
     params: [
-      { id: 'ambiente', rotulo: 'AmbientLight', tipo: 'range', min: 0, max: 1.5, passo: 0.1, unidade: '', padrao: 0.3 },
-      { id: 'direcional', rotulo: 'DirectionalLight', tipo: 'range', min: 0, max: 3, passo: 0.25, unidade: '', padrao: 1.5 },
-      { id: 'ponto', rotulo: 'PointLight', tipo: 'range', min: 0, max: 5, passo: 0.25, unidade: '', padrao: 2 },
+      {
+        id: 'ambiente',
+        rotulo: 'AmbientLight',
+        tipo: 'range',
+        min: 0,
+        max: 1.5,
+        passo: 0.1,
+        unidade: '',
+        padrao: 0.3,
+      },
+      {
+        id: 'direcional',
+        rotulo: 'DirectionalLight',
+        tipo: 'range',
+        min: 0,
+        max: 3,
+        passo: 0.25,
+        unidade: '',
+        padrao: 1.5,
+      },
+      {
+        id: 'ponto',
+        rotulo: 'PointLight',
+        tipo: 'range',
+        min: 0,
+        max: 5,
+        passo: 0.25,
+        unidade: '',
+        padrao: 2,
+      },
       { id: 'cor', rotulo: 'cor da PointLight', tipo: 'select', opcoes: CORES, padrao: '#ff2bd6' },
     ],
     codigo: (v) => `const ambiente = new THREE.AmbientLight("#ffffff", ${v['ambiente']});
@@ -194,9 +268,15 @@ cena.add(ambiente, sol, lampada);`,
     instrucao: `Troque o material e mexa em metalness/roughness (valem para o Standard). ${ORBITA}`,
     presets: [
       { nome: 'Cromado', valores: { tipo: 'standard', metal: 1, rugosidade: 0.1, cor: '#f5f3ff' } },
-      { nome: 'Plástico', valores: { tipo: 'standard', metal: 0, rugosidade: 0.6, cor: '#ff2bd6' } },
+      {
+        nome: 'Plástico',
+        valores: { tipo: 'standard', metal: 0, rugosidade: 0.6, cor: '#ff2bd6' },
+      },
     ],
-    desafio: { enunciado: 'Faça um metal azul fosco: Standard, metalness 1 e roughness 0.7.', meta: { tipo: 'standard', metal: 1, rugosidade: 0.7, cor: '#2f7bff' } },
+    desafio: {
+      enunciado: 'Faça um metal azul fosco: Standard, metalness 1 e roughness 0.7.',
+      meta: { tipo: 'standard', metal: 1, rugosidade: 0.7, cor: '#2f7bff' },
+    },
     params: [
       {
         id: 'tipo',
@@ -211,8 +291,26 @@ cena.add(ambiente, sol, lampada);`,
         ],
         padrao: 'standard',
       },
-      { id: 'metal', rotulo: 'metalness', tipo: 'range', min: 0, max: 1, passo: 0.1, unidade: '', padrao: 0.3 },
-      { id: 'rugosidade', rotulo: 'roughness', tipo: 'range', min: 0, max: 1, passo: 0.1, unidade: '', padrao: 0.4 },
+      {
+        id: 'metal',
+        rotulo: 'metalness',
+        tipo: 'range',
+        min: 0,
+        max: 1,
+        passo: 0.1,
+        unidade: '',
+        padrao: 0.3,
+      },
+      {
+        id: 'rugosidade',
+        rotulo: 'roughness',
+        tipo: 'range',
+        min: 0,
+        max: 1,
+        passo: 0.1,
+        unidade: '',
+        padrao: 0.4,
+      },
       { id: 'cor', rotulo: 'color', tipo: 'select', opcoes: CORES, padrao: '#8b5cf6' },
     ],
     codigo: (v) => {
@@ -248,7 +346,10 @@ cena.add(esfera);`;
       { nome: 'Tabuleiro', valores: { padrao: 'xadrez', repeticao: 4 } },
       { nome: 'Logo única', valores: { padrao: 'logo', repeticao: 1 } },
     ],
-    desafio: { enunciado: 'Cubra o cubo com listras repetidas 6 vezes.', meta: { padrao: 'listras', repeticao: 6 } },
+    desafio: {
+      enunciado: 'Cubra o cubo com listras repetidas 6 vezes.',
+      meta: { padrao: 'listras', repeticao: 6 },
+    },
     params: [
       {
         id: 'padrao',
@@ -262,7 +363,16 @@ cena.add(esfera);`;
         ],
         padrao: 'logo',
       },
-      { id: 'repeticao', rotulo: 'repeat', tipo: 'range', min: 1, max: 8, passo: 1, unidade: 'x', padrao: 1 },
+      {
+        id: 'repeticao',
+        rotulo: 'repeat',
+        tipo: 'range',
+        min: 1,
+        max: 8,
+        passo: 1,
+        unidade: 'x',
+        padrao: 1,
+      },
     ],
     codigo: (v) =>
       v['padrao'] === 'logo'
@@ -313,10 +423,31 @@ const cubo = new THREE.Mesh(
       { nome: 'Pulo baixo', valores: { altura: 1, dur: 0.6, giro: 'nao' } },
       { nome: 'Mortal', valores: { altura: 3, dur: 1.4, giro: 'sim' } },
     ],
-    desafio: { enunciado: 'Faça um pulo de altura 2,5 com giro, em 1 s.', meta: { altura: 2.5, giro: 'sim', dur: 1 } },
+    desafio: {
+      enunciado: 'Faça um pulo de altura 2,5 com giro, em 1 s.',
+      meta: { altura: 2.5, giro: 'sim', dur: 1 },
+    },
     params: [
-      { id: 'altura', rotulo: 'altura do pulo', tipo: 'range', min: 0.5, max: 3, passo: 0.25, unidade: '', padrao: 1.75 },
-      { id: 'dur', rotulo: 'duração total', tipo: 'range', min: 0.4, max: 2, passo: 0.1, unidade: 's', padrao: 0.9 },
+      {
+        id: 'altura',
+        rotulo: 'altura do pulo',
+        tipo: 'range',
+        min: 0.5,
+        max: 3,
+        passo: 0.25,
+        unidade: '',
+        padrao: 1.75,
+      },
+      {
+        id: 'dur',
+        rotulo: 'duração total',
+        tipo: 'range',
+        min: 0.4,
+        max: 2,
+        passo: 0.1,
+        unidade: 's',
+        padrao: 0.9,
+      },
       {
         id: 'giro',
         rotulo: 'giro no ar',
@@ -330,7 +461,10 @@ const cubo = new THREE.Mesh(
     ],
     codigo: (v) => {
       const d = Number(v['dur']);
-      const giro = v['giro'] === 'sim' ? `\n  .to(cubo.rotation, { y: "+=" + Math.PI * 2, duration: ${(d * 0.6).toFixed(2)} }, "<")` : '';
+      const giro =
+        v['giro'] === 'sim'
+          ? `\n  .to(cubo.rotation, { y: "+=" + Math.PI * 2, duration: ${(d * 0.6).toFixed(2)} }, "<")`
+          : '';
       return `const tl = gsap.timeline();
 
 tl.to(cubo.scale, { x: 1.25, y: 0.7, z: 1.25, duration: ${(d * 0.15).toFixed(2)} })      // agacha
@@ -361,10 +495,31 @@ tl.to(cubo.scale, { x: 1.25, y: 0.7, z: 1.25, duration: ${(d * 0.15).toFixed(2)}
       { nome: 'Pesado', valores: { intensidade: 0.4, suavidade: 0.02 } },
       { nome: 'Nervoso', valores: { intensidade: 1.2, suavidade: 0.3 } },
     ],
-    desafio: { enunciado: 'Deixe o objeto bem lento: suavidade 0.04 e intensidade 0.8.', meta: { suavidade: 0.04, intensidade: 0.8 } },
+    desafio: {
+      enunciado: 'Deixe o objeto bem lento: suavidade 0.04 e intensidade 0.8.',
+      meta: { suavidade: 0.04, intensidade: 0.8 },
+    },
     params: [
-      { id: 'intensidade', rotulo: 'intensidade da inclinação', tipo: 'range', min: 0.2, max: 1.2, passo: 0.1, unidade: '', padrao: 0.6 },
-      { id: 'suavidade', rotulo: 'suavidade (lerp)', tipo: 'range', min: 0.02, max: 0.3, passo: 0.02, unidade: '', padrao: 0.08 },
+      {
+        id: 'intensidade',
+        rotulo: 'intensidade da inclinação',
+        tipo: 'range',
+        min: 0.2,
+        max: 1.2,
+        passo: 0.1,
+        unidade: '',
+        padrao: 0.6,
+      },
+      {
+        id: 'suavidade',
+        rotulo: 'suavidade (lerp)',
+        tipo: 'range',
+        min: 0.02,
+        max: 0.3,
+        passo: 0.02,
+        unidade: '',
+        padrao: 0.08,
+      },
     ],
     codigo: (v) => `const mouse = { x: 0, y: 0 };
 
@@ -400,10 +555,22 @@ renderer.setAnimationLoop(() => {
     aoVivo: true,
     instrucao: 'Passe o mouse sobre os cubos e clique — no celular, toque.',
     presets: [{ nome: 'Destaque forte', valores: { cor: '#22e3ff', escala: 1.5 } }],
-    desafio: { enunciado: 'Configure o destaque em branco e 1,6x de tamanho.', meta: { cor: '#f5f3ff', escala: 1.6 } },
+    desafio: {
+      enunciado: 'Configure o destaque em branco e 1,6x de tamanho.',
+      meta: { cor: '#f5f3ff', escala: 1.6 },
+    },
     params: [
       { id: 'cor', rotulo: 'cor do destaque', tipo: 'select', opcoes: CORES, padrao: '#ff2bd6' },
-      { id: 'escala', rotulo: 'escala do destaque', tipo: 'range', min: 1, max: 1.8, passo: 0.1, unidade: 'x', padrao: 1.3 },
+      {
+        id: 'escala',
+        rotulo: 'escala do destaque',
+        tipo: 'range',
+        min: 1,
+        max: 1.8,
+        passo: 0.1,
+        unidade: 'x',
+        padrao: 1.3,
+      },
     ],
     codigo: (v) => `const raycaster = new THREE.Raycaster();
 const ponteiro = new THREE.Vector2();
@@ -439,10 +606,31 @@ canvas.addEventListener("pointermove", (e) => {
     acao: 'Entrada animada',
     instrucao: `Ajuste escala e giro, ou carregue seu próprio .glb. ${ORBITA}`,
     presets: [{ nome: 'Vitrine', valores: { escala: 1.2, giro: 0.5 } }],
-    desafio: { enunciado: 'Deixe o modelo parado (giro 0) e com escala 1.5.', meta: { giro: 0, escala: 1.5 } },
+    desafio: {
+      enunciado: 'Deixe o modelo parado (giro 0) e com escala 1.5.',
+      meta: { giro: 0, escala: 1.5 },
+    },
     params: [
-      { id: 'escala', rotulo: 'escala', tipo: 'range', min: 0.5, max: 2, passo: 0.1, unidade: 'x', padrao: 1 },
-      { id: 'giro', rotulo: 'giro automático', tipo: 'range', min: 0, max: 3, passo: 0.25, unidade: 'x', padrao: 1 },
+      {
+        id: 'escala',
+        rotulo: 'escala',
+        tipo: 'range',
+        min: 0.5,
+        max: 2,
+        passo: 0.1,
+        unidade: 'x',
+        padrao: 1,
+      },
+      {
+        id: 'giro',
+        rotulo: 'giro automático',
+        tipo: 'range',
+        min: 0,
+        max: 3,
+        passo: 0.25,
+        unidade: 'x',
+        padrao: 1,
+      },
     ],
     codigo: (v) => `import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 

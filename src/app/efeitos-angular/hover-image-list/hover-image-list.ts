@@ -16,23 +16,23 @@ export class HoverImageList {
     {
       nome: 'Maré',
       ano: '2026',
-      fundo: 'linear-gradient(135deg, #2f7bff, #22e3ff)'
+      fundo: 'linear-gradient(135deg, #2f7bff, #22e3ff)',
     },
     {
       nome: 'Erva Brava',
       ano: '2025',
-      fundo: 'linear-gradient(135deg, #1f6b4a, #c6ff3d)'
+      fundo: 'linear-gradient(135deg, #1f6b4a, #c6ff3d)',
     },
     {
       nome: 'Pedal',
       ano: '2025',
-      fundo: 'linear-gradient(135deg, #ff2e3e, #ff8a5c)'
+      fundo: 'linear-gradient(135deg, #ff2e3e, #ff8a5c)',
     },
     {
       nome: 'Sopro',
       ano: '2024',
-      fundo: 'linear-gradient(135deg, #2a1f6b, #ff2bd6)'
-    }
+      fundo: 'linear-gradient(135deg, #2a1f6b, #ff2bd6)',
+    },
   ];
   private readonly reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   private readonly atraso = this.reduzir ? 1 : 0.15;
@@ -85,6 +85,8 @@ export class HoverImageList {
     el.style.translate = this.x + 'px ' + this.y + 'px';
     el.style.rotate = angulo + 'deg';
     this.quadro =
-      Math.abs(dx) + Math.abs(this.alvoY - this.y) > 0.5 ? requestAnimationFrame(() => this.seguir()) : 0;
+      Math.abs(dx) + Math.abs(this.alvoY - this.y) > 0.5
+        ? requestAnimationFrame(() => this.seguir())
+        : 0;
   }
 }

@@ -1,4 +1,6 @@
-:host { display: block; }
+:host {
+  display: block;
+}
 
 .grade {
   display: grid;
@@ -16,7 +18,10 @@
   background: linear-gradient(160deg, #2a1f4d, #161229);
   border: 1px solid #3a3456;
 }
-.card h2 { margin: 0; font-size: 1.2rem; }
+.card h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
 
 /* O efeito: só esconde se o JavaScript estiver ativo (classe .js no <html>) */
 :host(.js) .revelar {
@@ -33,5 +38,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :host(.js) .revelar { transform: none; }
+  :host(.js) .revelar {
+    transform: none;
+  }
 }
