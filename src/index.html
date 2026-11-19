@@ -1,28 +1,34 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <title>Kalixto Creative Lab</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="KALIXTO CREATIVE LAB — laboratório de aprendizagem e experimentação de Creative Development.">
-  <meta name="theme-color" content="#07050f">
-  <script>
-    // Aplica o tema salvo (ou o do sistema) antes de a página aparecer: evita piscar no tema errado
-    (function () {
-      var t = null;
-      try { t = localStorage.getItem('kalixto-lab:tema'); } catch (e) {}
-      if (t !== 'claro' && t !== 'escuro') t = matchMedia('(prefers-color-scheme: light)').matches ? 'claro' : 'escuro';
-      document.documentElement.setAttribute('data-tema', t);
-    })();
-  </script>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/png" sizes="192x192" href="brand/icon-192.png">
-  <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
-  <meta property="og:title" content="Kalixto Creative Lab">
-  <meta property="og:image" content="brand/kalixto-logo-512.webp">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Kalixto Creative Lab</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="KALIXTO CREATIVE LAB — laboratório de aprendizagem e experimentação de Creative Development."
+    />
+    <meta name="theme-color" content="#07050f" />
+    <script>
+      // Aplica o tema salvo (ou o do sistema) antes de a página aparecer: evita piscar no tema errado
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem('kalixto-lab:tema');
+        } catch (e) {}
+        if (t !== 'claro' && t !== 'escuro')
+          t = matchMedia('(prefers-color-scheme: light)').matches ? 'claro' : 'escuro';
+        document.documentElement.setAttribute('data-tema', t);
+      })();
+    </script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="192x192" href="brand/icon-192.png" />
+    <link rel="apple-touch-icon" href="brand/apple-touch-icon.png" />
+    <meta property="og:title" content="Kalixto Creative Lab" />
+    <meta property="og:image" content="brand/kalixto-logo-512.webp" />
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
 </html>

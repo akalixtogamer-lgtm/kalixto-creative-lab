@@ -11,13 +11,13 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 ## Status
 
-| Item | Situação |
-|---|---|
-| Versão | `1.10.0-rc.1` (KCX: construtor de componentes no Studio, Figma → Studio, variáveis funcionais, editor, composição e plugin Figma Bridge) |
-| Roadmap | **6 de 6 fases implementadas** — aguardando a validação do Wallace |
-| Conteúdo | 7 laboratórios · 60 demos interativas · 53 kits de efeito com ficha técnica · 27 exercícios · 60 desafios |
-| Testes | 740 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core) |
-| Publicado no GitHub Pages | Sim, a `v1.8.0-rc.1` (a `v1.10.0-rc.1` aguarda teste) |
+| Item                      | Situação                                                                                                                                 |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Versão                    | `1.10.0-rc.1` (KCX: construtor de componentes no Studio, Figma → Studio, variáveis funcionais, editor, composição e plugin Figma Bridge) |
+| Roadmap                   | **6 de 6 fases implementadas** — aguardando a validação do Wallace                                                                       |
+| Conteúdo                  | 7 laboratórios · 60 demos interativas · 53 kits de efeito com ficha técnica · 27 exercícios · 60 desafios                                |
+| Testes                    | 740 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core)                                                           |
+| Publicado no GitHub Pages | Sim, a `v1.8.0-rc.1` (a `v1.10.0-rc.1` aguarda teste)                                                                                    |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
 
@@ -59,29 +59,29 @@ npm run build:pages  # versão para o GitHub Pages (com 404.html)
 
 ### Laboratórios
 
-| # | Laboratório | Demos | Rota |
-|---|---|---|---|
-| 01 | CSS Playground | 9 — transitions, keyframes, transform, hover, floating, perspective, clip-path, microinterações, divisores de seção | `/labs/css` |
-| 02 | GSAP Studio | 8 — to, from, fromTo, timeline, stagger, easing, controles de reprodução, SplitText | `/labs/gsap` |
-| 03 | Scroll Lab | 9 — ScrollTrigger, scrub, pin, parallax, horizontal, progress, storytelling, navbar ao rolar, capítulos | `/labs/scroll` |
-| 04 | SVG Lab | 5 — traço, máscara, morphing, filtros, motion path | `/labs/svg` |
-| 05 | Three.js Lab | 9 — geometria, câmera, luzes, materiais, texturas, animação, mouse, raycasting, GLTF | `/labs/three` |
-| 06 | WebGL & GLSL | 7 — fragment, vertex, GLSL, noise, distortion, procedural, transição | `/labs/webgl` |
-| 07 | Interface Lab | 13 — hero editorial, órbita, texto atrás do objeto, imagem em formas, 17 divisores SVG, carrossel de vidro, números, tipografia vazada, bento, cards com profundidade, grão de filme, botão magnético, marquee | `/labs/ui` |
+| #   | Laboratório    | Demos                                                                                                                                                                                                          | Rota           |
+| --- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| 01  | CSS Playground | 9 — transitions, keyframes, transform, hover, floating, perspective, clip-path, microinterações, divisores de seção                                                                                            | `/labs/css`    |
+| 02  | GSAP Studio    | 8 — to, from, fromTo, timeline, stagger, easing, controles de reprodução, SplitText                                                                                                                            | `/labs/gsap`   |
+| 03  | Scroll Lab     | 9 — ScrollTrigger, scrub, pin, parallax, horizontal, progress, storytelling, navbar ao rolar, capítulos                                                                                                        | `/labs/scroll` |
+| 04  | SVG Lab        | 5 — traço, máscara, morphing, filtros, motion path                                                                                                                                                             | `/labs/svg`    |
+| 05  | Three.js Lab   | 9 — geometria, câmera, luzes, materiais, texturas, animação, mouse, raycasting, GLTF                                                                                                                           | `/labs/three`  |
+| 06  | WebGL & GLSL   | 7 — fragment, vertex, GLSL, noise, distortion, procedural, transição                                                                                                                                           | `/labs/webgl`  |
+| 07  | Interface Lab  | 13 — hero editorial, órbita, texto atrás do objeto, imagem em formas, 17 divisores SVG, carrossel de vidro, números, tipografia vazada, bento, cards com profundidade, grão de filme, botão magnético, marquee | `/labs/ui`     |
 
 Todas as demos seguem o mesmo fluxo: **escolher → ajustar os controles → Executar → ler o código (e copiar) → entender**.
 Cada uma tem presets prontos, um desafio prático e fica na URL (`?demo=…`) para compartilhar.
 
 ### Estudar
 
-| Página | O que faz | Rota |
-|---|---|---|
-| Trilha de aprendizagem | Caminho do CSS ao WebGL, com ✓ por demo, ★ por desafio e "Continuar de onde parei" | `/trilha` |
-| Exercícios | 27 perguntas com correção e explicação | `/exercicios` |
-| Comparador | Quando usar cada tecnologia + o mesmo efeito em CSS, Web Animations e GSAP | `/comparador` |
-| Biblioteca de efeitos | 53 kits + 60 demos nas 15 categorias, com busca (nome, tecnologia, aplicação, tags) e filtros (categoria, tipo, lab, nível, interação, dependências, situação) | `/biblioteca` |
-| Glossário A–Z | Todos os efeitos, demos e termos de código em ordem alfabética, com busca, filtro por tipo e índice de letras; cada item leva direto para testar e copiar o código (termos abrem o Code Lab na aba do arquivo onde aparecem) | `/glossario` |
-| Ficha do efeito | Preview isolado ou componente Angular, controles, Code Lab (editar, executar, comparar), versão Angular, explicação em 3 níveis, download .zip/.html e ficha técnica | `/efeitos/:id` |
+| Página                 | O que faz                                                                                                                                                                                                                    | Rota           |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| Trilha de aprendizagem | Caminho do CSS ao WebGL, com ✓ por demo, ★ por desafio e "Continuar de onde parei"                                                                                                                                           | `/trilha`      |
+| Exercícios             | 27 perguntas com correção e explicação                                                                                                                                                                                       | `/exercicios`  |
+| Comparador             | Quando usar cada tecnologia + o mesmo efeito em CSS, Web Animations e GSAP                                                                                                                                                   | `/comparador`  |
+| Biblioteca de efeitos  | 53 kits + 60 demos nas 15 categorias, com busca (nome, tecnologia, aplicação, tags) e filtros (categoria, tipo, lab, nível, interação, dependências, situação)                                                               | `/biblioteca`  |
+| Glossário A–Z          | Todos os efeitos, demos e termos de código em ordem alfabética, com busca, filtro por tipo e índice de letras; cada item leva direto para testar e copiar o código (termos abrem o Code Lab na aba do arquivo onde aparecem) | `/glossario`   |
+| Ficha do efeito        | Preview isolado ou componente Angular, controles, Code Lab (editar, executar, comparar), versão Angular, explicação em 3 níveis, download .zip/.html e ficha técnica                                                         | `/efeitos/:id` |
 
 O progresso (demos executadas, desafios, exercícios e presets) fica salvo **no navegador** — nada é enviado para a internet.
 
@@ -136,24 +136,24 @@ Endereço final: `https://akalixtogamer-lgtm.github.io/kalixto-creative-lab/`
 
 ## Documentação
 
-| Arquivo | Conteúdo |
-|---|---|
-| [`docs/AVALIACAO.md`](docs/AVALIACAO.md) | Roteiro para você avaliar cada fase |
-| [`docs/AUDITORIA.md`](docs/AUDITORIA.md) | Fase Zero: diagnóstico, arquitetura proposta e plano |
-| [`docs/CATALOGO-DE-EFEITOS.md`](docs/CATALOGO-DE-EFEITOS.md) | Catálogo por categoria (gerado) + uma página por kit em `docs/efeitos/` |
-| [`docs/SEGURANCA.md`](docs/SEGURANCA.md) | Isolamento do preview (sandbox + CSP) e verificações |
-| [`docs/ACESSIBILIDADE.md`](docs/ACESSIBILIDADE.md) | WCAG 2.2 AA: o que foi feito e o que falta |
-| [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md) | Pacotes medidos e decisões |
-| [`docs/TECNOLOGIAS.md`](docs/TECNOLOGIAS.md) | Bibliotecas em uso e avaliadas (Lenis, Lottie, Rive, PixiJS) |
-| [`docs/ROADMAP.md`](docs/ROADMAP.md) | Fases, critérios de passagem e versões |
-| [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md) | Como o projeto funciona e como estender |
-| [`docs/EFEITOS.md`](docs/EFEITOS.md) | Registro das 60 demos com links diretos |
-| [`docs/COMPONENTES.md`](docs/COMPONENTES.md) | Design System e componentes |
-| [`docs/QA.md`](docs/QA.md) | Relatório de QA (testes, acessibilidade, performance) |
-| [`docs/REFERENCIAS.md`](docs/REFERENCIAS.md) | Avaliação das referências enviadas e efeitos extraídos |
-| [`docs/DEPENDENCIAS.md`](docs/DEPENDENCIAS.md) | Versões verificadas |
-| [`docs/PROBLEMAS-CONHECIDOS.md`](docs/PROBLEMAS-CONHECIDOS.md) | Limitações conhecidas |
-| [`CHANGELOG.md`](CHANGELOG.md) | Histórico de versões |
+| Arquivo                                                        | Conteúdo                                                                |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [`docs/AVALIACAO.md`](docs/AVALIACAO.md)                       | Roteiro para você avaliar cada fase                                     |
+| [`docs/AUDITORIA.md`](docs/AUDITORIA.md)                       | Fase Zero: diagnóstico, arquitetura proposta e plano                    |
+| [`docs/CATALOGO-DE-EFEITOS.md`](docs/CATALOGO-DE-EFEITOS.md)   | Catálogo por categoria (gerado) + uma página por kit em `docs/efeitos/` |
+| [`docs/SEGURANCA.md`](docs/SEGURANCA.md)                       | Isolamento do preview (sandbox + CSP) e verificações                    |
+| [`docs/ACESSIBILIDADE.md`](docs/ACESSIBILIDADE.md)             | WCAG 2.2 AA: o que foi feito e o que falta                              |
+| [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md)                   | Pacotes medidos e decisões                                              |
+| [`docs/TECNOLOGIAS.md`](docs/TECNOLOGIAS.md)                   | Bibliotecas em uso e avaliadas (Lenis, Lottie, Rive, PixiJS)            |
+| [`docs/ROADMAP.md`](docs/ROADMAP.md)                           | Fases, critérios de passagem e versões                                  |
+| [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md)                   | Como o projeto funciona e como estender                                 |
+| [`docs/EFEITOS.md`](docs/EFEITOS.md)                           | Registro das 60 demos com links diretos                                 |
+| [`docs/COMPONENTES.md`](docs/COMPONENTES.md)                   | Design System e componentes                                             |
+| [`docs/QA.md`](docs/QA.md)                                     | Relatório de QA (testes, acessibilidade, performance)                   |
+| [`docs/REFERENCIAS.md`](docs/REFERENCIAS.md)                   | Avaliação das referências enviadas e efeitos extraídos                  |
+| [`docs/DEPENDENCIAS.md`](docs/DEPENDENCIAS.md)                 | Versões verificadas                                                     |
+| [`docs/PROBLEMAS-CONHECIDOS.md`](docs/PROBLEMAS-CONHECIDOS.md) | Limitações conhecidas                                                   |
+| [`CHANGELOG.md`](CHANGELOG.md)                                 | Histórico de versões                                                    |
 
 ---
 

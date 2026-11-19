@@ -100,7 +100,9 @@ a.kx-card:hover,
 a.kx-card:focus-visible {
   transform: translateY(-3px);
   border-color: var(--kx-border-strong);
-  box-shadow: 0 12px 32px var(--kx-sombra), 0 0 0 1px var(--kx-acento, var(--kx-roxo));
+  box-shadow:
+    0 12px 32px var(--kx-sombra),
+    0 0 0 1px var(--kx-acento, var(--kx-roxo));
 }
 .kx-card__title {
   font-size: var(--kx-fs-lg);
@@ -132,7 +134,10 @@ a.kx-card:focus-visible {
   color: var(--kx-text);
   text-decoration: none;
   cursor: pointer;
-  transition: background var(--kx-dur-fast), box-shadow var(--kx-dur-fast), transform var(--kx-dur-fast);
+  transition:
+    background var(--kx-dur-fast),
+    box-shadow var(--kx-dur-fast),
+    transform var(--kx-dur-fast);
 }
 .kx-btn:active {
   transform: scale(0.97);
@@ -293,7 +298,9 @@ a.kx-card:focus-visible {
   text-align: left;
   text-decoration: none;
   cursor: pointer;
-  transition: border-color var(--kx-dur-fast), background var(--kx-dur-fast);
+  transition:
+    border-color var(--kx-dur-fast),
+    background var(--kx-dur-fast);
 }
 .kx-pager__link:hover {
   border-color: var(--kx-border-strong);

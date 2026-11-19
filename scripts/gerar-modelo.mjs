@@ -26,26 +26,44 @@ globalThis.FileReader = class {
 };
 
 const material = (cor, metal = 0.6, rugosidade = 0.3, emissivo = 0x000000) =>
-  new THREE.MeshStandardMaterial({ color: cor, metalness: metal, roughness: rugosidade, emissive: emissivo, emissiveIntensity: 0.6 });
+  new THREE.MeshStandardMaterial({
+    color: cor,
+    metalness: metal,
+    roughness: rugosidade,
+    emissive: emissivo,
+    emissiveIntensity: 0.6,
+  });
 
 const trofeu = new THREE.Group();
 trofeu.name = 'KalixtoTrofeu';
 
 // Base em degraus
-const base = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.25, 0.3, 48), material(0x140c2a, 0.3, 0.6));
+const base = new THREE.Mesh(
+  new THREE.CylinderGeometry(1.1, 1.25, 0.3, 48),
+  material(0x140c2a, 0.3, 0.6),
+);
 base.position.y = 0.15;
 base.name = 'Base';
-const degrau = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.95, 0.22, 48), material(0x8b5cf6, 0.7, 0.25));
+const degrau = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.8, 0.95, 0.22, 48),
+  material(0x8b5cf6, 0.7, 0.25),
+);
 degrau.position.y = 0.41;
 degrau.name = 'Degrau';
 
 // Haste
-const haste = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.22, 0.9, 24), material(0x22e3ff, 0.8, 0.2));
+const haste = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.12, 0.22, 0.9, 24),
+  material(0x22e3ff, 0.8, 0.2),
+);
 haste.position.y = 0.97;
 haste.name = 'Haste';
 
 // Anel neon
-const anel = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.09, 24, 96), material(0xff2bd6, 0.4, 0.2, 0xff2bd6));
+const anel = new THREE.Mesh(
+  new THREE.TorusGeometry(0.85, 0.09, 24, 96),
+  material(0xff2bd6, 0.4, 0.2, 0xff2bd6),
+);
 anel.position.y = 2.05;
 anel.name = 'Anel';
 
@@ -66,7 +84,10 @@ k.position.y = 2.05;
 
 // Cristais em volta
 for (let i = 0; i < 3; i++) {
-  const cristal = new THREE.Mesh(new THREE.OctahedronGeometry(0.16), material([0xff2bd6, 0x2f7bff, 0x22e3ff][i], 0.5, 0.1));
+  const cristal = new THREE.Mesh(
+    new THREE.OctahedronGeometry(0.16),
+    material([0xff2bd6, 0x2f7bff, 0x22e3ff][i], 0.5, 0.1),
+  );
   const ang = (i / 3) * Math.PI * 2;
   cristal.position.set(Math.cos(ang) * 0.95, 0.75, Math.sin(ang) * 0.95);
   cristal.name = `Cristal${i + 1}`;

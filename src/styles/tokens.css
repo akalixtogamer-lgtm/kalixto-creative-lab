@@ -62,12 +62,12 @@
   --kx-gradient-btn: linear-gradient(135deg, #d4119f, #7c3aed 50%, #2563eb);
   --kx-glow-magenta: 0 0 24px rgb(255 43 214 / 0.35);
   --kx-glow-azul: 0 0 24px rgb(47 123 255 / 0.35);
-
 }
 
 /* Áreas sempre escuras dentro do modo claro: fundo opaco
    (o translúcido do modo escuro ficaria cinza sobre o branco) */
-:root[data-tema='claro'] :is(.kx-sempre-escuro, .palco, .cmp-palco, .kx-code, .cv, .cl__editor, .cl__diff, .ef__ng) {
+:root[data-tema='claro']
+  :is(.kx-sempre-escuro, .palco, .cmp-palco, .kx-code, .cv, .cl__editor, .cl__diff, .ef__ng) {
   --kx-palco-bg: #120d24;
   --kx-code-bg: #15112a;
   --kx-input-bg: rgb(0 0 0 / 0.35);
@@ -163,10 +163,18 @@
 }
 
 /* Acento por elemento: data-acento="magenta|roxo|azul|ciano" */
-[data-acento='magenta'] { --kx-acento: var(--kx-magenta); }
-[data-acento='roxo'] { --kx-acento: var(--kx-roxo); }
-[data-acento='azul'] { --kx-acento: var(--kx-azul); }
-[data-acento='ciano'] { --kx-acento: var(--kx-ciano); }
+[data-acento='magenta'] {
+  --kx-acento: var(--kx-magenta);
+}
+[data-acento='roxo'] {
+  --kx-acento: var(--kx-roxo);
+}
+[data-acento='azul'] {
+  --kx-acento: var(--kx-azul);
+}
+[data-acento='ciano'] {
+  --kx-acento: var(--kx-ciano);
+}
 
 /* Respeita quem prefere menos movimento */
 @media (prefers-reduced-motion: reduce) {
