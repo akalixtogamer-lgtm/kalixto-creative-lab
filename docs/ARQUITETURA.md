@@ -145,3 +145,32 @@ Campos novos no `EffectKit`:
 Camada independente em `src/app/kcx/` (TypeScript puro, sem Angular), usada pelo lab, pelos testes e pelo
 plugin `figma-bridge/`. Páginas em `src/app/pages/kcx/`. Detalhes em [`kcx/AUDITORIA-E-GUIA.md`](kcx/AUDITORIA-E-GUIA.md)
 e no formato em [`kcx/ESPECIFICACAO.md`](kcx/ESPECIFICACAO.md).
+
+### Onde fica cada coisa no KCX
+
+```
+src/app/kcx/
+├── kcx.types.ts · kcx.schema.ts · validar.ts · resolver.ts   formato e regras
+├── figma-plano.ts        planeja variantes, variáveis e protótipo (puro)
+├── plano-html.ts         prévia "como fica no Figma" (HTML)
+├── meus-componentes.ts   salvos no navegador (v2, migração, "Para recuperar")
+├── construtor/
+│   ├── montar.ts         blocos de montagem compartilhados
+│   ├── estados-ds.ts     estados de design system (hover, pressionado, foco…)
+│   ├── index.ts          TIPOS_CONSTRUTOR (junta as categorias)
+│   └── tipos/<categoria>/
+│       ├── index.ts      lista da categoria, na ordem do menu
+│       ├── _comum.ts     ajudantes só dessa categoria
+│       └── <tipo>.ts     UM componente por arquivo (botao.ts, navbar.ts…)
+└── figma/
+    ├── construir.ts      fachada pública (o plugin importa daqui)
+    └── construir/
+        ├── tipos.ts · duplicados.ts · prototipo.ts · ler-alteracoes.ts
+        ├── base-variaveis.ts   camada 1: coleções, variáveis, vínculos, pinturas, fontes
+        ├── base-nos.ts         camada 2: ícones, peças, nós, propriedades, variantes
+        └── construtor.ts       camada 3: interações, protótipo, documentação, ordem
+```
+
+**Novo tipo no construtor:** crie `tipos/<categoria>/<tipo>.ts` exportando a `DefinicaoTipo`,
+acrescente na lista do `index.ts` da categoria e rode `npm run verificar`. O teste de
+`construtor.spec.ts` já percorre todos os tipos (montagem, código, importação simulada no Figma).

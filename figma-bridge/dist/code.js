@@ -2417,7 +2417,7 @@ ${cssAnim}`,
     };
   }
 
-  // src/app/kcx/figma/construir.ts
+  // src/app/kcx/figma/construir/tipos.ts
   var CHAVE_PLUGIN = "kcx";
   function rgb(c) {
     return { r: c.r, g: c.g, b: c.b };
@@ -2425,6 +2425,8 @@ ${cssAnim}`,
   async function variaveisLocais(figma2) {
     return figma2.variables.getLocalVariablesAsync ? await figma2.variables.getLocalVariablesAsync() : [];
   }
+
+  // src/app/kcx/figma/construir/duplicados.ts
   async function detectarDuplicados(figma2, plano) {
     const colecoes = await figma2.variables.getLocalVariableCollectionsAsync();
     const vars = await variaveisLocais(figma2);
@@ -2454,12 +2456,71 @@ ${cssAnim}`,
       componentes
     };
   }
-  var Construtor = class {
+
+  // src/app/kcx/figma/construir/prototipo.ts
+  function gatilhoFigma(it) {
+    var _a;
+    switch (it.gatilho) {
+      case "hover":
+        return { type: "ON_HOVER" };
+      case "pressionar":
+        return { type: "ON_PRESS" };
+      case "entrar":
+        return { type: "MOUSE_ENTER", delay: 0 };
+      case "sair":
+        return { type: "MOUSE_LEAVE", delay: 0 };
+      case "atraso":
+        return { type: "AFTER_TIMEOUT", timeout: Math.max(0, ((_a = it.atraso) != null ? _a : 1e3) / 1e3) };
+      case "arrastar":
+        return { type: "ON_DRAG" };
+      case "tecla":
+        return { type: "ON_KEY_DOWN", device: "KEYBOARD", keyCodes: [codigoTecla(it.tecla)] };
+      default:
+        return { type: "ON_CLICK" };
+    }
+  }
+  function codigoTecla(tecla = "Escape") {
+    var _a;
+    const mapa = {
+      Escape: 27,
+      Enter: 13,
+      " ": 32,
+      Espaco: 32,
+      ArrowLeft: 37,
+      ArrowUp: 38,
+      ArrowRight: 39,
+      ArrowDown: 40,
+      Tab: 9
+    };
+    return (_a = mapa[tecla]) != null ? _a : tecla.length === 1 ? tecla.toUpperCase().charCodeAt(0) : 27;
+  }
+  function transicaoFigma(it, trocaDeVariante = true) {
+    var _a;
+    if (it.transicao === "instantanea") return null;
+    const easing = it.curva === "linear" ? { type: "LINEAR" } : it.curva === "entrada-saida" ? { type: "EASE_IN_AND_OUT" } : it.curva === "mola" ? { type: "GENTLE" } : it.curva === "quique" ? { type: "BOUNCY" } : { type: "EASE_OUT" };
+    const duration = it.duracao / 1e3;
+    if ((it.transicao === "mover" || it.transicao === "empurrar") && !trocaDeVariante) {
+      const dir = { esquerda: "LEFT", direita: "RIGHT", cima: "TOP", baixo: "BOTTOM" }[(_a = it.direcao) != null ? _a : "esquerda"];
+      return {
+        type: it.transicao === "mover" ? "MOVE_IN" : "PUSH",
+        direction: dir,
+        matchLayers: false,
+        easing,
+        duration
+      };
+    }
+    return { type: it.transicao === "dissolver" ? "DISSOLVE" : "SMART_ANIMATE", easing, duration };
+  }
+
+  // src/app/kcx/figma/construir/base-variaveis.ts
+  var BaseVariaveis = class {
     constructor(figma2, plano, pacoteJson, duplicados) {
       __publicField(this, "figma", figma2);
       __publicField(this, "plano", plano);
       __publicField(this, "pacoteJson", pacoteJson);
       __publicField(this, "duplicados", duplicados);
+      /** Coleções criadas (nome → id e modos), para a ação de trocar modo. */
+      __publicField(this, "colecoesFigma", /* @__PURE__ */ new Map());
       __publicField(this, "vars", /* @__PURE__ */ new Map());
       __publicField(this, "rel", {
         colecoes: [],
@@ -2476,17 +2537,6 @@ ${cssAnim}`,
       });
       __publicField(this, "fontePadrao", { family: "Inter", style: "Regular" });
       __publicField(this, "fontesOk", /* @__PURE__ */ new Set());
-      /* ------------------------------ Camadas ------------------------------ */
-      /** Componentes das peças reutilizáveis já criados: "peça|variante" → componente. */
-      __publicField(this, "pecas", /* @__PURE__ */ new Map());
-      /** Componentes principais já criados (id KCX → componente ou conjunto). */
-      __publicField(this, "principais", /* @__PURE__ */ new Map());
-      /** Componentes da biblioteca de ícones (nome → componente). */
-      __publicField(this, "icones", /* @__PURE__ */ new Map());
-      /** Nós de cada variante (para ligar as interações do protótipo). */
-      __publicField(this, "nosPorVariante", /* @__PURE__ */ new Map());
-      /** Coleções criadas (nome → id e modos), para a ação de trocar modo. */
-      __publicField(this, "colecoesFigma", /* @__PURE__ */ new Map());
     }
     /* ------------------------------ Variáveis ------------------------------ */
     async criarVariaveis() {
@@ -2738,6 +2788,22 @@ ${cssAnim}`,
     }
     fonte(familia, estilo) {
       return this.fontesOk.has(`${familia}|${estilo}`) ? { family: familia, style: estilo } : this.fontePadrao;
+    }
+  };
+
+  // src/app/kcx/figma/construir/base-nos.ts
+  var BaseNos = class extends BaseVariaveis {
+    constructor() {
+      super(...arguments);
+      /** Nós de cada variante (para ligar as interações do protótipo). */
+      __publicField(this, "nosPorVariante", /* @__PURE__ */ new Map());
+      /* ------------------------------ Camadas ------------------------------ */
+      /** Componentes das peças reutilizáveis já criados: "peça|variante" → componente. */
+      __publicField(this, "pecas", /* @__PURE__ */ new Map());
+      /** Componentes principais já criados (id KCX → componente ou conjunto). */
+      __publicField(this, "principais", /* @__PURE__ */ new Map());
+      /** Componentes da biblioteca de ícones (nome → componente). */
+      __publicField(this, "icones", /* @__PURE__ */ new Map());
     }
     /** Aplica traço (cor/espessura vinculadas) aos vetores de um SVG importado. */
     tracarVetores(vetores, traco, onde) {
@@ -3030,9 +3096,9 @@ ${cssAnim}`,
           no.resize(Math.max(0.01, no.width), Math.max(0.01, Number(p.altura.valor)));
         if (auto && !(p.largura && p.altura)) {
           const hor = p.autoLayout.direcao === "HORIZONTAL";
-          if (p.largura)
-            hor ? no.counterAxisSizingMode = "AUTO" : no.primaryAxisSizingMode = "AUTO";
-          else hor ? no.primaryAxisSizingMode = "AUTO" : no.counterAxisSizingMode = "AUTO";
+          const cresceNoPrincipal = p.largura ? !hor : hor;
+          if (cresceNoPrincipal) no.primaryAxisSizingMode = "AUTO";
+          else no.counterAxisSizingMode = "AUTO";
         }
         if (p.largura) this.vincular(no, "width", p.largura, local);
         if (p.altura) this.vincular(no, "height", p.altura, local);
@@ -3277,6 +3343,10 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       this.rel.componentes.push({ nome: c.nome, id: principal.id, variantes: variantes.length });
       return principal;
     }
+  };
+
+  // src/app/kcx/figma/construir/construtor.ts
+  var Construtor = class extends BaseNos {
     /** Interações do protótipo: clique/hover troca para outra variante (Smart Animate). */
     async criarInteracoes(c) {
       var _a, _b;
@@ -3605,6 +3675,8 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
   function importarNoFigma(figma2, plano, pacoteJson, duplicados = "atualizar") {
     return new Construtor(figma2, plano, pacoteJson, duplicados).executar();
   }
+
+  // src/app/kcx/figma/construir/ler-alteracoes.ts
   var kebab3 = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
   var hex22 = (n) => Math.round(Math.min(1, Math.max(0, n)) * 255).toString(16).padStart(2, "0");
   async function lerAlteracoes(figma2, no) {
@@ -3696,59 +3768,6 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       },
       ignoradas
     };
-  }
-  function gatilhoFigma(it) {
-    var _a;
-    switch (it.gatilho) {
-      case "hover":
-        return { type: "ON_HOVER" };
-      case "pressionar":
-        return { type: "ON_PRESS" };
-      case "entrar":
-        return { type: "MOUSE_ENTER", delay: 0 };
-      case "sair":
-        return { type: "MOUSE_LEAVE", delay: 0 };
-      case "atraso":
-        return { type: "AFTER_TIMEOUT", timeout: Math.max(0, ((_a = it.atraso) != null ? _a : 1e3) / 1e3) };
-      case "arrastar":
-        return { type: "ON_DRAG" };
-      case "tecla":
-        return { type: "ON_KEY_DOWN", device: "KEYBOARD", keyCodes: [codigoTecla(it.tecla)] };
-      default:
-        return { type: "ON_CLICK" };
-    }
-  }
-  function codigoTecla(tecla = "Escape") {
-    var _a;
-    const mapa = {
-      Escape: 27,
-      Enter: 13,
-      " ": 32,
-      Espaco: 32,
-      ArrowLeft: 37,
-      ArrowUp: 38,
-      ArrowRight: 39,
-      ArrowDown: 40,
-      Tab: 9
-    };
-    return (_a = mapa[tecla]) != null ? _a : tecla.length === 1 ? tecla.toUpperCase().charCodeAt(0) : 27;
-  }
-  function transicaoFigma(it, trocaDeVariante = true) {
-    var _a;
-    if (it.transicao === "instantanea") return null;
-    const easing = it.curva === "linear" ? { type: "LINEAR" } : it.curva === "entrada-saida" ? { type: "EASE_IN_AND_OUT" } : it.curva === "mola" ? { type: "GENTLE" } : it.curva === "quique" ? { type: "BOUNCY" } : { type: "EASE_OUT" };
-    const duration = it.duracao / 1e3;
-    if ((it.transicao === "mover" || it.transicao === "empurrar") && !trocaDeVariante) {
-      const dir = { esquerda: "LEFT", direita: "RIGHT", cima: "TOP", baixo: "BOTTOM" }[(_a = it.direcao) != null ? _a : "esquerda"];
-      return {
-        type: it.transicao === "mover" ? "MOVE_IN" : "PUSH",
-        direction: dir,
-        matchLayers: false,
-        easing,
-        duration
-      };
-    }
-    return { type: it.transicao === "dissolver" ? "DISSOLVE" : "SMART_ANIMATE", easing, duration };
   }
 
   // figma-bridge/src/code.ts
