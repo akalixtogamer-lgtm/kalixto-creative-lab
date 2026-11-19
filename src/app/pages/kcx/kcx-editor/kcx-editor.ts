@@ -24,6 +24,8 @@ import { KcxPresetsPainel } from '../kcx-presets-painel/kcx-presets-painel';
 import { KcxCodigoPainel } from '../kcx-codigo-painel/kcx-codigo-painel';
 import { KcxExportarPainel } from '../kcx-exportar-painel/kcx-exportar-painel';
 import { KcxImportarPainel } from '../kcx-importar-painel/kcx-importar-painel';
+import { KcxVariantes, valoresDaVariante } from '../kcx-variantes/kcx-variantes';
+import { variantesDoComponente } from '../../../kcx/figma-plano';
 
 const NIVEL_ROTULO = {
   1: 'Nível 1 — nativo editável',
@@ -49,6 +51,7 @@ const NIVEL_ROTULO = {
     KcxCodigoPainel,
     KcxExportarPainel,
     KcxImportarPainel,
+    KcxVariantes,
   ],
   templateUrl: './kcx-editor.html',
   styleUrl: './kcx-editor.css',
@@ -81,11 +84,27 @@ export class KcxEditor {
     const c = this.comp();
     return c ? this.estado.valores(c) : {};
   });
+  /** Variante escolhida para ver no preview (vazio = valores atuais). */
+  protected readonly variante = linkedSignal<string>(() => {
+    this.comp();
+    return '';
+  });
+  protected readonly temVariantes = computed(() => {
+    const c = this.comp();
+    try {
+      return !!c && variantesDoComponente(c).length > 1;
+    } catch {
+      return false;
+    }
+  });
   protected readonly saidas = computed(() => {
     const c = this.comp();
-    return c
-      ? resolverSaidas(c.variaveis, this.valores())
-      : { cssVars: {}, atributos: [], textos: [] };
+    if (!c) return { cssVars: {}, atributos: [], textos: [] };
+    const v = this.variante();
+    return resolverSaidas(
+      c.variaveis,
+      v ? valoresDaVariante(c, v, this.valores()) : this.valores(),
+    );
   });
 
   /** Código editado no modo avançado (null = código original do componente). */

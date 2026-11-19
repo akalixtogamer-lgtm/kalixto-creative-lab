@@ -772,6 +772,29 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
   return p;
 }
 
+/** Variante do componente com os valores de variáveis que ela usa. */
+export interface VarianteKcx {
+  nome: string;
+  props: Record<string, string>;
+  valores: Valores;
+  sufixo: string;
+}
+
+/**
+ * Todas as variantes do componente (as mesmas que vão para o Figma), cada uma
+ * com os valores de variáveis prontos para o preview.
+ */
+export function variantesDoComponente(comp: KcxComponente, valores: Valores = {}): VarianteKcx[] {
+  return combinacoes(comp, valoresAtuais(comp.variaveis, valores));
+}
+
+/** Eixos das variantes (Estado + eixos enum), na ordem em que aparecem no nome. */
+export function eixosDoComponente(comp: KcxComponente): { nome: string; opcoes: string[] }[] {
+  const vs = variantesDoComponente(comp);
+  const nomes = vs.length ? Object.keys(vs[0].props) : [];
+  return nomes.map((n) => ({ nome: n, opcoes: [...new Set(vs.map((v) => v.props[n]))] }));
+}
+
 /** Combinações de variantes: estados × opções das variáveis enum marcadas como eixo. */
 function combinacoes(
   comp: KcxComponente,

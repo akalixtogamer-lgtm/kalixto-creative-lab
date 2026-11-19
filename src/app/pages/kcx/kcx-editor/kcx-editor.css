@@ -162,3 +162,11 @@
   gap: var(--kx-space-2);
   margin-top: var(--kx-space-3);
 }
+
+.kcxe__variantes {
+  display: grid;
+  gap: var(--kx-space-2, 8px);
+  margin-top: var(--kx-space-3, 12px);
+  padding-top: var(--kx-space-3, 12px);
+  border-top: 1px solid var(--kx-border);
+}

@@ -140,6 +140,19 @@
             [titulo]="'Preview de ' + c.nome"
           />
         }
+        @if (temVariantes()) {
+          <div class="kcxe__variantes">
+            <p class="kcxe__nota">
+              <strong>Variantes:</strong> clique para ver cada uma no preview e como fica no Figma.
+              @if (variante()) {
+                <button type="button" class="kcxe__link" (click)="variante.set('')">
+                  voltar aos meus valores
+                </button>
+              }
+            </p>
+            <kx-kcx-variantes [comp]="c" [valores]="valores()" [(selecionada)]="variante" />
+          </div>
+        }
         @if (codigoEditado()) {
           <p class="kcxe__aviso" role="status">
             Rodando o seu código editado. As variáveis continuam controlando o preview.

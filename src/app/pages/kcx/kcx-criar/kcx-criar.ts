@@ -3,6 +3,8 @@ import { Router, RouterLink } from '@angular/router';
 import {
   CATEGORIAS_CONSTRUTOR,
   ConfigConstrutor,
+  CoresConstrutor,
+  corDoBotao,
   DefinicaoTipo,
   TIPOS_CONSTRUTOR,
   configPadrao,
@@ -15,10 +17,41 @@ import { KcxComponente } from '../../../kcx/kcx.types';
 import { idLivre } from '../../../kcx/meus-componentes';
 import { planejarFigma } from '../../../kcx/figma-plano';
 import { criarPacote } from '../../../kcx/serializar';
-import { resolverSaidas, valoresAtuais } from '../../../kcx/resolver';
+import { resolverSaidas } from '../../../kcx/resolver';
 import { Icon } from '../../../shared/components/icon/icon';
 import { KcxMeusService } from '../kcx-meus.service';
 import { KcxPreview } from '../kcx-preview/kcx-preview';
+import { KcxVariantes, valoresDaVariante } from '../kcx-variantes/kcx-variantes';
+
+export type PassoCriar = 1 | 2 | 3;
+
+/** Paletas prontas: um clique troca as quatro cores. */
+export const PALETAS: { nome: string; cores: CoresConstrutor }[] = [
+  {
+    nome: 'Kalixto',
+    cores: { primaria: '#d4119f', fundo: '#0b0a14', superficie: '#1a1530', texto: '#f4f2ff' },
+  },
+  {
+    nome: 'Oceano',
+    cores: { primaria: '#2563eb', fundo: '#06121f', superficie: '#0f2238', texto: '#e8f1ff' },
+  },
+  {
+    nome: 'Floresta',
+    cores: { primaria: '#16a34a', fundo: '#07140d', superficie: '#11261a', texto: '#eafff1' },
+  },
+  {
+    nome: 'Pôr do sol',
+    cores: { primaria: '#f97316', fundo: '#1a0b05', superficie: '#2b150b', texto: '#fff3ea' },
+  },
+  {
+    nome: 'Claro',
+    cores: { primaria: '#7c3aed', fundo: '#ffffff', superficie: '#f3f0ff', texto: '#1b1530' },
+  },
+  {
+    nome: 'Preto e branco',
+    cores: { primaria: '#111111', fundo: '#ffffff', superficie: '#f2f2f2', texto: '#111111' },
+  },
+];
 
 /** Limite da imagem enviada (fica no navegador, dentro do componente). */
 const LIMITE_IMAGEM = 1_500_000;
@@ -31,7 +64,7 @@ const LIMITE_IMAGEM = 1_500_000;
  */
 @Component({
   selector: 'kx-kcx-criar',
-  imports: [RouterLink, Icon, KcxPreview],
+  imports: [RouterLink, Icon, KcxPreview, KcxVariantes],
   templateUrl: './kcx-criar.html',
   styleUrl: './kcx-criar.css',
 })
@@ -40,6 +73,13 @@ export class KcxCriar {
   readonly de = input<string>();
   private readonly meus = inject(KcxMeusService);
   private readonly router = inject(Router);
+
+  protected readonly paletas = PALETAS;
+
+  /** Etapa: 1 tipo · 2 personalizar · 3 revisar e salvar. */
+  protected readonly passo = linkedSignal<PassoCriar>(() => (this.de() || this.tipo() ? 2 : 1));
+  /** Variante mostrada no preview (vazio = a primeira). */
+  protected readonly variante = signal('');
 
   protected readonly categorias = CATEGORIAS_CONSTRUTOR.map((c) => ({
     ...c,
@@ -87,7 +127,7 @@ export class KcxCriar {
   protected readonly saidas = computed(() => {
     const c = this.resultado().comp;
     return c
-      ? resolverSaidas(c.variaveis, valoresAtuais(c.variaveis))
+      ? resolverSaidas(c.variaveis, valoresDaVariante(c, this.variante()))
       : { cssVars: {}, atributos: [], textos: [] };
   });
 
@@ -98,7 +138,7 @@ export class KcxCriar {
     const plano = planejarFigma(criarPacote([c]));
     const p = plano.componentes[0];
     return {
-      variantes: p.variantes.map((v) => v.nome.replace(/^Estado=/, '')),
+      variantes: p.variantes.map((v) => v.nome),
       interacoes: p.interacoes?.length ?? 0,
       variaveis: plano.colecoes.reduce(
         (s, col) => s + col.variaveis.filter((v) => v.nome.startsWith(`${c.id}/`)).length,
@@ -108,16 +148,64 @@ export class KcxCriar {
     };
   });
 
+  /** "Estado=Hover, Tamanho=G" → "Hover · G" (vazio = a primeira variante). */
+  protected readonly rotuloVariante = computed(() => {
+    const nome = this.variante() || this.figma()?.variantes[0] || '';
+    return nome
+      .replace(/[^=,]+=/g, '')
+      .split(',')
+      .map((x) => x.trim())
+      .join(' · ');
+  });
+
+  protected readonly nomeAnimacao = computed(
+    () => this.def().animacoes.find((a) => a.id === this.cfg().animacao)?.nome ?? '—',
+  );
+
   protected readonly erros = signal<string[]>([]);
   protected readonly avisoImagem = signal('');
 
   /* ---------- Edição ---------- */
 
   protected escolherTipo(def: DefinicaoTipo): void {
-    const atual = this.cfg();
-    const novo = configPadrao(def, `Meu ${def.nome.toLowerCase()}`);
-    this.cfg.set({ ...novo, cores: atual.cores, raio: atual.raio });
+    if (def.id !== this.cfg().tipo) {
+      const atual = this.cfg();
+      const novo = configPadrao(def, `Meu ${def.nome.toLowerCase()}`);
+      this.cfg.set({ ...novo, cores: atual.cores, raio: atual.raio });
+      this.variante.set('');
+    }
     this.erros.set([]);
+    this.irPara(2);
+  }
+
+  protected irPara(p: PassoCriar): void {
+    if (p === 3 && !this.resultado().comp) return;
+    this.passo.set(p);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  protected aplicarPaleta(cores: CoresConstrutor): void {
+    this.cfg.update((c) => ({ ...c, cores: { ...cores }, coresItens: undefined }));
+  }
+
+  protected paletaAtiva(cores: CoresConstrutor): boolean {
+    const a = this.cfg().cores;
+    return (Object.keys(cores) as (keyof CoresConstrutor)[]).every(
+      (k) => a[k].toLowerCase() === cores[k].toLowerCase(),
+    );
+  }
+
+  /** Cor do item i (tipos com uma cor por item). */
+  protected corItem(i: number): string {
+    return corDoBotao(this.cfg(), i);
+  }
+
+  protected mudarCorItem(i: number, cor: string): void {
+    this.cfg.update((c) => {
+      const cores = c.itens.map((_, j) => corDoBotao(c, j));
+      cores[i] = cor;
+      return { ...c, coresItens: cores };
+    });
   }
 
   protected mudar<K extends keyof ConfigConstrutor>(campo: K, valor: ConfigConstrutor[K]): void {
@@ -139,21 +227,39 @@ export class KcxCriar {
   protected adicionarItem(): void {
     const d = this.def().itens;
     if (!d || this.cfg().itens.length >= d.max) return;
-    this.cfg.update((c) => ({ ...c, itens: [...c.itens, `${d.rotulo} ${c.itens.length + 1}`] }));
+    this.cfg.update((c) => ({
+      ...c,
+      itens: [...c.itens, `${d.rotulo} ${c.itens.length + 1}`],
+      coresItens: c.coresItens ? [...c.coresItens, ''] : undefined,
+    }));
   }
 
   protected removerItem(i: number): void {
     const d = this.def().itens;
     if (!d || this.cfg().itens.length <= d.min) return;
-    this.cfg.update((c) => ({ ...c, itens: c.itens.filter((_, j) => j !== i) }));
+    this.cfg.update((c) => ({
+      ...c,
+      itens: c.itens.filter((_, j) => j !== i),
+      coresItens: c.coresItens?.filter((_, j) => j !== i),
+    }));
+    this.variante.set('');
   }
 
   protected moverItem(i: number, passo: -1 | 1): void {
-    const itens = [...this.cfg().itens];
+    const c = this.cfg();
     const j = i + passo;
-    if (j < 0 || j >= itens.length) return;
-    [itens[i], itens[j]] = [itens[j], itens[i]];
-    this.mudar('itens', itens);
+    if (j < 0 || j >= c.itens.length) return;
+    const troca = <T>(xs: T[]) => {
+      const r = [...xs];
+      [r[i], r[j]] = [r[j], r[i]];
+      return r;
+    };
+    const cores = c.itens.map((_, k) => corDoBotao(c, k));
+    this.cfg.set({
+      ...c,
+      itens: troca(c.itens),
+      coresItens: this.def().coresPorItem ? troca(cores) : c.coresItens,
+    });
   }
 
   protected valor(e: Event): string {

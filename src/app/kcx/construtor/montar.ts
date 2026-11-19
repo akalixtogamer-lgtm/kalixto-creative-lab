@@ -39,6 +39,8 @@ export interface ConfigConstrutor {
   raio: number;
   /** URL (https ou data:) de imagem ou vídeo, nos tipos com mídia. */
   midia?: string;
+  /** Cor de cada item, nos tipos com `coresPorItem` (ex.: um botão de cada cor). */
+  coresItens?: string[];
 }
 
 export interface CampoTexto {
@@ -92,6 +94,8 @@ export interface DefinicaoTipo {
   uso: string;
   textos: CampoTexto[];
   itens?: { rotulo: string; padrao: string[]; min: number; max: number };
+  /** Cada item tem a sua cor (cfg.coresItens). */
+  coresPorItem?: boolean;
   animacoes: OpcaoAnimacao[];
   midia?: 'imagem' | 'video';
   largura: number;

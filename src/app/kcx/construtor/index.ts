@@ -6,6 +6,7 @@ import { TIPOS_NAVEGACAO } from './tipos-navegacao';
 import { TIPOS_SECOES } from './tipos-secoes';
 
 export * from './montar';
+export { corDoBotao } from './tipos-conteudo';
 
 /** Todos os tipos que o construtor sabe montar. */
 export const TIPOS_CONSTRUTOR: DefinicaoTipo[] = [

@@ -1084,10 +1084,18 @@ const TAMANHOS = [
   { valor: 'g', rotulo: 'G', px: 32, py: 16, fonte: 20 },
 ];
 
+/** Cor do botão i: a escolhida, ou a principal (1º) e a paleta (demais). */
+export function corDoBotao(cfg: ConfigConstrutor, i: number): string {
+  const escolhida = cfg.coresItens?.[i];
+  if (escolhida && /^#[0-9a-f]{6}$/i.test(escolhida)) return escolhida;
+  return i === 0 ? cfg.cores.primaria : PALETA_BOTOES[i % PALETA_BOTOES.length];
+}
+
 export const BOTOES: DefinicaoTipo = {
   id: 'botoes',
   nome: 'Conjunto de botões',
   categoria: 'acoes',
+  coresPorItem: true,
   uso: 'site e app',
   descricao:
     'Vários botões num componente só: no Figma, variantes por botão (nome e cor), tamanho (P, M, G) e estado (Padrão, Hover).',
@@ -1121,7 +1129,7 @@ export const BOTOES: DefinicaoTipo = {
         id: `corBotao${i + 1}`,
         nome: `Cor do botão ${i + 1}`,
         tipo: 'color',
-        padrao: i === 0 ? cfg.cores.primaria : PALETA_BOTOES[i % PALETA_BOTOES.length],
+        padrao: corDoBotao(cfg, i),
         descricao: `Cor do botão “${cfg.itens[i]}”.`,
         grupo: 'colors',
         secao: 'aparencia',
@@ -1246,7 +1254,7 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
           tipo: 'sombra',
           x: 0,
           y: 10,
-          cor: doBotao('corBotao', 'sombra-cor', [{ op: 'alpha', valor: 0.5 }]),
+          cor: doBotao('corBotao', 'sombra-cor', [{ op: 'alpha', variavel: 'forcaSombra' }]),
           raio: {
             $derivado: forca,
             nome: 'sombra-raio',

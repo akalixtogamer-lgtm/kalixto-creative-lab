@@ -5,11 +5,30 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
-Nada ainda.
+### Adicionado
+
+- **Construtor em 3 etapas** (`/kcx/criar`): 1. Escolher tipo → 2. Personalizar → 3. Revisar e salvar.
+  Salvar só acontece na revisão, depois de ver tudo.
+- **Ver cada variante**: abaixo do preview, um grupo de botões por eixo (Estado, Botão, Tamanho…).
+  Clicar troca o preview do código para aquela variante e mostra como ela fica no Figma.
+- **Revisão**: todas as variantes lado a lado (como ficam no Figma), resumo com nome, itens, cores,
+  animação e o que vai para o Figma. Clicar numa variante a mostra no preview.
+- **Paletas prontas** (Kalixto, Oceano, Floresta, Pôr do sol, Claro, Preto e branco); as cores uma a
+  uma ficam em “Escolher cada cor”.
+- **Conjunto de botões**: cada botão tem a sua cor (seletor ao lado do nome).
+- **Editor**: o mesmo seletor de variantes aparece abaixo do preview.
+- `variantesDoComponente`, `eixosDoComponente` e `plano-html.ts` (prévia HTML de uma variante do plano
+  do Figma, sem executar o código do componente).
+
+### Corrigido
+
+- Conjunto de botões: no estado Padrão a sombra não aparece mais como um bloco duro no Figma (a cor
+  da sombra usa a força da sombra como opacidade).
 
 ## [1.10.0-rc.1] — 2026-11-18 · KCX — Construtor de componentes e Figma → Studio
 
 ### Adicionado
+
 - **Construtor no KCX Studio** (`/kcx/criar`): escolha o tipo, dê os nomes dos botões, links, abas e
   slides, escolha a animação, as cores e o arredondamento, com preview ao vivo do código de verdade.
   **16 tipos**: navbar (vira menu sanduíche abaixo de 720 px), menu sanduíche, menu lateral (gaveta),
@@ -28,6 +47,7 @@ Nada ainda.
 - Preview KCX aceita imagens e vídeos por `https:` (cards de foto e vídeo).
 
 ### Limitações honestas
+
 - Abrir/fechar (menus, modal, acordeão) existe nos tipos do construtor; um desenho importado do Figma
   recebe animações de entrada, hover ou contínuas.
 - Imagens e vídeos não vão para o Figma pelo plugin: a camada fica pronta para você arrastar a foto.
@@ -35,6 +55,7 @@ Nada ainda.
 ## [1.9.0-rc.1] — 2026-11-18 · KCX — Kalixto Component Exchange
 
 ### Adicionado
+
 - **Formato KCX 1.0.0** (`src/app/kcx/`): schema tipado em TypeScript + JSON Schema, validação, serialização,
   migração de versões, comparação de valores e atualização sem sobrescrever personalizações.
 - **Variáveis funcionais**: 10 tipos (cor, número, float, boolean, texto, enum, dimensão, tempo, gradiente,
@@ -63,10 +84,12 @@ Nada ainda.
 - Documentação: `docs/kcx/ESPECIFICACAO.md`, `docs/kcx/FIGMA-BRIDGE.md`, `docs/kcx/AUDITORIA-E-GUIA.md`.
 
 ### Licenças
+
 - O núcleo KCX não usa GSAP: a licença Standard do GSAP não é open source e proíbe uso em ferramentas
   visuais de animação que concorram com o Webflow. Por isso o KCX ficou só com CSS, SVG e Angular.
 
 ### Corrigido (visto no Figma real)
+
 - Coleção já existente com Dark/Light: componente de modo único criava um modo novo e deixava o padrão vazio (branco).
 - Tracejado parcial do SVG Motion aparecia picotado (o Figma redistribui `dashPattern` por segmento): agora o quadro usa um vetor já cortado.
 - Escopo em variáveis BOOLEAN/TIMING/EASING era recusado; agora só COLOR/FLOAT/STRING recebem escopo.
@@ -74,6 +97,7 @@ Nada ainda.
 ## [1.8.0-rc.1] — 2026-11-18 · Vidro e desfoque
 
 ### Adicionado
+
 - **3 kits de vidro e desfoque** (53 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
   - **Gerador de vidro (glassmorphism)** — desfoque, opacidade, saturação, brilho da borda e cor do vidro (branco, lilás, rosa, azul ou fumê), com reflexo que segue o mouse e plano B (`@supports`) para navegadores sem `backdrop-filter`.
   - **Menu que vira vidro ao rolar** — cabeçalho sticky transparente no topo e fosco depois de rolar (IntersectionObserver), tom claro ou escuro.
@@ -83,6 +107,7 @@ Nada ainda.
 ## [1.7.0-rc.1] — 2026-11-18 · Referências em vídeo, lote 4
 
 ### Adicionado
+
 - **Vídeos 7 e 8 mapeados** em `docs/REFERENCIAS-ANIMACAO.md`: 15 animações, 7 novas.
 - **7 kits novos** (50 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
   - **Cortina que se abre** — tecido com dobras em gradiente, abre para os lados ou para cima.
@@ -96,6 +121,7 @@ Nada ainda.
 ## [1.6.0-rc.1] — 2026-11-17 · Referências em vídeo, lote 3
 
 ### Adicionado
+
 - **Vídeo 6 mapeado** em `docs/REFERENCIAS-ANIMACAO.md` (proposta comercial com DNA e vidro líquido): 9 animações, 5 novas.
 - **5 kits novos** (43 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
   - **Bolha de vidro que troca a fonte** — dentro da bolha o título vira itálico com serifa, contorno ou ultranegrito (máscaras opostas + `backdrop-filter`).
@@ -108,6 +134,7 @@ Nada ainda.
 ## [1.5.0-rc.1] — 2026-11-17 · Referências em vídeo
 
 ### Adicionado
+
 - **Mapa das referências** em [`docs/REFERENCIAS-ANIMACAO.md`](docs/REFERENCIAS-ANIMACAO.md): 5 Reels decupados quadro a quadro, 31 animações identificadas e ligadas a um kit do lab, a seção "As animações mais usadas hoje" e uma lista de galerias e tutoriais para buscar mais referências.
 - **20 kits novos** (38 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
   - **Tipografia:** Legenda cinética (palavra por palavra, estilo Reels), Escrita neon à mão (SVG `stroke-dashoffset` + brilho), Tipografia inflada (`text-shadow` em camadas).
@@ -132,6 +159,7 @@ Nada ainda.
 ## [1.4.1-rc.1] — 2026-11-17 · Correção
 
 ### Corrigido
+
 - **Página do efeito "abrindo mais de uma vez" (celular e computador).**
   - Cada atualização do preview (abrir o próximo efeito, mexer num controle, Reiniciar, executar código editado) trocava o `srcdoc` do iframe, e o navegador registrava isso como uma página nova no histórico. Era preciso tocar em "Voltar" várias vezes para sair do efeito.
   - Agora o preview troca o iframe por um novo já com o código. Só a navegação real entra no histórico.
@@ -140,6 +168,7 @@ Nada ainda.
 ## [1.4.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 3
 
 ### Adicionado
+
 - **8 kits novos** (18 no total), com ficha, controles, versão Angular, 3 níveis de explicação e glossário:
   - **Rolagem:** Revelar ao rolar (IntersectionObserver), Barra de progresso de leitura (`animation-timeline: scroll()` com reserva em JS), Parallax em camadas, Revelar ao rolar com GSAP (ScrollTrigger `batch` ou `scrub`, com `gsap.matchMedia`).
   - **Navegação:** Rolagem suave com **Lenis** (com modo nativo para comparar).
@@ -153,11 +182,13 @@ Nada ainda.
 - Kits de página rolável (`previewAngular: false`): o botão **Angular** fica desabilitado com explicação, porque o componente depende da rolagem da janela inteira. Os arquivos Angular continuam no Code Lab e no `.zip`.
 
 ### Alterado
+
 - Testes da versão Angular: aceitam componentes sem texto (a barra de progresso) e ignoram o CSS da página de demonstração.
 
 ## [1.3.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 2
 
 ### Adicionado
+
 - **Code Lab** na página de cada efeito:
   - abas HTML, CSS e JavaScript, mais os três arquivos da versão Angular;
   - edição dos arquivos HTML/CSS/JS, executada no mesmo preview isolado (sandbox + CSP);
@@ -173,9 +204,11 @@ Nada ainda.
 - 39 testes novos (334 no total).
 
 ### Corrigido durante a verificação
+
 - O realce com `[innerHTML]` trazia o sanitizador do Angular para o pacote inicial (+5,5 kB). Agora o realce é renderizado como texto.
 
 ### Alterado
+
 - "Restaurar valores" passou para o painel de controles. Na barra do preview ficaram Reiniciar, Baixar pacote .zip e Baixar .html único.
 
 ## [1.2.0-rc.1] — 2026-11-17 · Biblioteca técnica, Fase 1
@@ -183,6 +216,7 @@ Nada ainda.
 > Master Prompt "Auditoria, expansão, implementação e documentação de efeitos web". Diagnóstico em `docs/AUDITORIA.md`.
 
 ### Adicionado
+
 - **Ficha técnica tipada** (`EffectSheet`) com os campos da seção 05: categoria, subcategoria, objetivo, aplicações, nível (inclusive experimental), tecnologias, dependências, interação, tags, explicação, alternativa, compatibilidade, responsividade, acessibilidade, performance, limitações, referências, data de validação e status.
 - **15 categorias** do mapa de efeitos. As 60 demos existentes foram classificadas sem duplicar código.
 - **10 kits** autossuficientes: Fade In, Slide In, Scale Reveal, Button Hover, Magnetic Button, Glow Button, Animated Gradient, Text Reveal, 3D Card Tilt e Animated Border. Todos em HTML, CSS e JS nativos, sem bibliotecas.
@@ -200,10 +234,12 @@ Nada ainda.
 - 62 testes novos (295 no total). Entre eles, um teste garante que **cada controle muda o código** e que todo kit respeita `prefers-reduced-motion`.
 
 ### Corrigido durante a verificação
+
 - Text Reveal quebrava palavras no meio da linha no modo letras. Agora as letras ficam agrupadas por palavra.
 - Bind dinâmico do atributo `sandbox` é bloqueado pelo Angular (NG0910). O atributo passou a ser estático no template.
 
 ### Preservado
+
 - Todas as rotas, os laboratórios, o progresso salvo e os filtros antigos da Biblioteca (`?lab=`, situação).
 
 ## [1.1.0-rc.1] — 2026-11-16 · Efeitos das referências
@@ -211,6 +247,7 @@ Nada ainda.
 > Avaliação das 8 imagens da pasta "efeitos pra site" em `docs/REFERENCIAS.md`.
 
 ### Adicionado
+
 - **Laboratório 07 — Interface Lab** com 13 demos: hero editorial, órbita e parallax por mouse, texto atrás do objeto, imagem recortada em formas, biblioteca de 17 divisores SVG, carrossel de cards em vidro, números animados com gráfico, tipografia vazada, bento grid, cards com profundidade, grão de filme e vinheta, botão magnético com cursor personalizado e faixa infinita (marquee).
 - **Scroll Lab → Capítulos com linha do tempo**: linha que se preenche, capítulo ativo e zoom/parallax nas imagens.
 - **GSAP Studio → SplitText**: revelar texto por letras, palavras ou linhas, com quatro efeitos.
@@ -218,11 +255,13 @@ Nada ainda.
 - 4 exercícios do Interface Lab (27 no total); 51 testes novos (233 no total).
 
 ### Corrigido
+
 - Três presets novos com valores fora do passo dos sliders (pegos pelo teste de integridade).
 
 ## [1.0.0-rc.2] — 2026-11-16 · Navbar ao rolar e divisores de seção
 
 ### Adicionado
+
 - **Scroll Lab → Navbar ao rolar**: navbar transparente sobre o hero que, ao rolar, fica fixa com fundo (vidro ou sólido) e sombra ajustável; opção de esconder ao descer e mostrar ao subir.
 - **CSS Playground → Divisores de seção**: bordas entre seções em diagonal, seta, curva, zigue-zague e ondas, com altura e direção ajustáveis. O palco e o Code Viewer usam a mesma função (`estiloDivisor`).
 - Presets e desafio nas duas demos; 8 testes novos (182 no total).
@@ -232,11 +271,13 @@ Nada ainda.
 > Candidata à versão 1.0. Aguardando a avaliação do Wallace (`docs/AVALIACAO.md`). Ainda não publicado.
 
 ### Adicionado
+
 - Relatório de QA (`docs/QA.md`), arquitetura (`docs/ARQUITETURA.md`) e roteiro de avaliação (`docs/AVALIACAO.md`).
 - Registro das 43 demos gerado a partir dos dados (`docs/EFEITOS.md`).
 - Dashboard indica "Roadmap completo".
 
 ### Corrigido
+
 - Acessibilidade (axe-core, WCAG 2.1 AA): 0 violações em 14 páginas.
   - Contraste de texto branco sobre magenta: botões e marcadores usam o novo `--kx-gradient-btn`.
   - `aria-label` em elementos sem papel → `role="img"`.
@@ -249,6 +290,7 @@ Nada ainda.
 ## [0.7.0] — 2026-11-16 · Fase 5 — WebGL e GLSL
 
 ### Adicionado
+
 - **Laboratório 06 — WebGL & GLSL** com 7 demos: fragment shader (gradiente animado), vertex shader (superfície ondulando), formas com GLSL (length, smoothstep, fract, step), noise com fbm e domain warping, distorção da logo com ondas de água no mouse, efeitos procedurais (plasma e Voronoi) e transição entre imagens com ruído animada pelo GSAP.
 - Os shaders ficam no catálogo de demos: o Code Viewer mostra exatamente o GLSL que roda, mais os uniforms com os valores atuais.
 - Teste que garante que todo uniform controlado pela tela existe no shader.
@@ -256,6 +298,7 @@ Nada ainda.
 ## [0.6.0] — 2026-11-16 · Fase 4 — Three.js
 
 ### Adicionado
+
 - **Laboratório 05 — Three.js Lab** com 9 demos: objetos geométricos, câmeras (fov, distância, voo com GSAP), iluminação (ambiente, direcional, pontual), materiais (Basic, Lambert, Phong, Standard, Normal), texturas (logo e padrões feitos em canvas), animação 3D com squash and stretch, interação por mouse (lerp), raycasting (hover e clique) e importação GLTF/GLB.
 - Modelo próprio `public/models/kalixto-trofeu.glb`, gerado por código (`scripts/gerar-modelo.mjs`); dá para carregar um .glb seu, lido só no seu computador.
 - Palco 3D reutilizável (`palco-3d.ts`): ajusta o tamanho sozinho, pausa quando a aba ou o palco saem da tela, limita a densidade de pixels e libera a memória da placa de vídeo ao sair.
@@ -264,11 +307,13 @@ Nada ainda.
 - Three.js carregado só na rota do lab (~140 kB comprimido).
 
 ### Corrigido
+
 - Textos para leitores de tela dentro da faixa de demos alargavam a página no celular.
 
 ## [0.5.0] — 2026-11-16 · Fase 3 — Organização educacional
 
 ### Adicionado
+
 - **Laboratório 04 — SVG Lab** com 5 demos: traço que se desenha (DrawSVG), máscara revelando a logo, morphing de formas (MorphSVG), distorção com filtros e motion path.
 - **Trilha de aprendizagem** (`/trilha`): todos os labs em ordem, ✓ por demo executada, ★ por desafio, anel de progresso, "Continuar de onde parei" e "Zerar progresso" com confirmação.
 - **Exercícios** (`/exercicios`): 23 questões de múltipla escolha (CSS, GSAP, Scroll, SVG, Three.js, WebGL) com correção, explicação e "Refazer".
@@ -280,6 +325,7 @@ Nada ainda.
 ## [0.4.0] — 2026-11-16 · Fase 2 concluída — Scroll Lab
 
 ### Adicionado
+
 - **Laboratório 03 — Scroll Lab** com 7 demos de ScrollTrigger: gatilho, Scrub, Pin, Parallax, Horizontal Scroll, Scroll Progress e Scroll Storytelling (Dança → Código → Criação).
 - Cada demo roda numa janela de rolagem própria; o resultado é ao vivo e "Rolar automaticamente" faz a rolagem sozinho.
 - **Layout comum dos laboratórios** (`kx-lab-layout`): CSS, GSAP e Scroll usam a mesma estrutura.
@@ -294,6 +340,7 @@ Nada ainda.
 > Status: **pronto para testar** (ver `docs/CHECKLIST-FASE-2-GSAP.md`). Ainda não publicado no GitHub Pages.
 
 ### Adicionado
+
 - **Laboratório 02 — GSAP Studio** com 7 demos: gsap.to(), gsap.from(), gsap.fromTo(), Timeline, Stagger, Easing (com gráfico da curva ao vivo) e Controles de reprodução (play, pause, reverse, restart, barra de progresso e timeScale).
 - Animações rodam em `gsap.context()`: Reiniciar e trocar de demo desfazem tudo, sem sobras de estilo.
 - GSAP 3.15 é carregado só quando o GSAP Studio abre (~30 kB).
@@ -302,6 +349,7 @@ Nada ainda.
 - 13 testes novos do GSAP Studio (44 no total).
 
 ### Alterado
+
 - Modelo comum de demos em `core/models/demo.model.ts` (usado por CSS e GSAP).
 - Níveis exibidos com acento (intermediário, avançado).
 
@@ -310,6 +358,7 @@ Nada ainda.
 > Status: **pronto para testar** (ver `docs/CHECKLIST-FASE-2-CSS.md`). Ainda não publicado no GitHub Pages.
 
 ### Adicionado
+
 - **Laboratório 01 — CSS Playground** com 8 demos interativas: Transitions, Keyframes, Transform, Hover, Floating, Perspective, Clip-path e Microinterações.
 - Cada demo tem palco, controles (sliders e seletores), botões Executar e Reiniciar, Code Viewer com o código gerado a partir dos valores atuais e explicação com dica.
 - A demo escolhida fica na URL (`/labs/css?demo=hover`).
@@ -317,6 +366,7 @@ Nada ainda.
 - 15 testes novos do CSS Playground (31 no total).
 
 ### Alterado (revisão de UI/UX)
+
 - Dashboard: CTA principal leva direto ao laboratório pronto; nova seção "Como usar" em 3 passos; cards com barra de progresso e indicação "Abrir" / "Ver plano".
 - Labs sem demos: botões desabilitados (que pareciam quebrados) trocados por um aviso claro "Em breve" com atalho para o lab pronto.
 - Breadcrumb e navegação anterior/próximo em laboratórios e demos.
@@ -329,6 +379,7 @@ Nada ainda.
 > Status: concluída.
 
 ### Adicionado
+
 - Projeto Angular 22 (componentes standalone, signals, controle de fluxo `@if`/`@for`).
 - Design System Kalixto: tokens de cor, tipografia, espaçamento, raios e movimento; componentes globais `.kx-*` com glassmorphism.
 - Fontes Inter, Space Grotesk e JetBrains Mono hospedadas no próprio projeto (sem depender do Google Fonts).
