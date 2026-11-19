@@ -22,6 +22,9 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ### Corrigido
 
+- **Preenche no hover** (Botão e Conjunto de botões): no Figma a variante Padrão agora é vazada
+  (contorno e texto na cor do botão) e a Hover é preenchida (texto na cor de fundo). Antes as duas
+  saíam cheias. O Smart Animate faz a transição entre elas.
 - Conjunto de botões: no estado Padrão a sombra não aparece mais como um bloco duro no Figma (a cor
   da sombra usa a força da sombra como opacidade).
 
