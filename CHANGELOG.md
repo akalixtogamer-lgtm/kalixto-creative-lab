@@ -5,7 +5,24 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
-### Adicionado
+### Adicionado — mapa KCX × Figma (3 fases)
+- **Fase 1 · estados e propriedades:** biblioteca **KCX Ícone** (40 ícones) com troca de instância
+  e ícones sugeridos; estados Padrão, Hover, Pressionado, Foco e Desativado (While hovering e While
+  pressing); Botão com tipos (Primário, Secundário, Terciário, Destrutivo), tamanhos e ícones;
+  partes liga/desliga nos cards; aviso com tipos e “some sozinho”; navbar com página ativa; tab
+  bar e rodapé com ícones trocáveis; formulário com Desativado e ícone; seção **Recursos do Figma**
+  no construtor.
+- **Fase 2 · variações e layout:** Botão carregando e contador; carrossel automático e pelo
+  teclado; padding por lado, largura mín./máx. e quebra de linha; modos Claro/Escuro; curva do
+  protótipo (mola, quique); 9 tipos novos — caixa de seleção, opções, chave, trilha, paginação,
+  etapas, dica, faixa de aviso e menu suspenso.
+- **Fase 3 · composição e protótipo:** instâncias de componentes (Hero e Login usam o Botão),
+  slots (card e modal), tela de protótipo com Open/Close overlay, Esc fecha, chave que troca o
+  tema (Set variable mode), On drag, layout Grid, modos Desktop/Celular; 6 tipos novos —
+  seleção, controle deslizante, mega menu, botão flutuante, galeria em grade e login.
+- Gatilhos novos: Mouse enter/leave, After delay, tecla, On drag. Mover/empurrar dentro de um
+  componente viram Smart Animate (o Figma recusa na troca de variante).
+
 
 - **Construtor em 3 etapas** (`/kcx/criar`): 1. Escolher tipo → 2. Personalizar → 3. Revisar e salvar.
   Salvar só acontece na revisão, depois de ver tudo.
