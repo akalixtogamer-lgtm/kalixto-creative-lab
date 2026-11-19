@@ -23,6 +23,10 @@ Cada versão corresponde a uma etapa funcional do roadmap.
   (prévia + grade). A grade segue as cores do tema.
 - Orçamentos de tamanho mais justos (inicial 400 kB) e um limite por chunk (700 kB).
 - `CONTRIBUTING.md` com o fluxo de branches (worktree) e as regras do projeto.
+- **Construtor do KCX: um arquivo por tipo** (`construtor/tipos/<categoria>/<tipo>.ts`). Os 5
+  arquivos de até 1.984 linhas viraram 32 arquivos; o maior tem 538. Saída idêntica.
+- **Importador do Figma em camadas** (`figma/construir/`): variáveis → nós → protótipo. A API
+  pública não muda e a importação simulada dos 32 tipos dá o mesmo resultado byte a byte.
 
 ### Adicionado — mapa KCX × Figma (3 fases)
 - **Fase 1 · estados e propriedades:** biblioteca **KCX Ícone** (40 ícones) com troca de instância
