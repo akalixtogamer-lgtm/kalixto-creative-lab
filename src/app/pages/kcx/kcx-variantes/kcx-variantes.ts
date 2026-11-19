@@ -1,8 +1,21 @@
-import { Component, computed, inject, input, model } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  input,
+  model,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { eixosDoComponente, planejarFigma, variantesDoComponente } from '../../../kcx/figma-plano';
 import { KcxComponente } from '../../../kcx/kcx.types';
-import { documentoDaVariante } from '../../../kcx/plano-html';
+import { CoresGrade, documentoDaGrade, documentoDaVariante } from '../../../kcx/plano-html';
+import { TemaService } from '../../../core/services/tema.service';
 import { Valores } from '../../../kcx/resolver';
 import { criarPacote } from '../../../kcx/serializar';
 
@@ -51,10 +64,12 @@ export class KcxVariantes {
     }
   });
 
-  protected readonly atual = computed(() => {
-    const vs = this.variantes();
-    return vs.find((v) => v.nome === this.selecionada()) ?? vs[0];
-  });
+  protected readonly atual = computed<ReturnType<typeof variantesDoComponente>[number] | undefined>(
+    () => {
+      const vs = this.variantes();
+      return vs.find((v) => v.nome === this.selecionada()) ?? vs[0];
+    },
+  );
 
   /** Mostrar, abaixo dos botões, a variante escolhida como fica no Figma. */
   readonly previa = input(true);
@@ -88,15 +103,84 @@ export class KcxVariantes {
     };
   });
 
-  protected readonly miniaturas = computed<Miniatura[]>(() => {
-    if (!this.grade()) return [];
-    const p = this.plano();
-    return p.variantes.map((v) => ({
-      nome: v.nome,
-      props: v.propriedades,
-      doc: this.sanitizer.bypassSecurityTrustHtml(documentoDaVariante(v.arvore)),
-    }));
+  private readonly tema = inject(TemaService);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly gradeFrame = viewChild<ElementRef<HTMLIFrameElement>>('gradeFrame');
+  protected readonly alturaGrade = signal(200);
+
+  /**
+   * UM documento com todas as variantes (antes era um iframe por variante:
+   * 60 documentos no Botão padrão). Ele avisa por mensagem qual foi clicada.
+   */
+  protected readonly gradeDoc = computed<SafeHtml | null>(() => {
+    if (!this.grade()) return null;
+    const vs = this.plano().variantes;
+    if (!vs.length) return null;
+    this.tema.tema(); // refaz as cores ao trocar o tema
+    return this.sanitizer.bypassSecurityTrustHtml(
+      documentoDaGrade(
+        vs.map((v) => ({ arvore: v.arvore, rotulo: this.rotulo(v.propriedades) })),
+        {
+          altura: this.alturaMiniatura(),
+          cores: this.coresDoTema(),
+          selecionada: untracked(() => this.indiceAtual()),
+        },
+      ),
+    );
   });
+
+  private indiceAtual(): number {
+    const nome = this.atual()?.nome;
+    return Math.max(
+      0,
+      this.plano().variantes.findIndex((v) => v.nome === nome),
+    );
+  }
+
+  constructor() {
+    const aoReceber = (e: MessageEvent) => {
+      const frame = this.gradeFrame()?.nativeElement;
+      if (!frame || e.source !== frame.contentWindow || !e.data || typeof e.data !== 'object')
+        return;
+      const d = e.data as { kcxVariante?: unknown; kcxAltura?: unknown };
+      if (typeof d.kcxAltura === 'number') this.alturaGrade.set(Math.ceil(d.kcxAltura));
+      if (typeof d.kcxVariante === 'number') {
+        const v = this.plano().variantes[d.kcxVariante];
+        if (v) this.selecionada.set(v.nome);
+      }
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('message', aoReceber);
+      inject(DestroyRef).onDestroy(() => window.removeEventListener('message', aoReceber));
+    }
+    // Trocar a variante pelos botões dos eixos só marca a nova célula, sem recarregar a grade.
+    effect(() => {
+      this.atual();
+      this.enviarSelecao();
+    });
+  }
+
+  protected enviarSelecao(): void {
+    this.gradeFrame()?.nativeElement.contentWindow?.postMessage(
+      { kcxSelecionada: this.indiceAtual() },
+      '*',
+    );
+  }
+
+  private coresDoTema(): CoresGrade | undefined {
+    if (typeof getComputedStyle === 'undefined') return undefined;
+    const st = getComputedStyle(this.host.nativeElement);
+    const v = (n: string) => st.getPropertyValue(n).trim();
+    const cores: CoresGrade = {
+      borda: v('--kx-border'),
+      bordaForte: v('--kx-border-strong'),
+      superficie: v('--kx-surface'),
+      destaque: v('--kx-ciano'),
+      texto: v('--kx-text'),
+      textoSuave: v('--kx-text-soft'),
+    };
+    return Object.values(cores).every(Boolean) ? cores : undefined;
+  }
 
   protected escolher(eixo: string, opcao: string): void {
     const alvo = { ...this.atual()?.props, [eixo]: opcao };

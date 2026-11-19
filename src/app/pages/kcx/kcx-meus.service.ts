@@ -1,13 +1,15 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { KCX_COMPONENTES } from '../../kcx/componentes';
 import { KcxComponente, KcxPacote } from '../../kcx/kcx.types';
-import { RepositorioMeusComponentes } from '../../kcx/meus-componentes';
+import { KcxRecuperavel, RepositorioMeusComponentes } from '../../kcx/meus-componentes';
 
 /** Componentes de referência + os criados pela pessoa (construtor ou Figma). */
 @Injectable({ providedIn: 'root' })
 export class KcxMeusService {
   private readonly repo = new RepositorioMeusComponentes();
   readonly meus = signal<KcxComponente[]>(this.repo.listar());
+  /** Guardados que não passam mais na validação: nunca somem sem a pessoa decidir. */
+  readonly recuperaveis = signal<KcxRecuperavel[]>(this.repo.recuperaveis());
   readonly todos = computed(() => [...KCX_COMPONENTES, ...this.meus()]);
 
   buscar(id: string): KcxComponente | undefined {
@@ -34,6 +36,11 @@ export class KcxMeusService {
   remover(id: string): void {
     this.repo.remover(id);
     this.meus.set(this.repo.listar());
+  }
+
+  descartarRecuperavel(indice: number): void {
+    this.repo.descartarRecuperavel(indice);
+    this.recuperaveis.set(this.repo.recuperaveis());
   }
 
   importar(p: KcxPacote): { salvos: string[]; erros: string[] } {

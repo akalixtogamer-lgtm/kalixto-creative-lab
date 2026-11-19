@@ -39,9 +39,9 @@ export class KcxImportarPainel {
     this.info.set('');
     this.diferencas.set([]);
     this.lido.set(false);
-    let recebidos: Valores | null = null;
-    let origem = '';
-    let bruto: { formato?: string } | null = null;
+    let recebidos: Valores | null;
+    let origem: string;
+    let bruto: { formato?: string } | null;
     try {
       bruto = JSON.parse(texto);
     } catch {

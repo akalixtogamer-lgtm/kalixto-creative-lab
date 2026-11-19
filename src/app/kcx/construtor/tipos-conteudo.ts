@@ -387,8 +387,6 @@ export const BOTAO: DefinicaoTipo = {
     const px = tamanho ? porTamanho('px', 'botao-px') : b.espacoX(1.5, 'botao-px');
     const py = tamanho ? porTamanho('py', 'botao-py') : b.espacoX(0.75, 'botao-py');
     const fonte = tamanho ? porTamanho('fonte', 'botao-fonte') : b.fonte;
-    const tamIcone = (t: (typeof TAMANHOS)[number]['valor']) =>
-      Math.round((TAMANHOS.find((x) => x.valor === t)?.fonte ?? 16) * 1.15);
 
     /* ---------- Código ---------- */
     const anims: Record<string, string> = {
@@ -1732,7 +1730,6 @@ export const BOTOES: DefinicaoTipo = {
   gerar(cfg, b) {
     const C = b.C;
     const v = (n: string) => b.v(n);
-    const n = cfg.itens.length;
     const cores = cfg.itens.map((_, i) =>
       b.extra({
         id: `corBotao${i + 1}`,

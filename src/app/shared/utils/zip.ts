@@ -21,7 +21,7 @@ const TABELA_CRC = (() => {
 
 export function crc32(dados: Uint8Array): number {
   let c = 0xffffffff;
-  for (let i = 0; i < dados.length; i++) c = TABELA_CRC[(c ^ dados[i]) & 0xff] ^ (c >>> 8);
+  for (const byte of dados) c = TABELA_CRC[(c ^ byte) & 0xff] ^ (c >>> 8);
   return (c ^ 0xffffffff) >>> 0;
 }
 

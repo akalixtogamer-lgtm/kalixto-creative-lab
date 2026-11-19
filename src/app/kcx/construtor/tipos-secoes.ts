@@ -1,6 +1,6 @@
 /** Tipos do construtor: modal, aviso (toast), formulário, hero e rodapé. */
 import { KcxInteracao, KcxNo } from '../kcx.types';
-import { DefinicaoTipo, ICONES, construirComponente, escHtml, svgIcone } from './montar';
+import { DefinicaoTipo, ICONES, construirComponente, svgIcone } from './montar';
 import { BOTAO } from './tipos-conteudo';
 
 const interacao = (no: string, de: string, para: string): KcxInteracao => ({

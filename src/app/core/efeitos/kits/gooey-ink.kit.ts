@@ -1,5 +1,5 @@
 import { EffectKit } from '../../models/effect-sheet.model';
-import { MDN, VALIDADO_EM, cssAngular, cssPalco, nomeClasse } from './_base';
+import { VALIDADO_EM, cssAngular, cssPalco, nomeClasse } from './_base';
 
 const TINTAS = [
   { valor: '#111111', rotulo: 'Nanquim' },

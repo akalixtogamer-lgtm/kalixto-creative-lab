@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { routes } from '../app.routes';
-import { EXERCICIOS } from '../core/data/exercicios.data';
-import { SVG_DEMOS } from '../core/data/svg-demos.data';
-import { ProgressoService } from '../core/services/progresso.service';
+import { routes } from './app.routes';
+import { EXERCICIOS } from './core/data/exercicios.data';
+import { SVG_DEMOS } from './core/data/svg-demos.data';
+import { ProgressoService } from './core/services/progresso.service';
 
 /** Testes da Fase 3 — organização educacional. */
 describe('Fase 3', () => {

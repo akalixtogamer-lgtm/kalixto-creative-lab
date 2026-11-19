@@ -75,6 +75,37 @@
     </section>
   }
 
+  @if (recuperaveis().length) {
+    <section class="kx-section" aria-labelledby="kcxs-rec">
+      <h2 id="kcxs-rec" class="kx-section-title">Para recuperar</h2>
+      <p class="kx-muted">
+        Estes componentes estavam salvos, mas não passam mais na validação (o formato mudou ou o
+        arquivo foi editado à mão). Nada foi apagado: baixe o JSON para corrigir e importar de novo,
+        ou descarte.
+      </p>
+      <div class="kcxs__cards">
+        @for (r of recuperaveis(); track $index; let i = $index) {
+          <article class="kcxs__card kx-glass">
+            <h3>{{ nomeRecuperavel(r.componente) }}</h3>
+            <ul class="kcxs__erros">
+              @for (e of r.erros.slice(0, 3); track e) {
+                <li class="kx-muted">{{ e }}</li>
+              }
+            </ul>
+            <div class="kcxs__acoes">
+              <button type="button" class="kx-btn kx-btn--primary" (click)="baixarRecuperavel(i)">
+                Baixar JSON
+              </button>
+              <button type="button" class="kx-btn" (click)="descartarRecuperavel(i)">
+                Descartar
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
   <section class="kx-section" aria-labelledby="kcxs-comp">
     <h2 id="kcxs-comp" class="kx-section-title">Componentes de referência</h2>
     <div class="kcxs__cards">

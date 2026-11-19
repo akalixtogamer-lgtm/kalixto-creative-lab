@@ -222,3 +222,70 @@ body{display:grid;place-items:center}
 <script>(function(){var v=document.getElementById('v');function f(){v.style.zoom=1;var b=v.getBoundingClientRect(),x0=b.left,y0=b.top,x1=b.right,y1=b.bottom;v.querySelectorAll('*').forEach(function(e){var r=e.getBoundingClientRect();if(!r.width&&!r.height)return;x0=Math.min(x0,r.left);y0=Math.min(y0,r.top);x1=Math.max(x1,r.right);y1=Math.max(y1,r.bottom);});var k=Math.min(1,(innerWidth-24)/Math.max(1,x1-x0),(innerHeight-24)/Math.max(1,y1-y0));v.style.zoom=k;v.style.visibility='visible';}f();addEventListener('resize',f);})();</script>
 </body></html>`;
 }
+
+/** Cores do "cromo" da grade (bordas, rótulos), lidas do tema da página. */
+export interface CoresGrade {
+  borda: string;
+  bordaForte: string;
+  superficie: string;
+  destaque: string;
+  texto: string;
+  textoSuave: string;
+}
+
+export const CORES_GRADE_PADRAO: CoresGrade = {
+  borda: 'rgba(255,255,255,.12)',
+  bordaForte: 'rgba(255,255,255,.28)',
+  superficie: '#14121f',
+  destaque: '#22d3ee',
+  texto: '#f5f3ff',
+  textoSuave: '#c4c0d9',
+};
+
+const escAttr = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * Um documento só com TODAS as variantes em grade (em vez de um iframe por
+ * variante). Cada célula é um botão; clicar avisa a página com
+ * `postMessage({ kcxVariante: i })`. A página manda `{ kcxSelecionada: i }`
+ * para marcar a escolhida, e o documento devolve `{ kcxAltura: px }` para a
+ * página ajustar a altura do iframe.
+ */
+export function documentoDaGrade(
+  itens: { arvore: PlanoNo; rotulo: string }[],
+  opcoes: { altura?: number; fundo?: string; cores?: CoresGrade; selecionada?: number } = {},
+): string {
+  const altura = opcoes.altura ?? 150;
+  const fundo = opcoes.fundo ?? '#0b0a14';
+  const c = opcoes.cores ?? CORES_GRADE_PADRAO;
+  const celulas = itens
+    .map(
+      (it, i) =>
+        `<li><button type="button" class="m" data-i="${i}" aria-pressed="${i === opcoes.selecionada}" aria-label="Ver variante ${escAttr(it.rotulo)}"><div class="p" style="height:${altura}px"><div class="v">${planoParaHtml(it.arvore)}</div></div><span class="r">${escAttr(it.rotulo)}</span></button></li>`,
+    )
+    .join('');
+  return `<!doctype html><html><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: https:; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<style>
+html,body{margin:0;background:transparent;font:13px/1.3 system-ui,sans-serif}
+ul{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:0;padding:2px;list-style:none}
+.m{display:grid;width:100%;padding:0;overflow:hidden;border:1px solid ${c.borda};border-radius:12px;background:${c.superficie};color:${c.textoSuave};font:inherit;text-align:left;cursor:pointer}
+.m:hover{border-color:${c.bordaForte}}
+.m:focus-visible{outline:2px solid ${c.destaque};outline-offset:2px}
+.m[aria-pressed=true]{border-color:${c.destaque};box-shadow:0 0 0 1px ${c.destaque}}
+.m[aria-pressed=true] .r{color:${c.texto};font-weight:600}
+.p{display:grid;place-items:center;overflow:hidden;background:${fundo};pointer-events:none}
+.v{position:relative;visibility:hidden}
+.r{padding:8px 10px}
+.svg svg{display:block;width:100%;height:100%;overflow:visible}
+</style></head><body><ul>${celulas}</ul>
+<script>(function(){
+function fit(v){var p=v.parentNode;v.style.zoom=1;var b=v.getBoundingClientRect(),x0=b.left,y0=b.top,x1=b.right,y1=b.bottom;v.querySelectorAll('*').forEach(function(e){var r=e.getBoundingClientRect();if(!r.width&&!r.height)return;x0=Math.min(x0,r.left);y0=Math.min(y0,r.top);x1=Math.max(x1,r.right);y1=Math.max(y1,r.bottom);});var k=Math.min(1,(p.clientWidth-24)/Math.max(1,x1-x0),(p.clientHeight-24)/Math.max(1,y1-y0));v.style.zoom=k;v.style.visibility='visible';}
+function tudo(){document.querySelectorAll('.v').forEach(fit);parent.postMessage({kcxAltura:document.documentElement.scrollHeight},'*');}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.m');if(b)parent.postMessage({kcxVariante:Number(b.dataset.i)},'*');});
+addEventListener('message',function(e){if(e.source!==parent||!e.data||typeof e.data.kcxSelecionada!=='number')return;document.querySelectorAll('.m').forEach(function(b){b.setAttribute('aria-pressed',String(Number(b.dataset.i)===e.data.kcxSelecionada));});});
+tudo();addEventListener('resize',tudo);
+})();</script>
+</body></html>`;
+}

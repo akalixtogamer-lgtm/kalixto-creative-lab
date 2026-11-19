@@ -146,3 +146,14 @@
   margin: 0;
   color: #3ddc97;
 }
+
+.kcxs__erros {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+}
+.kcxs__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

@@ -9,7 +9,7 @@
               type="button"
               role="radio"
               class="kcxv__op"
-              [attr.aria-checked]="atual()?.props?.[e.nome] === o"
+              [attr.aria-checked]="atual()?.props[e.nome] === o"
               (click)="escolher(e.nome, o)"
             >
               {{ o }}
@@ -34,29 +34,15 @@
     </figure>
   }
 
-  @if (grade()) {
-    <ul class="kcxv__grade" aria-label="Todas as variantes">
-      @for (m of miniaturas(); track m.nome) {
-        <li>
-          <button
-            type="button"
-            class="kcxv__mini"
-            [attr.aria-pressed]="atual()?.nome === m.nome"
-            (click)="selecionada.set(m.nome)"
-            [attr.aria-label]="'Ver variante ' + rotulo(m.props)"
-          >
-            <iframe
-              sandbox="allow-scripts"
-              tabindex="-1"
-              loading="lazy"
-              aria-hidden="true"
-              [style.height.px]="alturaMiniatura()"
-              [srcdoc]="m.doc"
-            ></iframe>
-            <span class="kcxv__rot">{{ rotulo(m.props) }}</span>
-          </button>
-        </li>
-      }
-    </ul>
+  @if (grade() && gradeDoc(); as doc) {
+    <iframe
+      #gradeFrame
+      class="kcxv__grade"
+      sandbox="allow-scripts"
+      title="Todas as variantes"
+      [style.height.px]="alturaGrade()"
+      [srcdoc]="doc"
+      (load)="enviarSelecao()"
+    ></iframe>
   }
 </div>

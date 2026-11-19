@@ -753,9 +753,10 @@ class Construtor {
       // resize() deixa os dois eixos FIXED: volta o eixo sem medida para Hug.
       if (auto && !(p.largura && p.altura)) {
         const hor = p.autoLayout!.direcao === 'HORIZONTAL';
-        if (p.largura)
-          hor ? (no.counterAxisSizingMode = 'AUTO') : (no.primaryAxisSizingMode = 'AUTO');
-        else hor ? (no.primaryAxisSizingMode = 'AUTO') : (no.counterAxisSizingMode = 'AUTO');
+        // Com largura fixa, o eixo que cresce sozinho é o cruzado; sem largura, é o principal.
+        const cresceNoPrincipal = p.largura ? !hor : hor;
+        if (cresceNoPrincipal) no.primaryAxisSizingMode = 'AUTO';
+        else no.counterAxisSizingMode = 'AUTO';
       }
       if (p.largura) this.vincular(no, 'width', p.largura, local);
       if (p.altura) this.vincular(no, 'height', p.altura, local);

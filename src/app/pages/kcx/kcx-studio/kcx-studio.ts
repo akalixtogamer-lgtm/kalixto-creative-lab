@@ -23,6 +23,27 @@ export class KcxStudio {
   protected readonly versao = KCX_SCHEMA_VERSION;
   private readonly servicoMeus = inject(KcxMeusService);
   protected readonly meus = this.servicoMeus.meus;
+  protected readonly recuperaveis = this.servicoMeus.recuperaveis;
+
+  protected baixarRecuperavel(i: number): void {
+    const r = this.recuperaveis()[i];
+    if (!r) return;
+    const id = (r.componente as { id?: unknown } | null)?.id;
+    baixarArquivo(
+      JSON.stringify(r.componente, null, 2) + '\n',
+      `${typeof id === 'string' ? id : 'componente'}-recuperado.json`,
+      'application/json',
+    );
+  }
+
+  protected descartarRecuperavel(i: number): void {
+    this.servicoMeus.descartarRecuperavel(i);
+  }
+
+  protected nomeRecuperavel(c: unknown): string {
+    const o = (c ?? {}) as { nome?: unknown; id?: unknown };
+    return typeof o.nome === 'string' ? o.nome : typeof o.id === 'string' ? o.id : 'Sem nome';
+  }
   protected readonly totalTipos = TIPOS_CONSTRUTOR.length;
   protected readonly importacao = signal<{ salvos: string[]; erros: string[] } | null>(null);
 

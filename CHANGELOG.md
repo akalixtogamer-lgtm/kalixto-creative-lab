@@ -5,6 +5,25 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Engenharia — auditoria de 19/11/2026
+- **CI em todo push e PR** (`.github/workflows/ci.yml`): Prettier, ESLint, tipos do plugin do
+  Figma, código gerado em dia, testes e build. A publicação continua só manual.
+- **Componentes salvos não somem mais:** o armazenamento ganhou versão (v2) e migração do v1 (que
+  fica como backup); o que não valida vai para “Para recuperar” no KCX Studio, com Baixar JSON e
+  Descartar. Antes, salvar ou remover qualquer componente apagava de vez os inválidos.
+- **ESLint** (angular-eslint) com fronteiras: o núcleo do KCX não importa Angular nem telas, e
+  `core/` não importa de `pages/`; sem `any`. 11 problemas corrigidos.
+- **Prettier** aplicado e obrigatório; **husky + lint-staged** no pre-commit; `npm run verificar`
+  roda tudo de uma vez.
+- `verificar:angular` e `verificar:kcx-angular` voltaram a passar: os geradores agora formatam a
+  saída com o Prettier (antes acusavam diferença em 115 arquivos).
+- `strict` e `strictTemplates` declarados no `tsconfig.json`; aviso de tipo corrigido no seletor
+  de variantes.
+- **Grade de variantes num documento só:** o Botão padrão abria 61 iframes na revisão; agora são 2
+  (prévia + grade). A grade segue as cores do tema.
+- Orçamentos de tamanho mais justos (inicial 400 kB) e um limite por chunk (700 kB).
+- `CONTRIBUTING.md` com o fluxo de branches (worktree) e as regras do projeto.
+
 ### Adicionado — mapa KCX × Figma (3 fases)
 - **Fase 1 · estados e propriedades:** biblioteca **KCX Ícone** (40 ícones) com troca de instância
   e ícones sugeridos; estados Padrão, Hover, Pressionado, Foco e Desativado (While hovering e While
