@@ -16,6 +16,9 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 - **Paletas prontas** (Kalixto, Oceano, Floresta, Pôr do sol, Claro, Preto e branco); as cores uma a
   uma ficam em “Escolher cada cor”.
 - **Conjunto de botões**: cada botão tem a sua cor (seletor ao lado do nome).
+- **Aviso “No Figma”** em cada animação do construtor: selo (Igual no Figma · Parte no Figma · Só no
+  código) e, na animação escolhida e na revisão, o que acontece no Figma (ex.: “Sobe com sombra” ganha
+  a sombra, mas não sobe).
 - **Editor**: o mesmo seletor de variantes aparece abaixo do preview.
 - `variantesDoComponente`, `eixosDoComponente` e `plano-html.ts` (prévia HTML de uma variante do plano
   do Figma, sem executar o código do componente).

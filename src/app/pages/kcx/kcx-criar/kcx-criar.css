@@ -470,3 +470,54 @@
   padding: var(--kx-space-3, 12px) 0;
   background: linear-gradient(transparent, var(--kx-bg) 40%);
 }
+
+/* ---------- Aviso do Figma ---------- */
+.kcxc__nivel {
+  justify-self: start;
+  margin-top: 4px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.kcxc__nivel[data-nivel='igual'] {
+  background: rgb(46 229 157 / 0.16);
+  color: #0f7a50;
+}
+
+.kcxc__nivel[data-nivel='parcial'] {
+  background: rgb(255 181 71 / 0.2);
+  color: #8a5200;
+}
+
+.kcxc__nivel[data-nivel='codigo'] {
+  background: rgb(144 137 179 / 0.2);
+  color: var(--kx-text-soft);
+}
+
+.kcxc__aviso-figma {
+  display: block;
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--kx-success);
+  border-radius: 8px;
+  background: rgb(46 229 157 / 0.08);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.kcxc__aviso-figma[data-nivel='parcial'] {
+  border-left-color: var(--kx-warning);
+  background: rgb(255 181 71 / 0.1);
+}
+
+.kcxc__aviso-figma[data-nivel='codigo'] {
+  border-left-color: var(--kx-text-muted);
+  background: var(--kx-surface);
+}
+
+dd .kcxc__aviso-figma {
+  margin-top: 6px;
+}

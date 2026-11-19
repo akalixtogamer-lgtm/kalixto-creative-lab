@@ -166,11 +166,19 @@
                 />
                 <span
                   ><strong>{{ a.nome }}</strong
-                  ><small class="kx-muted">{{ a.descricao }}</small></span
-                >
+                  ><small class="kx-muted">{{ a.descricao }}</small>
+                  @if (nivelDe(a.id); as n) {
+                    <em class="kcxc__nivel" [attr.data-nivel]="n">{{ rotuloNivel[n] }}</em>
+                  }
+                </span>
               </label>
             }
           </div>
+          @if (notaAnimacao(); as nota) {
+            <p class="kcxc__aviso-figma" [attr.data-nivel]="nota.nivel" role="status">
+              <strong>No Figma:</strong> {{ nota.texto }}
+            </p>
+          }
         </section>
 
         <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-cores">
@@ -345,7 +353,14 @@
                 </dd>
               }
               <dt>Animação</dt>
-              <dd>{{ nomeAnimacao() }}</dd>
+              <dd>
+                {{ nomeAnimacao() }}
+                @if (notaAnimacao(); as nota) {
+                  <small class="kcxc__aviso-figma" [attr.data-nivel]="nota.nivel"
+                    ><strong>No Figma:</strong> {{ nota.texto }}</small
+                  >
+                }
+              </dd>
               <dt>Cores</dt>
               <dd class="kcxc__amostras kcxc__amostras--grande">
                 <i [style.background]="cfg().cores.fundo" title="Fundo"></i>

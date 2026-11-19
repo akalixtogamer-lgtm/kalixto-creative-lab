@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { planejarFigma, PlanoNo } from '../figma-plano';
 import { criarPacote } from '../serializar';
 import { validarPacote } from '../validar';
-import { TIPOS_CONSTRUTOR, configPadrao, montarDoConstrutor } from '.';
+import { NOTAS_FIGMA, TIPOS_CONSTRUTOR, configPadrao, montarDoConstrutor } from '.';
 
 const plano = (tipo: string) => {
   const def = TIPOS_CONSTRUTOR.find((t) => t.id === tipo)!;
@@ -43,5 +43,13 @@ describe('Preview do código com a variante Padrão escolhida', () => {
     const def = TIPOS_CONSTRUTOR.find((t) => t.id === 'menu-sanduiche')!;
     const comp = montarDoConstrutor(configPadrao(def));
     expect(valoresDaVariante(comp, 'Estado=Aberto')['aberto']).toBe(true);
+  });
+});
+
+describe('Aviso do Figma para cada animação', () => {
+  it('toda animação de todo tipo tem uma nota, e não há nota sobrando', () => {
+    const chaves = TIPOS_CONSTRUTOR.flatMap((t) => t.animacoes.map((a) => `${t.id}:${a.id}`));
+    for (const k of chaves) expect(NOTAS_FIGMA[k], k).toBeDefined();
+    expect(Object.keys(NOTAS_FIGMA).sort()).toEqual([...chaves].sort());
   });
 });

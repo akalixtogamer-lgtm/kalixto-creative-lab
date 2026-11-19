@@ -7,6 +7,7 @@ import { TIPOS_SECOES } from './tipos-secoes';
 
 export * from './montar';
 export { corDoBotao } from './tipos-conteudo';
+export * from './figma-animacoes';
 
 /** Todos os tipos que o construtor sabe montar. */
 export const TIPOS_CONSTRUTOR: DefinicaoTipo[] = [

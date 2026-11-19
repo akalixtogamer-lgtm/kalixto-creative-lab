@@ -5,6 +5,8 @@ import {
   ConfigConstrutor,
   CoresConstrutor,
   corDoBotao,
+  notaFigma,
+  NivelFigma,
   DefinicaoTipo,
   TIPOS_CONSTRUTOR,
   configPadrao,
@@ -157,6 +159,19 @@ export class KcxCriar {
       .map((x) => x.trim())
       .join(' · ');
   });
+
+  /** Como a animação escolhida aparece no Figma. */
+  protected readonly notaAnimacao = computed(() => notaFigma(this.cfg().tipo, this.cfg().animacao));
+
+  protected nivelDe(animacao: string): NivelFigma | undefined {
+    return notaFigma(this.cfg().tipo, animacao)?.nivel;
+  }
+
+  protected readonly rotuloNivel: Record<NivelFigma, string> = {
+    igual: 'Igual no Figma',
+    parcial: 'Parte no Figma',
+    codigo: 'Só no código',
+  };
 
   protected readonly nomeAnimacao = computed(
     () => this.def().animacoes.find((a) => a.id === this.cfg().animacao)?.nome ?? '—',
