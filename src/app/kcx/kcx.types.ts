@@ -139,7 +139,8 @@ export interface KcxVariavel {
   /** false = fica fora dos tokens e do Figma. */
   exportavel: boolean;
   /** Valores por modo de cor (vira modos Light/Dark no Figma). */
-  modos?: { light?: KcxValor; dark?: KcxValor };
+  /** Valores por modo: Light/Dark (cores) e Celular (medidas, no modo Celular do Figma). */
+  modos?: { light?: KcxValor; dark?: KcxValor; celular?: KcxValor };
 }
 
 /* ============================== Estrutura visual ============================== */
@@ -191,7 +192,7 @@ export type KcxEfeito =
   | { tipo: 'desfoque-camada'; raio: KcxRef<number> }
   | { tipo: 'desfoque-fundo'; raio: KcxRef<number> };
 
-export type KcxTipoNo = 'frame' | 'retangulo' | 'elipse' | 'texto' | 'svg' | 'icone';
+export type KcxTipoNo = 'frame' | 'retangulo' | 'elipse' | 'texto' | 'svg' | 'icone' | 'instancia';
 
 export interface KcxNo {
   id: string;
@@ -277,6 +278,23 @@ export interface KcxNo {
     tamanho?: KcxRef<number>;
     propriedade?: string;
   };
+  /**
+   * Instância de outro componente KCX do mesmo pacote (tipo instancia): ex. o
+   * hero usa instâncias do Botão. `variante` escolhe a variante pelos eixos;
+   * `textos` preenche as propriedades de texto da instância.
+   */
+  instancia?: {
+    componente: string;
+    variante?: Record<string, string>;
+    textos?: Record<string, KcxRef<string>>;
+  };
+  /**
+   * Vira um slot do Figma (frame onde a pessoa coloca qualquer conteúdo na
+   * instância), com este nome de propriedade.
+   */
+  slot?: string;
+  /** Auto Layout em grade (layout Grid do Figma) com N colunas. */
+  grade?: { colunas: number; espaco: KcxRef<number> };
   /** Arco nativo do Figma (tipo elipse), em graus; `interno` de 0 a 1 (anel). */
   arco?: { inicio: KcxRef<number>; fim: KcxRef<number>; interno: KcxRef<number> };
   filhos?: KcxNo[];
@@ -379,7 +397,7 @@ export interface KcxInteracao {
    * entrar/sair (Mouse enter/leave), atraso (After delay: `atraso` ms),
    * tecla (Key: `tecla`, ex.: "Escape", "ArrowRight").
    */
-  gatilho: 'clique' | 'hover' | 'pressionar' | 'entrar' | 'sair' | 'atraso' | 'tecla';
+  gatilho: 'clique' | 'hover' | 'pressionar' | 'entrar' | 'sair' | 'atraso' | 'tecla' | 'arrastar';
   de: string;
   para: string;
   transicao: 'smart-animate' | 'dissolver' | 'instantanea' | 'mover' | 'empurrar';
@@ -392,6 +410,21 @@ export interface KcxInteracao {
   tecla?: string;
   /** Também troca eixos de variante no destino (id da variável enum → valor). */
   muda?: Record<string, string>;
+  /** Ações a mais na mesma interação (antes da troca de variante). */
+  acoes?: KcxAcaoExtra[];
+}
+
+/** Ações de protótipo além da troca de variante. */
+export type KcxAcaoExtra =
+  /** Troca o modo de uma coleção do Figma (ex.: KCX · Colors → Light). */
+  | { tipo: 'modo'; colecao: string; modo: string }
+  /** Liga/desliga uma variável booleana do protótipo (Set variable com NOT). */
+  | { tipo: 'alternar'; variavel: string };
+
+/** Protótipo de exemplo criado ao lado do componente (telas do Figma). */
+export interface KcxPrototipo {
+  /** Abre a variante `overlay` como overlay ao clicar em `no` (na variante `de`). */
+  overlay?: { de: string; no: string; overlay: string; fechar: string[] };
 }
 
 export interface KcxCodigo {
@@ -428,6 +461,10 @@ export interface KcxComponente {
   compatibilidade: KcxCompatibilidade;
   /** Interações de protótipo criadas no Figma (opcional). */
   interacoes?: KcxInteracao[];
+  /** Componentes usados por instâncias (vão junto no pacote e no Figma, antes deste). */
+  subcomponentes?: KcxComponente[];
+  /** Telas de protótipo de exemplo (overlay). */
+  prototipo?: KcxPrototipo;
   /** Como o componente foi criado: 'construtor' (KCX Studio) ou 'figma' (importado). */
   origemCriacao?: { tipo: 'construtor' | 'figma'; config?: unknown };
 }

@@ -197,7 +197,7 @@ export const KCX_JSON_SCHEMA = {
         secao: { enum: ['aparencia', 'animacao', 'comportamento'] },
         vinculos: { type: 'array', minItems: 1, items: ref('vinculo') },
         exportavel: { type: 'boolean' },
-        modos: { type: 'object', properties: { light: {}, dark: {} } },
+        modos: { type: 'object', properties: { light: {}, dark: {}, celular: {} } },
       },
     },
     no: {
@@ -206,7 +206,7 @@ export const KCX_JSON_SCHEMA = {
       properties: {
         id: texto,
         nome: texto,
-        tipo: { enum: ['frame', 'retangulo', 'elipse', 'texto', 'svg', 'icone'] },
+        tipo: { enum: ['frame', 'retangulo', 'elipse', 'texto', 'svg', 'icone', 'instancia'] },
         x: kref({ type: 'number' }),
         y: kref({ type: 'number' }),
         largura: kref({ type: 'number' }),

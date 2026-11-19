@@ -1,6 +1,7 @@
 /** Tipos do construtor: modal, aviso (toast), formulário, hero e rodapé. */
 import { KcxInteracao, KcxNo } from '../kcx.types';
-import { DefinicaoTipo, ICONES, escHtml, svgIcone } from './montar';
+import { DefinicaoTipo, ICONES, construirComponente, escHtml, svgIcone } from './montar';
+import { BOTAO } from './tipos-conteudo';
 
 const interacao = (no: string, de: string, para: string): KcxInteracao => ({
   no,
@@ -26,6 +27,26 @@ export const MODAL: DefinicaoTipo = {
     { id: 'texto', rotulo: 'Texto', padrao: 'Você vai receber o link da aula no seu e-mail.' },
     { id: 'confirmar', rotulo: 'Botão confirmar', padrao: 'Confirmar' },
     { id: 'cancelar', rotulo: 'Botão cancelar', padrao: 'Cancelar' },
+  ],
+  recursos: [
+    {
+      id: 'slot',
+      nome: 'Conteúdo livre (slot)',
+      descricao: 'Área na janela onde você coloca qualquer coisa na instância do Figma.',
+      padrao: true,
+    },
+    {
+      id: 'overlay',
+      nome: 'Protótipo com overlay',
+      descricao: 'Cria uma tela de exemplo: clicar abre a janela por cima (Open overlay) e fecha.',
+      padrao: true,
+    },
+    {
+      id: 'esc',
+      nome: 'Esc fecha',
+      descricao: 'No protótipo do Figma, a tecla Esc fecha a janela.',
+      padrao: true,
+    },
   ],
   animacoes: [
     { id: 'zoom', nome: 'Zoom', descricao: 'A janela cresce do centro.' },
@@ -94,6 +115,30 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
           preencher: true,
         }),
         b.noTexto('texto', 'Texto', { cor: b.cor('suave'), preencher: true }),
+        ...(b.tem('slot')
+          ? [
+              b.pilha(
+                'extra',
+                'Conteúdo livre',
+                'vertical',
+                [
+                  {
+                    id: 'extra-dica',
+                    nome: 'Dica',
+                    tipo: 'texto',
+                    preenchimentos: [{ tipo: 'solido', cor: b.cor('suave') }],
+                    texto: {
+                      conteudo: 'Coloque aqui o que quiser',
+                      tamanho: 12,
+                      familia: 'Inter',
+                      estilo: 'Regular',
+                    },
+                  },
+                ],
+                { espaco: 8, px: 8, py: 8, encher: true, slot: 'Conteúdo livre' },
+              ),
+            ]
+          : []),
         b.pilha(
           'acoes',
           'Ações',
@@ -175,7 +220,26 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
         interacao('cancelar-btn', 'aberto', 'fechado'),
         interacao('confirmar-btn', 'aberto', 'fechado'),
         interacao('fundo', 'aberto', 'fechado'),
+        ...(b.tem('esc')
+          ? [
+              {
+                ...interacao('tela', 'aberto', 'fechado'),
+                gatilho: 'tecla' as const,
+                tecla: 'Escape',
+              },
+            ]
+          : []),
       ],
+      prototipo: b.tem('overlay')
+        ? {
+            overlay: {
+              de: 'fechado',
+              no: 'abrir-btn',
+              overlay: 'aberto',
+              fechar: ['cancelar-btn', 'confirmar-btn'],
+            },
+          }
+        : undefined,
       animacao: {
         nome: MODAL.animacoes.find((a) => a.id === cfg.animacao)?.nome ?? 'Entrada',
         tecnica: 'css-keyframes',
@@ -185,6 +249,11 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
       editavel: [
         'Variantes Fechado e Aberto; no protótipo, o botão abre e Cancelar, Confirmar ou o fundo fecham',
         'Janela com Auto Layout: cresce com o texto',
+        ...(b.tem('slot') ? ['Slot “Conteúdo livre”: coloque qualquer conteúdo na janela'] : []),
+        ...(b.tem('overlay')
+          ? ['Tela de protótipo: o botão abre a janela como overlay e Cancelar/Confirmar fecham']
+          : []),
+        ...(b.tem('esc') ? ['Protótipo: Esc fecha a janela'] : []),
       ],
       tags: ['dialog', 'popup', 'janela'],
     };
@@ -865,6 +934,15 @@ export const HERO: DefinicaoTipo = {
     { id: 'botao1', rotulo: 'Botão principal', padrao: 'Agendar aula' },
     { id: 'botao2', rotulo: 'Botão secundário', padrao: 'Ver horários' },
   ],
+  recursos: [
+    {
+      id: 'instancias',
+      nome: 'Botões como componente',
+      descricao:
+        'Os botões viram instâncias de um Botão (com tipos e estados) que vai junto para o Figma.',
+      padrao: true,
+    },
+  ],
   animacoes: [
     {
       id: 'subir',
@@ -888,6 +966,21 @@ export const HERO: DefinicaoTipo = {
       desfoque: 'opacity: 0; filter: blur(12px);',
       fade: 'opacity: 0;',
     };
+    const sub = b.tem('instancias')
+      ? construirComponente(BOTAO, {
+          tipo: 'botao',
+          nome: `${cfg.nome} · Botão`,
+          id: `${b.id}-botao`,
+          textos: { rotulo: cfg.textos['botao1'] ?? 'Agendar aula' },
+          itens: [],
+          animacao: 'elevar',
+          cores: cfg.cores,
+          raio: cfg.raio,
+          recursos: { tipos: true, tamanhos: false, estados: true, icones: false },
+          icones: {},
+          modos: cfg.modos,
+        })
+      : undefined;
     const html = `<section class="${C}">
   ${b.span('selo', 'span', 'style="--i:0"')}
   ${b.span('titulo', 'h1', 'style="--i:1"')}
@@ -946,10 +1039,33 @@ export const HERO: DefinicaoTipo = {
           'acoes',
           'Botões',
           'horizontal',
-          [
-            b.noBotao('primario', 'botao1', 'Botão principal'),
-            b.noBotao('secundario', 'botao2', 'Botão secundário', 'secundario'),
-          ],
+          sub
+            ? [
+                {
+                  id: 'primario',
+                  nome: 'Botão principal',
+                  tipo: 'instancia',
+                  instancia: {
+                    componente: sub.id,
+                    variante: { Estado: 'Padrão', Tipo: 'Primário' },
+                    textos: { 'Texto do botão': { $var: b.idTexto('botao1') } },
+                  },
+                },
+                {
+                  id: 'secundario',
+                  nome: 'Botão secundário',
+                  tipo: 'instancia',
+                  instancia: {
+                    componente: sub.id,
+                    variante: { Estado: 'Padrão', Tipo: 'Secundário' },
+                    textos: { 'Texto do botão': { $var: b.idTexto('botao2') } },
+                  },
+                },
+              ]
+            : [
+                b.noBotao('primario', 'botao1', 'Botão principal'),
+                b.noBotao('secundario', 'botao2', 'Botão secundário', 'secundario'),
+              ],
           { espaco: b.espacoX(0.75, 'acoes-gap') },
         ),
       ],
@@ -985,9 +1101,12 @@ export const HERO: DefinicaoTipo = {
       },
       editavel: [
         'Seção com Auto Layout centralizado: título e textos quebram linha sozinhos',
-        'Dois botões (principal e secundário)',
+        sub
+          ? `Botões são instâncias de “${sub.nome}” (Primário e Secundário, com hover e pressionar): mude o botão e o hero acompanha`
+          : 'Dois botões (principal e secundário)',
       ],
       naoSuportado: ['A entrada em sequência (fica no código)'],
+      subcomponentes: sub ? [sub] : undefined,
       tags: ['hero', 'landing', 'banner'],
     };
   },

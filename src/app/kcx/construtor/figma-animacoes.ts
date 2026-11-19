@@ -341,6 +341,58 @@ export const NOTAS_FIGMA: Record<string, NotaFigma> = {
     nivel: 'parcial',
     texto: 'Clicar abre e fecha, Esc fecha; o crescer a partir do botão fica só no código.',
   },
+  // Fase 3
+  'select:cair': {
+    nivel: 'parcial',
+    texto:
+      'Clicar abre a lista, escolher troca o valor e fecha, Esc fecha; a descida fica só no código.',
+  },
+  'select:fade': {
+    nivel: 'igual',
+    texto: 'Clicar abre a lista, escolher troca o valor e fecha, Esc fecha, com Smart Animate.',
+  },
+  'slider:suave': {
+    nivel: 'parcial',
+    texto: 'Clicar numa marca ou arrastar move a bolinha de 25 em 25 (uma variante por marca).',
+  },
+  'slider:mola': {
+    nivel: 'parcial',
+    texto: 'Como o suave, com curva de mola; no Figma o valor anda de 25 em 25.',
+  },
+  'mega-menu:cair': {
+    nivel: 'parcial',
+    texto: 'Mouse enter abre e Mouse leave fecha o painel; a descida fica só no código.',
+  },
+  'mega-menu:fade': {
+    nivel: 'igual',
+    texto: 'Mouse enter abre e Mouse leave fecha o painel, com Smart Animate.',
+  },
+  'fab:subir': {
+    nivel: 'igual',
+    texto: 'Clicar abre os atalhos, que sobem com Smart Animate; o + vira X.',
+  },
+  'fab:girar': {
+    nivel: 'parcial',
+    texto: 'Clicar abre os atalhos e o + vira X; o giro do ícone fica só no código.',
+  },
+  'galeria:zoom': {
+    nivel: 'codigo',
+    texto: 'O zoom no hover fica só no código; no Figma a grade é estática.',
+  },
+  'galeria:elevar': {
+    nivel: 'codigo',
+    texto: 'O card subindo no hover fica só no código; no Figma a grade é estática.',
+  },
+  'login:brilho': {
+    nivel: 'codigo',
+    texto:
+      'O brilho no foco fica só no código; o botão (instância) tem hover e pressionar no Figma.',
+  },
+  'login:simples': {
+    nivel: 'codigo',
+    texto:
+      'A borda no foco fica só no código; o botão (instância) tem hover e pressionar no Figma.',
+  },
 };
 
 export function notaFigma(tipo: string, animacao: string): NotaFigma | undefined {

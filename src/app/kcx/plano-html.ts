@@ -127,6 +127,22 @@ function no(p: PlanoNo, paiAuto: boolean, paiDirecao?: 'HORIZONTAL' | 'VERTICAL'
     if (t.caixaAlta) s.push('text-transform:uppercase');
     return `<div style="${s.join(';')}">${esc(t.conteudo.valor)}</div>`;
   }
+  if (p.tipo === 'instancia' && p.instancia?.arvore) {
+    const dentro = no(
+      { ...p.instancia.arvore, absoluto: false, encher: false },
+      true,
+      'HORIZONTAL',
+    );
+    return `<div style="${s.join(';')}">${dentro}</div>`;
+  }
+  if (p.grade) {
+    s.push(
+      'display:grid',
+      `grid-template-columns:repeat(${p.grade.colunas}, max-content)`,
+      `gap:${px(p.grade.espaco.valor)}`,
+    );
+  }
+  if (p.slot) s.push('outline:1px dashed rgba(160,150,220,.45)', 'outline-offset:-1px');
   if (p.tipo === 'icone' && p.icone) {
     const t = p.icone.tamanho;
     const d = ICONES_KCX[p.icone.nome] ?? '';
@@ -137,7 +153,9 @@ function no(p: PlanoNo, paiAuto: boolean, paiDirecao?: 'HORIZONTAL' | 'VERTICAL'
     const cor = p.svgTraco?.cor.valor !== undefined ? `color:${corCss(p.svgTraco.cor.valor)};` : '';
     return `<div style="${s.join(';')};${cor}line-height:0" class="svg">${svgSeguro(p.svg)}</div>`;
   }
-  const filhos = p.filhos.map((f) => no(f, !!p.autoLayout, p.autoLayout?.direcao)).join('');
+  const filhos = p.filhos
+    .map((f) => no(f, !!p.autoLayout || !!p.grade, p.autoLayout?.direcao))
+    .join('');
   return `<div style="${s.join(';')}">${filhos}</div>`;
 }
 

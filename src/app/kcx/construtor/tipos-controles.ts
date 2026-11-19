@@ -414,6 +414,13 @@ export const SWITCH: DefinicaoTipo = {
       descricao: 'Mais uma variante, apagada e sem clique.',
       padrao: true,
     },
+    {
+      id: 'tema',
+      nome: 'Troca o tema',
+      descricao:
+        'No protótipo do Figma, ligar troca as cores para o modo Claro e desligar volta ao Escuro (Set variable mode).',
+      padrao: false,
+    },
   ],
   animacoes: [
     { id: 'deslizar', nome: 'Desliza', descricao: 'A bolinha anda suave até o outro lado.' },
@@ -536,8 +543,20 @@ ${cfg.animacao === 'esticar' ? `.${C}:active .${C}__bola { width: 26px; }\n.${C}
           : []),
       ],
       interacoes: [
-        { ...interacao('switch', 'desligado', 'ligado', 'clique', 240), curva },
-        { ...interacao('switch', 'ligado', 'desligado', 'clique', 240), curva },
+        {
+          ...interacao('switch', 'desligado', 'ligado', 'clique', 240),
+          curva,
+          acoes: b.tem('tema')
+            ? [{ tipo: 'modo' as const, colecao: 'KCX · Colors', modo: 'Light' }]
+            : undefined,
+        },
+        {
+          ...interacao('switch', 'ligado', 'desligado', 'clique', 240),
+          curva,
+          acoes: b.tem('tema')
+            ? [{ tipo: 'modo' as const, colecao: 'KCX · Colors', modo: 'Dark' }]
+            : undefined,
+        },
       ],
       animacao: {
         nome: SWITCH.animacoes.find((a) => a.id === cfg.animacao)?.nome ?? 'Desliza',

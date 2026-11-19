@@ -144,7 +144,8 @@
             "mapa",
             "pontoNoCaminho",
             "tracoNoCaminho",
-            "variavelPorOpcao"
+            "variavelPorOpcao",
+            "alphaPorOpcao"
           ]
         }
       }
@@ -336,7 +337,8 @@
           "type": "object",
           "properties": {
             "light": {},
-            "dark": {}
+            "dark": {},
+            "celular": {}
           }
         }
       }
@@ -363,7 +365,9 @@
             "retangulo",
             "elipse",
             "texto",
-            "svg"
+            "svg",
+            "icone",
+            "instancia"
           ]
         },
         "x": {
@@ -726,6 +730,7 @@
             "hover",
             "focus",
             "active",
+            "desativado",
             "inicial",
             "final"
           ]

@@ -38,7 +38,18 @@ export function criarPacote(
   } = {},
 ): KcxPacote {
   const agora = (opcoes.agora ?? new Date()).toISOString();
-  const comps = componentes.map((c) => {
+  // Subcomponentes (usados por instâncias) vão depois do principal, sem repetir.
+  const achatados: KcxComponente[] = [];
+  const vistos = new Set<string>();
+  const incluir = (c: KcxComponente) => {
+    if (vistos.has(c.id)) return;
+    vistos.add(c.id);
+    const { subcomponentes: subs, ...resto } = c;
+    achatados.push(resto as KcxComponente);
+    for (const s of subs ?? []) incluir(s);
+  };
+  componentes.forEach(incluir);
+  const comps = achatados.map((c) => {
     const copia = clonar(c);
     const vals = opcoes.valores?.[c.id] ?? {};
     copia.variaveis = copia.variaveis.map((v) =>

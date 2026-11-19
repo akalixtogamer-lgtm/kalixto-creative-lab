@@ -57,9 +57,8 @@ describe('Construtor KCX — todos os tipos', () => {
           const eixos = (comp.compatibilidade.figma.eixosVariante ?? []).map(
             (id) => comp.variaveis.find((v) => v.id === id)!.opcoes!.length,
           );
-          expect(rel.componentes[0].variantes).toBe(
-            eixos.reduce((a, b) => a * b, comp.estados.length),
-          );
+          const principal = rel.componentes.find((c) => c.nome === comp.nome)!;
+          expect(principal.variantes).toBe(eixos.reduce((a, b) => a * b, comp.estados.length));
           expect(rel.avisos.filter((a) => !a.startsWith('Fonte'))).toEqual([]);
           // cada interação aponta para nós e estados que existem
           for (const it of comp.interacoes ?? []) {

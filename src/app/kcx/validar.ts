@@ -203,6 +203,7 @@ export function refsDoNo(no: KcxNo): { campo: string; ref: KcxRef<unknown> }[] {
     add('arco.fim', no.arco.fim);
     add('arco.interno', no.arco.interno);
   }
+  for (const [k, r] of Object.entries(no.instancia?.textos ?? {})) add(`instancia.textos.${k}`, r);
   if (no.icone) {
     add('icone.nome', no.icone.nome);
     add('icone.cor', no.icone.cor);

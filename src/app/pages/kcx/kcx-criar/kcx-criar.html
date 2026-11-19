@@ -331,6 +331,19 @@
               >
             </span>
           </label>
+          <label class="kcxc__recurso kcxc__recurso--linha">
+            <input
+              type="checkbox"
+              [checked]="!!cfg().telas"
+              (change)="mudar('telas', $any($event.target).checked)"
+            />
+            <span>
+              <strong>Modos Desktop e Celular no Figma</strong>
+              <small class="kx-muted"
+                >Espaços e textos ficam menores no modo Celular das variáveis.</small
+              >
+            </span>
+          </label>
           <label class="kcxc__campo">
             <span>Movimento no protótipo do Figma</span>
             <select (change)="mudar('curva', $any(valor($event) || undefined))">

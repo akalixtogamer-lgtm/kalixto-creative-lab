@@ -10,6 +10,7 @@ import {
   KcxEstado,
   KcxInteracao,
   KcxNo,
+  KcxPrototipo,
   KcxRef,
   KcxVariavel,
 } from '../kcx.types';
@@ -48,6 +49,8 @@ export interface ConfigConstrutor {
   icones?: Record<string, string>;
   /** Criar os modos Claro e Escuro nas variáveis de cor do Figma. */
   modos?: boolean;
+  /** Criar os modos Desktop e Celular nas medidas (espaço e texto menores no celular). */
+  telas?: boolean;
   /** Curva das interações no protótipo do Figma. */
   curva?: 'suave' | 'linear' | 'entrada-saida' | 'mola' | 'quique';
 }
@@ -116,6 +119,10 @@ export interface Partes {
   naoSuportado?: string[];
   limitacoes?: string[];
   tags?: string[];
+  /** Componentes usados por instâncias (vão junto para o Figma). */
+  subcomponentes?: KcxComponente[];
+  /** Protótipo de exemplo (overlay). */
+  prototipo?: KcxPrototipo;
 }
 
 export interface DefinicaoTipo {
@@ -515,9 +522,10 @@ export class Blocos {
       px?: KcxRef<number>;
       py?: KcxRef<number>;
       alinhar?: 'inicio' | 'centro' | 'fim';
+      quebrar?: boolean;
     } = {},
   ): KcxNo {
-    const { espaco, px, py, alinhar, ...resto } = extra;
+    const { espaco, px, py, alinhar, quebrar, ...resto } = extra;
     return {
       id,
       nome,
@@ -529,6 +537,7 @@ export class Blocos {
         paddingX: px ?? 0,
         paddingY: py ?? 0,
         alinhar: alinhar ?? (direcao === 'vertical' ? 'inicio' : 'centro'),
+        quebrar,
       },
       filhos,
       ...resto,
@@ -766,7 +775,14 @@ function variaveisBase(b: Blocos, def: DefinicaoTipo): KcxVariavel[] {
       }),
     ),
   );
-  if (cfg.modos) {
+  if (cfg.telas) {
+    for (const v of vars) {
+      if (v.id === 'espaco') v.modos = { celular: Math.round(Number(v.valor) * 0.75) };
+      if (v.id === 'fonte')
+        v.modos = { celular: Math.max(12, Math.round(Number(v.valor) * 0.875)) };
+    }
+  }
+  if (cfg.modos || cfg.recursos?.['tema']) {
     const claro = ehClaro(cfg.cores.fundo);
     const outro = claro ? TEMA_ESCURO : TEMA_CLARO;
     const mapa: Record<string, string> = {
@@ -898,6 +914,8 @@ export function construirComponente(def: DefinicaoTipo, cfg: ConfigConstrutor): 
         eixosVariante: partes.eixos,
       },
     },
+    subcomponentes: partes.subcomponentes,
+    prototipo: partes.prototipo,
     interacoes: cfg.curva
       ? partes.interacoes?.map((i) => ({ ...i, curva: i.curva ?? cfg.curva }))
       : partes.interacoes,

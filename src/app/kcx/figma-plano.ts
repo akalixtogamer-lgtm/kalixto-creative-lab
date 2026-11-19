@@ -190,6 +190,19 @@ export interface PlanoNo {
   propriedadeVisivel?: string;
   /** Arco em radianos (arcData do Figma). */
   arco?: { inicio: number; fim: number; interno: number };
+  /** Instância de outro componente do pacote (tipo instancia). */
+  instancia?: {
+    componente: string;
+    nome: string;
+    variante: string;
+    textos: Record<string, string>;
+    /** Árvore da variante (com os textos já trocados), para as prévias. */
+    arvore?: PlanoNo;
+  };
+  /** Vira slot do Figma com este nome de propriedade. */
+  slot?: string;
+  /** Layout em grade (Grid do Figma). */
+  grade?: { colunas: number; linhas: number; espaco: PlanoProp<number> };
   /** Instância de "KCX Ícone/<nome>" (tipo icone). */
   icone?: { nome: string; cor: PlanoProp<FigmaCor>; tamanho: number; propriedade?: string };
   filhos: PlanoNo[];
@@ -233,6 +246,10 @@ export interface PlanoComponente {
   altura: number;
   /** Interações de protótipo já resolvidas para nomes de variante. */
   interacoes?: PlanoInteracao[];
+  /** Telas de protótipo de exemplo (overlay), com nomes de variante. */
+  prototipo?: { overlay?: { de: string; no: string; overlay: string; fechar: string[] } };
+  /** Ids dos componentes do pacote usados por instâncias (criados antes). */
+  usa?: string[];
 }
 
 export interface PlanoInteracao {
@@ -250,6 +267,7 @@ export interface PlanoInteracao {
   direcao?: KcxInteracao['direcao'];
   atraso?: number;
   tecla?: string;
+  acoes?: KcxInteracao['acoes'];
 }
 
 export interface PlanoColecao {
@@ -379,6 +397,8 @@ interface Contexto {
   modos: string[];
   registrar: (pv: PlanoVariavel, onde: string) => void;
   pecas: Map<string, PlanoPeca>;
+  /** Componentes já planejados (para as instâncias). */
+  planejados?: Map<string, PlanoComponente>;
 }
 
 function nomeVar(comp: string, sufixo: string, nome: string): string {
@@ -389,6 +409,22 @@ function porId(comp: KcxComponente, id: string): KcxVariavel {
   const v = comp.variaveis.find((x) => x.id === id);
   if (!v) throw new Error(`KCX: variável ${id} não existe em ${comp.id}`);
   return v;
+}
+
+/** Valor de uma variável num modo do Figma (só troca se ela está no valor padrão). */
+function valorNoModo(v: KcxVariavel, atual: KcxValor, m: string): KcxValor {
+  if (atual !== v.valor || !v.modos) return atual;
+  if (m === 'Light' && v.modos.light !== undefined) return v.modos.light;
+  if (m === 'Dark' && v.modos.dark !== undefined) return v.modos.dark;
+  if (m === 'Celular' && v.modos.celular !== undefined) return v.modos.celular;
+  return atual;
+}
+
+/** Todos os valores trocados para o modo `m` (para recalcular as derivadas por modo). */
+function valoresNoModo(comp: KcxComponente, valores: Valores, m: string): Valores {
+  const r: Valores = { ...valores };
+  for (const v of comp.variaveis) if (v.modos) r[v.id] = valorNoModo(v, valores[v.id], m);
+  return r;
 }
 
 /** Valores por modo de uma variável (Dark = valor atual; Light = modos.light). */
@@ -402,12 +438,7 @@ function valoresPorModo(
   const t = transformar ?? ((x: KcxValor) => x);
   const out: Record<string, FigmaValor> = {};
   for (const m of modos) {
-    const bruto =
-      m === 'Light' && v.modos?.light !== undefined && atual === v.valor
-        ? v.modos.light
-        : m === 'Dark' && v.modos?.dark !== undefined && atual === v.valor
-          ? v.modos.dark
-          : atual;
+    const bruto = valorNoModo(v, atual, m);
     out[m] = valorFigma(v, t(bruto), campo);
   }
   return out;
@@ -489,7 +520,25 @@ function resolverRef<T>(
         nome,
         colecao: COLECOES[grupo],
         tipo: campo.tipo,
-        valores: Object.fromEntries(ctx.modos.map((m) => [m, valorFigma(v, calc, campo)])),
+        valores: Object.fromEntries(
+          ctx.modos.map((m) => {
+            if (m === 'Valor') return [m, valorFigma(v, calc, campo)];
+            const vm = valoresNoModo(comp, valores, m);
+            let x: KcxValor;
+            try {
+              x = aplicarOperacoes(v, vm[v.id], ref.transformar, vm, comp.variaveis);
+            } catch {
+              x = bruto;
+            }
+            const c =
+              campo.tipo === 'BOOLEAN'
+                ? x === true || x === 'true'
+                : campo.tipo === 'FLOAT' && typeof x === 'string' && !isNaN(Number(x))
+                  ? Number(x)
+                  : x;
+            return [m, valorFigma(v, c, campo)];
+          }),
+        ),
         escopos: campo.escopo,
         descricao: `Derivada de "${v.nome}" no lab (${(ref.transformar ?? []).map((o) => o.op).join(' → ') || 'cópia'}). O Figma não recalcula fórmulas: edite aqui ou reexporte do lab.`,
         origem: sufixo ? 'estado' : 'derivada',
@@ -708,6 +757,48 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
       propriedade: no.texto.propriedade,
     };
   }
+  if (no.slot) p.slot = no.slot;
+  if (no.grade) {
+    const n = (no.filhos ?? []).length;
+    p.grade = {
+      colunas: no.grade.colunas,
+      linhas: Math.max(1, Math.ceil(n / no.grade.colunas)),
+      espaco: resolverRef(no.grade.espaco, CAMPOS['gap'], onde('espaço da grade'), ctx)!,
+    };
+  }
+  if (no.instancia) {
+    const alvo = ctx.planejados?.get(no.instancia.componente);
+    if (alvo) {
+      const quer = no.instancia.variante ?? {};
+      const v =
+        alvo.variantes.find((x) =>
+          Object.entries(quer).every(([k, val]) => x.propriedades[k] === val),
+        ) ?? alvo.variantes[0];
+      const textos: Record<string, string> = {};
+      for (const [prop, ref] of Object.entries(no.instancia.textos ?? {})) {
+        const r = resolverRef(ref, { ...CAMPOS['fixo'], tipo: 'STRING' }, '', {
+          ...ctx,
+          usarVariaveis: false,
+        });
+        textos[prop] = String(r?.valor ?? '');
+      }
+      const trocar = (n: PlanoNo): PlanoNo => ({
+        ...n,
+        texto:
+          n.texto?.propriedade && n.texto.propriedade in textos
+            ? { ...n.texto, conteudo: { valor: textos[n.texto.propriedade] } }
+            : n.texto,
+        filhos: n.filhos.map(trocar),
+      });
+      p.instancia = {
+        componente: alvo.id,
+        nome: alvo.nome,
+        variante: v.nome,
+        textos,
+        arvore: trocar(v.arvore),
+      };
+    }
+  }
   if (no.icone) {
     const r = resolverRef(no.icone.nome, { ...CAMPOS['fixo'], tipo: 'STRING' }, '', {
       ...ctx,
@@ -924,6 +1015,22 @@ function combinacoes(
   }));
 }
 
+/** Telas de protótipo (overlay): estados → nomes de variante (primeira combinação). */
+function prototipoDe(
+  comp: KcxComponente,
+  variantes: PlanoVariante[],
+): PlanoComponente['prototipo'] {
+  const o = comp.prototipo?.overlay;
+  if (!o) return undefined;
+  const nomeDe = (id: string) => {
+    const e = comp.estados.find((x) => x.id === id);
+    return variantes.find((v) => v.propriedades['Estado'] === e?.nome)?.nome;
+  };
+  const de = nomeDe(o.de);
+  const ov = nomeDe(o.overlay);
+  return de && ov ? { overlay: { de, no: o.no, overlay: ov, fechar: o.fechar } } : undefined;
+}
+
 /** Gera o plano de importação de um pacote KCX. */
 export function planejarFigma(
   pacote: KcxPacote,
@@ -933,15 +1040,29 @@ export function planejarFigma(
   const criarComponentes = modo !== 'variaveis';
   const vars = new Map<string, PlanoVariavel>();
   const avisos: string[] = [];
-  const temModos = pacote.componentes.some((c) => c.variaveis.some((v) => v.modos));
+  const temModos = pacote.componentes.some((c) =>
+    c.variaveis.some((v) => v.modos?.light !== undefined || v.modos?.dark !== undefined),
+  );
+  const temTelas = pacote.componentes.some((c) =>
+    c.variaveis.some((v) => v.modos?.celular !== undefined),
+  );
+  const COLECOES_TELA = [COLECOES.spacing, COLECOES.dimensions, COLECOES.typography];
   const modosDe = (colecao: string) =>
-    temModos && colecao === COLECOES.colors ? ['Dark', 'Light'] : ['Valor'];
+    temModos && colecao === COLECOES.colors
+      ? ['Dark', 'Light']
+      : temTelas && COLECOES_TELA.includes(colecao)
+        ? ['Desktop', 'Celular']
+        : ['Valor'];
 
   const registrar = (pv: PlanoVariavel, onde: string) => {
     pv.valores = Object.fromEntries(
       modosDe(pv.colecao).map((m) => [
         m,
-        pv.valores[m] ?? pv.valores['Dark'] ?? pv.valores['Valor'] ?? Object.values(pv.valores)[0],
+        pv.valores[m] ??
+          pv.valores['Dark'] ??
+          pv.valores['Desktop'] ??
+          pv.valores['Valor'] ??
+          Object.values(pv.valores)[0],
       ]),
     );
     const existente = vars.get(pv.nome);
@@ -961,7 +1082,29 @@ export function planejarFigma(
   };
 
   const componentes: PlanoComponente[] = [];
-  for (const comp of pacote.componentes) {
+  const planejados = new Map<string, PlanoComponente>();
+  // Quem é usado por instância é planejado antes (a saída mantém a ordem do pacote).
+  const usaDe = (c: KcxComponente): string[] => {
+    const out: string[] = [];
+    const ver = (n: KcxNo) => {
+      if (n.instancia) out.push(n.instancia.componente);
+      n.filhos?.forEach(ver);
+    };
+    ver(c.estrutura);
+    return out;
+  };
+  const ordemPlano: KcxComponente[] = [];
+  const visitar = (c: KcxComponente, pilha: Set<string>) => {
+    if (ordemPlano.includes(c) || pilha.has(c.id)) return;
+    pilha.add(c.id);
+    for (const id of usaDe(c)) {
+      const d = pacote.componentes.find((x) => x.id === id);
+      if (d) visitar(d, pilha);
+    }
+    ordemPlano.push(c);
+  };
+  pacote.componentes.forEach((c) => visitar(c, new Set()));
+  for (const comp of ordemPlano) {
     const atuais = valoresAtuais(comp.variaveis);
     const combos = combinacoes(comp, atuais);
     const base = combos[0]?.valores ?? atuais;
@@ -976,9 +1119,14 @@ export function planejarFigma(
         modos: [],
         registrar,
         pecas,
+        planejados,
       };
       // modos são decididos por coleção no registrar; aqui passamos Dark/Light para gerar os dois valores.
-      ctx.modos = temModos ? ['Dark', 'Light', 'Valor'] : ['Valor'];
+      ctx.modos = [
+        ...(temModos ? ['Dark', 'Light'] : []),
+        ...(temTelas ? ['Desktop', 'Celular'] : []),
+        'Valor',
+      ];
       return {
         nome: c.nome,
         propriedades: c.props,
@@ -1062,6 +1210,7 @@ export function planejarFigma(
             direcao: it.direcao,
             atraso: it.atraso,
             tecla: it.tecla,
+            acoes: it.acoes,
           });
       }
     }
@@ -1084,9 +1233,17 @@ export function planejarFigma(
         largura: comp.metadados.largura,
         altura: comp.metadados.altura,
         interacoes: interacoes.length ? interacoes : undefined,
+        prototipo: prototipoDe(comp, variantes),
+        usa: usaDe(comp).length ? [...new Set(usaDe(comp))] : undefined,
       });
+      planejados.set(comp.id, componentes[componentes.length - 1]);
     }
   }
+  componentes.sort(
+    (a, b) =>
+      pacote.componentes.findIndex((c) => c.id === a.id) -
+      pacote.componentes.findIndex((c) => c.id === b.id),
+  );
 
   // Variáveis compartilhadas de composição: a variável de cada camada vira um alias da compartilhada.
   if (usarVariaveis && pacote.composicao) {

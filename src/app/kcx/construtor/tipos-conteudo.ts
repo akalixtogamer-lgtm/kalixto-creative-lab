@@ -682,6 +682,12 @@ export const CARD_FOTO: DefinicaoTipo = {
       descricao: 'Mostrar ou ocultar cada parte do card na instância do Figma.',
       padrao: true,
     },
+    {
+      id: 'slot',
+      nome: 'Conteúdo livre (slot)',
+      descricao: 'Área no card onde você coloca qualquer coisa na instância do Figma.',
+      padrao: true,
+    },
   ],
   partes: [
     { no: 'imagem', nome: 'Imagem', classe: 'midia' },
@@ -755,6 +761,30 @@ ${efeito[cfg.animacao] ?? efeito['zoom']}`;
           preencher: true,
         }),
         b.noTexto('texto', 'Descrição', { cor: b.cor('suave'), preencher: true }),
+        ...(b.tem('slot')
+          ? [
+              b.pilha(
+                'extra',
+                'Conteúdo livre',
+                'vertical',
+                [
+                  {
+                    id: 'extra-dica',
+                    nome: 'Dica',
+                    tipo: 'texto',
+                    preenchimentos: [{ tipo: 'solido', cor: b.cor('suave') }],
+                    texto: {
+                      conteudo: 'Coloque aqui o que quiser',
+                      tamanho: 12,
+                      familia: 'Inter',
+                      estilo: 'Regular',
+                    },
+                  },
+                ],
+                { espaco: 8, px: 8, py: 8, encher: true, slot: 'Conteúdo livre' },
+              ),
+            ]
+          : []),
         b.noBotao('acao', 'botao', 'Botão'),
       ],
       { espaco: b.espacoX(0.5, 'corpo-gap'), px: b.espaco, py: b.espaco, encher: true },
@@ -1029,6 +1059,13 @@ export const CARROSSEL: DefinicaoTipo = {
       padrao: true,
     },
     {
+      id: 'arrastar',
+      nome: 'Arrastar',
+      descricao:
+        'No protótipo do Figma, arrastar o carrossel passa para o próximo slide (On drag).',
+      padrao: true,
+    },
+    {
       id: 'teclado',
       nome: 'Setas do teclado',
       descricao: 'No protótipo do Figma, ← e → trocam o slide (gatilho de tecla).',
@@ -1245,6 +1282,11 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
           gatilho: 'atraso',
           atraso: 3000,
           duracao: 500,
+        });
+      if (b.tem('arrastar'))
+        interacoes.push({
+          ...interacao('carrossel', `slide${i}`, `slide${(i % n) + 1}`),
+          gatilho: 'arrastar',
         });
       if (b.tem('teclado')) {
         interacoes.push({

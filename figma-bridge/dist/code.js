@@ -20,6 +20,18 @@
     return a;
   };
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  var __objRest = (source, exclude) => {
+    var target = {};
+    for (var prop in source)
+      if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+        target[prop] = source[prop];
+    if (source != null && __getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(source)) {
+        if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+          target[prop] = source[prop];
+      }
+    return target;
+  };
   var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 
   // src/app/kcx/kcx.types.ts
@@ -330,7 +342,7 @@
     return x;
   }
   function aplicarOperacoes(variavel2, valor, ops = [], valores = {}, todas = []) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
     let x = valor;
     let unidade = (_a = variavel2.unidade) != null ? _a : "";
     for (const o of ops) {
@@ -381,16 +393,23 @@
           x = (_h = alvo && ((_g = valores[alvo]) != null ? _g : (_f = todas.find((t) => t.id === alvo)) == null ? void 0 : _f.valor)) != null ? _h : x;
           break;
         }
+        case "alphaPorOpcao": {
+          if (typeof x !== "string")
+            throw new Error(`KCX: alphaPorOpcao em "${variavel2.id}" precisa de cor.`);
+          const op = String((_j = valores[o.variavel]) != null ? _j : (_i = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _i.valor);
+          x = comAlpha(x, (_k = o.valores[op]) != null ? _k : 1);
+          break;
+        }
         case "somarVariavel": {
-          const outra = (_j = valores[o.variavel]) != null ? _j : (_i = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _i.valor;
+          const outra = (_m = valores[o.variavel]) != null ? _m : (_l = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _l.valor;
           x = comoNumero(x, variavel2.id) + o.fator * comoNumero(outra, o.variavel);
           break;
         }
         case "alpha": {
           if (typeof x !== "string")
             throw new Error(`KCX: alpha em "${variavel2.id}" precisa de cor.`);
-          const a = o.variavel ? (_l = valores[o.variavel]) != null ? _l : (_k = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _k.valor : o.valor;
-          x = comAlpha(x, comoNumero(a != null ? a : 1, (_m = o.variavel) != null ? _m : variavel2.id));
+          const a = o.variavel ? (_o = valores[o.variavel]) != null ? _o : (_n = todas.find((t) => t.id === o.variavel)) == null ? void 0 : _n.valor : o.valor;
+          x = comAlpha(x, comoNumero(a != null ? a : 1, (_p = o.variavel) != null ? _p : variavel2.id));
           break;
         }
         case "converter":
@@ -408,11 +427,11 @@
         }
         case "pontoNoCaminho":
         case "tracoNoCaminho": {
-          const forma = String((_o = valores[o.variavel]) != null ? _o : (_n = todas.find((t2) => t2.id === o.variavel)) == null ? void 0 : _n.valor);
+          const forma = String((_r = valores[o.variavel]) != null ? _r : (_q = todas.find((t2) => t2.id === o.variavel)) == null ? void 0 : _q.valor);
           const d = o.caminhos[forma];
           if (!d) throw new Error(`KCX: caminho "${forma}" n\xE3o encontrado.`);
           const t = comoNumero(x, variavel2.id);
-          x = o.op === "tracoNoCaminho" ? comprimento(d) * t : pontoEm(d, t)[o.eixo] + ((_p = o.somar) != null ? _p : 0);
+          x = o.op === "tracoNoCaminho" ? comprimento(d) * t : pontoEm(d, t)[o.eixo] + ((_s = o.somar) != null ? _s : 0);
           break;
         }
       }
@@ -499,7 +518,7 @@
         if (!ehTexto(vin.alvo.seletor)) e(`${cv}.alvo.seletor`, "Seletor obrigat\xF3rio.");
       } else e(`${cv}.alvo`, "Alvo deve ser css-var, atributo ou texto.");
       for (const o of (_e = vin.transformar) != null ? _e : []) {
-        if (o.op === "pontoNoCaminho" || o.op === "tracoNoCaminho" || o.op === "variavelPorOpcao") {
+        if (o.op === "pontoNoCaminho" || o.op === "tracoNoCaminho" || o.op === "variavelPorOpcao" || o.op === "alphaPorOpcao") {
           e(`${cv}.transformar`, `A opera\xE7\xE3o ${o.op} s\xF3 pode ser usada na estrutura visual.`);
         }
         if ((o.op === "multiplicarPorVariavel" || o.op === "dividirPorVariavel" || o.op === "somarVariavel" || o.op === "alpha" && o.variavel) && !todas.has(o.variavel)) {
@@ -524,7 +543,7 @@
     (_a = no.filhos) == null ? void 0 : _a.forEach((filho, i) => percorrer(filho, f, `${caminho}.filhos[${i}]`));
   }
   function refsDoNo(no) {
-    var _a, _b;
+    var _a, _b, _c, _d, _e;
     const out = [];
     const add = (campo, ref) => {
       if (ehRefVariavel(ref) || ehRefDerivada(ref)) out.push({ campo, ref });
@@ -562,11 +581,16 @@
       add("arco.fim", no.arco.fim);
       add("arco.interno", no.arco.interno);
     }
+    for (const [k, r] of Object.entries((_c = (_b = no.instancia) == null ? void 0 : _b.textos) != null ? _c : {})) add(`instancia.textos.${k}`, r);
+    if (no.icone) {
+      add("icone.nome", no.icone.nome);
+      add("icone.cor", no.icone.cor);
+    }
     if (no.svgTraco) {
       add("svgTraco.cor", no.svgTraco.cor);
       add("svgTraco.espessura", no.svgTraco.espessura);
     }
-    (_b = no.efeitos) == null ? void 0 : _b.forEach((ef, i) => {
+    (_d = no.efeitos) == null ? void 0 : _d.forEach((ef, i) => {
       add(`efeitos[${i}].raio`, ef.raio);
       if (ef.tipo === "sombra") {
         add(`efeitos[${i}].cor`, ef.cor);
@@ -578,6 +602,10 @@
       add("texto.tamanho", no.texto.tamanho);
       add("texto.espacamento", no.texto.espacamento);
     }
+    add("larguraMin", no.larguraMin);
+    add("larguraMax", no.larguraMax);
+    if ((_e = no.autoLayout) == null ? void 0 : _e.lados)
+      for (const [k, r] of Object.entries(no.autoLayout.lados)) add(`autoLayout.lados.${k}`, r);
     if (no.autoLayout) {
       add("autoLayout.espaco", no.autoLayout.espaco);
       add("autoLayout.paddingX", no.autoLayout.paddingX);
@@ -787,7 +815,17 @@
   function criarPacote(componentes, opcoes = {}) {
     var _a, _b, _c, _d, _e, _f, _g;
     const agora = ((_a = opcoes.agora) != null ? _a : /* @__PURE__ */ new Date()).toISOString();
-    const comps = componentes.map((c) => {
+    const achatados = [];
+    const vistos = /* @__PURE__ */ new Set();
+    const incluir = (c) => {
+      if (vistos.has(c.id)) return;
+      vistos.add(c.id);
+      const _a2 = c, { subcomponentes: subs } = _a2, resto = __objRest(_a2, ["subcomponentes"]);
+      achatados.push(resto);
+      for (const s of subs != null ? subs : []) incluir(s);
+    };
+    componentes.forEach(incluir);
+    const comps = achatados.map((c) => {
       var _a2, _b2;
       const copia = clonar(c);
       const vals = (_b2 = (_a2 = opcoes.valores) == null ? void 0 : _a2[c.id]) != null ? _b2 : {};
@@ -1465,6 +1503,50 @@ ${cssAnim}`,
     };
   }
 
+  // src/app/kcx/icones.ts
+  var ICONES_KCX = {
+    menu: "M 4 7 L 20 7 M 4 12 L 20 12 M 4 17 L 20 17",
+    fechar: "M 6 6 L 18 18 M 18 6 L 6 18",
+    esquerda: "M 15 5 L 8 12 L 15 19",
+    direita: "M 9 5 L 16 12 L 9 19",
+    baixo: "M 6 9 L 12 15 L 18 9",
+    cima: "M 6 15 L 12 9 L 18 15",
+    play: "M 8 5 L 19 12 L 8 19 Z",
+    check: "M 5 12 L 10 17 L 19 7",
+    info: "M 12 11 L 12 17 M 12 7 L 12 7.5 M 21 12 A 9 9 0 1 1 3 12 A 9 9 0 1 1 21 12",
+    casa: "M 4 11 L 12 4 L 20 11 L 20 20 L 4 20 Z",
+    seta: "M 5 12 L 19 12 M 13 6 L 19 12 L 13 18",
+    voltar: "M 19 12 L 5 12 M 11 6 L 5 12 L 11 18",
+    mais: "M 12 5 L 12 19 M 5 12 L 19 12",
+    menos: "M 5 12 L 19 12",
+    busca: "M 10.5 4 A 6.5 6.5 0 1 1 10.5 17 A 6.5 6.5 0 1 1 10.5 4 M 15.5 15.5 L 20 20",
+    usuario: "M 12 4 A 4 4 0 1 1 12 12 A 4 4 0 1 1 12 4 M 4 20 C 5 16 8 14 12 14 C 16 14 19 16 20 20",
+    coracao: "M 12 20 C 5 15 3 11.5 3 8.5 C 3 6 5 4 7.5 4 C 9.5 4 11 5.2 12 7 C 13 5.2 14.5 4 16.5 4 C 19 4 21 6 21 8.5 C 21 11.5 19 15 12 20 Z",
+    estrela: "M 12 3.5 L 14.6 9 L 20.5 9.6 L 16 13.5 L 17.3 19.5 L 12 16.4 L 6.7 19.5 L 8 13.5 L 3.5 9.6 L 9.4 9 Z",
+    sino: "M 6 16 L 6 11 C 6 7.5 8.5 5 12 5 C 15.5 5 18 7.5 18 11 L 18 16 L 20 18 L 4 18 Z M 10 21 L 14 21",
+    carrinho: "M 3 4 L 6 4 L 8 15 L 18 15 L 20 7 L 7 7 M 9 19 L 9 19.5 M 17 19 L 17 19.5",
+    email: "M 3 6 L 21 6 L 21 18 L 3 18 Z M 3 6 L 12 13 L 21 6",
+    telefone: "M 5 4 L 9 4 L 10.5 8 L 8.5 9.5 C 9.5 11.5 12.5 14.5 14.5 15.5 L 16 13.5 L 20 15 L 20 19 C 11.5 19 5 12.5 5 4 Z",
+    calendario: "M 4 6 L 20 6 L 20 20 L 4 20 Z M 4 10 L 20 10 M 8 3 L 8 7 M 16 3 L 16 7",
+    relogio: "M 21 12 A 9 9 0 1 1 3 12 A 9 9 0 1 1 21 12 M 12 7 L 12 12 L 15.5 14",
+    download: "M 12 4 L 12 15 M 7 10 L 12 15 L 17 10 M 5 19 L 19 19",
+    upload: "M 12 15 L 12 4 M 7 9 L 12 4 L 17 9 M 5 19 L 19 19",
+    editar: "M 4 20 L 8 19 L 19 8 L 16 5 L 5 16 Z M 14 7 L 17 10",
+    lixeira: "M 4 7 L 20 7 M 9 7 L 9 4 L 15 4 L 15 7 M 6 7 L 7 20 L 17 20 L 18 7",
+    config: "M 12 9 A 3 3 0 1 1 12 15 A 3 3 0 1 1 12 9 M 12 3 L 12 5.5 M 12 18.5 L 12 21 M 3 12 L 5.5 12 M 18.5 12 L 21 12 M 5.6 5.6 L 7.4 7.4 M 16.6 16.6 L 18.4 18.4 M 5.6 18.4 L 7.4 16.6 M 16.6 7.4 L 18.4 5.6",
+    sair: "M 14 4 L 20 4 L 20 20 L 14 20 M 10 8 L 6 12 L 10 16 M 6 12 L 16 12",
+    alerta: "M 12 4 L 21 19 L 3 19 Z M 12 10 L 12 14 M 12 16.5 L 12 17",
+    erro: "M 21 12 A 9 9 0 1 1 3 12 A 9 9 0 1 1 21 12 M 9 9 L 15 15 M 15 9 L 9 15",
+    sucesso: "M 21 12 A 9 9 0 1 1 3 12 A 9 9 0 1 1 21 12 M 8 12 L 11 15 L 16 9",
+    cadeado: "M 6 11 L 18 11 L 18 20 L 6 20 Z M 8.5 11 L 8.5 8 C 8.5 6 10 4.5 12 4.5 C 14 4.5 15.5 6 15.5 8 L 15.5 11",
+    olho: "M 2.5 12 C 5 7.5 8.5 5.5 12 5.5 C 15.5 5.5 19 7.5 21.5 12 C 19 16.5 15.5 18.5 12 18.5 C 8.5 18.5 5 16.5 2.5 12 Z M 12 9.5 A 2.5 2.5 0 1 1 12 14.5 A 2.5 2.5 0 1 1 12 9.5",
+    compartilhar: "M 12 15 L 12 4 M 8 8 L 12 4 L 16 8 M 6 12 L 6 20 L 18 20 L 18 12",
+    instagram: "M 4 8 C 4 5.8 5.8 4 8 4 L 16 4 C 18.2 4 20 5.8 20 8 L 20 16 C 20 18.2 18.2 20 16 20 L 8 20 C 5.8 20 4 18.2 4 16 Z M 12 8.5 A 3.5 3.5 0 1 1 12 15.5 A 3.5 3.5 0 1 1 12 8.5 M 16.8 7.2 L 16.8 7.3",
+    whatsapp: "M 4 20 L 5.2 16.2 C 4.4 14.9 4 13.5 4 12 C 4 7.6 7.6 4 12 4 C 16.4 4 20 7.6 20 12 C 20 16.4 16.4 20 12 20 C 10.5 20 9.1 19.6 7.8 18.8 Z",
+    youtube: "M 3 7.5 C 3 6 4 5 5.5 5 L 18.5 5 C 20 5 21 6 21 7.5 L 21 16.5 C 21 18 20 19 18.5 19 L 5.5 19 C 4 19 3 18 3 16.5 Z M 10 9 L 15 12 L 10 15 Z",
+    carregando: "M 12 3 A 9 9 0 1 1 3 12"
+  };
+
   // src/app/kcx/figma-plano.ts
   function easingFigma(css) {
     const nomes = {
@@ -1585,12 +1667,23 @@ ${cssAnim}`,
     if (!v) throw new Error(`KCX: vari\xE1vel ${id} n\xE3o existe em ${comp.id}`);
     return v;
   }
+  function valorNoModo(v, atual, m) {
+    if (atual !== v.valor || !v.modos) return atual;
+    if (m === "Light" && v.modos.light !== void 0) return v.modos.light;
+    if (m === "Dark" && v.modos.dark !== void 0) return v.modos.dark;
+    if (m === "Celular" && v.modos.celular !== void 0) return v.modos.celular;
+    return atual;
+  }
+  function valoresNoModo(comp, valores, m) {
+    const r = __spreadValues({}, valores);
+    for (const v of comp.variaveis) if (v.modos) r[v.id] = valorNoModo(v, valores[v.id], m);
+    return r;
+  }
   function valoresPorModo(v, atual, modos, campo, transformar) {
-    var _a;
     const t = transformar != null ? transformar : ((x) => x);
     const out = {};
     for (const m of modos) {
-      const bruto = m === "Light" && ((_a = v.modos) == null ? void 0 : _a.light) !== void 0 && atual === v.valor ? v.modos.light : atual;
+      const bruto = valorNoModo(v, atual, m);
       out[m] = valorFigma(v, t(bruto), campo);
     }
     return out;
@@ -1651,7 +1744,20 @@ ${cssAnim}`,
           nome,
           colecao: COLECOES[grupo],
           tipo: campo.tipo,
-          valores: Object.fromEntries(ctx.modos.map((m) => [m, valorFigma(v, calc, campo)])),
+          valores: Object.fromEntries(
+            ctx.modos.map((m) => {
+              if (m === "Valor") return [m, valorFigma(v, calc, campo)];
+              const vm = valoresNoModo(comp, valores, m);
+              let x;
+              try {
+                x = aplicarOperacoes(v, vm[v.id], ref.transformar, vm, comp.variaveis);
+              } catch (e) {
+                x = bruto;
+              }
+              const c = campo.tipo === "BOOLEAN" ? x === true || x === "true" : campo.tipo === "FLOAT" && typeof x === "string" && !isNaN(Number(x)) ? Number(x) : x;
+              return [m, valorFigma(v, c, campo)];
+            })
+          ),
           escopos: campo.escopo,
           descricao: `Derivada de "${v.nome}" no lab (${((_b = ref.transformar) != null ? _b : []).map((o) => o.op).join(" \u2192 ") || "c\xF3pia"}). O Figma n\xE3o recalcula f\xF3rmulas: edite aqui ou reexporte do lab.`,
           origem: sufixo ? "estado" : "derivada",
@@ -1700,7 +1806,7 @@ ${cssAnim}`,
     ];
   }
   function planejarNo(no, ctx, caminho) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
     const onde = (campo) => `${ctx.comp.nome} \u203A ${caminho} \u203A ${campo}`;
     const p = {
       id: no.id,
@@ -1844,11 +1950,62 @@ ${cssAnim}`,
         propriedade: no.texto.propriedade
       };
     }
+    if (no.slot) p.slot = no.slot;
+    if (no.grade) {
+      const n = ((_h = no.filhos) != null ? _h : []).length;
+      p.grade = {
+        colunas: no.grade.colunas,
+        linhas: Math.max(1, Math.ceil(n / no.grade.colunas)),
+        espaco: resolverRef(no.grade.espaco, CAMPOS["gap"], onde("espa\xE7o da grade"), ctx)
+      };
+    }
+    if (no.instancia) {
+      const alvo = (_i = ctx.planejados) == null ? void 0 : _i.get(no.instancia.componente);
+      if (alvo) {
+        const quer = (_j = no.instancia.variante) != null ? _j : {};
+        const v = (_k = alvo.variantes.find(
+          (x) => Object.entries(quer).every(([k, val]) => x.propriedades[k] === val)
+        )) != null ? _k : alvo.variantes[0];
+        const textos = {};
+        for (const [prop, ref] of Object.entries((_l = no.instancia.textos) != null ? _l : {})) {
+          const r = resolverRef(ref, __spreadProps(__spreadValues({}, CAMPOS["fixo"]), { tipo: "STRING" }), "", __spreadProps(__spreadValues({}, ctx), {
+            usarVariaveis: false
+          }));
+          textos[prop] = String((_m = r == null ? void 0 : r.valor) != null ? _m : "");
+        }
+        const trocar = (n) => {
+          var _a2;
+          return __spreadProps(__spreadValues({}, n), {
+            texto: ((_a2 = n.texto) == null ? void 0 : _a2.propriedade) && n.texto.propriedade in textos ? __spreadProps(__spreadValues({}, n.texto), { conteudo: { valor: textos[n.texto.propriedade] } }) : n.texto,
+            filhos: n.filhos.map(trocar)
+          });
+        };
+        p.instancia = {
+          componente: alvo.id,
+          nome: alvo.nome,
+          variante: v.nome,
+          textos,
+          arvore: trocar(v.arvore)
+        };
+      }
+    }
+    if (no.icone) {
+      const r = resolverRef(no.icone.nome, __spreadProps(__spreadValues({}, CAMPOS["fixo"]), { tipo: "STRING" }), "", __spreadProps(__spreadValues({}, ctx), {
+        usarVariaveis: false
+      }));
+      const nome = String((_n = r == null ? void 0 : r.valor) != null ? _n : "mais");
+      p.icone = {
+        nome: nome in ICONES_KCX ? nome : "mais",
+        cor: corRef(no.icone.cor, CAMPOS["corTraco"], onde("cor do \xEDcone"), ctx),
+        tamanho: (_o = literal(no.icone.tamanho, ctx)) != null ? _o : 20,
+        propriedade: no.icone.propriedade
+      };
+    }
     if (no.svg !== void 0) {
       const r = resolverRef(no.svg, __spreadProps(__spreadValues({}, CAMPOS["fixo"]), { tipo: "STRING" }), "", __spreadProps(__spreadValues({}, ctx), {
         usarVariaveis: false
       }));
-      p.svg = String((_h = r == null ? void 0 : r.valor) != null ? _h : "");
+      p.svg = String((_p = r == null ? void 0 : r.valor) != null ? _p : "");
     }
     if (no.svgTraco) {
       p.svgTraco = {
@@ -1859,14 +2016,14 @@ ${cssAnim}`,
           onde("espessura do tra\xE7o"),
           ctx
         ),
-        tracejado: (_i = no.svgTraco.tracejado) == null ? void 0 : _i.map((t) => {
+        tracejado: (_q = no.svgTraco.tracejado) == null ? void 0 : _q.map((t) => {
           var _a2;
           return Math.round(((_a2 = literal(t, ctx)) != null ? _a2 : 0) * 100) / 100;
         })
       };
     }
     let parcial = false;
-    const tr = (_j = p.svgTraco) == null ? void 0 : _j.tracejado;
+    const tr = (_r = p.svgTraco) == null ? void 0 : _r.tracejado;
     if (p.svg && tr && tr.length === 2) {
       const total = comprimentoSvg(p.svg);
       if (total > 0 && tr[1] >= total) {
@@ -1880,13 +2037,13 @@ ${cssAnim}`,
     if (no.peca && p.svg && parcial) {
     } else if (no.peca && p.svg) {
       const eixo = porId(ctx.comp, no.peca.eixo);
-      const rotulo = (_m = (_l = (_k = eixo.opcoes) == null ? void 0 : _k.find((o) => o.valor === ctx.valores[eixo.id])) == null ? void 0 : _l.rotulo) != null ? _m : String(ctx.valores[eixo.id]);
+      const rotulo = (_u = (_t = (_s = eixo.opcoes) == null ? void 0 : _s.find((o) => o.valor === ctx.valores[eixo.id])) == null ? void 0 : _t.rotulo) != null ? _u : String(ctx.valores[eixo.id]);
       p.peca = { nome: no.peca.nome, variante: rotulo };
       let peca = ctx.pecas.get(no.peca.nome);
       if (!peca)
         ctx.pecas.set(no.peca.nome, peca = { nome: no.peca.nome, eixo: eixo.id, opcoes: [] });
       if (!peca.opcoes.some((o) => o.rotulo === rotulo)) {
-        const traco = (_n = p.svgTraco) != null ? _n : {
+        const traco = (_v = p.svgTraco) != null ? _v : {
           cor: { valor: { r: 0, g: 0, b: 0, a: 1 } },
           espessura: { valor: 1 }
         };
@@ -1895,7 +2052,7 @@ ${cssAnim}`,
           svg: p.svg,
           traco: { cor: traco.cor, espessura: traco.espessura }
         });
-        const ordem = ((_o = eixo.opcoes) != null ? _o : []).map((o) => o.rotulo);
+        const ordem = ((_w = eixo.opcoes) != null ? _w : []).map((o) => o.rotulo);
         peca.opcoes.sort((a, b) => ordem.indexOf(a.rotulo) - ordem.indexOf(b.rotulo));
       }
     }
@@ -1915,10 +2072,25 @@ ${cssAnim}`,
           CAMPOS["padding"],
           onde("padding vertical"),
           ctx
-        )
+        ),
+        quebrar: no.autoLayout.quebrar || void 0
       };
+      const l = no.autoLayout.lados;
+      if (l) {
+        const lado = (r, nome) => r === void 0 ? void 0 : resolverRef(r, CAMPOS["padding"], onde(nome), ctx);
+        p.autoLayout.lados = {
+          cima: lado(l.cima, "padding de cima"),
+          baixo: lado(l.baixo, "padding de baixo"),
+          esquerda: lado(l.esquerda, "padding da esquerda"),
+          direita: lado(l.direita, "padding da direita")
+        };
+      }
     }
-    p.filhos = ((_p = no.filhos) != null ? _p : []).map((f) => planejarNo(f, ctx, `${caminho} \u203A ${f.nome}`));
+    if (no.larguraMin !== void 0)
+      p.larguraMin = resolverRef(no.larguraMin, CAMPOS["largura"], onde("largura m\xEDnima"), ctx);
+    if (no.larguraMax !== void 0)
+      p.larguraMax = resolverRef(no.larguraMax, CAMPOS["largura"], onde("largura m\xE1xima"), ctx);
+    p.filhos = ((_x = no.filhos) != null ? _x : []).map((f) => planejarNo(f, ctx, `${caminho} \u203A ${f.nome}`));
     return p;
   }
   function combinacoes(comp, atuais) {
@@ -1965,21 +2137,46 @@ ${cssAnim}`,
       sufixo: c.partes.join("-")
     }));
   }
+  function prototipoDe(comp, variantes) {
+    var _a;
+    const o = (_a = comp.prototipo) == null ? void 0 : _a.overlay;
+    if (!o) return void 0;
+    const nomeDe = (id) => {
+      var _a2;
+      const e = comp.estados.find((x) => x.id === id);
+      return (_a2 = variantes.find((v) => v.propriedades["Estado"] === (e == null ? void 0 : e.nome))) == null ? void 0 : _a2.nome;
+    };
+    const de = nomeDe(o.de);
+    const ov = nomeDe(o.overlay);
+    return de && ov ? { overlay: { de, no: o.no, overlay: ov, fechar: o.fechar } } : void 0;
+  }
   function planejarFigma(pacote, modo = pacote.exportacao.modo) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f, _g;
     const usarVariaveis = modo !== "visual";
     const criarComponentes = modo !== "variaveis";
     const vars = /* @__PURE__ */ new Map();
     const avisos = [];
-    const temModos = pacote.componentes.some((c) => c.variaveis.some((v) => v.modos));
-    const modosDe = (colecao) => temModos && colecao === COLECOES.colors ? ["Dark", "Light"] : ["Valor"];
+    const temModos = pacote.componentes.some(
+      (c) => c.variaveis.some((v) => {
+        var _a2, _b2;
+        return ((_a2 = v.modos) == null ? void 0 : _a2.light) !== void 0 || ((_b2 = v.modos) == null ? void 0 : _b2.dark) !== void 0;
+      })
+    );
+    const temTelas = pacote.componentes.some(
+      (c) => c.variaveis.some((v) => {
+        var _a2;
+        return ((_a2 = v.modos) == null ? void 0 : _a2.celular) !== void 0;
+      })
+    );
+    const COLECOES_TELA = [COLECOES.spacing, COLECOES.dimensions, COLECOES.typography];
+    const modosDe = (colecao) => temModos && colecao === COLECOES.colors ? ["Dark", "Light"] : temTelas && COLECOES_TELA.includes(colecao) ? ["Desktop", "Celular"] : ["Valor"];
     const registrar = (pv, onde) => {
       pv.valores = Object.fromEntries(
         modosDe(pv.colecao).map((m) => {
-          var _a2, _b2, _c2;
+          var _a2, _b2, _c2, _d2;
           return [
             m,
-            (_c2 = (_b2 = (_a2 = pv.valores[m]) != null ? _a2 : pv.valores["Dark"]) != null ? _b2 : pv.valores["Valor"]) != null ? _c2 : Object.values(pv.valores)[0]
+            (_d2 = (_c2 = (_b2 = (_a2 = pv.valores[m]) != null ? _a2 : pv.valores["Dark"]) != null ? _b2 : pv.valores["Desktop"]) != null ? _c2 : pv.valores["Valor"]) != null ? _d2 : Object.values(pv.valores)[0]
           ];
         })
       );
@@ -1996,7 +2193,29 @@ ${cssAnim}`,
       vars.set(pv.nome, __spreadProps(__spreadValues({}, pv), { vinculadaA: onde ? [onde] : [] }));
     };
     const componentes = [];
-    for (const comp of pacote.componentes) {
+    const planejados = /* @__PURE__ */ new Map();
+    const usaDe = (c) => {
+      const out = [];
+      const ver = (n) => {
+        var _a2;
+        if (n.instancia) out.push(n.instancia.componente);
+        (_a2 = n.filhos) == null ? void 0 : _a2.forEach(ver);
+      };
+      ver(c.estrutura);
+      return out;
+    };
+    const ordemPlano = [];
+    const visitar = (c, pilha) => {
+      if (ordemPlano.includes(c) || pilha.has(c.id)) return;
+      pilha.add(c.id);
+      for (const id of usaDe(c)) {
+        const d = pacote.componentes.find((x) => x.id === id);
+        if (d) visitar(d, pilha);
+      }
+      ordemPlano.push(c);
+    };
+    pacote.componentes.forEach((c) => visitar(c, /* @__PURE__ */ new Set()));
+    for (const comp of ordemPlano) {
       const atuais = valoresAtuais(comp.variaveis);
       const combos = combinacoes(comp, atuais);
       const base = (_b = (_a = combos[0]) == null ? void 0 : _a.valores) != null ? _b : atuais;
@@ -2010,9 +2229,14 @@ ${cssAnim}`,
           usarVariaveis,
           modos: [],
           registrar,
-          pecas
+          pecas,
+          planejados
         };
-        ctx.modos = temModos ? ["Dark", "Light", "Valor"] : ["Valor"];
+        ctx.modos = [
+          ...temModos ? ["Dark", "Light"] : [],
+          ...temTelas ? ["Desktop", "Celular"] : [],
+          "Valor"
+        ];
         return {
           nome: c.nome,
           propriedades: c.props,
@@ -2062,20 +2286,31 @@ ${cssAnim}`,
           avisos.push(`${comp.nome}: intera\xE7\xE3o com estado inexistente (${it.de} \u2192 ${it.para}).`);
           continue;
         }
+        const muda = {};
+        for (const [vid, valor] of Object.entries((_e = it.muda) != null ? _e : {})) {
+          const ev = comp.variaveis.find((x) => x.id === vid);
+          const rot = (_g = (_f = ev == null ? void 0 : ev.opcoes) == null ? void 0 : _f.find((o) => o.valor === valor)) == null ? void 0 : _g.rotulo;
+          if (ev && rot) muda[ev.nome] = rot;
+        }
         for (const v of variantes.filter((x) => x.propriedades["Estado"] === de.nome)) {
           const alvo = variantes.find(
-            (x) => Object.entries(__spreadProps(__spreadValues({}, v.propriedades), { Estado: para.nome })).every(
+            (x) => Object.entries(__spreadValues(__spreadProps(__spreadValues({}, v.propriedades), { Estado: para.nome }), muda)).every(
               ([k, val]) => x.propriedades[k] === val
             )
           );
-          if (alvo)
+          if (alvo && alvo.nome !== v.nome)
             interacoes.push({
               variante: v.nome,
               no: it.no,
               gatilho: it.gatilho,
               destino: alvo.nome,
               transicao: it.transicao,
-              duracao: it.duracao
+              duracao: it.duracao,
+              curva: it.curva,
+              direcao: it.direcao,
+              atraso: it.atraso,
+              tecla: it.tecla,
+              acoes: it.acoes
             });
         }
       }
@@ -2097,10 +2332,16 @@ ${cssAnim}`,
           codigo: { html: comp.codigo.html, css: comp.codigo.css, js: comp.codigo.js },
           largura: comp.metadados.largura,
           altura: comp.metadados.altura,
-          interacoes: interacoes.length ? interacoes : void 0
+          interacoes: interacoes.length ? interacoes : void 0,
+          prototipo: prototipoDe(comp, variantes),
+          usa: usaDe(comp).length ? [...new Set(usaDe(comp))] : void 0
         });
+        planejados.set(comp.id, componentes[componentes.length - 1]);
       }
     }
+    componentes.sort(
+      (a, b) => pacote.componentes.findIndex((c) => c.id === a.id) - pacote.componentes.findIndex((c) => c.id === b.id)
+    );
     if (usarVariaveis && pacote.composicao) {
       for (const s of pacote.composicao.compartilhadas) {
         const nome = `${pacote.composicao.id}/${kebab2(s.id)}`;
@@ -2145,8 +2386,11 @@ ${cssAnim}`,
     colecoes.sort((a, b) => ordem.indexOf(a.nome) - ordem.indexOf(b.nome));
     const todas = [...vars.values()];
     const contar = (n) => 1 + n.filhos.reduce((s, f) => s + contar(f), 0);
+    const temIcone = (n) => !!n.icone || n.filhos.some(temIcone);
+    const usaIcones = componentes.some((c) => c.variantes.some((v) => temIcone(v.arvore)));
     return {
       modo,
+      icones: usaIcones ? __spreadValues({}, ICONES_KCX) : void 0,
       pacote: { id: pacote.id, versao: pacote.versao, nome: pacote.nome },
       colecoes,
       componentes,
@@ -2235,8 +2479,14 @@ ${cssAnim}`,
       /* ------------------------------ Camadas ------------------------------ */
       /** Componentes das peças reutilizáveis já criados: "peça|variante" → componente. */
       __publicField(this, "pecas", /* @__PURE__ */ new Map());
+      /** Componentes principais já criados (id KCX → componente ou conjunto). */
+      __publicField(this, "principais", /* @__PURE__ */ new Map());
+      /** Componentes da biblioteca de ícones (nome → componente). */
+      __publicField(this, "icones", /* @__PURE__ */ new Map());
       /** Nós de cada variante (para ligar as interações do protótipo). */
       __publicField(this, "nosPorVariante", /* @__PURE__ */ new Map());
+      /** Coleções criadas (nome → id e modos), para a ação de trocar modo. */
+      __publicField(this, "colecoesFigma", /* @__PURE__ */ new Map());
     }
     /* ------------------------------ Variáveis ------------------------------ */
     async criarVariaveis() {
@@ -2271,6 +2521,7 @@ ${cssAnim}`,
           });
         const descobertos = col.modes.map((x) => x.modeId).filter((id) => !Object.values(modoIds).includes(id));
         this.rel.colecoes.push({ nome: c.nome, criada, modos: Object.keys(modoIds) });
+        this.colecoesFigma.set(c.nome, { id: col.id, modos: modoIds });
         for (const pv of c.variaveis) {
           let v = existentes.find(
             (x) => x.name === pv.nome && x.variableCollectionId === col.id
@@ -2504,6 +2755,72 @@ ${cssAnim}`,
       }
     }
     /**
+     * Biblioteca "KCX · Ícones": um componente por ícone ("KCX Ícone/<nome>"),
+     * 24 × 24, traço de 2 px. Reaproveita a biblioteca que já estiver na página.
+     */
+    construirIcones(x, y) {
+      const lista = this.plano.icones;
+      if (!lista) return null;
+      const f = this.figma;
+      const existentes = (() => {
+        try {
+          return f.currentPage.findAll(
+            (n) => n.type === "COMPONENT" && /^KCX Ícone\//.test(n.name)
+          );
+        } catch (e) {
+          return [];
+        }
+      })();
+      for (const e of existentes) this.icones.set(e.name.replace(/^KCX Ícone\//, ""), e);
+      const faltam = Object.keys(lista).filter((n) => !this.icones.has(n));
+      if (!faltam.length) return null;
+      const quadro = f.createFrame();
+      quadro.name = "KCX \xB7 \xCDcones";
+      quadro.layoutMode = "HORIZONTAL";
+      quadro.layoutWrap = "WRAP";
+      quadro.itemSpacing = 16;
+      quadro.counterAxisSpacing = 16;
+      quadro.paddingLeft = quadro.paddingRight = quadro.paddingTop = quadro.paddingBottom = 24;
+      quadro.primaryAxisSizingMode = "FIXED";
+      quadro.counterAxisSizingMode = "AUTO";
+      quadro.resize(24 * 8 + 16 * 7 + 48, 100);
+      quadro.fills = [{ type: "SOLID", color: { r: 1, g: 1, b: 1 } }];
+      quadro.cornerRadius = 12;
+      for (const nome of faltam) {
+        const svg = f.createNodeFromSvg(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="${lista[nome]}" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+        );
+        const comp = f.createComponent();
+        comp.name = `KCX \xCDcone/${nome}`;
+        comp.resize(24, 24);
+        comp.fills = [];
+        comp.clipsContent = false;
+        const vetores = svg.findAll ? svg.findAll((n) => n.type === "VECTOR") : [];
+        for (const v of vetores) {
+          const vx = v.absoluteTransform ? v.absoluteTransform[0][2] - svg.x : v.x;
+          const vy = v.absoluteTransform ? v.absoluteTransform[1][2] - svg.y : v.y;
+          comp.appendChild(v);
+          v.x = vx;
+          v.y = vy;
+          v.name = "Tra\xE7o";
+        }
+        svg.remove();
+        this.tracarVetores(
+          vetores,
+          { cor: { valor: { r: 0, g: 0, b: 0, a: 1 } }, espessura: { valor: 2 } },
+          `\xCDcone ${nome}`
+        );
+        comp.description = `\xCDcone da biblioteca KCX. Troque nos componentes pela propriedade de \xEDcone (Instance swap).`;
+        quadro.appendChild(comp);
+        this.icones.set(nome, comp);
+      }
+      quadro.x = x;
+      quadro.y = y;
+      f.currentPage.appendChild(quadro);
+      this.rel.pecas.push({ nome: quadro.name, id: quadro.id, variantes: faltam.length });
+      return quadro;
+    }
+    /**
      * Peças reutilizáveis: um componente com uma variante por opção (ex.:
      * "SVG Motion · Caminho", Forma=onda/laço/zigue-zague). As variantes do
      * componente principal usam instâncias dela: editar o desenho na peça
@@ -2565,24 +2882,68 @@ ${cssAnim}`,
       return ultimo;
     }
     construirNo(p, alvo, paiAutoLayout, onde, refs) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _i;
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
       const f = this.figma;
       let no;
       const local = `${onde} \u203A ${p.nome}`;
       const pecaComp = p.peca ? this.pecas.get(`${p.peca.nome}|${p.peca.variante}`) : void 0;
-      if (p.tipo === "svg" && pecaComp) {
+      const iconeComp = p.tipo === "icone" && p.icone ? this.icones.get(p.icone.nome) : void 0;
+      const principalInst = p.tipo === "instancia" && p.instancia ? this.principais.get(p.instancia.componente) : void 0;
+      if (p.tipo === "instancia" && p.instancia && principalInst) {
+        const variante = principalInst.type === "COMPONENT_SET" ? (_a = principalInst.children.find((c) => c.name === p.instancia.variante)) != null ? _a : principalInst.defaultVariant : principalInst;
+        no = variante.createInstance();
+        const props = (_b = no.componentProperties) != null ? _b : {};
+        const novos = {};
+        for (const [nome, valor] of Object.entries(p.instancia.textos)) {
+          const chave = Object.keys(props).find((k) => k === nome || k.startsWith(`${nome}#`));
+          if (chave) novos[chave] = valor;
+        }
+        if (Object.keys(novos).length) {
+          try {
+            no.setProperties(novos);
+          } catch (e) {
+            this.rel.avisos.push(`${local}: textos da inst\xE2ncia: ${e.message}`);
+          }
+        }
+      } else if (p.tipo === "instancia") {
+        no = f.createFrame();
+        no.fills = [];
+        this.rel.avisos.push(`${local}: componente "${(_c = p.instancia) == null ? void 0 : _c.componente}" n\xE3o encontrado.`);
+      } else if (p.slot && refs.raiz && typeof refs.raiz.createSlot === "function") {
+        no = refs.raiz.createSlot();
+        no.fills = [];
+        ((_d = refs.slots) != null ? _d : refs.slots = []).push(p.slot);
+      } else if (p.tipo === "icone" && p.icone && iconeComp) {
+        no = iconeComp.createInstance();
+        const t = p.icone.tamanho;
+        try {
+          no.resize(t, t);
+        } catch (e) {
+        }
+        const vetores = no.findAll ? no.findAll((x) => x.type === "VECTOR") : [];
+        for (const v of vetores) {
+          v.strokes = [this.pintura({ tipo: "solido", cor: p.icone.cor }, local)];
+        }
+        if (p.icone.propriedade)
+          ((_e = refs.icone) != null ? _e : refs.icone = []).push({ no, prop: p.icone.propriedade, plano: p });
+      } else if (p.tipo === "icone") {
+        no = f.createFrame();
+        no.fills = [];
+        no.resize((_g = (_f = p.icone) == null ? void 0 : _f.tamanho) != null ? _g : 20, (_i = (_h = p.icone) == null ? void 0 : _h.tamanho) != null ? _i : 20);
+        this.rel.avisos.push(`${local}: \xEDcone "${(_j = p.icone) == null ? void 0 : _j.nome}" fora da biblioteca.`);
+      } else if (p.tipo === "svg" && pecaComp) {
         no = pecaComp.createInstance();
-        if ((_b = (_a = p.svgTraco) == null ? void 0 : _a.tracejado) == null ? void 0 : _b.length) {
+        if ((_l = (_k = p.svgTraco) == null ? void 0 : _k.tracejado) == null ? void 0 : _l.length) {
           for (const v of no.findAll((x) => x.type === "VECTOR"))
             v.dashPattern = p.svgTraco.tracejado;
         }
       } else if (p.tipo === "svg") {
-        no = f.createNodeFromSvg((_c = p.svg) != null ? _c : '<svg xmlns="http://www.w3.org/2000/svg"/>');
+        no = f.createNodeFromSvg((_m = p.svg) != null ? _m : '<svg xmlns="http://www.w3.org/2000/svg"/>');
         no.fills = [];
         const vetores = no.findAll ? no.findAll((x) => x.type === "VECTOR") : [];
         if (p.svgTraco) {
           this.tracarVetores(vetores, p.svgTraco, local);
-          if ((_d = p.svgTraco.tracejado) == null ? void 0 : _d.length)
+          if ((_n = p.svgTraco.tracejado) == null ? void 0 : _n.length)
             for (const v of vetores) v.dashPattern = p.svgTraco.tracejado;
         }
       } else if (p.tipo === "texto" && p.texto) {
@@ -2609,19 +2970,50 @@ ${cssAnim}`,
         no.clipsContent = p.recortar;
       }
       no.name = p.nome;
-      if (p.id) (_e = refs.nos) == null ? void 0 : _e.set(p.id, no);
+      if (p.id) (_o = refs.nos) == null ? void 0 : _o.set(p.id, no);
+      if (p.grade) {
+        try {
+          no.layoutMode = "GRID";
+          no.gridColumnCount = p.grade.colunas;
+          no.gridRowCount = p.grade.linhas;
+          no.gridColumnGap = no.gridRowGap = Number(p.grade.espaco.valor);
+          this.vincular(no, "gridColumnGap", p.grade.espaco, local);
+          this.vincular(no, "gridRowGap", p.grade.espaco, local);
+        } catch (e) {
+          no.layoutMode = "HORIZONTAL";
+          no.layoutWrap = "WRAP";
+          no.itemSpacing = no.counterAxisSpacing = Number(p.grade.espaco.valor);
+        }
+        no.primaryAxisSizingMode = "AUTO";
+        no.counterAxisSizingMode = "AUTO";
+      }
       if (p.tipo === "frame" && p.autoLayout) {
         no.layoutMode = p.autoLayout.direcao;
         no.primaryAxisAlignItems = "CENTER";
-        no.counterAxisAlignItems = (_f = p.autoLayout.alinhar) != null ? _f : "CENTER";
+        no.counterAxisAlignItems = (_p = p.autoLayout.alinhar) != null ? _p : "CENTER";
         no.itemSpacing = Number(p.autoLayout.espaco.valor);
         no.paddingLeft = no.paddingRight = Number(p.autoLayout.paddingX.valor);
         no.paddingTop = no.paddingBottom = Number(p.autoLayout.paddingY.valor);
         this.vincular(no, "itemSpacing", p.autoLayout.espaco, local);
-        for (const lado of ["paddingLeft", "paddingRight"])
-          this.vincular(no, lado, p.autoLayout.paddingX, local);
-        for (const lado of ["paddingTop", "paddingBottom"])
-          this.vincular(no, lado, p.autoLayout.paddingY, local);
+        const lados = (_q = p.autoLayout.lados) != null ? _q : {};
+        const porLado = [
+          ["paddingLeft", (_r = lados.esquerda) != null ? _r : p.autoLayout.paddingX],
+          ["paddingRight", (_s = lados.direita) != null ? _s : p.autoLayout.paddingX],
+          ["paddingTop", (_t = lados.cima) != null ? _t : p.autoLayout.paddingY],
+          ["paddingBottom", (_u = lados.baixo) != null ? _u : p.autoLayout.paddingY]
+        ];
+        for (const [campo, prop] of porLado) {
+          no[campo] = Number(prop.valor);
+          this.vincular(no, campo, prop, local);
+        }
+        if (p.autoLayout.quebrar) {
+          try {
+            no.layoutWrap = "WRAP";
+            no.counterAxisSpacing = Number(p.autoLayout.espaco.valor);
+            this.vincular(no, "counterAxisSpacing", p.autoLayout.espaco, local);
+          } catch (e) {
+          }
+        }
         const hor = p.autoLayout.direcao === "HORIZONTAL";
         const principal = hor ? p.largura : p.altura;
         const cruzado = hor ? p.altura : p.largura;
@@ -2644,6 +3036,18 @@ ${cssAnim}`,
         }
         if (p.largura) this.vincular(no, "width", p.largura, local);
         if (p.altura) this.vincular(no, "height", p.altura, local);
+      }
+      for (const [campo, prop] of [
+        ["minWidth", p.larguraMin],
+        ["maxWidth", p.larguraMax]
+      ]) {
+        if (!prop) continue;
+        try {
+          no[campo] = Number(prop.valor);
+          this.vincular(no, campo, prop, local);
+        } catch (e) {
+          this.rel.avisos.push(`${local}: ${campo} s\xF3 vale em Auto Layout.`);
+        }
       }
       if (!paiAutoLayout || p.absoluto) {
         if (p.x !== void 0) no.x = p.x;
@@ -2687,12 +3091,12 @@ ${cssAnim}`,
       this.efeitos(no, p, local);
       const absolutos = [];
       for (const filho of p.filhos) {
-        const n = this.construirNo(filho, null, !!p.autoLayout, local, refs);
+        const n = this.construirNo(filho, null, !!p.autoLayout || !!p.grade, local, refs);
         no.appendChild(n);
         if (p.autoLayout && filho.absoluto) {
           n.layoutPositioning = "ABSOLUTE";
           absolutos.push({ no: n, plano: filho });
-        } else if (p.autoLayout && ((_g = filho.texto) == null ? void 0 : _g.preencher)) {
+        } else if (p.autoLayout && ((_v = filho.texto) == null ? void 0 : _v.preencher)) {
           n.layoutSizingHorizontal = "FILL";
           n.textAutoResize = "HEIGHT";
         } else if (p.autoLayout && filho.encher) {
@@ -2709,11 +3113,11 @@ ${cssAnim}`,
         }
       }
       for (const a of absolutos) {
-        if (((_h = a.plano.restricoes) == null ? void 0 : _h.horizontal) === "STRETCH") {
+        if (((_w = a.plano.restricoes) == null ? void 0 : _w.horizontal) === "STRETCH") {
           a.no.x = 0;
           a.no.resize(Math.max(0.01, no.width), a.no.height);
         }
-        if (((_i = a.plano.restricoes) == null ? void 0 : _i.vertical) === "STRETCH") {
+        if (((_x = a.plano.restricoes) == null ? void 0 : _x.vertical) === "STRETCH") {
           a.no.y = 0;
           a.no.resize(a.no.width, Math.max(0.01, no.height));
         }
@@ -2722,7 +3126,7 @@ ${cssAnim}`,
     }
     /** Cria as propriedades de componente (texto e visibilidade) e liga as camadas a elas. */
     propriedades(principal, refsPorVariante) {
-      var _a, _b;
+      var _a, _b, _c, _d, _e;
       const f = this.figma;
       const tipos = [
         { lista: "texto", tipo: "TEXT", campo: "characters" },
@@ -2762,6 +3166,61 @@ ${cssAnim}`,
           this.rel.propriedades.push(`${nome} (${t.tipo === "TEXT" ? "texto" : "mostrar/ocultar"})`);
         }
       }
+      const nomesSlot = new Set(refsPorVariante.flatMap((r) => {
+        var _a2;
+        return (_a2 = r.slots) != null ? _a2 : [];
+      }));
+      if (nomesSlot.size) {
+        const defs = (_c = principal.componentPropertyDefinitions) != null ? _c : {};
+        const chaves = Object.keys(defs).filter((k) => defs[k].type === "SLOT");
+        const nome = [...nomesSlot][0];
+        for (const k of chaves) {
+          if (k.split("#")[0] === nome) continue;
+          try {
+            principal.editComponentProperty(k, { name: nome });
+          } catch (e) {
+          }
+        }
+        this.rel.propriedades.push(...[...nomesSlot].map((n) => `${n} (slot)`));
+      }
+      const nomesIcone = new Set(refsPorVariante.flatMap((r) => {
+        var _a2;
+        return ((_a2 = r.icone) != null ? _a2 : []).map((x) => x.prop);
+      }));
+      for (const nome of nomesIcone) {
+        const ref = refsPorVariante.flatMap((r) => {
+          var _a2;
+          return (_a2 = r.icone) != null ? _a2 : [];
+        }).find((r) => r.prop === nome);
+        const padrao = this.icones.get(ref.plano.icone.nome);
+        if (!padrao) continue;
+        const sugeridos = [...this.icones.values()].filter((c) => c.key).map((c) => ({ type: "COMPONENT", key: c.key }));
+        let chave;
+        try {
+          chave = principal.addComponentProperty(nome, "INSTANCE_SWAP", padrao.id, {
+            preferredValues: sugeridos
+          });
+        } catch (e) {
+          try {
+            chave = principal.addComponentProperty(nome, "INSTANCE_SWAP", padrao.id);
+          } catch (e2) {
+            this.rel.avisos.push(`Propriedade "${nome}" (troca de \xEDcone): ${e2.message}`);
+            continue;
+          }
+        }
+        for (const refs of refsPorVariante) {
+          for (const r of ((_d = refs.icone) != null ? _d : []).filter((x) => x.prop === nome)) {
+            try {
+              r.no.componentPropertyReferences = __spreadProps(__spreadValues({}, (_e = r.no.componentPropertyReferences) != null ? _e : {}), {
+                mainComponent: chave
+              });
+            } catch (e) {
+              this.rel.avisos.push(`Propriedade "${nome}": ${e.message}`);
+            }
+          }
+        }
+        this.rel.propriedades.push(`${nome} (troca de \xEDcone)`);
+      }
     }
     construirComponente(c, x0, y0) {
       const f = this.figma;
@@ -2769,7 +3228,7 @@ ${cssAnim}`,
       const refsPorVariante = [];
       c.variantes.forEach((v) => {
         const comp = f.createComponent();
-        const refs = { texto: [], visivel: [], nos: /* @__PURE__ */ new Map() };
+        const refs = { texto: [], visivel: [], nos: /* @__PURE__ */ new Map(), raiz: comp };
         this.construirNo(v.arvore, comp, false, c.nome, refs);
         comp.name = c.variantes.length > 1 ? v.nome : c.nome;
         variantes.push(comp);
@@ -2833,20 +3292,16 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
           );
           continue;
         }
-        const transition = it.transicao === "instantanea" ? null : {
-          type: it.transicao === "dissolver" ? "DISSOLVE" : "SMART_ANIMATE",
-          easing: { type: "EASE_OUT" },
-          duration: it.duracao / 1e3
-        };
         const lista = (_b = porNo.get(no)) != null ? _b : [];
         lista.push({
-          trigger: { type: it.gatilho === "hover" ? "ON_HOVER" : "ON_CLICK" },
+          trigger: gatilhoFigma(it),
           actions: [
+            ...this.acoesExtras(c, it),
             {
               type: "NODE",
               destinationId: destino.variante.id,
               navigation: "CHANGE_TO",
-              transition,
+              transition: transicaoFigma(it),
               preserveScrollPosition: false
             }
           ]
@@ -2862,6 +3317,116 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
           this.rel.avisos.push(`Intera\xE7\xE3o em "${no.name}" n\xE3o foi criada: ${e.message}`);
         }
       }
+    }
+    /** Ações extras de uma interação (trocar modo, alternar variável). */
+    acoesExtras(c, it) {
+      var _a, _b;
+      const out = [];
+      for (const a of (_a = it.acoes) != null ? _a : []) {
+        if (a.tipo === "modo") {
+          const col = this.colecoesFigma.get(a.colecao);
+          const modo = col == null ? void 0 : col.modos[a.modo];
+          if (col && modo)
+            out.push({
+              type: "SET_VARIABLE_MODE",
+              variableCollectionId: col.id,
+              variableModeId: modo
+            });
+          else this.rel.avisos.push(`${c.nome}: modo "${a.modo}" de ${a.colecao} n\xE3o existe.`);
+        } else if (a.tipo === "alternar") {
+          const v = (_b = [...this.vars.entries()].find(([n]) => n.endsWith(`/${a.variavel}`))) == null ? void 0 : _b[1];
+          if (v)
+            out.push({
+              type: "SET_VARIABLE",
+              variableId: v.id,
+              variableValue: {
+                resolvedType: "BOOLEAN",
+                type: "EXPRESSION",
+                value: {
+                  expressionFunction: "NOT",
+                  expressionArguments: [
+                    {
+                      resolvedType: "BOOLEAN",
+                      type: "VARIABLE_ALIAS",
+                      value: { type: "VARIABLE_ALIAS", id: v.id }
+                    }
+                  ]
+                }
+              }
+            });
+        }
+      }
+      return out;
+    }
+    /**
+     * Protótipo de exemplo com overlay: uma tela com o componente fechado e um
+     * frame com a variante aberta; clicar abre o overlay (centralizado) e o X fecha.
+     */
+    async construirPrototipo(c, principal, x, y) {
+      var _a, _b, _c, _d;
+      const o = (_a = c.prototipo) == null ? void 0 : _a.overlay;
+      if (!o || principal.type !== "COMPONENT_SET") return null;
+      const f = this.figma;
+      const de = principal.children.find((v) => v.name === o.de);
+      const ov = principal.children.find((v) => v.name === o.overlay);
+      const noOrigem = (_b = this.nosPorVariante.get(`${c.id}|${o.de}`)) == null ? void 0 : _b.nos.get(o.no);
+      if (!de || !ov || !noOrigem) return null;
+      const tela = f.createFrame();
+      tela.name = `${c.nome} \xB7 prot\xF3tipo (tela)`;
+      tela.resize(Math.max(480, de.width + 80), Math.max(360, de.height + 80));
+      tela.fills = [{ type: "SOLID", color: { r: 0.043, g: 0.039, b: 0.078 } }];
+      const inst = de.createInstance();
+      tela.appendChild(inst);
+      inst.x = 40;
+      inst.y = 40;
+      const sobre = f.createFrame();
+      sobre.name = `${c.nome} \xB7 overlay`;
+      sobre.fills = [];
+      const instOv = ov.createInstance();
+      sobre.resize(instOv.width, instOv.height);
+      sobre.appendChild(instOv);
+      tela.x = x;
+      tela.y = y;
+      sobre.x = x + tela.width + 60;
+      sobre.y = y;
+      f.currentPage.appendChild(tela);
+      f.currentPage.appendChild(sobre);
+      const achar = (raiz, nome) => raiz.findOne ? raiz.findOne((n) => n.name === nome) : null;
+      const gatilho = (_c = achar(inst, noOrigem.name)) != null ? _c : inst;
+      try {
+        await gatilho.setReactionsAsync([
+          {
+            trigger: { type: "ON_CLICK" },
+            actions: [
+              {
+                type: "NODE",
+                destinationId: sobre.id,
+                navigation: "OVERLAY",
+                transition: {
+                  type: "MOVE_IN",
+                  direction: "BOTTOM",
+                  matchLayers: false,
+                  easing: { type: "EASE_OUT" },
+                  duration: 0.3
+                },
+                preserveScrollPosition: false
+              }
+            ]
+          }
+        ]);
+        for (const id of o.fechar) {
+          const n = (_d = this.nosPorVariante.get(`${c.id}|${o.overlay}`)) == null ? void 0 : _d.nos.get(id);
+          const alvo = n ? achar(instOv, n.name) : null;
+          if (alvo)
+            await alvo.setReactionsAsync([
+              { trigger: { type: "ON_CLICK" }, actions: [{ type: "CLOSE" }] }
+            ]);
+        }
+        this.rel.interacoes.push(`${c.nome}: overlay no prot\xF3tipo`);
+      } catch (e) {
+        this.rel.avisos.push(`Prot\xF3tipo com overlay de ${c.nome}: ${e.message}`);
+      }
+      return [tela, sobre];
     }
     /** Instância do componente pronta para usar, ao lado da definição. */
     construirExemplo(c, principal, x, y) {
@@ -2991,14 +3556,30 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       const origem = (_b = (_a = this.figma.viewport) == null ? void 0 : _a.center) != null ? _b : { x: 0, y: 0 };
       let y = Math.round(origem.y);
       const x = Math.round(origem.x);
-      const principais = /* @__PURE__ */ new Map();
+      const principais = this.principais;
       const criados = [];
-      for (const c of this.plano.componentes) {
+      const biblioteca = this.construirIcones(x - 600, y);
+      if (biblioteca) criados.push(biblioteca);
+      const ordem = [];
+      const por = (c, pilha) => {
+        var _a2;
+        if (ordem.includes(c) || pilha.has(c.id)) return;
+        pilha.add(c.id);
+        for (const id of (_a2 = c.usa) != null ? _a2 : []) {
+          const d = this.plano.componentes.find((x2) => x2.id === id);
+          if (d) por(d, pilha);
+        }
+        ordem.push(c);
+      };
+      this.plano.componentes.forEach((c) => por(c, /* @__PURE__ */ new Set()));
+      for (const c of ordem) {
         const pecas = c.pecas.length ? this.construirPecas(c, x, y) : null;
         const px = pecas ? x + pecas.width + 80 : x;
         const p = this.construirComponente(c, px, y);
         await this.criarInteracoes(c);
         principais.set(c.id, p);
+        const proto = await this.construirPrototipo(c, p, px, y + p.height + 60);
+        if (proto) criados.push(...proto);
         criados.push(p);
         if (pecas) criados.push(pecas);
         const exemplo = this.construirExemplo(c, p, px, y + p.height + 60);
@@ -3115,6 +3696,59 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       },
       ignoradas
     };
+  }
+  function gatilhoFigma(it) {
+    var _a;
+    switch (it.gatilho) {
+      case "hover":
+        return { type: "ON_HOVER" };
+      case "pressionar":
+        return { type: "ON_PRESS" };
+      case "entrar":
+        return { type: "MOUSE_ENTER", delay: 0 };
+      case "sair":
+        return { type: "MOUSE_LEAVE", delay: 0 };
+      case "atraso":
+        return { type: "AFTER_TIMEOUT", timeout: Math.max(0, ((_a = it.atraso) != null ? _a : 1e3) / 1e3) };
+      case "arrastar":
+        return { type: "ON_DRAG" };
+      case "tecla":
+        return { type: "ON_KEY_DOWN", device: "KEYBOARD", keyCodes: [codigoTecla(it.tecla)] };
+      default:
+        return { type: "ON_CLICK" };
+    }
+  }
+  function codigoTecla(tecla = "Escape") {
+    var _a;
+    const mapa = {
+      Escape: 27,
+      Enter: 13,
+      " ": 32,
+      Espaco: 32,
+      ArrowLeft: 37,
+      ArrowUp: 38,
+      ArrowRight: 39,
+      ArrowDown: 40,
+      Tab: 9
+    };
+    return (_a = mapa[tecla]) != null ? _a : tecla.length === 1 ? tecla.toUpperCase().charCodeAt(0) : 27;
+  }
+  function transicaoFigma(it, trocaDeVariante = true) {
+    var _a;
+    if (it.transicao === "instantanea") return null;
+    const easing = it.curva === "linear" ? { type: "LINEAR" } : it.curva === "entrada-saida" ? { type: "EASE_IN_AND_OUT" } : it.curva === "mola" ? { type: "GENTLE" } : it.curva === "quique" ? { type: "BOUNCY" } : { type: "EASE_OUT" };
+    const duration = it.duracao / 1e3;
+    if ((it.transicao === "mover" || it.transicao === "empurrar") && !trocaDeVariante) {
+      const dir = { esquerda: "LEFT", direita: "RIGHT", cima: "TOP", baixo: "BOTTOM" }[(_a = it.direcao) != null ? _a : "esquerda"];
+      return {
+        type: it.transicao === "mover" ? "MOVE_IN" : "PUSH",
+        direction: dir,
+        matchLayers: false,
+        easing,
+        duration
+      };
+    }
+    return { type: it.transicao === "dissolver" ? "DISSOLVE" : "SMART_ANIMATE", easing, duration };
   }
 
   // figma-bridge/src/code.ts

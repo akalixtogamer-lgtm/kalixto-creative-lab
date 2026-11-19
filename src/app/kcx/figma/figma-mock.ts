@@ -25,6 +25,8 @@ const CAMPOS_NO = new Set([
   'minHeight',
   'maxHeight',
   'counterAxisSpacing',
+  'gridRowGap',
+  'gridColumnGap',
   'strokeWeight',
   'opacity',
   'fontFamily',
@@ -147,6 +149,8 @@ export class NoMock {
     for (const x of r)
       for (const a of x.actions)
         if (a.type === 'NODE' && !a.destinationId) throw new Error('destinationId ausente');
+        else if (a.type === 'SET_VARIABLE_MODE' && (!a.variableCollectionId || !a.variableModeId))
+          throw new Error('modo ausente');
     this.reactions = r;
   }
   remove(): void {
@@ -172,6 +176,33 @@ export class NoMock {
       });
     copiar(this, i);
     return i;
+  }
+  /** Slot (Figma: ComponentNode.createSlot): cria o nó e a propriedade SLOT. */
+  createSlot(): NoMock {
+    if (this.type !== 'COMPONENT') throw new Error('slot só em componente');
+    const s = new NoMock('SLOT');
+    this.appendChild(s);
+    this.componentPropertyDefinitions[`Slot#${s.id}`] = { type: 'SLOT' };
+    return s;
+  }
+  findOne(f: (n: NoMock) => boolean): NoMock | null {
+    return this.findAll(f)[0] ?? null;
+  }
+  get componentProperties(): Record<string, any> {
+    const main = this['mainComponent'] as NoMock | undefined;
+    const defs =
+      main?.parent?.type === 'COMPONENT_SET'
+        ? main.parent.componentPropertyDefinitions
+        : main?.componentPropertyDefinitions;
+    return Object.fromEntries(
+      Object.entries(defs ?? {}).map(([k, d]: [string, any]) => [
+        k,
+        { type: d.type, value: d.defaultValue },
+      ]),
+    );
+  }
+  setProperties(p: Record<string, any>): void {
+    this['propriedadesDefinidas'] = { ...(this['propriedadesDefinidas'] ?? {}), ...p };
   }
   get defaultVariant(): NoMock {
     return this.children[0];

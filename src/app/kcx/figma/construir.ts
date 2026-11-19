@@ -28,7 +28,15 @@ import {
 type Figma = any;
 type No = any;
 type Ref = { no: No; prop: string; plano: PlanoNo };
-type Refs = { texto: Ref[]; visivel: Ref[]; icone?: Ref[]; nos?: Map<string, No> };
+type Refs = {
+  texto: Ref[];
+  visivel: Ref[];
+  icone?: Ref[];
+  nos?: Map<string, No>;
+  /** Componente da variante (para criar slots). */
+  raiz?: No;
+  slots?: string[];
+};
 
 export type ModoDuplicados = 'atualizar' | 'copia';
 
@@ -165,6 +173,7 @@ class Construtor {
         .map((x: any) => x.modeId)
         .filter((id: string) => !Object.values(modoIds).includes(id));
       this.rel.colecoes.push({ nome: c.nome, criada, modos: Object.keys(modoIds) });
+      this.colecoesFigma.set(c.nome, { id: col.id, modos: modoIds });
       for (const pv of c.variaveis) {
         let v = existentes.find(
           (x: any) => x.name === pv.nome && x.variableCollectionId === col.id,
@@ -436,6 +445,9 @@ class Construtor {
     }
   }
 
+  /** Componentes principais já criados (id KCX → componente ou conjunto). */
+  private readonly principais = new Map<string, No>();
+
   /** Componentes da biblioteca de ícones (nome → componente). */
   private readonly icones = new Map<string, No>();
 
@@ -585,7 +597,39 @@ class Construtor {
     const local = `${onde} › ${p.nome}`;
     const pecaComp = p.peca ? this.pecas.get(`${p.peca.nome}|${p.peca.variante}`) : undefined;
     const iconeComp = p.tipo === 'icone' && p.icone ? this.icones.get(p.icone.nome) : undefined;
-    if (p.tipo === 'icone' && p.icone && iconeComp) {
+    const principalInst =
+      p.tipo === 'instancia' && p.instancia
+        ? this.principais.get(p.instancia.componente)
+        : undefined;
+    if (p.tipo === 'instancia' && p.instancia && principalInst) {
+      const variante =
+        principalInst.type === 'COMPONENT_SET'
+          ? (principalInst.children.find((c: No) => c.name === p.instancia!.variante) ??
+            principalInst.defaultVariant)
+          : principalInst;
+      no = variante.createInstance();
+      const props = (no.componentProperties ?? {}) as Record<string, unknown>;
+      const novos: Record<string, string> = {};
+      for (const [nome, valor] of Object.entries(p.instancia.textos)) {
+        const chave = Object.keys(props).find((k) => k === nome || k.startsWith(`${nome}#`));
+        if (chave) novos[chave] = valor;
+      }
+      if (Object.keys(novos).length) {
+        try {
+          no.setProperties(novos);
+        } catch (e) {
+          this.rel.avisos.push(`${local}: textos da instância: ${(e as Error).message}`);
+        }
+      }
+    } else if (p.tipo === 'instancia') {
+      no = f.createFrame();
+      no.fills = [];
+      this.rel.avisos.push(`${local}: componente "${p.instancia?.componente}" não encontrado.`);
+    } else if (p.slot && refs.raiz && typeof refs.raiz.createSlot === 'function') {
+      no = refs.raiz.createSlot();
+      no.fills = [];
+      (refs.slots ??= []).push(p.slot);
+    } else if (p.tipo === 'icone' && p.icone && iconeComp) {
       no = iconeComp.createInstance();
       const t = p.icone.tamanho;
       try {
@@ -646,6 +690,23 @@ class Construtor {
     no.name = p.nome;
     if (p.id) refs.nos?.set(p.id, no);
 
+    if (p.grade) {
+      try {
+        no.layoutMode = 'GRID';
+        no.gridColumnCount = p.grade.colunas;
+        no.gridRowCount = p.grade.linhas;
+        no.gridColumnGap = no.gridRowGap = Number(p.grade.espaco.valor);
+        this.vincular(no, 'gridColumnGap', p.grade.espaco, local);
+        this.vincular(no, 'gridRowGap', p.grade.espaco, local);
+      } catch {
+        // Sem Grid: Auto Layout horizontal com quebra de linha.
+        no.layoutMode = 'HORIZONTAL';
+        no.layoutWrap = 'WRAP';
+        no.itemSpacing = no.counterAxisSpacing = Number(p.grade.espaco.valor);
+      }
+      no.primaryAxisSizingMode = 'AUTO';
+      no.counterAxisSizingMode = 'AUTO';
+    }
     if (p.tipo === 'frame' && p.autoLayout) {
       no.layoutMode = p.autoLayout.direcao;
       no.primaryAxisAlignItems = 'CENTER';
@@ -756,7 +817,7 @@ class Construtor {
 
     const absolutos: { no: No; plano: PlanoNo }[] = [];
     for (const filho of p.filhos) {
-      const n = this.construirNo(filho, null, !!p.autoLayout, local, refs);
+      const n = this.construirNo(filho, null, !!p.autoLayout || !!p.grade, local, refs);
       no.appendChild(n);
       if (p.autoLayout && filho.absoluto) {
         n.layoutPositioning = 'ABSOLUTE';
@@ -837,6 +898,25 @@ class Construtor {
         this.rel.propriedades.push(`${nome} (${t.tipo === 'TEXT' ? 'texto' : 'mostrar/ocultar'})`);
       }
     }
+    // Slots: a propriedade criada com o slot ganha o nome do plano.
+    const nomesSlot = new Set(refsPorVariante.flatMap((r) => r.slots ?? []));
+    if (nomesSlot.size) {
+      const defs = (principal.componentPropertyDefinitions ?? {}) as Record<
+        string,
+        { type: string }
+      >;
+      const chaves = Object.keys(defs).filter((k) => defs[k].type === 'SLOT');
+      const nome = [...nomesSlot][0];
+      for (const k of chaves) {
+        if (k.split('#')[0] === nome) continue;
+        try {
+          principal.editComponentProperty(k, { name: nome });
+        } catch {
+          /* nome já usado ou slot sem edição */
+        }
+      }
+      this.rel.propriedades.push(...[...nomesSlot].map((n) => `${n} (slot)`));
+    }
     // Troca de instância: ícones da biblioteca como sugeridos.
     const nomesIcone = new Set(refsPorVariante.flatMap((r) => (r.icone ?? []).map((x) => x.prop)));
     for (const nome of nomesIcone) {
@@ -881,7 +961,7 @@ class Construtor {
     const refsPorVariante: Refs[] = [];
     c.variantes.forEach((v) => {
       const comp = f.createComponent();
-      const refs: Refs = { texto: [], visivel: [], nos: new Map() };
+      const refs: Refs = { texto: [], visivel: [], nos: new Map(), raiz: comp };
       this.construirNo(v.arvore, comp, false, c.nome, refs);
       comp.name = c.variantes.length > 1 ? v.nome : c.nome;
       variantes.push(comp);
@@ -953,6 +1033,7 @@ class Construtor {
       lista.push({
         trigger: gatilhoFigma(it),
         actions: [
+          ...this.acoesExtras(c, it),
           {
             type: 'NODE',
             destinationId: destino.variante.id,
@@ -973,6 +1054,120 @@ class Construtor {
         this.rel.avisos.push(`Interação em "${no.name}" não foi criada: ${(e as Error).message}`);
       }
     }
+  }
+
+  /** Coleções criadas (nome → id e modos), para a ação de trocar modo. */
+  private colecoesFigma = new Map<string, { id: string; modos: Record<string, string> }>();
+
+  /** Ações extras de uma interação (trocar modo, alternar variável). */
+  private acoesExtras(c: PlanoComponente, it: PlanoInteracao): unknown[] {
+    const out: unknown[] = [];
+    for (const a of it.acoes ?? []) {
+      if (a.tipo === 'modo') {
+        const col = this.colecoesFigma.get(a.colecao);
+        const modo = col?.modos[a.modo];
+        if (col && modo)
+          out.push({
+            type: 'SET_VARIABLE_MODE',
+            variableCollectionId: col.id,
+            variableModeId: modo,
+          });
+        else this.rel.avisos.push(`${c.nome}: modo "${a.modo}" de ${a.colecao} não existe.`);
+      } else if (a.tipo === 'alternar') {
+        const v = [...this.vars.entries()].find(([n]) => n.endsWith(`/${a.variavel}`))?.[1];
+        if (v)
+          out.push({
+            type: 'SET_VARIABLE',
+            variableId: v.id,
+            variableValue: {
+              resolvedType: 'BOOLEAN',
+              type: 'EXPRESSION',
+              value: {
+                expressionFunction: 'NOT',
+                expressionArguments: [
+                  {
+                    resolvedType: 'BOOLEAN',
+                    type: 'VARIABLE_ALIAS',
+                    value: { type: 'VARIABLE_ALIAS', id: v.id },
+                  },
+                ],
+              },
+            },
+          });
+      }
+    }
+    return out;
+  }
+
+  /**
+   * Protótipo de exemplo com overlay: uma tela com o componente fechado e um
+   * frame com a variante aberta; clicar abre o overlay (centralizado) e o X fecha.
+   */
+  private async construirPrototipo(c: PlanoComponente, principal: No, x: number, y: number) {
+    const o = c.prototipo?.overlay;
+    if (!o || principal.type !== 'COMPONENT_SET') return null;
+    const f = this.figma;
+    const de = principal.children.find((v: No) => v.name === o.de);
+    const ov = principal.children.find((v: No) => v.name === o.overlay);
+    const noOrigem = this.nosPorVariante.get(`${c.id}|${o.de}`)?.nos.get(o.no);
+    if (!de || !ov || !noOrigem) return null;
+    const tela = f.createFrame();
+    tela.name = `${c.nome} · protótipo (tela)`;
+    tela.resize(Math.max(480, de.width + 80), Math.max(360, de.height + 80));
+    tela.fills = [{ type: 'SOLID', color: { r: 0.043, g: 0.039, b: 0.078 } }];
+    const inst = de.createInstance();
+    tela.appendChild(inst);
+    inst.x = 40;
+    inst.y = 40;
+    const sobre = f.createFrame();
+    sobre.name = `${c.nome} · overlay`;
+    sobre.fills = [];
+    const instOv = ov.createInstance();
+    sobre.resize(instOv.width, instOv.height);
+    sobre.appendChild(instOv);
+    tela.x = x;
+    tela.y = y;
+    sobre.x = x + tela.width + 60;
+    sobre.y = y;
+    f.currentPage.appendChild(tela);
+    f.currentPage.appendChild(sobre);
+    const achar = (raiz: No, nome: string) =>
+      raiz.findOne ? raiz.findOne((n: No) => n.name === nome) : null;
+    const gatilho = achar(inst, noOrigem.name) ?? inst;
+    try {
+      await gatilho.setReactionsAsync([
+        {
+          trigger: { type: 'ON_CLICK' },
+          actions: [
+            {
+              type: 'NODE',
+              destinationId: sobre.id,
+              navigation: 'OVERLAY',
+              transition: {
+                type: 'MOVE_IN',
+                direction: 'BOTTOM',
+                matchLayers: false,
+                easing: { type: 'EASE_OUT' },
+                duration: 0.3,
+              },
+              preserveScrollPosition: false,
+            },
+          ],
+        },
+      ]);
+      for (const id of o.fechar) {
+        const n = this.nosPorVariante.get(`${c.id}|${o.overlay}`)?.nos.get(id);
+        const alvo = n ? achar(instOv, n.name) : null;
+        if (alvo)
+          await alvo.setReactionsAsync([
+            { trigger: { type: 'ON_CLICK' }, actions: [{ type: 'CLOSE' }] },
+          ]);
+      }
+      this.rel.interacoes.push(`${c.nome}: overlay no protótipo`);
+    } catch (e) {
+      this.rel.avisos.push(`Protótipo com overlay de ${c.nome}: ${(e as Error).message}`);
+    }
+    return [tela, sobre];
   }
 
   /** Instância do componente pronta para usar, ao lado da definição. */
@@ -1114,17 +1309,30 @@ class Construtor {
     const origem = this.figma.viewport?.center ?? { x: 0, y: 0 };
     let y = Math.round(origem.y);
     const x = Math.round(origem.x);
-    const principais = new Map<string, No>();
+    const principais = this.principais;
     const criados: No[] = [];
     const biblioteca = this.construirIcones(x - 600, y);
     if (biblioteca) criados.push(biblioteca);
-    for (const c of this.plano.componentes) {
+    const ordem: PlanoComponente[] = [];
+    const por = (c: PlanoComponente, pilha: Set<string>) => {
+      if (ordem.includes(c) || pilha.has(c.id)) return;
+      pilha.add(c.id);
+      for (const id of c.usa ?? []) {
+        const d = this.plano.componentes.find((x) => x.id === id);
+        if (d) por(d, pilha);
+      }
+      ordem.push(c);
+    };
+    this.plano.componentes.forEach((c) => por(c, new Set()));
+    for (const c of ordem) {
       // Peças reutilizáveis à esquerda, componente no meio, documentação à direita, exemplo embaixo.
       const pecas = c.pecas.length ? this.construirPecas(c, x, y) : null;
       const px = pecas ? x + pecas.width + 80 : x;
       const p = this.construirComponente(c, px, y);
       await this.criarInteracoes(c);
       principais.set(c.id, p);
+      const proto = await this.construirPrototipo(c, p, px, y + p.height + 60);
+      if (proto) criados.push(...proto);
       criados.push(p);
       if (pecas) criados.push(pecas);
       const exemplo = this.construirExemplo(c, p, px, y + p.height + 60);
@@ -1284,6 +1492,8 @@ export function gatilhoFigma(it: PlanoInteracao): Record<string, unknown> {
       return { type: 'MOUSE_LEAVE', delay: 0 };
     case 'atraso':
       return { type: 'AFTER_TIMEOUT', timeout: Math.max(0, (it.atraso ?? 1000) / 1000) };
+    case 'arrastar':
+      return { type: 'ON_DRAG' };
     case 'tecla':
       return { type: 'ON_KEY_DOWN', device: 'KEYBOARD', keyCodes: [codigoTecla(it.tecla)] };
     default:
