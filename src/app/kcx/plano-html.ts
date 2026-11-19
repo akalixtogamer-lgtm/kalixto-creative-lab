@@ -107,7 +107,7 @@ function no(p: PlanoNo, paiAuto: boolean, paiDirecao?: 'HORIZONTAL' | 'VERTICAL'
 
   if (p.tipo === 'texto' && p.texto) {
     const t = p.texto;
-    const cor = p.preenchimentos[0]?.tipo === 'solido' ? corCss(p.preenchimentos[0].cor.valor) : '';
+    const cor = corDoTexto(p.preenchimentos);
     s.push(
       `font-family:'${esc(t.familia)}', Inter, system-ui, sans-serif`,
       `font-weight:${pesoFonte(t.estilo)}`,
@@ -128,6 +128,26 @@ function no(p: PlanoNo, paiAuto: boolean, paiDirecao?: 'HORIZONTAL' | 'VERTICAL'
   }
   const filhos = p.filhos.map((f) => no(f, !!p.autoLayout, p.autoLayout?.direcao)).join('');
   return `<div style="${s.join(';')}">${filhos}</div>`;
+}
+
+/** Cor final do texto: as pinturas sólidas empilhadas (a última fica por cima). */
+function corDoTexto(pinturas: PlanoPaint[]): string {
+  let r = 0,
+    g = 0,
+    b = 0,
+    a = 0;
+  for (const p of pinturas) {
+    if (p.tipo !== 'solido') continue;
+    const c = p.cor.valor;
+    const ca = c.a ?? 1;
+    const na = ca + a * (1 - ca);
+    if (na <= 0) continue;
+    r = (c.r * ca + r * a * (1 - ca)) / na;
+    g = (c.g * ca + g * a * (1 - ca)) / na;
+    b = (c.b * ca + b * a * (1 - ca)) / na;
+    a = na;
+  }
+  return a > 0 ? corCss({ r, g, b, a }) : '';
 }
 
 /** Tira scripts e handlers do SVG (a prévia só desenha). */

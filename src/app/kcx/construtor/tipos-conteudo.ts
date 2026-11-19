@@ -81,6 +81,39 @@ const gradienteMidia = (b: Blocos) => [
 
 /* ============================== Botão ============================== */
 
+/**
+ * Animação "Preenche no hover" no Figma: vazado no Padrão (contorno + texto
+ * na cor) e preenchido no Hover. Duas variáveis de estado controlam a opacidade
+ * do preenchimento e da cor do texto (o Smart Animate faz a transição).
+ */
+function varsPreencher(b: Blocos): { cheio: string; vazio: string } {
+  const comum = {
+    tipo: 'float' as const,
+    min: 0,
+    max: 1,
+    passo: 1,
+    grupo: 'effects' as const,
+    secao: 'comportamento' as const,
+  };
+  const cheio = b.extra({
+    ...comum,
+    id: 'preenchido',
+    nome: 'Preenchido',
+    padrao: 1,
+    descricao: 'Estado do preenchimento: 0 no Padrão (vazado), 1 no Hover (cheio).',
+    vinculos: [{ propriedade: 'Preenchimento', alvo: { tipo: 'css-var', nome: `${b.P}-cheio` } }],
+  });
+  const vazio = b.extra({
+    ...comum,
+    id: 'vazado',
+    nome: 'Vazado',
+    padrao: 0,
+    descricao: 'Inverso de Preenchido: 1 no Padrão (texto na cor), 0 no Hover.',
+    vinculos: [{ propriedade: 'Contorno', alvo: { tipo: 'css-var', nome: `${b.P}-vazado` } }],
+  });
+  return { cheio, vazio };
+}
+
 export const BOTAO: DefinicaoTipo = {
   id: 'botao',
   nome: 'Botão',
@@ -140,11 +173,27 @@ ${anims[cfg.animacao] ?? anims['elevar']}`;
       nome: cfg.nome,
       efeitos: [s.efeito],
     });
+    let estados = s.estados;
+    if (cfg.animacao === 'preencher') {
+      const p = varsPreencher(b);
+      estrutura.preenchimentos = [
+        { tipo: 'solido', cor: b.corAlpha('corPrimaria', 'botao-cor', p.cheio) },
+      ];
+      estrutura.traco = { cor: b.cor('primaria'), espessura: 2 };
+      const rotulo = estrutura.filhos![0];
+      rotulo.preenchimentos = [
+        { tipo: 'solido', cor: { $var: 'corFundo' } },
+        { tipo: 'solido', cor: b.corAlpha('corPrimaria', 'rotulo-cor', p.vazio) },
+      ];
+      estados = estados.map((e) =>
+        e.id === 'padrao' ? { ...e, valores: { ...e.valores, [p.cheio]: 0, [p.vazio]: 1 } } : e,
+      );
+    }
     return {
       html,
       css,
       estrutura,
-      estados: s.estados,
+      estados,
       interacoes: s.interacoes,
       animacao: {
         nome: BOTAO.animacoes.find((a) => a.id === cfg.animacao)?.nome ?? 'Hover',
@@ -1241,14 +1290,17 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
         ],
       }) as never;
     const preencher = cfg.animacao === 'preencher';
-    const corAtual = doBotao('corBotao', 'botao-cor');
+    const p = preencher ? varsPreencher(b) : undefined;
+    const corAtual = p
+      ? doBotao('corBotao', 'botao-cor', [{ op: 'alpha', variavel: p.cheio }])
+      : doBotao('corBotao', 'botao-cor');
     const estrutura: KcxNo = {
       id: 'botao',
       nome: cfg.nome,
       tipo: 'frame',
       raio: b.raio,
-      preenchimentos: preencher ? [] : [{ tipo: 'solido', cor: corAtual }],
-      traco: preencher ? { cor: corAtual, espessura: 2 } : undefined,
+      preenchimentos: [{ tipo: 'solido', cor: corAtual }],
+      traco: p ? { cor: doBotao('corBotao', 'contorno-cor'), espessura: 2 } : undefined,
       efeitos: [
         {
           tipo: 'sombra',
@@ -1273,7 +1325,15 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
           id: 'rotulo',
           nome: 'Rótulo',
           tipo: 'texto',
-          preenchimentos: [{ tipo: 'solido', cor: preencher ? corAtual : { $var: 'corFundo' } }],
+          preenchimentos: p
+            ? [
+                { tipo: 'solido', cor: { $var: 'corFundo' } },
+                {
+                  tipo: 'solido',
+                  cor: doBotao('corBotao', 'rotulo-cor', [{ op: 'alpha', variavel: p.vazio }]),
+                },
+              ]
+            : [{ tipo: 'solido', cor: { $var: 'corFundo' } }],
           texto: {
             conteudo: doBotao('item', 'botao-rotulo'),
             tamanho: porTamanho('fonte', 'botao-fonte'),
@@ -1295,7 +1355,7 @@ ${efeito[cfg.animacao] ?? efeito['elevar']}`;
           nome: 'Padrão',
           gatilho: 'padrao',
           descricao: 'Em repouso.',
-          valores: { [forca]: 0 },
+          valores: { [forca]: 0, ...(p ? { [p.cheio]: 0, [p.vazio]: 1 } : {}) },
         },
         {
           id: 'hover',
