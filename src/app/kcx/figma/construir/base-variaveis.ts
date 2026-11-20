@@ -38,6 +38,89 @@ export abstract class BaseVariaveis {
   };
   protected fontePadrao = { family: 'Inter', style: 'Regular' };
   protected fontesOk = new Set<string>();
+  /** Estilos de texto da fundação já criados (nome → estilo). */
+  protected readonly estilosTexto = new Map<string, any>();
+  /** Textos que recebem um estilo da fundação depois de montados. */
+  protected readonly textosComEstilo: { no: No; estilo: string }[] = [];
+
+  /** Estilos de texto e de sombra da fundação (atualiza os que já existem pelo nome). */
+  protected async criarEstilos(): Promise<void> {
+    const fund = this.plano.fundacao;
+    const f = this.figma;
+    if (!fund || typeof f.createTextStyle !== 'function') return;
+    const textos: any[] = (await f.getLocalTextStylesAsync?.()) ?? [];
+    const efeitos: any[] = (await f.getLocalEffectStylesAsync?.()) ?? [];
+    const estilos = (this.rel.estilos ??= []);
+    for (const e of fund.estilosTexto) {
+      let fonte = { family: e.familia, style: e.estilo };
+      try {
+        await f.loadFontAsync(fonte);
+      } catch {
+        this.rel.avisos.push(
+          `Fonte ${e.familia} ${e.estilo} indisponível no Figma; o estilo ${e.nome} usa Inter.`,
+        );
+        fonte = { family: 'Inter', style: e.estilo };
+        try {
+          await f.loadFontAsync(fonte);
+        } catch {
+          fonte = { family: 'Inter', style: 'Regular' };
+          await f.loadFontAsync(fonte);
+        }
+      }
+      const st = textos.find((t) => t.name === e.nome) ?? f.createTextStyle();
+      st.name = e.nome;
+      st.description = e.descricao;
+      st.fontName = fonte;
+      st.fontSize = e.tamanho;
+      st.lineHeight = { value: e.alturaLinha, unit: 'PIXELS' };
+      st.letterSpacing = { value: e.espacamento, unit: 'PIXELS' };
+      const v = this.vars.get(e.variavelTamanho);
+      if (v)
+        try {
+          st.setBoundVariable('fontSize', v);
+          this.rel.vinculos++;
+        } catch (err) {
+          this.rel.vinculosFalhos.push(`${e.nome} › fontSize: ${(err as Error).message}`);
+        }
+      this.estilosTexto.set(e.nome, st);
+      this.fontesOk.add(`${fonte.family}|${fonte.style}`);
+      estilos.push(`${e.nome} (texto)`);
+    }
+    for (const e of fund.estilosSombra) {
+      const st = efeitos.find((t) => t.name === e.nome) ?? f.createEffectStyle();
+      st.name = e.nome;
+      st.description = e.descricao;
+      st.effects = [
+        {
+          type: 'DROP_SHADOW',
+          color: e.sombra.cor,
+          offset: { x: e.sombra.x, y: e.sombra.y },
+          radius: e.sombra.raio,
+          spread: e.sombra.espalhar,
+          visible: true,
+          blendMode: 'NORMAL',
+          showShadowBehindNode: false,
+        },
+      ];
+      estilos.push(`${e.nome} (sombra)`);
+    }
+  }
+
+  /** Aplica os estilos de texto da fundação nos textos marcados pelo plano. */
+  protected async aplicarEstilosTexto(): Promise<void> {
+    for (const { no, estilo } of this.textosComEstilo) {
+      const st = this.estilosTexto.get(estilo);
+      if (!st) continue;
+      try {
+        if (typeof no.setTextStyleIdAsync === 'function') await no.setTextStyleIdAsync(st.id);
+        else no.textStyleId = st.id;
+      } catch (err) {
+        this.rel.avisos.push(
+          `Estilo ${estilo} não aplicado em "${no.name}": ${(err as Error).message}`,
+        );
+      }
+    }
+  }
 
   constructor(
     protected readonly figma: Figma,

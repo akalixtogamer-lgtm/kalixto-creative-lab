@@ -19,6 +19,7 @@ import {
   KcxVariavel,
 } from './kcx.types';
 import { validarValor } from './resolver';
+import { validarFundacao } from './fundacao';
 
 export interface ProblemaKcx {
   caminho: string;
@@ -375,10 +376,12 @@ export function validarPacote(p: unknown): ResultadoValidacao {
       caminho: 'dependencias',
       mensagem: 'Lista de dependências obrigatória (pode ser vazia).',
     });
-  if (!Array.isArray(pkg.componentes) || pkg.componentes.length === 0) {
+  if (pkg.fundacao !== undefined)
+    erros.push(...validarFundacao(pkg.fundacao).map((m) => ({ caminho: 'fundacao', mensagem: m })));
+  if (!Array.isArray(pkg.componentes) || (pkg.componentes.length === 0 && !pkg.fundacao)) {
     erros.push({
       caminho: 'componentes',
-      mensagem: 'O pacote precisa de pelo menos um componente.',
+      mensagem: 'O pacote precisa de pelo menos um componente (ou de uma fundação).',
     });
   } else {
     const ids = new Set<string>();

@@ -25,6 +25,13 @@ import {
 import { Valores, aplicarOperacoes, valoresAtuais } from './resolver';
 import { ehRefDerivada, ehRefVariavel } from './validar';
 import { corFigma } from './unidades';
+import {
+  PlanoFundacao,
+  ligarAFundacao,
+  planoDaFundacao,
+  validarFundacao,
+  variaveisDaFundacao,
+} from './fundacao';
 import { comprimentoSvg, cortarSvg } from './svg-caminho';
 import { ICONES_KCX } from './icones';
 
@@ -92,7 +99,7 @@ export const COLECOES: Record<KcxGrupo, string> = {
 };
 
 export type OrigemVariavel =
-  'direta' | 'derivada' | 'estado' | 'parada' | 'documental' | 'compartilhada';
+  'direta' | 'derivada' | 'estado' | 'parada' | 'documental' | 'compartilhada' | 'fundacao';
 
 export interface PlanoVariavel {
   nome: string;
@@ -162,6 +169,8 @@ export interface PlanoNo {
     alinhamento: 'LEFT' | 'CENTER' | 'RIGHT';
     preencher: boolean;
     propriedade?: string;
+    /** Estilo de texto da fundação aplicado no Figma (ex.: "Fundação/Corpo"). */
+    estiloTexto?: string;
   };
   svg?: string;
   /** Instância de uma peça reutilizável (rótulo da variante da peça). */
@@ -287,6 +296,8 @@ export interface PlanoFigma {
   documentacao: boolean;
   /** Biblioteca de ícones a criar (nome → caminho SVG), quando algum componente usa ícones. */
   icones?: Record<string, string>;
+  /** Fundação do design system: estilos de texto e de sombra (as variáveis vão em `colecoes`). */
+  fundacao?: PlanoFundacao;
   avisos: string[];
   resumo: {
     variaveis: number;
@@ -1040,12 +1051,20 @@ export function planejarFigma(
   const criarComponentes = modo !== 'variaveis';
   const vars = new Map<string, PlanoVariavel>();
   const avisos: string[] = [];
-  const temModos = pacote.componentes.some((c) =>
-    c.variaveis.some((v) => v.modos?.light !== undefined || v.modos?.dark !== undefined),
-  );
-  const temTelas = pacote.componentes.some((c) =>
-    c.variaveis.some((v) => v.modos?.celular !== undefined),
-  );
+  const fundacao =
+    pacote.fundacao && !validarFundacao(pacote.fundacao).length && usarVariaveis
+      ? pacote.fundacao
+      : undefined;
+  if (pacote.fundacao && !fundacao && usarVariaveis)
+    avisos.push('A fundação do pacote é inválida e foi ignorada.');
+  const temModos =
+    !!fundacao ||
+    pacote.componentes.some((c) =>
+      c.variaveis.some((v) => v.modos?.light !== undefined || v.modos?.dark !== undefined),
+    );
+  const temTelas =
+    !!fundacao ||
+    pacote.componentes.some((c) => c.variaveis.some((v) => v.modos?.celular !== undefined));
   const COLECOES_TELA = [COLECOES.spacing, COLECOES.dimensions, COLECOES.typography];
   const modosDe = (colecao: string) =>
     temModos && colecao === COLECOES.colors
@@ -1080,6 +1099,8 @@ export function planejarFigma(
     }
     vars.set(pv.nome, { ...pv, vinculadaA: onde ? [onde] : [] });
   };
+  // Tokens da fundação primeiro: os componentes viram alias deles no fim do plano.
+  if (fundacao) for (const t of variaveisDaFundacao(fundacao)) registrar(t, '');
 
   const componentes: PlanoComponente[] = [];
   const planejados = new Map<string, PlanoComponente>();
@@ -1290,13 +1311,13 @@ export function planejarFigma(
   const ordem = Object.values(COLECOES);
   colecoes.sort((a, b) => ordem.indexOf(a.nome) - ordem.indexOf(b.nome));
 
-  const todas = [...vars.values()];
   const contar = (n: PlanoNo): number => 1 + n.filhos.reduce((s, f) => s + contar(f), 0);
   const temIcone = (n: PlanoNo): boolean => !!n.icone || n.filhos.some(temIcone);
   const usaIcones = componentes.some((c) => c.variantes.some((v) => temIcone(v.arvore)));
-  return {
+  const plano: PlanoFigma = {
     modo,
     icones: usaIcones ? { ...ICONES_KCX } : undefined,
+    fundacao: fundacao ? planoDaFundacao(fundacao) : undefined,
     pacote: { id: pacote.id, versao: pacote.versao, nome: pacote.nome },
     colecoes,
     componentes,
@@ -1313,9 +1334,9 @@ export function planejarFigma(
     documentacao: modo === 'completo' || modo === 'pacote',
     avisos,
     resumo: {
-      variaveis: todas.length,
-      vinculadas: todas.filter((v) => v.vinculadaA.length > 0).length,
-      documentais: todas.filter((v) => v.origem === 'documental').length,
+      variaveis: 0,
+      vinculadas: 0,
+      documentais: 0,
       componentes: componentes.length,
       variantes: componentes.reduce((s, c) => s + c.variantes.length, 0),
       camadas: componentes.reduce(
@@ -1324,4 +1345,14 @@ export function planejarFigma(
       ),
     },
   };
+  if (fundacao) {
+    const ligadas = ligarAFundacao(plano, fundacao);
+    if (ligadas)
+      avisos.push(`${ligadas} variáveis dos componentes usam tokens da fundação (alias).`);
+  }
+  const todas = colecoes.flatMap((c) => c.variaveis);
+  plano.resumo.variaveis = todas.length;
+  plano.resumo.vinculadas = todas.filter((v) => v.vinculadaA.length > 0).length;
+  plano.resumo.documentais = todas.filter((v) => v.origem === 'documental').length;
+  return plano;
 }
