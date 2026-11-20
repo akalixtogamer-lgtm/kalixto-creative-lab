@@ -23,6 +23,8 @@ import { criarPacote } from '../../../kcx/serializar';
 import { resolverSaidas } from '../../../kcx/resolver';
 import { Icon } from '../../../shared/components/icon/icon';
 import { KcxMeusService } from '../kcx-meus.service';
+import { KcxFundacaoService } from '../kcx-fundacao.service';
+import { construtorDaFundacao } from '../../../kcx/fundacao';
 import { KcxPreview } from '../kcx-preview/kcx-preview';
 import { ICONES_KCX } from '../../../kcx/icones';
 import { PlanoComponente, PlanoNo } from '../../../kcx/figma-plano';
@@ -92,7 +94,15 @@ export class KcxCriar {
   private readonly meus = inject(KcxMeusService);
   private readonly router = inject(Router);
 
-  protected readonly paletas = PALETAS;
+  private readonly fundacaoSrv = inject(KcxFundacaoService);
+  /** "Minha fundação" primeiro: os componentes nascem com os tokens e viram alias deles no Figma. */
+  protected readonly paletas = computed(() => {
+    const f = this.fundacaoSrv.fundacao();
+    return [
+      { nome: `Minha fundação · ${f.nome}`, cores: construtorDaFundacao(f).cores, fundacao: true },
+      ...PALETAS.map((p) => ({ ...p, fundacao: false })),
+    ];
+  });
   protected readonly curvas = [
     { id: '', nome: 'Suave (padrão)' },
     { id: 'entrada-saida', nome: 'Entrada e saída suaves' },
@@ -122,7 +132,10 @@ export class KcxCriar {
     const o = this.original();
     if (o) return structuredClone(o.origemCriacao!.config as ConfigConstrutor);
     const def = tipoConstrutor(this.tipo() ?? '') ?? TIPOS_CONSTRUTOR[0];
-    return configPadrao(def, `Meu ${def.nome.toLowerCase()}`);
+    const base = configPadrao(def, `Meu ${def.nome.toLowerCase()}`);
+    // Com a fundação ligada, todo componente novo já nasce com os tokens dela.
+    const f = this.fundacaoSrv.paraPacote();
+    return f ? { ...base, ...construtorDaFundacao(f) } : base;
   });
 
   protected readonly def = computed<DefinicaoTipo>(
@@ -267,8 +280,19 @@ export class KcxCriar {
     this.cfg.update((c) => ({ ...c, icones: { ...c.icones, [lugar]: nome } }));
   }
 
-  protected aplicarPaleta(cores: CoresConstrutor): void {
-    this.cfg.update((c) => ({ ...c, cores: { ...cores }, coresItens: undefined }));
+  protected aplicarPaleta(p: { cores: CoresConstrutor; fundacao: boolean }): void {
+    if (p.fundacao) {
+      const d = construtorDaFundacao(this.fundacaoSrv.fundacao());
+      this.cfg.update((c) => ({ ...c, ...d, coresItens: undefined }));
+      return;
+    }
+    this.cfg.update((c) => ({
+      ...c,
+      cores: { ...p.cores },
+      coresItens: undefined,
+      temaOposto: undefined,
+      corSuave: undefined,
+    }));
   }
 
   protected paletaAtiva(cores: CoresConstrutor): boolean {

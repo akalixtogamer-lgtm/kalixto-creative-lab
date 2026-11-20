@@ -1,4 +1,5 @@
-import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
+import { KcxFundacaoService } from '../kcx-fundacao.service';
 import { KcxCodigo, KcxComponente } from '../../../kcx/kcx.types';
 import { Valores, blocoRoot, lerBlocoRoot, resolverSaidas } from '../../../kcx/resolver';
 import { criarPacote, serializar } from '../../../kcx/serializar';
@@ -20,6 +21,7 @@ type Aba = 'variaveis' | 'html' | 'css' | 'js' | 'svg' | 'ng-ts' | 'ng-css' | 'k
   styleUrl: './kcx-codigo-painel.css',
 })
 export class KcxCodigoPainel {
+  private readonly fundacao = inject(KcxFundacaoService);
   readonly comp = input.required<KcxComponente>();
   readonly valores = input.required<Valores>();
   readonly codigoEditado = input<KcxCodigo | null>(null);
@@ -42,7 +44,11 @@ export class KcxCodigoPainel {
   protected readonly angular = computed(() => angularKcx(this.comp(), this.valores()));
   protected readonly kcx = computed(() =>
     serializar(
-      criarPacote([this.comp()], { valores: { [this.comp().id]: this.valores() }, modo: 'pacote' }),
+      criarPacote([this.comp()], {
+        valores: { [this.comp().id]: this.valores() },
+        modo: 'pacote',
+        fundacao: this.fundacao.paraPacote(),
+      }),
     ),
   );
 
