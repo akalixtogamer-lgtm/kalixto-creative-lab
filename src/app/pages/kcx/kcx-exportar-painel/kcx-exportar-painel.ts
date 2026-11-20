@@ -1,4 +1,5 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { KcxFundacaoService } from '../kcx-fundacao.service';
 import { KcxComponente, KcxModoExportacao } from '../../../kcx/kcx.types';
 import { Valores } from '../../../kcx/resolver';
 import { serializar } from '../../../kcx/serializar';
@@ -47,9 +48,13 @@ export class KcxExportarPainel {
   protected readonly tecnica = TECNICA;
   protected readonly msgPlugin = signal('');
 
-  protected readonly pacote = computed(() =>
-    pacoteDoEditor(this.comp(), this.valores(), this.modo(), this.presetAtivo()),
-  );
+  private readonly fundacao = inject(KcxFundacaoService);
+  /** O pacote leva a fundação (tokens) quando ela está ligada: no Figma o componente vira alias dos tokens. */
+  protected readonly pacote = computed(() => {
+    const p = pacoteDoEditor(this.comp(), this.valores(), this.modo(), this.presetAtivo());
+    const f = this.fundacao.paraPacote();
+    return f ? { ...p, fundacao: structuredClone(f) } : p;
+  });
   protected readonly plano = computed(() => planejarFigma(this.pacote(), this.modo()));
   protected readonly svg = computed(() => svgEstatico(this.comp(), this.valores()));
   protected readonly svgUrl = computed(

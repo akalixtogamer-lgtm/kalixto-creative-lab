@@ -31,10 +31,11 @@
           @if (doConstrutor()) {
             <a
               class="kx-btn kx-btn--ghost"
-              [routerLink]="['/kcx/criar']"
+              [routerLink]="[montado() ? '/kcx/montar' : '/kcx/criar']"
               [queryParams]="{ de: c.id }"
             >
-              <kx-icon name="layers" /> Editar no construtor
+              <kx-icon name="layers" />
+              {{ montado() ? 'Editar no montador' : 'Editar no construtor' }}
             </a>
           }
           <button type="button" class="kx-btn kx-btn--ghost" (click)="excluir()">Excluir</button>

@@ -1,0 +1,393 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Montador visual</p>
+    <h1 class="kx-title">Montar componente</h1>
+    <p class="kx-lead">
+      Monte do zero com caixas, textos, ícones e imagens. Cores, espaços, raios, sombras e textos
+      vêm da <a routerLink="/kcx/fundacao">fundação {{ fundacao().nome }}</a
+      >: no Figma, o componente sai ligado aos tokens do seu design system.
+    </p>
+  </header>
+
+  <div class="kcxm__barra kx-glass">
+    <label class="kcxm__nome">
+      Nome do componente
+      <input type="text" [value]="nome()" (input)="nome.set(valor($event))" />
+    </label>
+    <label class="kcxm__check">
+      <input
+        type="checkbox"
+        [checked]="montagem().interativo"
+        (change)="montagem.set({ ...montagem(), interativo: $any($event.target).checked })"
+      />
+      Interativo (estados Padrão, Hover, Pressionado, Foco e Desativado)
+    </label>
+    <div class="kcxm__acoes">
+      <button
+        type="button"
+        class="kx-btn kx-btn--primary"
+        [disabled]="!resultado().comp"
+        (click)="salvar()"
+      >
+        <kx-icon name="check" /> Salvar e abrir no editor
+      </button>
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="recomecar()">Recomeçar</button>
+    </div>
+    @if (resultado().erro; as e) {
+      <p class="kcxm__erro" role="alert">{{ e }}</p>
+    }
+    @for (e of erros(); track e) {
+      <p class="kcxm__erro" role="alert">{{ e }}</p>
+    }
+  </div>
+
+  <div class="kcxm__layout">
+    <!-- Camadas -->
+    <section class="kcxm__painel kx-glass" aria-labelledby="kcxm-camadas">
+      <h2 id="kcxm-camadas" class="kcxm__titulo">Camadas</h2>
+      <div class="kcxm__novas" role="group" aria-label="Adicionar camada">
+        @for (n of tiposNovos; track n.tipo) {
+          <button type="button" class="kcxm__nova" (click)="adicionar(n.tipo)">
+            + {{ n.rotulo }}
+          </button>
+        }
+      </div>
+      <ul class="kcxm__arvore" role="tree" aria-label="Camadas do componente">
+        <ng-container
+          *ngTemplateOutlet="arvore; context: { $implicit: montagem().raiz, nivel: 0 }"
+        />
+      </ul>
+      <ng-template #arvore let-c let-nivel="nivel">
+        <li
+          role="treeitem"
+          [attr.aria-selected]="selecionada() === c.id"
+          [attr.aria-level]="nivel + 1"
+        >
+          <button
+            type="button"
+            class="kcxm__camada"
+            [class.kcxm__camada--ativa]="selecionada() === c.id"
+            [style.padding-left.px]="8 + nivel * 16"
+            (click)="selecionada.set(c.id)"
+          >
+            <span class="kcxm__tipo" aria-hidden="true">{{ rotuloTipo(c) }}</span>
+            {{ c.nome }}
+          </button>
+          @if (c.filhos?.length) {
+            <ul role="group">
+              @for (f of c.filhos; track f.id) {
+                <ng-container
+                  *ngTemplateOutlet="arvore; context: { $implicit: f, nivel: nivel + 1 }"
+                />
+              }
+            </ul>
+          }
+        </li>
+      </ng-template>
+      @if (!ehRaiz()) {
+        <div class="kcxm__ops" role="group" aria-label="Organizar a camada selecionada">
+          <button type="button" (click)="mover(-1)" aria-label="Subir camada">↑</button>
+          <button type="button" (click)="mover(1)" aria-label="Descer camada">↓</button>
+          <button type="button" (click)="duplicar()">Duplicar</button>
+          <button type="button" (click)="excluir()">Excluir</button>
+        </div>
+      }
+    </section>
+
+    <!-- Prévia -->
+    <section class="kcxm__previa" aria-label="Prévia">
+      @if (resultado().comp; as comp) {
+        <kx-kcx-variantes [comp]="comp" [(selecionada)]="variante" [alturaPrevia]="360" />
+        <p class="kx-muted kcxm__nota">
+          {{ comp.variaveis.length }} variáveis · {{ comp.estados.length }}
+          {{ comp.estados.length > 1 ? 'variantes' : 'variante' }} no Figma. Prévia "como fica no
+          Figma".
+        </p>
+      }
+    </section>
+
+    <!-- Propriedades -->
+    <section class="kcxm__painel kx-glass" aria-labelledby="kcxm-props">
+      <h2 id="kcxm-props" class="kcxm__titulo">Propriedades</h2>
+      @let c = camada();
+      <div class="kcxm__campos">
+        <label
+          >Nome da camada
+          <input type="text" [value]="c.nome" (change)="mudar('nome', valor($event))"
+        /></label>
+
+        @if (c.tipo === 'caixa') {
+          <fieldset>
+            <legend>Layout</legend>
+            <label
+              >Direção
+              <select
+                aria-label="Direção"
+                [value]="c.direcao ?? 'vertical'"
+                (change)="mudar('direcao', $any(valor($event)))"
+              >
+                <option value="vertical">Coluna (um embaixo do outro)</option>
+                <option value="horizontal">Linha (lado a lado)</option>
+              </select>
+            </label>
+            <label
+              >Alinhar
+              <select
+                aria-label="Alinhar"
+                [value]="c.alinhar ?? ''"
+                (change)="mudar('alinhar', opcional($event) ?? undefined)"
+              >
+                <option value="">Automático</option>
+                <option value="inicio">Início</option>
+                <option value="centro">Centro</option>
+                <option value="fim">Fim</option>
+              </select>
+            </label>
+            <label
+              >Espaço entre itens
+              <select
+                aria-label="Espaço entre itens"
+                [value]="c.espaco ?? ''"
+                (change)="mudar('espaco', opcional($event))"
+              >
+                <option value="">Nenhum</option>
+                @for (k of espacos; track k) {
+                  <option [value]="k" [selected]="k === (c.espaco ?? '')">
+                    espaco/{{ k }} · {{ fundacao().espacos[k] }} px
+                  </option>
+                }
+              </select>
+            </label>
+            <label
+              >Margem interna (lados)
+              <select
+                aria-label="Margem interna (lados)"
+                [value]="c.padX ?? ''"
+                (change)="mudar('padX', opcional($event))"
+              >
+                <option value="">Nenhuma</option>
+                @for (k of espacos; track k) {
+                  <option [value]="k" [selected]="k === (c.padX ?? '')">
+                    espaco/{{ k }} · {{ fundacao().espacos[k] }} px
+                  </option>
+                }
+              </select>
+            </label>
+            <label
+              >Margem interna (cima e baixo)
+              <select
+                aria-label="Margem interna (cima e baixo)"
+                [value]="c.padY ?? ''"
+                (change)="mudar('padY', opcional($event))"
+              >
+                <option value="">Nenhuma</option>
+                @for (k of espacos; track k) {
+                  <option [value]="k" [selected]="k === (c.padY ?? '')">
+                    espaco/{{ k }} · {{ fundacao().espacos[k] }} px
+                  </option>
+                }
+              </select>
+            </label>
+            <label
+              >Largura (px, 0 = automática)
+              <input
+                type="number"
+                min="0"
+                max="1600"
+                [value]="c.largura ?? 0"
+                (change)="mudar('largura', numero($event) || undefined)"
+              />
+            </label>
+            <label
+              >Altura mínima (px, 0 = automática)
+              <input
+                type="number"
+                min="0"
+                max="1600"
+                [value]="c.altura ?? 0"
+                (change)="mudar('altura', numero($event) || undefined)"
+              />
+            </label>
+          </fieldset>
+          <fieldset>
+            <legend>Aparência</legend>
+            <label
+              >Fundo
+              <span class="kcxm__cor"
+                ><i [style.background]="corDe(c.fundo)"></i>
+                <select
+                  aria-label="Fundo"
+                  [value]="c.fundo ?? ''"
+                  (change)="mudar('fundo', opcional($event))"
+                >
+                  <option value="">Transparente</option>
+                  @for (t of tokensCor; track t) {
+                    <option [value]="t" [selected]="t === (c.fundo ?? '')">
+                      {{ nomesCor[t] }}
+                    </option>
+                  }
+                </select></span
+              >
+            </label>
+            <label
+              >Borda
+              <span class="kcxm__cor"
+                ><i [style.background]="corDe(c.borda)"></i>
+                <select
+                  aria-label="Borda"
+                  [value]="c.borda ?? ''"
+                  (change)="mudar('borda', opcional($event))"
+                >
+                  <option value="">Sem borda</option>
+                  @for (t of tokensCor; track t) {
+                    <option [value]="t" [selected]="t === (c.borda ?? '')">
+                      {{ nomesCor[t] }}
+                    </option>
+                  }
+                </select></span
+              >
+            </label>
+            <label
+              >Raio
+              <select
+                aria-label="Raio"
+                [value]="c.raio ?? ''"
+                (change)="mudar('raio', opcional($event))"
+              >
+                <option value="">Reto</option>
+                @for (k of raios; track k) {
+                  <option [value]="k" [selected]="k === (c.raio ?? '')">
+                    raio/{{ k }} · {{ fundacao().raios[k] }} px
+                  </option>
+                }
+              </select>
+            </label>
+            <label
+              >Sombra
+              <select
+                aria-label="Sombra"
+                [value]="c.sombra ?? ''"
+                (change)="mudar('sombra', opcional($event))"
+              >
+                <option value="">Sem sombra</option>
+                @for (k of sombras; track k) {
+                  <option [value]="k" [selected]="k === (c.sombra ?? '')">
+                    Sombra {{ k.toUpperCase() }}
+                  </option>
+                }
+              </select>
+            </label>
+          </fieldset>
+        }
+
+        @if (c.tipo === 'texto') {
+          <label
+            >Texto
+            <textarea
+              rows="3"
+              [value]="c.texto ?? ''"
+              (change)="mudar('texto', valor($event))"
+            ></textarea>
+          </label>
+          <label
+            >Estilo de texto
+            <select
+              aria-label="Estilo de texto"
+              [value]="c.nivel ?? 'corpo'"
+              (change)="mudar('nivel', $any(valor($event)))"
+            >
+              @for (n of niveis; track n) {
+                <option [value]="n" [selected]="n === (c.nivel ?? 'corpo')">
+                  {{ nomesTexto[n] }} · {{ fundacao().texto[n].tamanho }} px
+                </option>
+              }
+            </select>
+          </label>
+        }
+
+        @if (c.tipo === 'icone') {
+          <label
+            >Ícone
+            <select
+              aria-label="Ícone"
+              [value]="c.icone ?? 'estrela'"
+              (change)="mudar('icone', valor($event))"
+            >
+              @for (i of icones; track i) {
+                <option [value]="i" [selected]="i === (c.icone ?? 'estrela')">{{ i }}</option>
+              }
+            </select>
+          </label>
+          <label
+            >Tamanho (px)
+            <input
+              type="number"
+              min="8"
+              max="96"
+              [value]="c.tamanho ?? 20"
+              (change)="mudar('tamanho', numero($event) || 20)"
+            />
+          </label>
+        }
+
+        @if (c.tipo === 'texto' || c.tipo === 'icone') {
+          <label
+            >Cor
+            <span class="kcxm__cor"
+              ><i [style.background]="corDe(c.cor)"></i>
+              <select
+                aria-label="Cor"
+                [value]="c.cor ?? 'texto'"
+                (change)="mudar('cor', $any(valor($event)))"
+              >
+                @for (t of tokensCor; track t) {
+                  <option [value]="t" [selected]="t === (c.cor ?? 'texto')">
+                    {{ nomesCor[t] }}
+                  </option>
+                }
+              </select></span
+            >
+          </label>
+        }
+
+        @if (c.tipo === 'imagem') {
+          <label
+            >Endereço da imagem (https://… ou vazio)
+            <input type="url" [value]="c.url ?? ''" (change)="mudar('url', valor($event))" />
+          </label>
+          <label
+            >Largura (px)
+            <input
+              type="number"
+              min="16"
+              max="1600"
+              [value]="c.largura ?? 280"
+              (change)="mudar('largura', numero($event) || 280)"
+          /></label>
+          <label
+            >Altura (px)
+            <input
+              type="number"
+              min="16"
+              max="1600"
+              [value]="c.altura ?? 160"
+              (change)="mudar('altura', numero($event) || 160)"
+          /></label>
+          <label
+            >Raio
+            <select
+              aria-label="Raio"
+              [value]="c.raio ?? ''"
+              (change)="mudar('raio', opcional($event))"
+            >
+              <option value="">Reto</option>
+              @for (k of raios; track k) {
+                <option [value]="k" [selected]="k === (c.raio ?? '')">raio/{{ k }}</option>
+              }
+            </select>
+          </label>
+        }
+      </div>
+    </section>
+  </div>
+</div>

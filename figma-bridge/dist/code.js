@@ -445,6 +445,267 @@
     }));
   }
 
+  // src/app/kcx/fundacao.ts
+  var FORMATO_FUNDACAO = "kcx-fundacao";
+  var TOKENS_COR = [
+    "primaria",
+    "secundaria",
+    "destaque",
+    "fundo",
+    "superficie",
+    "borda",
+    "texto",
+    "texto-suave",
+    "sobre-primaria",
+    "perigo",
+    "sucesso",
+    "aviso"
+  ];
+  var NOMES_COR = {
+    primaria: "Prim\xE1ria",
+    secundaria: "Secund\xE1ria",
+    destaque: "Destaque",
+    fundo: "Fundo",
+    superficie: "Superf\xEDcie",
+    borda: "Borda",
+    texto: "Texto",
+    "texto-suave": "Texto suave",
+    "sobre-primaria": "Texto sobre a prim\xE1ria",
+    perigo: "Perigo",
+    sucesso: "Sucesso",
+    aviso: "Aviso"
+  };
+  var NIVEIS_TEXTO = ["display", "h1", "h2", "h3", "corpo", "pequeno", "legenda"];
+  var NOMES_TEXTO = {
+    display: "Display",
+    h1: "H1",
+    h2: "H2",
+    h3: "H3",
+    corpo: "Corpo",
+    pequeno: "Pequeno",
+    legenda: "Legenda"
+  };
+  var CHAVES_RAIO = ["p", "m", "g", "pill"];
+  var CHAVES_ESPACO = ["1", "2", "3", "4", "6", "8", "12", "16"];
+  var CHAVES_SOMBRA = ["p", "m", "g"];
+  var HEX2 = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i;
+  function validarFundacao(f) {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    const erros = [];
+    const o = f;
+    if (!o || typeof o !== "object") return ["A funda\xE7\xE3o n\xE3o \xE9 um objeto."];
+    if (o.formato !== FORMATO_FUNDACAO) erros.push(`formato deve ser "${FORMATO_FUNDACAO}".`);
+    if (typeof o.nome !== "string" || !o.nome.trim()) erros.push("nome obrigat\xF3rio.");
+    for (const t of TOKENS_COR) {
+      const c = (_a = o.cores) == null ? void 0 : _a[t];
+      if (!c || !HEX2.test((_b = c.escuro) != null ? _b : "") || !HEX2.test((_c = c.claro) != null ? _c : ""))
+        erros.push(`cores.${t}: precisa de "escuro" e "claro" em hex (#rrggbb).`);
+    }
+    for (const k of ["titulo", "corpo", "mono"])
+      if (typeof ((_d = o.fontes) == null ? void 0 : _d[k]) !== "string" || !o.fontes[k].trim())
+        erros.push(`fontes.${k} obrigat\xF3ria.`);
+    for (const n of NIVEIS_TEXTO) {
+      const e = (_e = o.texto) == null ? void 0 : _e[n];
+      if (!e || !(e.tamanho > 0) || !(e.tamanhoCelular > 0) || !(e.altura > 0) || !(e.peso >= 100))
+        erros.push(`texto.${n}: tamanho, tamanhoCelular, altura e peso positivos.`);
+    }
+    for (const k of CHAVES_RAIO)
+      if (!(Number((_f = o.raios) == null ? void 0 : _f[k]) >= 0)) erros.push(`raios.${k} precisa ser um n\xFAmero \u2265 0.`);
+    for (const k of CHAVES_ESPACO)
+      if (!(Number((_g = o.espacos) == null ? void 0 : _g[k]) >= 0)) erros.push(`espacos.${k} precisa ser um n\xFAmero \u2265 0.`);
+    for (const k of CHAVES_SOMBRA) {
+      const s = (_h = o.sombras) == null ? void 0 : _h[k];
+      if (!s || [s.x, s.y, s.raio, s.espalhar, s.opacidade].some((x) => typeof x !== "number"))
+        erros.push(`sombras.${k}: x, y, raio, espalhar e opacidade num\xE9ricos.`);
+    }
+    return erros;
+  }
+  var PREFIXO_FUNDACAO = "Funda\xE7\xE3o";
+  var nomeTokenCor = (t) => `${PREFIXO_FUNDACAO}/cor/${t}`;
+  var nomeTokenRaio = (k) => `${PREFIXO_FUNDACAO}/raio/${k}`;
+  var nomeTokenEspaco = (k) => `${PREFIXO_FUNDACAO}/espaco/${k}`;
+  var nomeTokenTamanho = (n) => `${PREFIXO_FUNDACAO}/texto/${n}/tamanho`;
+  var nomeTokenFonte = (k) => `${PREFIXO_FUNDACAO}/fonte/${k}`;
+  var nomeEstiloTexto = (n) => `${PREFIXO_FUNDACAO}/${NOMES_TEXTO[n]}`;
+  var nomeEstiloSombra = (k) => `${PREFIXO_FUNDACAO}/Sombra ${k.toUpperCase()}`;
+  var cssVar = (s) => `--kx-${s.replace(/\//g, "-")}`;
+  function estiloDoPeso(peso2) {
+    if (peso2 >= 800) return "Extra Bold";
+    if (peso2 >= 700) return "Bold";
+    if (peso2 >= 600) return "Semi Bold";
+    if (peso2 >= 500) return "Medium";
+    return "Regular";
+  }
+  var COLECAO_CORES = "KCX \xB7 Colors";
+  var COLECAO_ESPACO = "KCX \xB7 Spacing";
+  var COLECAO_DIMENSOES = "KCX \xB7 Dimensions";
+  var COLECAO_TIPOGRAFIA = "KCX \xB7 Typography";
+  function variaveisDaFundacao(f) {
+    const out = [];
+    const base = (nome, colecao, tipo, valores, escopos, descricao) => ({
+      nome,
+      colecao,
+      tipo,
+      valores,
+      escopos,
+      descricao,
+      codigoWeb: `var(${cssVar(nome.slice(PREFIXO_FUNDACAO.length + 1))})`,
+      origem: "fundacao",
+      variavelKcx: nome,
+      vinculadaA: []
+    });
+    for (const t of TOKENS_COR)
+      out.push(
+        base(
+          nomeTokenCor(t),
+          COLECAO_CORES,
+          "COLOR",
+          { Dark: corFigma(f.cores[t].escuro), Light: corFigma(f.cores[t].claro) },
+          t.startsWith("texto") || t === "sobre-primaria" ? ["TEXT_FILL", "STROKE_COLOR"] : ["ALL_FILLS", "STROKE_COLOR", "EFFECT_COLOR"],
+          `Token de cor "${NOMES_COR[t]}" da funda\xE7\xE3o ${f.nome}.`
+        )
+      );
+    for (const k of CHAVES_RAIO)
+      out.push(
+        base(
+          nomeTokenRaio(k),
+          COLECAO_DIMENSOES,
+          "FLOAT",
+          { Desktop: f.raios[k], Celular: f.raios[k] },
+          ["CORNER_RADIUS"],
+          `Raio ${k.toUpperCase()} da funda\xE7\xE3o.`
+        )
+      );
+    for (const k of CHAVES_ESPACO)
+      out.push(
+        base(
+          nomeTokenEspaco(k),
+          COLECAO_ESPACO,
+          "FLOAT",
+          { Desktop: f.espacos[k], Celular: f.espacos[k] },
+          ["GAP", "WIDTH_HEIGHT"],
+          `Espa\xE7o ${k} (${f.espacos[k]} px) da funda\xE7\xE3o.`
+        )
+      );
+    for (const n of NIVEIS_TEXTO)
+      out.push(
+        base(
+          nomeTokenTamanho(n),
+          COLECAO_TIPOGRAFIA,
+          "FLOAT",
+          { Desktop: f.texto[n].tamanho, Celular: f.texto[n].tamanhoCelular },
+          ["FONT_SIZE"],
+          `Tamanho do texto ${NOMES_TEXTO[n]} (desktop e celular).`
+        )
+      );
+    for (const k of ["titulo", "corpo", "mono"])
+      out.push(
+        base(
+          nomeTokenFonte(k),
+          COLECAO_TIPOGRAFIA,
+          "STRING",
+          { Desktop: f.fontes[k], Celular: f.fontes[k] },
+          ["FONT_FAMILY"],
+          `Fam\xEDlia da fonte de ${k === "titulo" ? "t\xEDtulos" : k === "corpo" ? "texto corrido" : "c\xF3digo"}.`
+        )
+      );
+    return out;
+  }
+  function planoDaFundacao(f) {
+    return {
+      nome: f.nome,
+      versao: f.versao,
+      estilosTexto: NIVEIS_TEXTO.map((n) => {
+        const e = f.texto[n];
+        return {
+          nome: nomeEstiloTexto(n),
+          nivel: n,
+          familia: f.fontes[e.familia],
+          estilo: estiloDoPeso(e.peso),
+          tamanho: e.tamanho,
+          alturaLinha: Math.round(e.tamanho * e.altura),
+          espacamento: e.espacamento,
+          variavelTamanho: nomeTokenTamanho(n),
+          descricao: `${NOMES_TEXTO[n]}: ${f.fontes[e.familia]} ${e.peso}, ${e.tamanho}/${Math.round(e.tamanho * e.altura)} px (celular ${e.tamanhoCelular} px).`
+        };
+      }),
+      estilosSombra: CHAVES_SOMBRA.map((k) => {
+        const s = f.sombras[k];
+        return {
+          nome: nomeEstiloSombra(k),
+          sombra: {
+            x: s.x,
+            y: s.y,
+            raio: s.raio,
+            espalhar: s.espalhar,
+            cor: { r: 0, g: 0, b: 0, a: s.opacidade }
+          },
+          descricao: `Sombra ${k.toUpperCase()}: ${s.x} ${s.y} ${s.raio} ${s.espalhar}, preto a ${Math.round(s.opacidade * 100)}%.`
+        };
+      })
+    };
+  }
+  var igual = (a, b) => {
+    var _a, _b;
+    if (a === void 0 || b === void 0) return false;
+    if (typeof a === "object" && typeof b === "object" && "r" in a && "r" in b) {
+      const p = (x) => Math.round(x * 255);
+      return p(a.r) === p(b.r) && p(a.g) === p(b.g) && p(a.b) === p(b.b) && Math.round(((_a = a.a) != null ? _a : 1) * 100) === Math.round(((_b = b.a) != null ? _b : 1) * 100);
+    }
+    return a === b;
+  };
+  function candidatos(pv, tokens) {
+    if (pv.tipo === "COLOR") return tokens.filter((t) => t.tipo === "COLOR");
+    if (pv.tipo !== "FLOAT") return [];
+    if (pv.escopos.includes("CORNER_RADIUS"))
+      return tokens.filter((t) => t.escopos.includes("CORNER_RADIUS"));
+    if (pv.escopos.includes("FONT_SIZE"))
+      return tokens.filter((t) => t.escopos.includes("FONT_SIZE"));
+    if (pv.escopos.includes("GAP")) return tokens.filter((t) => t.escopos.includes("GAP"));
+    return [];
+  }
+  function ligarAFundacao(plano, f) {
+    const tokens = plano.colecoes.flatMap((c) => c.variaveis).filter((v) => v.origem === "fundacao");
+    let ligadas = 0;
+    for (const c of plano.colecoes)
+      for (const pv of c.variaveis) {
+        if (pv.origem === "fundacao" || pv.origem === "documental") continue;
+        const modos = Object.keys(pv.valores);
+        if (modos.some(
+          (m) => typeof pv.valores[m] === "object" && pv.valores[m] !== null && "alias" in pv.valores[m]
+        ))
+          continue;
+        const [m0, m1] = modos;
+        const proprio = m1 !== void 0 && !igual(pv.valores[m0], pv.valores[m1]);
+        const alvo = candidatos(pv, tokens).find(
+          (t) => igual(pv.valores[m0], t.valores[m0]) && (!proprio || igual(pv.valores[m1], t.valores[m1]))
+        );
+        if (!alvo) continue;
+        pv.valores = Object.fromEntries(modos.map((m) => [m, { alias: alvo.nome }]));
+        pv.descricao = `${pv.descricao} \u2192 usa o token ${alvo.nome}.`;
+        if (!alvo.vinculadaA.includes(pv.nome)) alvo.vinculadaA.push(`${pv.nome} (alias)`);
+        ligadas++;
+      }
+    const estilos = NIVEIS_TEXTO.map((n) => ({
+      n,
+      familia: f.fontes[f.texto[n].familia],
+      estilo: estiloDoPeso(f.texto[n].peso),
+      tamanho: f.texto[n].tamanho
+    }));
+    const marcar = (no) => {
+      const t = no.texto;
+      if (t) {
+        const e = estilos.find(
+          (x) => x.tamanho === Number(t.tamanho.valor) && x.familia === t.familia && x.estilo === t.estilo
+        );
+        if (e) t.estiloTexto = nomeEstiloTexto(e.n);
+      }
+      no.filhos.forEach(marcar);
+    };
+    for (const comp of plano.componentes) for (const v of comp.variantes) marcar(v.arvore);
+    return ligadas;
+  }
+
   // src/app/kcx/validar.ts
   var TIPOS = [
     "color",
@@ -746,10 +1007,12 @@
         caminho: "dependencias",
         mensagem: "Lista de depend\xEAncias obrigat\xF3ria (pode ser vazia)."
       });
-    if (!Array.isArray(pkg.componentes) || pkg.componentes.length === 0) {
+    if (pkg.fundacao !== void 0)
+      erros.push(...validarFundacao(pkg.fundacao).map((m) => ({ caminho: "fundacao", mensagem: m })));
+    if (!Array.isArray(pkg.componentes) || pkg.componentes.length === 0 && !pkg.fundacao) {
       erros.push({
         caminho: "componentes",
-        mensagem: "O pacote precisa de pelo menos um componente."
+        mensagem: "O pacote precisa de pelo menos um componente (ou de uma funda\xE7\xE3o)."
       });
     } else {
       const ids = /* @__PURE__ */ new Set();
@@ -836,7 +1099,7 @@
     });
     const deps = /* @__PURE__ */ new Map();
     comps.forEach((c) => c.dependencias.forEach((d) => deps.set(d.nome, d)));
-    return __spreadProps(__spreadValues({
+    return __spreadProps(__spreadValues(__spreadValues({
       formato: KCX_FORMATO,
       schemaVersion: KCX_SCHEMA_VERSION,
       id: (_b = opcoes.id) != null ? _b : comps.length === 1 ? comps[0].id : "composicao",
@@ -848,7 +1111,7 @@
         modo: (_e = opcoes.modo) != null ? _e : "completo"
       }, opcoes.presetAplicado ? { presetAplicado: opcoes.presetAplicado } : {}),
       componentes: comps
-    }, opcoes.composicao ? { composicao: clonar(opcoes.composicao) } : {}), {
+    }, opcoes.composicao ? { composicao: clonar(opcoes.composicao) } : {}), opcoes.fundacao ? { fundacao: clonar(opcoes.fundacao) } : {}), {
       dependencias: [...deps.values()],
       historico: (_g = opcoes.historico) != null ? _g : [
         {
@@ -2156,18 +2419,19 @@ ${cssAnim}`,
     const criarComponentes = modo !== "variaveis";
     const vars = /* @__PURE__ */ new Map();
     const avisos = [];
-    const temModos = pacote.componentes.some(
+    const fundacao = pacote.fundacao && !validarFundacao(pacote.fundacao).length && usarVariaveis ? pacote.fundacao : void 0;
+    if (pacote.fundacao && !fundacao && usarVariaveis)
+      avisos.push("A funda\xE7\xE3o do pacote \xE9 inv\xE1lida e foi ignorada.");
+    const temModos = !!fundacao || pacote.componentes.some(
       (c) => c.variaveis.some((v) => {
         var _a2, _b2;
         return ((_a2 = v.modos) == null ? void 0 : _a2.light) !== void 0 || ((_b2 = v.modos) == null ? void 0 : _b2.dark) !== void 0;
       })
     );
-    const temTelas = pacote.componentes.some(
-      (c) => c.variaveis.some((v) => {
-        var _a2;
-        return ((_a2 = v.modos) == null ? void 0 : _a2.celular) !== void 0;
-      })
-    );
+    const temTelas = !!fundacao || pacote.componentes.some((c) => c.variaveis.some((v) => {
+      var _a2;
+      return ((_a2 = v.modos) == null ? void 0 : _a2.celular) !== void 0;
+    }));
     const COLECOES_TELA = [COLECOES.spacing, COLECOES.dimensions, COLECOES.typography];
     const modosDe = (colecao) => temModos && colecao === COLECOES.colors ? ["Dark", "Light"] : temTelas && COLECOES_TELA.includes(colecao) ? ["Desktop", "Celular"] : ["Valor"];
     const registrar = (pv, onde) => {
@@ -2192,6 +2456,7 @@ ${cssAnim}`,
       }
       vars.set(pv.nome, __spreadProps(__spreadValues({}, pv), { vinculadaA: onde ? [onde] : [] }));
     };
+    if (fundacao) for (const t of variaveisDaFundacao(fundacao)) registrar(t, "");
     const componentes = [];
     const planejados = /* @__PURE__ */ new Map();
     const usaDe = (c) => {
@@ -2384,13 +2649,13 @@ ${cssAnim}`,
     }
     const ordem = Object.values(COLECOES);
     colecoes.sort((a, b) => ordem.indexOf(a.nome) - ordem.indexOf(b.nome));
-    const todas = [...vars.values()];
     const contar = (n) => 1 + n.filhos.reduce((s, f) => s + contar(f), 0);
     const temIcone = (n) => !!n.icone || n.filhos.some(temIcone);
     const usaIcones = componentes.some((c) => c.variantes.some((v) => temIcone(v.arvore)));
-    return {
+    const plano = {
       modo,
       icones: usaIcones ? __spreadValues({}, ICONES_KCX) : void 0,
+      fundacao: fundacao ? planoDaFundacao(fundacao) : void 0,
       pacote: { id: pacote.id, versao: pacote.versao, nome: pacote.nome },
       colecoes,
       componentes,
@@ -2404,9 +2669,9 @@ ${cssAnim}`,
       documentacao: modo === "completo" || modo === "pacote",
       avisos,
       resumo: {
-        variaveis: todas.length,
-        vinculadas: todas.filter((v) => v.vinculadaA.length > 0).length,
-        documentais: todas.filter((v) => v.origem === "documental").length,
+        variaveis: 0,
+        vinculadas: 0,
+        documentais: 0,
         componentes: componentes.length,
         variantes: componentes.reduce((s, c) => s + c.variantes.length, 0),
         camadas: componentes.reduce(
@@ -2415,6 +2680,16 @@ ${cssAnim}`,
         )
       }
     };
+    if (fundacao) {
+      const ligadas = ligarAFundacao(plano, fundacao);
+      if (ligadas)
+        avisos.push(`${ligadas} vari\xE1veis dos componentes usam tokens da funda\xE7\xE3o (alias).`);
+    }
+    const todas = colecoes.flatMap((c) => c.variaveis);
+    plano.resumo.variaveis = todas.length;
+    plano.resumo.vinculadas = todas.filter((v) => v.vinculadaA.length > 0).length;
+    plano.resumo.documentais = todas.filter((v) => v.origem === "documental").length;
+    return plano;
   }
 
   // src/app/kcx/figma/construir/tipos.ts
@@ -2537,6 +2812,88 @@ ${cssAnim}`,
       });
       __publicField(this, "fontePadrao", { family: "Inter", style: "Regular" });
       __publicField(this, "fontesOk", /* @__PURE__ */ new Set());
+      /** Estilos de texto da fundação já criados (nome → estilo). */
+      __publicField(this, "estilosTexto", /* @__PURE__ */ new Map());
+      /** Textos que recebem um estilo da fundação depois de montados. */
+      __publicField(this, "textosComEstilo", []);
+    }
+    /** Estilos de texto e de sombra da fundação (atualiza os que já existem pelo nome). */
+    async criarEstilos() {
+      var _a, _b, _c, _d, _e, _f, _g, _h;
+      const fund = this.plano.fundacao;
+      const f = this.figma;
+      if (!fund || typeof f.createTextStyle !== "function") return;
+      const textos = (_b = await ((_a = f.getLocalTextStylesAsync) == null ? void 0 : _a.call(f))) != null ? _b : [];
+      const efeitos = (_d = await ((_c = f.getLocalEffectStylesAsync) == null ? void 0 : _c.call(f))) != null ? _d : [];
+      const estilos = (_f = (_e = this.rel).estilos) != null ? _f : _e.estilos = [];
+      for (const e of fund.estilosTexto) {
+        let fonte = { family: e.familia, style: e.estilo };
+        try {
+          await f.loadFontAsync(fonte);
+        } catch (e2) {
+          this.rel.avisos.push(
+            `Fonte ${e.familia} ${e.estilo} indispon\xEDvel no Figma; o estilo ${e.nome} usa Inter.`
+          );
+          fonte = { family: "Inter", style: e.estilo };
+          try {
+            await f.loadFontAsync(fonte);
+          } catch (e3) {
+            fonte = { family: "Inter", style: "Regular" };
+            await f.loadFontAsync(fonte);
+          }
+        }
+        const st = (_g = textos.find((t) => t.name === e.nome)) != null ? _g : f.createTextStyle();
+        st.name = e.nome;
+        st.description = e.descricao;
+        st.fontName = fonte;
+        st.fontSize = e.tamanho;
+        st.lineHeight = { value: e.alturaLinha, unit: "PIXELS" };
+        st.letterSpacing = { value: e.espacamento, unit: "PIXELS" };
+        const v = this.vars.get(e.variavelTamanho);
+        if (v)
+          try {
+            st.setBoundVariable("fontSize", v);
+            this.rel.vinculos++;
+          } catch (err) {
+            this.rel.vinculosFalhos.push(`${e.nome} \u203A fontSize: ${err.message}`);
+          }
+        this.estilosTexto.set(e.nome, st);
+        this.fontesOk.add(`${fonte.family}|${fonte.style}`);
+        estilos.push(`${e.nome} (texto)`);
+      }
+      for (const e of fund.estilosSombra) {
+        const st = (_h = efeitos.find((t) => t.name === e.nome)) != null ? _h : f.createEffectStyle();
+        st.name = e.nome;
+        st.description = e.descricao;
+        st.effects = [
+          {
+            type: "DROP_SHADOW",
+            color: e.sombra.cor,
+            offset: { x: e.sombra.x, y: e.sombra.y },
+            radius: e.sombra.raio,
+            spread: e.sombra.espalhar,
+            visible: true,
+            blendMode: "NORMAL",
+            showShadowBehindNode: false
+          }
+        ];
+        estilos.push(`${e.nome} (sombra)`);
+      }
+    }
+    /** Aplica os estilos de texto da fundação nos textos marcados pelo plano. */
+    async aplicarEstilosTexto() {
+      for (const { no, estilo } of this.textosComEstilo) {
+        const st = this.estilosTexto.get(estilo);
+        if (!st) continue;
+        try {
+          if (typeof no.setTextStyleIdAsync === "function") await no.setTextStyleIdAsync(st.id);
+          else no.textStyleId = st.id;
+        } catch (err) {
+          this.rel.avisos.push(
+            `Estilo ${estilo} n\xE3o aplicado em "${no.name}": ${err.message}`
+          );
+        }
+      }
     }
     /* ------------------------------ Variáveis ------------------------------ */
     async criarVariaveis() {
@@ -3026,6 +3383,7 @@ ${cssAnim}`,
         this.vincularTexto(no, "fontSize", p.texto.tamanho, local);
         if (p.texto.espacamento) this.vincularTexto(no, "letterSpacing", p.texto.espacamento, local);
         if (p.texto.propriedade) refs.texto.push({ no, prop: p.texto.propriedade, plano: p });
+        if (p.texto.estiloTexto) this.textosComEstilo.push({ no, estilo: p.texto.estiloTexto });
       } else if (p.tipo === "elipse") {
         no = f.createEllipse();
       } else if (p.tipo === "retangulo") {
@@ -3616,6 +3974,7 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
     async executar() {
       var _a, _b;
       if (this.plano.modo !== "visual") await this.criarVariaveis();
+      if (this.plano.fundacao && this.plano.modo !== "visual") await this.criarEstilos();
       if (!this.plano.componentes.length) return this.rel;
       await this.carregarFontes();
       try {
@@ -3664,6 +4023,7 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
         y += Math.max(alto, 200) + 160;
       }
       if (this.plano.composicao) this.construirComposicao(principais, x, y);
+      await this.aplicarEstilosTexto();
       try {
         this.figma.currentPage.selection = criados;
         this.figma.viewport.scrollAndZoomIntoView(criados);

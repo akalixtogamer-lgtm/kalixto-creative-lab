@@ -1,0 +1,330 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Design system</p>
+    <h1 class="kx-title">Fundação</h1>
+    <p class="kx-lead">
+      Os tokens do seu design system: cores (claro e escuro), fontes, escala de texto, raios,
+      espaços e sombras. Todo componente criado no KCX usa estes valores, e no Figma eles viram
+      <strong>variáveis "Fundação/…" e estilos de texto e de sombra</strong>. Os componentes ficam
+      ligados a eles: mudou a fundação, mudou tudo.
+    </p>
+  </header>
+
+  <div class="kcxf__barra kx-glass">
+    <label class="kcxf__nome">
+      Nome do design system
+      <input type="text" [value]="f().nome" (change)="nome(valor($event))" />
+    </label>
+    <label class="kcxf__uso">
+      <input
+        type="checkbox"
+        [checked]="usarNoFigma()"
+        (change)="definirUso($any($event.target).checked)"
+      />
+      Levar a fundação junto em todo componente exportado para o Figma
+    </label>
+    <div class="kcxf__acoes">
+      <button type="button" class="kx-btn kx-btn--primary" (click)="baixarFigma()">
+        <kx-icon name="download" /> Enviar para o Figma (.kcx.json)
+      </button>
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarCss()">Baixar CSS</button>
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarJson()">Baixar JSON</button>
+      <label class="kx-btn kx-btn--ghost kcxf__arquivo">
+        Importar
+        <input type="file" accept=".json,application/json" (change)="importar($event)" />
+      </label>
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="restaurar()">
+        Restaurar padrão
+      </button>
+    </div>
+    @if (aviso()) {
+      <p class="kcxf__aviso" role="status">{{ aviso() }}</p>
+    }
+    @if (erros().length) {
+      <p class="kcxf__erro" role="alert">{{ erros()[0] }}</p>
+    }
+  </div>
+
+  <div class="kcxf__layout">
+    <div class="kcxf__editor">
+      <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-cores">
+        <h2 id="kcxf-cores" class="kx-section-title">Cores</h2>
+        <p class="kx-muted">Cada token tem a versão do tema escuro e a do claro.</p>
+        <table class="kcxf__tabela">
+          <thead>
+            <tr>
+              <th scope="col">Token</th>
+              <th scope="col">Escuro</th>
+              <th scope="col">Claro</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of tokensCor; track t) {
+              <tr>
+                <th scope="row">
+                  {{ nomesCor[t] }} <code>cor/{{ t }}</code>
+                </th>
+                @for (m of temas; track m) {
+                  <td>
+                    <span class="kcxf__cor">
+                      <input
+                        type="color"
+                        [value]="f().cores[t][m]"
+                        (input)="cor(t, m, valor($event))"
+                        [attr.aria-label]="nomesCor[t] + ' no tema ' + m"
+                      />
+                      <input
+                        type="text"
+                        class="kcxf__hex"
+                        [value]="f().cores[t][m]"
+                        (change)="cor(t, m, valor($event))"
+                        [attr.aria-label]="'Hex de ' + nomesCor[t] + ' no tema ' + m"
+                      />
+                    </span>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-fontes">
+        <h2 id="kcxf-fontes" class="kx-section-title">Fontes</h2>
+        <p class="kx-muted">
+          No Figma a fonte precisa estar instalada; se não estiver, o estilo usa Inter.
+        </p>
+        <datalist id="kcxf-lista-fontes">
+          @for (n of fontes; track n) {
+            <option [value]="n"></option>
+          }
+        </datalist>
+        <div class="kcxf__linha">
+          @for (k of chavesFonte; track k) {
+            <label>
+              {{ k === 'titulo' ? 'Títulos' : k === 'corpo' ? 'Texto corrido' : 'Código' }}
+              <input
+                type="text"
+                list="kcxf-lista-fontes"
+                [value]="f().fontes[k]"
+                (change)="fonte(k, valor($event))"
+              />
+            </label>
+          }
+        </div>
+      </section>
+
+      <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-texto">
+        <h2 id="kcxf-texto" class="kx-section-title">Escala de texto</h2>
+        <table class="kcxf__tabela kcxf__tabela--texto">
+          <thead>
+            <tr>
+              <th scope="col">Nível</th>
+              <th scope="col">Fonte</th>
+              <th scope="col">Peso</th>
+              <th scope="col">Desktop (px)</th>
+              <th scope="col">Celular (px)</th>
+              <th scope="col">Altura</th>
+              <th scope="col">Letras (px)</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (n of niveis; track n) {
+              <tr>
+                <th scope="row">{{ nomesTexto[n] }}</th>
+                <td>
+                  <select
+                    [value]="f().texto[n].familia"
+                    (change)="texto(n, 'familia', $any(valor($event)))"
+                    [attr.aria-label]="'Fonte de ' + nomesTexto[n]"
+                  >
+                    <option value="titulo">Títulos</option>
+                    <option value="corpo">Corpo</option>
+                    <option value="mono">Código</option>
+                  </select>
+                </td>
+                <td>
+                  <select
+                    [value]="'' + f().texto[n].peso"
+                    (change)="texto(n, 'peso', numero($event))"
+                    [attr.aria-label]="'Peso de ' + nomesTexto[n]"
+                  >
+                    @for (p of pesos; track p) {
+                      <option [value]="'' + p" [selected]="p === f().texto[n].peso">{{ p }}</option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="8"
+                    max="160"
+                    [value]="f().texto[n].tamanho"
+                    (change)="texto(n, 'tamanho', numero($event))"
+                    [attr.aria-label]="'Tamanho desktop de ' + nomesTexto[n]"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="8"
+                    max="160"
+                    [value]="f().texto[n].tamanhoCelular"
+                    (change)="texto(n, 'tamanhoCelular', numero($event))"
+                    [attr.aria-label]="'Tamanho celular de ' + nomesTexto[n]"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="0.8"
+                    max="3"
+                    step="0.05"
+                    [value]="f().texto[n].altura"
+                    (change)="texto(n, 'altura', numero($event))"
+                    [attr.aria-label]="'Altura da linha de ' + nomesTexto[n]"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="-5"
+                    max="10"
+                    step="0.1"
+                    [value]="f().texto[n].espacamento"
+                    (change)="texto(n, 'espacamento', numero($event))"
+                    [attr.aria-label]="'Espaçamento de letras de ' + nomesTexto[n]"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-medidas">
+        <h2 id="kcxf-medidas" class="kx-section-title">Raios e espaços</h2>
+        <div class="kcxf__linha">
+          @for (k of raios; track k) {
+            <label>
+              Raio {{ k === 'pill' ? 'pílula' : k.toUpperCase() }}
+              <input
+                type="number"
+                min="0"
+                max="999"
+                [value]="f().raios[k]"
+                (change)="raio(k, numero($event))"
+              />
+            </label>
+          }
+        </div>
+        <div class="kcxf__linha">
+          @for (k of espacos; track k) {
+            <label>
+              Espaço {{ k }}
+              <input
+                type="number"
+                min="0"
+                max="256"
+                [value]="f().espacos[k]"
+                (change)="espaco(k, numero($event))"
+              />
+            </label>
+          }
+        </div>
+      </section>
+
+      <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-sombras">
+        <h2 id="kcxf-sombras" class="kx-section-title">Sombras</h2>
+        @for (k of sombras; track k) {
+          <div class="kcxf__linha">
+            <strong class="kcxf__rotulo">Sombra {{ k.toUpperCase() }}</strong>
+            @for (c of camposSombra; track c) {
+              <label>
+                {{ c }}
+                <input
+                  type="number"
+                  min="-100"
+                  max="200"
+                  [value]="f().sombras[k][c]"
+                  (change)="sombra(k, c, numero($event))"
+                />
+              </label>
+            }
+            <label>
+              opacidade
+              <input
+                type="number"
+                min="0"
+                max="1"
+                step="0.02"
+                [value]="f().sombras[k].opacidade"
+                (change)="sombra(k, 'opacidade', numero($event))"
+              />
+            </label>
+          </div>
+        }
+      </section>
+    </div>
+
+    <aside class="kcxf__previa-coluna" aria-label="Prévia da fundação">
+      <div class="kcxf__temas" role="radiogroup" aria-label="Tema da prévia">
+        @for (t of temas; track t) {
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="tema() === t"
+            (click)="tema.set(t)"
+          >
+            {{ t === 'escuro' ? 'Escuro' : 'Claro' }}
+          </button>
+        }
+      </div>
+      <div class="kcxf__previa" [style]="estiloPrevia()">
+        <div class="kcxf__amostras">
+          @for (t of tokensCor; track t) {
+            <span
+              class="kcxf__amostra"
+              [style.background]="'var(--kx-cor-' + t + ')'"
+              [title]="nomesCor[t]"
+            ></span>
+          }
+        </div>
+        @for (n of niveis; track n) {
+          <p
+            class="kcxf__specimen"
+            [style.font-family]="'var(--kx-fonte-' + f().texto[n].familia + ')'"
+            [style.font-weight]="f().texto[n].peso"
+            [style.font-size.px]="f().texto[n].tamanho > 44 ? 44 : f().texto[n].tamanho"
+            [style.line-height]="f().texto[n].altura"
+            [style.letter-spacing.px]="f().texto[n].espacamento"
+          >
+            {{ nomesTexto[n] }} · {{ f().texto[n].tamanho }}px ·
+            {{ n === 'corpo' ? 'Texto corrido do seu site.' : 'Kalixto' }}
+          </p>
+        }
+        <div class="kcxf__botoes">
+          <span class="kcxf__btn kcxf__btn--primaria">Primária</span>
+          <span class="kcxf__btn kcxf__btn--secundaria">Secundária</span>
+          <span class="kcxf__btn kcxf__btn--perigo">Perigo</span>
+        </div>
+        <div class="kcxf__card">
+          <strong>Card com sombra M e raio M</strong>
+          <span>Superfície, borda e texto suave da fundação.</span>
+          <span class="kcxf__tags">
+            <em class="kcxf__tag kcxf__tag--sucesso">Sucesso</em>
+            <em class="kcxf__tag kcxf__tag--aviso">Aviso</em>
+            <em class="kcxf__tag kcxf__tag--destaque">Destaque</em>
+          </span>
+        </div>
+      </div>
+      <p class="kx-muted kcxf__dica">
+        Ao criar um componente, escolha a paleta <strong>Minha fundação</strong>: ele nasce com
+        estes valores e no Figma fica ligado aos tokens.
+      </p>
+      <a class="kx-btn kx-btn--primary" routerLink="/kcx/criar"
+        ><kx-icon name="kcx" /> Criar componente com a fundação</a
+      >
+    </aside>
+  </div>
+</div>

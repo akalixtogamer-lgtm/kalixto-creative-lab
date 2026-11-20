@@ -1,3 +1,5 @@
+import type { Montagem } from './montado';
+import type { KcxFundacao } from '../fundacao';
 /**
  * Construtor KCX — monta um componente completo (variáveis, código, estrutura
  * do Figma, estados e interações) a partir de um tipo + os nomes e a animação
@@ -53,6 +55,14 @@ export interface ConfigConstrutor {
   telas?: boolean;
   /** Curva das interações no protótipo do Figma. */
   curva?: 'suave' | 'linear' | 'entrada-saida' | 'mola' | 'quique';
+  /** Cores do tema oposto (modos Claro/Escuro). Ausente = tema padrão do KCX. Vem da fundação. */
+  temaOposto?: { fundo: string; superficie: string; texto: string; suave: string };
+  /** Cor do texto secundário. Ausente = #a9a3c9. Vem da fundação. */
+  corSuave?: string;
+  /** Montador visual: as camadas do componente montado do zero. */
+  montagem?: Montagem;
+  /** Montador visual: a fundação (tokens) usada na montagem. */
+  fundacaoMontagem?: KcxFundacao;
 }
 
 /** Tema oposto (para o modo Claro/Escuro). */
@@ -639,7 +649,7 @@ function variaveisBase(b: Blocos, def: DefinicaoTipo): KcxVariavel[] {
       id: 'corSuave',
       nome: 'Cor do texto secundário',
       tipo: 'color',
-      padrao: '#a9a3c9',
+      padrao: cfg.corSuave ?? '#a9a3c9',
       descricao: 'Legendas, descrições e itens inativos.',
       grupo: 'colors',
       secao: 'aparencia',
@@ -784,7 +794,7 @@ function variaveisBase(b: Blocos, def: DefinicaoTipo): KcxVariavel[] {
   }
   if (cfg.modos || cfg.recursos?.['tema']) {
     const claro = ehClaro(cfg.cores.fundo);
-    const outro = claro ? TEMA_ESCURO : TEMA_CLARO;
+    const outro = cfg.temaOposto ?? (claro ? TEMA_ESCURO : TEMA_CLARO);
     const mapa: Record<string, string> = {
       corFundo: outro.fundo,
       corSuperficie: outro.superficie,

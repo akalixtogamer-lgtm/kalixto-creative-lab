@@ -110,6 +110,10 @@ export class NoMock {
     };
     return chave;
   }
+  /** Estilo de texto (Figma: setTextStyleIdAsync, obrigatório com documentAccess dynamic-page). */
+  async setTextStyleIdAsync(id: string): Promise<void> {
+    this['textStyleId'] = id;
+  }
   setRangeBoundVariable(_i: number, _f: number, campo: string, v: any): void {
     this.boundVariables[campo] = { type: 'VARIABLE_ALIAS', id: v.id };
   }
@@ -305,5 +309,44 @@ export function criarFigmaMock() {
       },
     },
   };
-  return { figma, colecoes, variaveis, pagina };
+  const estilosTexto: any[] = [];
+  const estilosEfeito: any[] = [];
+  figma.getLocalTextStylesAsync = async () => [...estilosTexto];
+  figma.getLocalEffectStylesAsync = async () => [...estilosEfeito];
+  figma.createTextStyle = () => {
+    const st: any = {
+      id: `S:${novoId()}`,
+      type: 'TEXT',
+      name: '',
+      boundVariables: {} as Record<string, unknown>,
+      setBoundVariable(campo: string, v: any) {
+        // Campos que o Figma aceita ligar num estilo de texto.
+        if (
+          ![
+            'fontSize',
+            'lineHeight',
+            'letterSpacing',
+            'fontFamily',
+            'fontStyle',
+            'fontWeight',
+            'paragraphSpacing',
+          ].includes(campo)
+        )
+          throw new Error(`campo ${campo} não vinculável em estilo de texto`);
+        if (
+          v.resolvedType !== (campo === 'fontFamily' || campo === 'fontStyle' ? 'STRING' : 'FLOAT')
+        )
+          throw new Error(`tipo ${v.resolvedType} inválido para ${campo}`);
+        this.boundVariables[campo] = alias(v);
+      },
+    };
+    estilosTexto.push(st);
+    return st;
+  };
+  figma.createEffectStyle = () => {
+    const st: any = { id: `S:${novoId()}`, type: 'EFFECT', name: '', effects: [] };
+    estilosEfeito.push(st);
+    return st;
+  };
+  return { figma, colecoes, variaveis, pagina, estilosTexto, estilosEfeito };
 }

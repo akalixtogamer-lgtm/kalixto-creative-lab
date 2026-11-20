@@ -267,6 +267,7 @@ export abstract class BaseNos extends BaseVariaveis {
       this.vincularTexto(no, 'fontSize', p.texto.tamanho, local);
       if (p.texto.espacamento) this.vincularTexto(no, 'letterSpacing', p.texto.espacamento, local);
       if (p.texto.propriedade) refs.texto.push({ no, prop: p.texto.propriedade, plano: p });
+      if (p.texto.estiloTexto) this.textosComEstilo.push({ no, estilo: p.texto.estiloTexto });
     } else if (p.tipo === 'elipse') {
       no = f.createEllipse();
     } else if (p.tipo === 'retangulo') {

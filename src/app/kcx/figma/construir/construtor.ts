@@ -286,6 +286,7 @@ class Construtor extends BaseNos {
 
   async executar(): Promise<RelatorioImportacao> {
     if (this.plano.modo !== 'visual') await this.criarVariaveis();
+    if (this.plano.fundacao && this.plano.modo !== 'visual') await this.criarEstilos();
     if (!this.plano.componentes.length) return this.rel;
     await this.carregarFontes();
     try {
@@ -335,6 +336,7 @@ class Construtor extends BaseNos {
       y += Math.max(alto, 200) + 160;
     }
     if (this.plano.composicao) this.construirComposicao(principais, x, y);
+    await this.aplicarEstilosTexto();
     try {
       this.figma.currentPage.selection = criados;
       this.figma.viewport.scrollAndZoomIntoView(criados);

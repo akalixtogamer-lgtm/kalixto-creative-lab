@@ -254,12 +254,12 @@
         <section class="kx-glass kcxc__bloco" aria-labelledby="kcxc-cores">
           <h2 id="kcxc-cores" class="kcxc__titulo"><span>●</span> Cores e formato</h2>
           <div class="kcxc__paletas" role="group" aria-label="Paletas prontas">
-            @for (p of paletas; track p.nome) {
+            @for (p of paletas(); track p.nome) {
               <button
                 type="button"
                 class="kcxc__paleta"
                 [attr.aria-pressed]="paletaAtiva(p.cores)"
-                (click)="aplicarPaleta(p.cores)"
+                (click)="aplicarPaleta(p)"
               >
                 <span class="kcxc__amostras" aria-hidden="true">
                   <i [style.background]="p.cores.fundo"></i>

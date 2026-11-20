@@ -1,3 +1,5 @@
+import type { KcxFundacao } from './fundacao';
+
 /**
  * KCX — Kalixto Component Exchange.
  *
@@ -521,6 +523,8 @@ export interface KcxPacote {
   composicao?: KcxComposicao;
   dependencias: KcxDependencia[];
   historico: KcxAlteracao[];
+  /** Fundação do design system (tokens). Os componentes viram alias dos tokens no Figma. */
+  fundacao?: KcxFundacao;
 }
 
 /** Alterações feitas no Figma e trazidas de volta (Figma → Lab). */

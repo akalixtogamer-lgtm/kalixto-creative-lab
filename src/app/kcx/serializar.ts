@@ -12,6 +12,7 @@ import {
   KcxValor,
   KcxVariavel,
 } from './kcx.types';
+import type { KcxFundacao } from './fundacao';
 import { ResultadoValidacao, validarPacote } from './validar';
 import { Valores, normalizarValor, validarValor } from './resolver';
 
@@ -35,6 +36,8 @@ export function criarPacote(
     presetAplicado?: string;
     agora?: Date;
     historico?: KcxAlteracao[];
+    /** Fundação do design system que vai junto (tokens + estilos no Figma). */
+    fundacao?: KcxFundacao;
   } = {},
 ): KcxPacote {
   const agora = (opcoes.agora ?? new Date()).toISOString();
@@ -73,6 +76,7 @@ export function criarPacote(
     },
     componentes: comps,
     ...(opcoes.composicao ? { composicao: clonar(opcoes.composicao) } : {}),
+    ...(opcoes.fundacao ? { fundacao: clonar(opcoes.fundacao) } : {}),
     dependencias: [...deps.values()],
     historico: opcoes.historico ?? [
       {

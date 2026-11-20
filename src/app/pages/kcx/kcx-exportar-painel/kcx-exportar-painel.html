@@ -71,6 +71,11 @@
         @if (plano().documentacao) {
           Quadro de documentação com código-fonte, limitações e variáveis documentais.
         }
+        @if (plano().fundacao; as fd) {
+          Fundação "{{ fd.nome }}": tokens "Fundação/…", {{ fd.estilosTexto.length }} estilos de
+          texto e {{ fd.estilosSombra.length }} de sombra; as variáveis do componente com o mesmo
+          valor de um token viram alias dele.
+        }
       </dd>
     </div>
     @if (eixos().length || comPropriedadeTexto().length) {

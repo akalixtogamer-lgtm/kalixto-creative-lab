@@ -5,6 +5,22 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Fundação do design system e Montador visual
+- **Fundação (tokens)** em `/kcx/fundacao`: cores com versão escura e clara (primária,
+  secundária, destaque, fundo, superfície, borda, texto, texto suave, texto sobre a primária,
+  perigo, sucesso, aviso), fontes, escala de texto (Display, H1–H3, Corpo, Pequeno, Legenda com
+  tamanho de celular), raios, espaços (escala de 4 px) e sombras, com prévia ao vivo nos dois
+  temas. Baixa CSS e JSON, importa e envia para o Figma.
+- **No Figma:** tokens "Fundação/…" nas coleções KCX (modos Dark/Light e Desktop/Celular),
+  estilos de texto com o tamanho ligado ao token e estilos de sombra. As variáveis dos
+  componentes com o valor de um token viram **alias** dele, e os textos que batem com a escala
+  recebem o estilo de texto. Reimportar atualiza sem duplicar.
+- O construtor usa a paleta **Minha fundação** por padrão (tema oposto, texto suave e raio da
+  fundação), e a exportação para o Figma leva a fundação junto (dá para desligar).
+- **Montador visual** em `/kcx/montar`: componente do zero com camadas (caixa com Auto Layout,
+  texto, ícone, imagem), cada propriedade escolhida entre os tokens; opção de estados de design
+  system; prévia "como fica no Figma"; salva em Meus componentes e reabre no montador.
+
 ### Engenharia — auditoria de 19/11/2026
 - **CI em todo push e PR** (`.github/workflows/ci.yml`): Prettier, ESLint, tipos do plugin do
   Figma, código gerado em dia, testes e build. A publicação continua só manual.

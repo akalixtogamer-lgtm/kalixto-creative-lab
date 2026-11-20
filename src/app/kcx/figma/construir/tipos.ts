@@ -34,6 +34,8 @@ export interface RelatorioImportacao {
   interacoes: string[];
   documentacao?: string;
   composicao?: string;
+  /** Estilos de texto e de sombra da fundação criados ou atualizados. */
+  estilos?: string[];
   avisos: string[];
 }
 
