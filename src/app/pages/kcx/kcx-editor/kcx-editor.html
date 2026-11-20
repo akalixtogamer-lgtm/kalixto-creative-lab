@@ -38,6 +38,9 @@
               {{ montado() ? 'Editar no montador' : 'Editar no construtor' }}
             </a>
           }
+          <a class="kx-btn kx-btn--ghost" routerLink="/kcx/telas" [queryParams]="{ com: c.id }">
+            Ver no mockup
+          </a>
           <button type="button" class="kx-btn kx-btn--ghost" (click)="excluir()">Excluir</button>
         </div>
       }

@@ -12,6 +12,7 @@ export * from './montar';
 export { corDoBotao } from './tipos/conteudo/_comum';
 export * from './figma-animacoes';
 export * from './montado';
+export * from './tela';
 
 /** Todos os tipos que o construtor sabe montar. */
 export const TIPOS_CONSTRUTOR: DefinicaoTipo[] = [

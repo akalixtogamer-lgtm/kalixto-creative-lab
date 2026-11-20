@@ -289,3 +289,18 @@ tudo();addEventListener('resize',tudo);
 })();</script>
 </body></html>`;
 }
+
+/**
+ * Página inteira no tamanho real (sem encaixar no espaço): para o mockup de
+ * dispositivo. O iframe tem a largura do dispositivo e rola na vertical.
+ */
+export function documentoDaTela(raiz: PlanoNo, fundo = '#0b0a14'): string {
+  return `<!doctype html><html><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: https:; style-src 'unsafe-inline'">
+<style>
+html,body{margin:0;background:${fundo}}
+body{overflow-x:hidden}
+#t{position:relative;margin:0 auto;width:max-content;min-width:100%}
+.svg svg{display:block;width:100%;height:100%;overflow:visible}
+</style></head><body><div id="t">${planoParaHtml(raiz)}</div></body></html>`;
+}

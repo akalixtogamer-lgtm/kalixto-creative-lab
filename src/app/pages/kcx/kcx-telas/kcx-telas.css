@@ -1,0 +1,228 @@
+.kcxt__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.kcxt__nome,
+.kcxt__zoom {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+.kcxt__nome input,
+.kcxt__zoom select {
+  font: inherit;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--kx-borda, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+}
+.kcxt__grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.kcxt__rotulo {
+  width: 100%;
+  font-size: 0.85rem;
+}
+.kcxt__grupo button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--kx-borda, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.kcxt__grupo button[aria-checked='true'] {
+  background: var(--kx-acento, #22d3ee);
+  border-color: transparent;
+  color: #06131a;
+  font-weight: 600;
+}
+.kcxt__acoes {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  margin-left: auto;
+}
+.kcxt__dica {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.kcxt__layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .kcxt__layout {
+    grid-template-columns: 1fr;
+  }
+}
+.kcxt__painel {
+  padding: 1rem 1.25rem;
+  display: grid;
+  gap: 0.6rem;
+}
+.kcxt__titulo {
+  font-size: 1rem;
+  margin: 0.4rem 0 0;
+}
+.kcxt__secoes {
+  counter-reset: secao;
+}
+.kcxt__secoes,
+.kcxt__disponiveis {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+}
+.kcxt__secoes li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  background: rgb(127 127 127 / 12%);
+  counter-increment: secao;
+}
+.kcxt__secoes li > span:first-child::before {
+  content: counter(secao) '. ';
+  opacity: 0.6;
+}
+.kcxt__ops {
+  display: flex;
+  gap: 0.2rem;
+}
+.kcxt__ops button,
+.kcxt__disponiveis button {
+  font: inherit;
+  font-size: 0.85rem;
+  border: 1px solid var(--kx-borda, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.kcxt__ops button {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.kcxt__disponiveis {
+  max-height: 320px;
+  overflow: auto;
+}
+.kcxt__disponiveis button {
+  width: 100%;
+  text-align: left;
+  padding: 0.35rem 0.6rem;
+}
+.kcxt__aviso {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: rgb(251 191 36 / 15%);
+  border: 1px solid rgb(251 191 36 / 45%);
+}
+
+.kcxt__palco {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  overflow: auto;
+  padding: 1rem 0;
+}
+
+/* Aparelho: moldura de navegador (desktop) ou de celular. */
+.kcxt__aparelho {
+  background: #1d1b26;
+  border: 1px solid #3a3648;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 35%);
+}
+.kcxt__navegador {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  background: #2a2735;
+}
+.kcxt__navegador i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+.kcxt__navegador i:nth-child(2) {
+  background: #febc2e;
+}
+.kcxt__navegador i:nth-child(3) {
+  background: #28c840;
+}
+.kcxt__navegador span {
+  flex: 1;
+  margin-left: 12px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: #1d1b26;
+  color: #b9b4c9;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kcxt__aparelho--celular {
+  position: relative;
+  padding: 14px;
+  border-radius: 46px;
+  border: 2px solid #4a4558;
+}
+.kcxt__aparelho--celular .kcxt__tela {
+  border-radius: 34px;
+}
+.kcxt__entalhe {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  translate: -50% 0;
+  width: 96px;
+  height: 26px;
+  border-radius: 20px;
+  background: #0b0a10;
+  z-index: 1;
+}
+.kcxt__tela {
+  position: relative;
+  overflow: hidden;
+  background: #d9d6e6;
+}
+.kcxt__tela iframe {
+  position: absolute;
+  inset: 0 auto auto 0;
+  border: 0;
+  transform-origin: 0 0;
+  background: #d9d6e6;
+}
+.kcxt__vazio {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  margin: 0;
+  color: #5b566b;
+}
