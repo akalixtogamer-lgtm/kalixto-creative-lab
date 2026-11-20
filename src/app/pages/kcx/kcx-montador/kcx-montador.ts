@@ -4,6 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import {
   CamadaMontada,
   ConfigConstrutor,
+  MODELOS_MONTADOR,
+  ModeloMontador,
   Montagem,
   TipoCamada,
   acharCamada,
@@ -106,6 +108,17 @@ export class KcxMontador {
     }
   });
 
+  /** Variantes no Figma: estados × opções de cada eixo (Tipo, Tamanho). */
+  protected readonly variantesFigma = computed(() => {
+    const c = this.resultado().comp;
+    if (!c) return 0;
+    const eixos = c.compatibilidade.figma.eixosVariante ?? [];
+    return eixos.reduce(
+      (n, id) => n * (c.variaveis.find((v) => v.id === id)?.opcoes?.length ?? 1),
+      c.estados.length,
+    );
+  });
+
   /* ---------------------------- edição ---------------------------- */
 
   private editar(mudar: (m: Montagem) => void): void {
@@ -191,6 +204,23 @@ export class KcxMontador {
       pai.filhos = pai.filhos.filter((f) => f.id !== id);
     });
     this.selecionada.set(paiId);
+  }
+
+  protected readonly modelos = MODELOS_MONTADOR;
+
+  /** Troca a montagem pelo modelo escolhido (a anterior é descartada). */
+  protected usarModelo(m: ModeloMontador): void {
+    this.montagem.set(m.criar());
+    this.nome.set(m.sugestao);
+    this.selecionada.set('raiz');
+  }
+
+  protected eixo(nome: 'tipo' | 'tamanho', ligado: boolean): void {
+    this.editar((m) => (m.eixos = { ...m.eixos, [nome]: ligado }));
+  }
+
+  protected marcado(e: Event): boolean {
+    return (e.target as HTMLInputElement).checked;
   }
 
   protected recomecar(): void {

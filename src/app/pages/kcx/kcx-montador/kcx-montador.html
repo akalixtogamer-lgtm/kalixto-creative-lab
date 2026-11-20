@@ -9,6 +9,18 @@
     </p>
   </header>
 
+  <section class="kcxm__modelos" aria-labelledby="kcxm-modelos">
+    <h2 id="kcxm-modelos" class="kcxm__titulo">Começar de um modelo</h2>
+    <div class="kcxm__lista-modelos">
+      @for (md of modelos; track md.id) {
+        <button type="button" class="kcxm__modelo kx-glass" (click)="usarModelo(md)">
+          <strong>{{ md.nome }}</strong>
+          <span>{{ md.descricao }}</span>
+        </button>
+      }
+    </div>
+  </section>
+
   <div class="kcxm__barra kx-glass">
     <label class="kcxm__nome">
       Nome do componente
@@ -22,6 +34,24 @@
       />
       Interativo (estados Padrão, Hover, Pressionado, Foco e Desativado)
     </label>
+    <div class="kcxm__eixos" role="group" aria-label="Variantes além do estado">
+      <label class="kcxm__check">
+        <input
+          type="checkbox"
+          [checked]="!!montagem().eixos?.tipo"
+          (change)="eixo('tipo', marcado($event))"
+        />
+        Tipo: Primário, Secundário (contorno) e Fantasma
+      </label>
+      <label class="kcxm__check">
+        <input
+          type="checkbox"
+          [checked]="!!montagem().eixos?.tamanho"
+          (change)="eixo('tamanho', marcado($event))"
+        />
+        Tamanho: P, M e G
+      </label>
+    </div>
     <div class="kcxm__acoes">
       <button
         type="button"
@@ -99,8 +129,8 @@
       @if (resultado().comp; as comp) {
         <kx-kcx-variantes [comp]="comp" [(selecionada)]="variante" [alturaPrevia]="360" />
         <p class="kx-muted kcxm__nota">
-          {{ comp.variaveis.length }} variáveis · {{ comp.estados.length }}
-          {{ comp.estados.length > 1 ? 'variantes' : 'variante' }} no Figma. Prévia "como fica no
+          {{ comp.variaveis.length }} variáveis · {{ variantesFigma() }}
+          {{ variantesFigma() > 1 ? 'variantes' : 'variante' }} no Figma. Prévia "como fica no
           Figma".
         </p>
       }
@@ -142,6 +172,14 @@
                 <option value="centro">Centro</option>
                 <option value="fim">Fim</option>
               </select>
+            </label>
+            <label class="kcxm__check">
+              <input
+                type="checkbox"
+                [checked]="!!c.distribuir"
+                (change)="mudar('distribuir', marcado($event) || undefined)"
+              />
+              Espalhar de ponta a ponta
             </label>
             <label
               >Espaço entre itens

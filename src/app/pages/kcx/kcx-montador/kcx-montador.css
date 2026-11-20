@@ -199,3 +199,42 @@ textarea {
     max-height: none;
   }
 }
+
+.kcxm__modelos {
+  display: grid;
+  gap: var(--kx-space-2, 8px);
+  margin-bottom: var(--kx-space-4, 16px);
+}
+
+.kcxm__lista-modelos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--kx-space-2, 8px);
+}
+
+.kcxm__modelo {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--kx-border);
+  border-radius: 12px;
+  color: var(--kx-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.kcxm__modelo:hover {
+  border-color: var(--kx-ciano);
+}
+
+.kcxm__modelo span {
+  font-size: 0.8125rem;
+  color: var(--kx-text-soft);
+}
+
+.kcxm__eixos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-4, 16px);
+}

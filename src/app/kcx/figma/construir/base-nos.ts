@@ -299,7 +299,7 @@ export abstract class BaseNos extends BaseVariaveis {
     }
     if (p.tipo === 'frame' && p.autoLayout) {
       no.layoutMode = p.autoLayout.direcao;
-      no.primaryAxisAlignItems = 'CENTER';
+      no.primaryAxisAlignItems = p.autoLayout.distribuir ? 'SPACE_BETWEEN' : 'CENTER';
       no.counterAxisAlignItems = p.autoLayout.alinhar ?? 'CENTER';
       no.itemSpacing = Number(p.autoLayout.espaco.valor);
       no.paddingLeft = no.paddingRight = Number(p.autoLayout.paddingX.valor);

@@ -2336,7 +2336,8 @@ ${cssAnim}`,
           onde("padding vertical"),
           ctx
         ),
-        quebrar: no.autoLayout.quebrar || void 0
+        quebrar: no.autoLayout.quebrar || void 0,
+        distribuir: no.autoLayout.distribuir || void 0
       };
       const l = no.autoLayout.lados;
       if (l) {
@@ -3413,7 +3414,7 @@ ${cssAnim}`,
       }
       if (p.tipo === "frame" && p.autoLayout) {
         no.layoutMode = p.autoLayout.direcao;
-        no.primaryAxisAlignItems = "CENTER";
+        no.primaryAxisAlignItems = p.autoLayout.distribuir ? "SPACE_BETWEEN" : "CENTER";
         no.counterAxisAlignItems = (_p = p.autoLayout.alinhar) != null ? _p : "CENTER";
         no.itemSpacing = Number(p.autoLayout.espaco.valor);
         no.paddingLeft = no.paddingRight = Number(p.autoLayout.paddingX.valor);

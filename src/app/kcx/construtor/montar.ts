@@ -533,9 +533,10 @@ export class Blocos {
       py?: KcxRef<number>;
       alinhar?: 'inicio' | 'centro' | 'fim';
       quebrar?: boolean;
+      distribuir?: boolean;
     } = {},
   ): KcxNo {
-    const { espaco, px, py, alinhar, quebrar, ...resto } = extra;
+    const { espaco, px, py, alinhar, quebrar, distribuir, ...resto } = extra;
     return {
       id,
       nome,
@@ -548,6 +549,7 @@ export class Blocos {
         paddingY: py ?? 0,
         alinhar: alinhar ?? (direcao === 'vertical' ? 'inicio' : 'centro'),
         quebrar,
+        ...(distribuir ? { distribuir } : {}),
       },
       filhos,
       ...resto,

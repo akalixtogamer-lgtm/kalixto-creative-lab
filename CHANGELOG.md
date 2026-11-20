@@ -5,6 +5,15 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Montador: modelos e variantes
+- **Modelos para começar:** Botão, Card, Navbar, Chip, Campo de texto, Item de lista, Hero e Em
+  branco. Tudo continua editável camada por camada.
+- **Eixos de variante no montador:** Tipo (Primário, Secundário com contorno, Fantasma), a
+  partir do fundo da camada principal, e Tamanho (P, M, G: margem interna um passo da escala e
+  textos 87,5% / 112,5%). No Figma viram eixos de variante junto com os estados (o Botão sai com
+  45 variantes).
+- **Espalhar de ponta a ponta** nas caixas (Figma: Space between), usado na Navbar.
+
 ### Adicionado — Fundação do design system e Montador visual
 - **Fundação (tokens)** em `/kcx/fundacao`: cores com versão escura e clara (primária,
   secundária, destaque, fundo, superfície, borda, texto, texto suave, texto sobre a primária,

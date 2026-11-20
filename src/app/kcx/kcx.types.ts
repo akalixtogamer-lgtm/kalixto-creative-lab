@@ -239,6 +239,8 @@ export interface KcxNo {
     alinhar?: 'inicio' | 'centro' | 'fim';
     /** Quebra de linha (Wrap): os filhos passam para a linha de baixo. */
     quebrar?: boolean;
+    /** Espalhar os filhos no eixo principal (Figma: Space between). */
+    distribuir?: boolean;
     /** Padding diferente em cada lado (substitui paddingX/paddingY onde houver). */
     lados?: {
       cima?: KcxRef<number>;

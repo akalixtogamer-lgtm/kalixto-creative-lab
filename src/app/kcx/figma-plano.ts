@@ -183,6 +183,7 @@ export interface PlanoNo {
     paddingY: PlanoProp<number>;
     alinhar?: 'MIN' | 'CENTER' | 'MAX';
     quebrar?: boolean;
+    distribuir?: boolean;
     lados?: {
       cima?: PlanoProp<number>;
       baixo?: PlanoProp<number>;
@@ -905,6 +906,7 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
         ctx,
       )!,
       quebrar: no.autoLayout.quebrar || undefined,
+      distribuir: no.autoLayout.distribuir || undefined,
     };
     const l = no.autoLayout.lados;
     if (l) {
