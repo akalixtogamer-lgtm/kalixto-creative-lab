@@ -1,0 +1,150 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Telas e wireframes</p>
+    <h1 class="kx-title">Telas</h1>
+    <p class="kx-lead">
+      Empilhe os seus componentes como seções de uma página e veja no mockup de
+      <strong>desktop</strong> ou de <strong>celular</strong>, em wireframe de baixa, média ou alta
+      fidelidade. No Figma, cada seção vira uma instância do componente.
+    </p>
+  </header>
+
+  <div class="kcxt__barra kx-glass">
+    <label class="kcxt__nome">
+      Nome da tela
+      <input type="text" [value]="tela().nome" (change)="definir('nome', valor($event))" />
+    </label>
+    <div class="kcxt__grupo" role="radiogroup" aria-label="Dispositivo">
+      <span class="kcxt__rotulo">Dispositivo</span>
+      @for (d of dispositivos; track d[0]) {
+        <button
+          type="button"
+          role="radio"
+          [attr.aria-checked]="tela().dispositivo === d[0]"
+          (click)="definir('dispositivo', d[0])"
+        >
+          {{ d[1].nome }} · {{ d[1].largura }} px
+        </button>
+      }
+    </div>
+    <div class="kcxt__grupo" role="radiogroup" aria-label="Fidelidade">
+      <span class="kcxt__rotulo">Fidelidade</span>
+      @for (f of fidelidades; track f[0]) {
+        <button
+          type="button"
+          role="radio"
+          [attr.aria-checked]="tela().fidelidade === f[0]"
+          [title]="f[1].descricao"
+          (click)="definir('fidelidade', f[0])"
+        >
+          {{ f[1].nome }}
+        </button>
+      }
+    </div>
+    <p class="kx-muted kcxt__dica">{{ fidelidade().nome }}: {{ fidelidade().descricao }}</p>
+    <div class="kcxt__acoes">
+      <button
+        type="button"
+        class="kx-btn kx-btn--primary"
+        [disabled]="!resultado().comp"
+        (click)="baixarFigma()"
+      >
+        <kx-icon name="download" /> Baixar para o Figma (.kcx.json)
+      </button>
+      <label class="kcxt__zoom">
+        Zoom
+        <select (change)="zoom.set(+valor($event))" aria-label="Zoom do mockup">
+          @for (z of zooms; track z) {
+            <option [value]="z" [selected]="z === zoom()">{{ z * 100 }}%</option>
+          }
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="kcxt__layout">
+    <section class="kcxt__painel kx-glass" aria-labelledby="kcxt-secoes">
+      <h2 id="kcxt-secoes" class="kcxt__titulo">Seções da tela</h2>
+      @if (!secoes().length) {
+        <p class="kx-muted">Adicione componentes da lista abaixo, de cima para baixo.</p>
+      }
+      <ol class="kcxt__secoes">
+        @for (s of secoes(); track $index; let i = $index) {
+          <li>
+            <span>{{ s.nome }}</span>
+            <span class="kcxt__ops">
+              <button type="button" (click)="mover(i, -1)" [attr.aria-label]="'Subir ' + s.nome">
+                ↑
+              </button>
+              <button type="button" (click)="mover(i, 1)" [attr.aria-label]="'Descer ' + s.nome">
+                ↓
+              </button>
+              <button type="button" (click)="remover(i)" [attr.aria-label]="'Tirar ' + s.nome">
+                ✕
+              </button>
+            </span>
+          </li>
+        }
+      </ol>
+      @for (a of avisos(); track a) {
+        <p class="kcxt__aviso">Não cabe no {{ dispositivo().nome.toLowerCase() }}: {{ a }}.</p>
+      }
+      <h3 class="kcxt__titulo">Adicionar</h3>
+      <ul class="kcxt__disponiveis">
+        @for (c of disponiveis(); track c.id) {
+          <li>
+            <button type="button" (click)="adicionar(c.id)">+ {{ c.nome }}</button>
+          </li>
+        }
+      </ul>
+      <p class="kx-muted kcxt__dica">
+        Faltou algum? <a routerLink="/kcx/montar">Monte do zero</a> ou
+        <a routerLink="/kcx/criar">crie a partir de um tipo</a>.
+      </p>
+    </section>
+
+    <section class="kcxt__palco" aria-label="Mockup">
+      @if (resultado().erro; as e) {
+        <p class="kcxt__aviso" role="alert">{{ e }}</p>
+      }
+      <div
+        class="kcxt__aparelho"
+        [class.kcxt__aparelho--celular]="tela().dispositivo === 'celular'"
+        [style.width.px]="
+          dispositivo().largura * zoom() + (tela().dispositivo === 'celular' ? 28 : 2)
+        "
+      >
+        @if (tela().dispositivo === 'desktop') {
+          <div class="kcxt__navegador" aria-hidden="true">
+            <i></i><i></i><i></i>
+            <span>{{ tela().nome }}</span>
+          </div>
+        } @else {
+          <div class="kcxt__entalhe" aria-hidden="true"></div>
+        }
+        <div
+          class="kcxt__tela"
+          [style.width.px]="dispositivo().largura * zoom()"
+          [style.height.px]="dispositivo().altura * zoom()"
+        >
+          @if (documento(); as doc) {
+            <iframe
+              sandbox=""
+              [title]="'Mockup ' + dispositivo().nome + ' de ' + tela().nome"
+              [srcdoc]="doc"
+              [style.width.px]="dispositivo().largura"
+              [style.height.px]="dispositivo().altura"
+              [style.transform]="'scale(' + zoom() + ')'"
+            ></iframe>
+          } @else {
+            <p class="kcxt__vazio">A tela aparece aqui.</p>
+          }
+        </div>
+      </div>
+      <p class="kx-muted kcxt__dica">
+        {{ dispositivo().nome }} {{ dispositivo().largura }} × {{ dispositivo().altura }} px · role
+        dentro do aparelho para ver a página inteira.
+      </p>
+    </section>
+  </div>
+</div>

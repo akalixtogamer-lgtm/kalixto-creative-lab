@@ -96,6 +96,11 @@ export const routes: Routes = [
           import('./pages/kcx/kcx-montador/kcx-montador').then((m) => m.KcxMontador),
       },
       {
+        path: 'kcx/telas',
+        title: 'Telas e wireframes · KCX Studio · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/kcx/kcx-telas/kcx-telas').then((m) => m.KcxTelas),
+      },
+      {
         path: 'kcx/criar',
         title: 'Criar componente · KCX Studio · Kalixto Creative Lab',
         loadComponent: () => import('./pages/kcx/kcx-criar/kcx-criar').then((m) => m.KcxCriar),

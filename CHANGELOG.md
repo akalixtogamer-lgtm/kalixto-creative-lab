@@ -5,6 +5,18 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Telas: mockup de desktop e celular, wireframes
+- **Telas** em `/kcx/telas`: empilhe componentes como seções de uma página (adicionar,
+  reordenar, tirar; a mesma seção pode repetir) e veja num **mockup de desktop** (1440 × 900,
+  moldura de navegador) ou de **celular** (390 × 844, moldura com entalhe), com zoom e rolagem.
+- **Fidelidade:** Baixa (caixas em poucos cinzas, sem fotos), Média (escala de cinza fiel ao
+  contraste, sem fotos) e Alta (cores, fotos e tokens). Cores dentro de gradientes, sombras e
+  SVGs também viram cinza.
+- **Aviso** quando uma seção é mais larga que o celular.
+- **Baixar para o Figma:** a tela sai como componente com cada seção como instância; nos
+  wireframes vão cópias "· wireframe baixa/média" dos componentes, sem mexer nos originais.
+- Botão "Ver no mockup" no editor e atalho "Telas e wireframes" no KCX Studio.
+
 ### Adicionado — Montador: modelos e variantes
 - **Modelos para começar:** Botão, Card, Navbar, Chip, Campo de texto, Item de lista, Hero e Em
   branco. Tudo continua editável camada por camada.
