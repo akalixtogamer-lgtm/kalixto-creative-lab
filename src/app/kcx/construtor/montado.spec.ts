@@ -7,6 +7,7 @@ import { FUNDACAO_PADRAO } from '../fundacao';
 import { criarPacote, serializar } from '../serializar';
 import { validarComponente } from '../validar';
 import {
+  MODELOS_MONTADOR,
   acharCamada,
   configMontada,
   montagemPadrao,
@@ -104,5 +105,64 @@ describe('Montador visual', () => {
     expect(
       validarMontagem({ interativo: false, raiz: novaCamada('texto', []) }).join(' '),
     ).toContain('caixa');
+  });
+});
+
+describe('Modelos e eixos do montador', () => {
+  it.each(MODELOS_MONTADOR.map((m) => [m.id, m] as const))(
+    'modelo %s: válido, monta, importa no Figma sem falhas',
+    async (_id, modelo) => {
+      const m = modelo.criar();
+      expect(validarMontagem(m)).toEqual([]);
+      const comp = montarDoConstrutor(configMontada(modelo.sugestao, m, FUNDACAO_PADRAO));
+      expect(validarComponente(comp, comp.id)).toEqual([]);
+      const pacote = criarPacote([comp], { fundacao: FUNDACAO_PADRAO });
+      const plano = planejarFigma(pacote);
+      const eixos = (m.eixos?.tipo ? 3 : 1) * (m.eixos?.tamanho ? 3 : 1);
+      expect(plano.componentes[0].variantes).toHaveLength(comp.estados.length * eixos);
+      const rel = await importarNoFigma(
+        criarFigmaMock().figma,
+        plano,
+        serializar(pacote),
+        'atualizar',
+      );
+      expect(rel.vinculosFalhos).toEqual([]);
+      expect(rel.avisos.filter((a) => !a.startsWith('Fonte'))).toEqual([]);
+    },
+  );
+
+  it('botão: Tipo muda fundo, contorno e cor do rótulo; Tamanho muda margem e texto', () => {
+    const modelo = MODELOS_MONTADOR.find((x) => x.id === 'botao')!;
+    const comp = montarDoConstrutor(configMontada('Botão', modelo.criar(), FUNDACAO_PADRAO));
+    expect(comp.codigo.html).toContain('data-tipo="primario" data-tamanho="m"');
+    expect(comp.codigo.css).toContain("[data-tipo='secundario'] { background: transparent;");
+    expect(comp.codigo.css).toContain("[data-tamanho='p'] { padding:");
+    const plano = planejarFigma(criarPacote([comp], { fundacao: FUNDACAO_PADRAO }));
+    const variantes = plano.componentes[0].variantes;
+    const achar = (nome: string) => variantes.find((v) => v.nome === nome)!.arvore;
+    const prim = achar('Estado=Padrão, Tipo=Primário, Tamanho=M');
+    const sec = achar('Estado=Padrão, Tipo=Secundário, Tamanho=M');
+    const p = achar('Estado=Padrão, Tipo=Primário, Tamanho=P');
+    const g = achar('Estado=Padrão, Tipo=Primário, Tamanho=G');
+    const fundoA = (n: typeof prim) =>
+      (n.preenchimentos[0] as { cor: { valor: { a: number } } }).cor.valor.a;
+    expect(fundoA(prim)).toBe(1);
+    expect(fundoA(sec)).toBe(0);
+    expect(Number(p.autoLayout!.paddingX.valor)).toBeLessThan(
+      Number(prim.autoLayout!.paddingX.valor),
+    );
+    expect(Number(g.autoLayout!.paddingX.valor)).toBeGreaterThan(
+      Number(prim.autoLayout!.paddingX.valor),
+    );
+    const rotulo = (n: typeof prim) => n.filhos.find((x) => x.texto)!;
+    expect(Number(rotulo(g).texto!.tamanho.valor)).toBe(18);
+    expect(rotulo(sec).preenchimentos[0]).not.toEqual(rotulo(prim).preenchimentos[0]);
+  });
+
+  it('eixo Tipo sem fundo na principal é recusado', () => {
+    const m = montagemPadrao();
+    m.raiz.fundo = null;
+    m.eixos = { tipo: true };
+    expect(validarMontagem(m).join(' ')).toContain('fundo');
   });
 });

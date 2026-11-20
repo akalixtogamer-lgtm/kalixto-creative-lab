@@ -102,7 +102,7 @@ function no(p: PlanoNo, paiAuto: boolean, paiDirecao?: 'HORIZONTAL' | 'VERTICAL'
       `gap:${px(a.espaco.valor)}`,
       `padding:${px((a.lados?.cima ?? a.paddingY).valor)} ${px((a.lados?.direita ?? a.paddingX).valor)} ${px((a.lados?.baixo ?? a.paddingY).valor)} ${px((a.lados?.esquerda ?? a.paddingX).valor)}`,
       a.quebrar ? 'flex-wrap:wrap' : '',
-      'justify-content:center',
+      a.distribuir ? 'justify-content:space-between' : 'justify-content:center',
       `align-items:${ALINHAR[a.alinhar ?? 'CENTER']}`,
     );
   }
