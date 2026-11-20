@@ -150,7 +150,7 @@
                     [attr.aria-label]="'Peso de ' + nomesTexto[n]"
                   >
                     @for (p of pesos; track p) {
-                      <option [value]="'' + p">{{ p }}</option>
+                      <option [value]="'' + p" [selected]="p === f().texto[n].peso">{{ p }}</option>
                     }
                   </select>
                 </td>

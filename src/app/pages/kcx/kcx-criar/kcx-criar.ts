@@ -125,7 +125,10 @@ export class KcxCriar {
   private readonly original = computed(() => {
     const id = this.de();
     const c = id ? this.meus.buscar(id) : undefined;
-    return c?.origemCriacao?.tipo === 'construtor' ? c : undefined;
+    return c?.origemCriacao?.tipo === 'construtor' &&
+      (c.origemCriacao.config as ConfigConstrutor | undefined)?.tipo !== 'montado'
+      ? c
+      : undefined;
   });
 
   protected readonly cfg = linkedSignal<ConfigConstrutor>(() => {

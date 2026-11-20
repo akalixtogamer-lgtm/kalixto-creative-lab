@@ -6,10 +6,12 @@ import { TIPOS_NAVEGACAO } from './tipos/navegacao';
 import { TIPOS_SECOES } from './tipos/secoes';
 import { TIPOS_CONTROLES } from './tipos/controles';
 import { TIPOS_COMPOSTOS } from './tipos/compostos';
+import { MONTADO_ID, definicaoMontada } from './montado';
 
 export * from './montar';
 export { corDoBotao } from './tipos/conteudo/_comum';
 export * from './figma-animacoes';
+export * from './montado';
 
 /** Todos os tipos que o construtor sabe montar. */
 export const TIPOS_CONSTRUTOR: DefinicaoTipo[] = [
@@ -26,7 +28,7 @@ export function tipoConstrutor(id: string): DefinicaoTipo | undefined {
 
 /** Monta o componente de uma configuração (lança erro se o tipo não existe). */
 export function montarDoConstrutor(cfg: ConfigConstrutor): KcxComponente {
-  const def = tipoConstrutor(cfg.tipo);
+  const def = cfg.tipo === MONTADO_ID ? definicaoMontada(cfg) : tipoConstrutor(cfg.tipo);
   if (!def) throw new Error(`Tipo "${cfg.tipo}" não existe no construtor.`);
   const itens = def.itens
     ? cfg.itens

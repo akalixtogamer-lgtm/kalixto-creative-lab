@@ -69,6 +69,10 @@ export class KcxEditor {
   protected readonly doConstrutor = computed(
     () => this.comp()?.origemCriacao?.tipo === 'construtor',
   );
+  /** Criado no Montador visual (reabre lá, não no construtor de tipos). */
+  protected readonly montado = computed(
+    () => (this.comp()?.origemCriacao?.config as { tipo?: string } | undefined)?.tipo === 'montado',
+  );
 
   protected excluir(): void {
     const c = this.comp();

@@ -1,3 +1,5 @@
+import type { Montagem } from './montado';
+import type { KcxFundacao } from '../fundacao';
 /**
  * Construtor KCX — monta um componente completo (variáveis, código, estrutura
  * do Figma, estados e interações) a partir de um tipo + os nomes e a animação
@@ -57,6 +59,10 @@ export interface ConfigConstrutor {
   temaOposto?: { fundo: string; superficie: string; texto: string; suave: string };
   /** Cor do texto secundário. Ausente = #a9a3c9. Vem da fundação. */
   corSuave?: string;
+  /** Montador visual: as camadas do componente montado do zero. */
+  montagem?: Montagem;
+  /** Montador visual: a fundação (tokens) usada na montagem. */
+  fundacaoMontagem?: KcxFundacao;
 }
 
 /** Tema oposto (para o modo Claro/Escuro). */
