@@ -158,6 +158,8 @@ export type KcxRef<T> =
 
 export type KcxPreenchimento =
   | { tipo: 'solido'; cor: KcxRef<string> }
+  /** Imagem embutida (data URL PNG/JPG/WebP/GIF): logo, foto. No Figma: preenchimento IMAGE. */
+  | { tipo: 'imagem'; src: string; ajuste?: 'caber' | 'preencher' }
   | {
       tipo: 'gradiente-linear';
       angulo: KcxRef<number>;

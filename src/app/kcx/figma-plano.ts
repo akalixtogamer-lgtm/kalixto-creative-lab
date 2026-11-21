@@ -125,6 +125,8 @@ export interface PlanoProp<T> {
 
 export type PlanoPaint =
   | { tipo: 'solido'; cor: PlanoProp<FigmaCor> }
+  /** Imagem embutida (data URL): IMAGE no Figma. */
+  | { tipo: 'imagem'; src: string; ajuste: 'FIT' | 'FILL' }
   | {
       tipo: 'gradiente';
       /** LINEAR (padrão) ou ANGULAR (cônico). */
@@ -644,6 +646,8 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
   const pintura = (f: KcxPreenchimento, rotulo: string, campoCor: Campo): PlanoPaint => {
     if (f.tipo === 'solido')
       return { tipo: 'solido', cor: corRef(f.cor, campoCor, onde(rotulo), ctx) };
+    if (f.tipo === 'imagem')
+      return { tipo: 'imagem', src: f.src, ajuste: f.ajuste === 'preencher' ? 'FILL' : 'FIT' };
     if (f.tipo === 'gradiente-linear' || f.tipo === 'gradiente-conico') {
       const ang = literal(f.angulo, ctx) ?? (f.tipo === 'gradiente-linear' ? 90 : 0);
       return {
