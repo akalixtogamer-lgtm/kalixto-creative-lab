@@ -1,0 +1,256 @@
+<div class="kx-page" data-acento="magenta">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Projeto · Moodboard</p>
+    <h1 class="kx-title">Moodboard</h1>
+    <p class="kx-lead">
+      Junte até <strong>{{ limite }} imagens</strong> de referência, escreva o que cada uma traz e
+      veja a paleta que sai delas. As cores podem ir direto para a
+      <a routerLink="/kcx/fundacao">Fundação</a>.
+    </p>
+  </header>
+
+  <div class="kcxm__barra kx-glass">
+    <label class="kcxm__campo">
+      Título
+      <input
+        type="text"
+        maxlength="120"
+        [value]="m().titulo"
+        (change)="definir('titulo', valor($event))"
+      />
+    </label>
+    <label class="kcxm__campo kcxm__campo--largo">
+      Palavras do clima <small class="kx-muted">(separe por vírgula)</small>
+      <input
+        type="text"
+        maxlength="500"
+        placeholder="acolhedor, urbano, vibrante…"
+        [value]="m().palavras"
+        (change)="definir('palavras', valor($event))"
+      />
+    </label>
+    <div class="kcxm__grupo" role="radiogroup" aria-label="Arrumação">
+      <span>Arrumação</span>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="m().layout === 'mosaico'"
+        (click)="definir('layout', 'mosaico')"
+      >
+        Mosaico
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="m().layout === 'grade'"
+        (click)="definir('layout', 'grade')"
+      >
+        Grade
+      </button>
+    </div>
+    <div class="kcxm__acoes">
+      <button
+        type="button"
+        class="kx-btn kx-btn--ghost"
+        [disabled]="!m().imagens.length"
+        (click)="limparTudo()"
+      >
+        Limpar
+      </button>
+      <button
+        type="button"
+        class="kx-btn kx-btn--primary"
+        [disabled]="!m().imagens.length"
+        (click)="baixar()"
+      >
+        <kx-icon name="download" /> Baixar (HTML)
+      </button>
+    </div>
+  </div>
+
+  @if (!persistente()) {
+    <p class="kcxm__msg kcxm__msg--erro" role="status">
+      Este navegador não deixou guardar o moodboard (aba anônima ou sem espaço). Ele fica só
+      enquanto a página estiver aberta: baixe o HTML antes de sair.
+    </p>
+  }
+  @for (msg of mensagens(); track $index) {
+    <p [class]="'kcxm__msg kcxm__msg--' + msg.tipo" role="status">{{ msg.texto }}</p>
+  }
+
+  <section
+    class="kcxm__envio"
+    [class.kcxm__envio--sobre]="sobre()"
+    (dragover)="arrastarSobre($event)"
+    (dragleave)="sobre.set(false)"
+    (drop)="soltarArquivos($event)"
+    aria-label="Enviar imagens"
+  >
+    <p>
+      <strong>{{ m().imagens.length }}/{{ limite }}</strong> imagens
+      @if (enviando()) {
+        · preparando {{ enviando() }}…
+      }
+    </p>
+    <div class="kcxm__medidor" aria-hidden="true">
+      <span [style.width.%]="(m().imagens.length / limite) * 100"></span>
+    </div>
+    <label
+      class="kx-btn kx-btn--primary kcxm__arquivo"
+      [class.kcxm__arquivo--off]="m().imagens.length >= limite"
+    >
+      <kx-icon name="upload" /> Adicionar imagens
+      <input
+        type="file"
+        multiple
+        accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+        [disabled]="m().imagens.length >= limite"
+        (change)="escolher($event)"
+      />
+    </label>
+    <small class="kx-muted"
+      >PNG, JPG, WebP, GIF ou AVIF, até 15 MB cada. Ou arraste para cá. As imagens ficam só no seu
+      navegador.</small
+    >
+  </section>
+
+  @if (paleta().length) {
+    <section class="kcxm__paleta-sec" aria-labelledby="kcxm-paleta">
+      <h2 id="kcxm-paleta" class="kcxm__titulo">Paleta do moodboard</h2>
+      <ul class="kcxm__paleta">
+        @for (c of paleta(); track c) {
+          <li>
+            <button
+              type="button"
+              [style.background]="c"
+              [style.color]="textoSobre(c)"
+              [attr.aria-label]="'Copiar ' + c"
+              (click)="copiar(c)"
+            >
+              <span>{{ copiada() === c ? 'Copiado!' : c }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+      @if (papeis().length) {
+        <div class="kcxm__papeis">
+          <p>
+            Sugestão para a Fundação:
+            @for (p of papeis(); track p.t) {
+              <span class="kcxm__papel"><i [style.background]="p.c"></i>{{ p.nome }}</span>
+            }
+          </p>
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="aplicarNaFundacao()">
+            <kx-icon name="layers" /> Levar para a Fundação
+          </button>
+        </div>
+      }
+    </section>
+  }
+
+  @if (!carregado()) {
+    <p class="kx-muted">Carregando…</p>
+  } @else if (!m().imagens.length) {
+    <p class="kcxm__vazio kx-muted">
+      Nenhuma imagem ainda. Fotos, texturas, tipografias, prints de sites: o que tiver o clima do
+      projeto.
+    </p>
+  } @else {
+    <ol class="kcxm__mural" [class.kcxm__mural--grade]="m().layout === 'grade'">
+      @for (im of m().imagens; track im.id; let i = $index) {
+        <li
+          class="kcxm__item"
+          [class.kcxm__item--alvo]="alvo() === i && arrastando() !== i"
+          [class.kcxm__item--origem]="arrastando() === i"
+          draggable="true"
+          (dragstart)="comecar(i, $event)"
+          (dragover)="sobreImagem(i, $event)"
+          (drop)="soltarImagem(i, $event)"
+          (dragend)="terminar()"
+        >
+          <button
+            type="button"
+            class="kcxm__ver"
+            [attr.aria-label]="'Ampliar ' + (im.legenda || im.nome)"
+            (click)="aberta.set(i)"
+          >
+            <img
+              [src]="im.src"
+              [alt]="im.legenda || im.nome"
+              [attr.width]="im.largura"
+              [attr.height]="im.altura"
+              loading="lazy"
+            />
+          </button>
+          <div class="kcxm__info">
+            <input
+              type="text"
+              maxlength="300"
+              placeholder="O que esta imagem traz?"
+              [attr.aria-label]="'Legenda de ' + im.nome"
+              [value]="im.legenda"
+              (change)="legenda(i, valor($event))"
+            />
+            <div class="kcxm__linha">
+              <span class="kcxm__cores">
+                @for (c of im.cores; track c) {
+                  <i [style.background]="c" [title]="c"></i>
+                }
+              </span>
+              <span class="kcxm__ops">
+                <button
+                  type="button"
+                  (click)="mover(i, -1)"
+                  [attr.aria-label]="'Antes: ' + im.nome"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  (click)="mover(i, 1)"
+                  [attr.aria-label]="'Depois: ' + im.nome"
+                >
+                  →
+                </button>
+                <button type="button" (click)="remover(i)" [attr.aria-label]="'Tirar ' + im.nome">
+                  ✕
+                </button>
+              </span>
+            </div>
+          </div>
+        </li>
+      }
+    </ol>
+  }
+
+  @if (aberta() !== null && m().imagens[aberta()!]; as im) {
+    <div
+      class="kcxm__lupa"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="im.legenda || im.nome"
+    >
+      <button
+        type="button"
+        class="kcxm__fundo-lupa"
+        aria-label="Fechar"
+        (click)="aberta.set(null)"
+      ></button>
+      <figure>
+        <img [src]="im.src" [alt]="im.legenda || im.nome" />
+        <figcaption>
+          {{ im.legenda || im.nome }} · {{ im.largura }} × {{ im.altura }} px
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="aberta.set(null)">
+            Fechar
+          </button>
+        </figcaption>
+      </figure>
+    </div>
+  }
+
+  <nav class="kcxm__proximos" aria-label="Próximos passos do projeto">
+    <a class="kx-btn kx-btn--ghost" routerLink="/kcx/briefing">Briefing</a>
+    <a class="kx-btn kx-btn--ghost" routerLink="/kcx/mapa">Mapa e fluxos</a>
+    <a class="kx-btn kx-btn--ghost" routerLink="/kcx/design-system">Design system</a>
+  </nav>
+</div>

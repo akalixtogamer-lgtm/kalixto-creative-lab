@@ -20,6 +20,8 @@ import {
   limparTracejados,
   ModoDuplicados,
 } from '../../src/app/kcx/figma/construir';
+import { construirDiagrama } from '../../src/app/kcx/figma/construir-diagrama';
+import { FORMATO_DIAGRAMA, lerArquivoDiagrama } from '../../src/app/kcx/projeto/navegacao';
 
 type Mensagem =
   | { tipo: 'analisar'; texto: string; modo?: KcxModoExportacao }
@@ -28,6 +30,7 @@ type Mensagem =
   | { tipo: 'enviar-selecao' }
   | { tipo: 'enviar-design-system' }
   | { tipo: 'limpar-tracejado' }
+  | { tipo: 'importar-diagrama'; texto: string }
   | { tipo: 'fechar' };
 
 figma.showUI(__html__, { width: 460, height: 660, themeColors: true, title: 'KCX · Figma Bridge' });
@@ -43,8 +46,32 @@ function ler(texto: string, modo?: KcxModoExportacao) {
   return { pacote: r.pacote, plano: planejarFigma(r.pacote, m), avisos: r.validacao.avisos };
 }
 
+/** Mapa de navegação ou fluxo (.kcx-diagrama.json) em vez de um pacote de componentes. */
+const ehDiagrama = (texto: string) =>
+  texto.length < 5_000_000 && texto.includes(`"${FORMATO_DIAGRAMA}"`);
+
 figma.ui.onmessage = async (msg: Mensagem) => {
   try {
+    if (msg.tipo === 'analisar' && ehDiagrama(msg.texto)) {
+      const r = lerArquivoDiagrama(msg.texto);
+      if ('erro' in r) return responder({ tipo: 'erro', erro: r.erro });
+      return responder({
+        tipo: 'diagrama',
+        nome: r.diagrama.nome,
+        mapa: r.diagrama.tipo === 'mapa',
+        caixas: r.diagrama.nos.length,
+        setas: r.diagrama.arestas.length,
+        largura: r.diagrama.largura,
+        altura: r.diagrama.altura,
+      });
+    }
+    if (msg.tipo === 'importar-diagrama') {
+      const r = lerArquivoDiagrama(msg.texto);
+      if ('erro' in r) return responder({ tipo: 'erro', erro: r.erro });
+      const rel = await construirDiagrama(figma, r.diagrama, r.cores);
+      figma.notify(`KCX: ${rel.nome} — ${rel.caixas} caixa(s) e ${rel.setas} seta(s).`);
+      return responder({ tipo: 'diagrama-pronto', ...rel });
+    }
     if (msg.tipo === 'analisar') {
       const r = ler(msg.texto, msg.modo);
       if ('erro' in r) return responder({ tipo: 'erro', erro: r.erro, problemas: r.problemas });

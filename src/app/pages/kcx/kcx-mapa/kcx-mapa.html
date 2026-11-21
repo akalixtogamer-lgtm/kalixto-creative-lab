@@ -1,0 +1,421 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Projeto · Mapa e fluxos</p>
+    <h1 class="kx-title">Mapa de navegação e fluxos</h1>
+    <p class="kx-lead">
+      O <strong>mapa</strong> mostra todas as páginas das <a routerLink="/kcx/telas">Telas</a> e
+      como se vai de uma a outra. O <strong>fluxo</strong> conta o passo a passo de uma tarefa
+      (telas, ações e decisões). Os dois vão para o Figma como frames e setas.
+    </p>
+  </header>
+
+  <div class="kcxn__barra kx-glass">
+    <div class="kcxn__abas" role="tablist" aria-label="Diagrama">
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="abaAtual() === 'mapa'"
+        (click)="trocarAba('mapa')"
+      >
+        Mapa de navegação
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="abaAtual() === 'fluxos'"
+        (click)="trocarAba('fluxos')"
+      >
+        Fluxos de interação <small>{{ fluxos().length }}</small>
+      </button>
+    </div>
+    <div class="kcxn__grupo" role="radiogroup" aria-label="Tema do diagrama">
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="tema() === 'escuro'"
+        (click)="tema.set('escuro')"
+      >
+        Escuro
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="tema() === 'claro'"
+        (click)="tema.set('claro')"
+      >
+        Claro
+      </button>
+    </div>
+    <div class="kcxn__acoes">
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarSvg()">
+        <kx-icon name="download" /> SVG
+      </button>
+      <button type="button" class="kx-btn kx-btn--primary" (click)="baixarFigma()">
+        <kx-icon name="download" /> Para o Figma (.kcx-diagrama.json)
+      </button>
+    </div>
+  </div>
+
+  @if (abaAtual() === 'mapa') {
+    <div class="kcxn__layout">
+      <aside class="kcxn__painel kx-glass" aria-label="Ligações do mapa">
+        <label class="kcxn__campo">
+          Página de entrada
+          <select (change)="definirInicio(valor($event))" aria-label="Página de entrada">
+            @for (p of paginas(); track p.id) {
+              <option [value]="p.id" [selected]="p.id === inicio()">{{ p.nome }}</option>
+            }
+          </select>
+        </label>
+
+        <h2 class="kcxn__titulo">Nova ligação</h2>
+        <p class="kx-muted kcxn__dica">Clique numa página do mapa para usá-la como origem.</p>
+        <div class="kcxn__nova">
+          <label class="kcxn__campo">
+            De
+            <select (change)="novaDe.set(valor($event))">
+              @for (p of paginas(); track p.id) {
+                <option [value]="p.id" [selected]="p.id === (novaDe() || inicio())">
+                  {{ p.nome }}
+                </option>
+              }
+            </select>
+          </label>
+          <label class="kcxn__campo">
+            Como (gatilho)
+            <input
+              type="text"
+              maxlength="120"
+              placeholder="Ex.: Menu → Sobre, botão Comprar"
+              [value]="novoGatilho()"
+              (input)="novoGatilho.set(valor($event))"
+              (keydown.enter)="adicionarLigacao()"
+            />
+          </label>
+          <label class="kcxn__campo">
+            Para
+            <select (change)="novaPara.set(valor($event))">
+              <option value="" [selected]="!novaPara()">Escolha…</option>
+              @for (p of paginas(); track p.id) {
+                @if (p.id !== (novaDe() || inicio())) {
+                  <option [value]="p.id" [selected]="p.id === novaPara()">{{ p.nome }}</option>
+                }
+              }
+            </select>
+          </label>
+          <button
+            type="button"
+            class="kx-btn kx-btn--primary"
+            [disabled]="!novaPara() || paginas().length < 2"
+            (click)="adicionarLigacao()"
+          >
+            + Ligar
+          </button>
+        </div>
+        @if (paginas().length < 2) {
+          <p class="kx-muted kcxn__dica">
+            Você tem só uma página. Crie mais nas <a routerLink="/kcx/telas">Telas</a> ou a partir
+            das páginas do <a routerLink="/kcx/briefing">briefing</a>.
+          </p>
+        }
+
+        @if (avisosMapa().length) {
+          <h2 class="kcxn__titulo">Revisão da navegação</h2>
+          <ul class="kcxn__avisos">
+            @for (a of avisosMapa(); track a.texto) {
+              <li [class]="'kcxn__aviso--' + a.nivel">
+                {{ a.texto }}
+                @if (a.alvo && a.texto.includes('lugar nenhum')) {
+                  <button type="button" (click)="voltarAoInicio(a.alvo)">Ligar ao início</button>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        <h2 class="kcxn__titulo">Ligações ({{ ligacoes().length }})</h2>
+        <ul class="kcxn__ligacoes">
+          @for (l of ligacoes(); track l.id) {
+            <li [class.kcxn__ligacao--sel]="selecionada() === l.de || selecionada() === l.para">
+              <span class="kcxn__par">
+                <strong>{{ nomeDe(l.de) }}</strong> → <strong>{{ nomeDe(l.para) }}</strong>
+              </span>
+              <input
+                type="text"
+                maxlength="120"
+                placeholder="gatilho"
+                [attr.aria-label]="'Gatilho de ' + nomeDe(l.de) + ' para ' + nomeDe(l.para)"
+                [value]="l.gatilho"
+                (change)="alterarLigacao(l.id, 'gatilho', valor($event))"
+              />
+              <button
+                type="button"
+                class="kcxn__x"
+                [attr.aria-label]="'Apagar ligação ' + nomeDe(l.de) + ' para ' + nomeDe(l.para)"
+                (click)="removerLigacao(l.id)"
+              >
+                ✕
+              </button>
+            </li>
+          } @empty {
+            <li class="kx-muted">Nenhuma ligação ainda.</li>
+          }
+        </ul>
+      </aside>
+
+      <section class="kcxn__palco" aria-label="Mapa de navegação">
+        <div
+          class="kcxn__svg"
+          [class.kcxn__svg--claro]="tema() === 'claro'"
+          role="presentation"
+          [innerHTML]="svgMapa()"
+          (click)="clicarNoMapa($event)"
+        ></div>
+        <p class="kx-muted kcxn__dica">
+          {{ paginas().length }} página(s) · {{ ligacoes().length }} ligação(ões). Linha tracejada =
+          volta para uma página anterior. Borda vermelha = sem caminho; amarela = atenção.
+        </p>
+      </section>
+    </div>
+  } @else {
+    <div class="kcxn__layout">
+      <aside class="kcxn__painel kx-glass" aria-label="Passos do fluxo">
+        <div class="kcxn__fluxos">
+          @for (f of fluxos(); track f.id) {
+            <button
+              type="button"
+              class="kcxn__chip"
+              [attr.aria-current]="f.id === fluxo()?.id ? 'true' : null"
+              (click)="escolherFluxo(f.id)"
+            >
+              {{ f.nome }}
+            </button>
+          }
+          <button
+            type="button"
+            class="kcxn__chip kcxn__chip--novo"
+            [disabled]="fluxos().length >= limiteFluxos"
+            (click)="novoFluxo()"
+          >
+            + Novo fluxo
+          </button>
+        </div>
+
+        <details class="kcxn__gerar" [open]="!fluxos().length">
+          <summary>Gerar a partir do mapa</summary>
+          <p class="kx-muted kcxn__dica">
+            Monta o caminho mais curto entre duas páginas, com as ações das ligações.
+          </p>
+          <label class="kcxn__campo">
+            Nome da tarefa
+            <input
+              type="text"
+              maxlength="80"
+              placeholder="Ex.: Comprar um ingresso"
+              [value]="gerarNome()"
+              (input)="gerarNome.set(valor($event))"
+            />
+          </label>
+          <div class="kcxn__duas">
+            <label class="kcxn__campo">
+              De
+              <select (change)="gerarDe.set(valor($event))">
+                @for (p of paginas(); track p.id) {
+                  <option [value]="p.id" [selected]="p.id === (gerarDe() || inicio())">
+                    {{ p.nome }}
+                  </option>
+                }
+              </select>
+            </label>
+            <label class="kcxn__campo">
+              Até
+              <select (change)="gerarPara.set(valor($event))">
+                <option value="" [selected]="!gerarPara()">Escolha…</option>
+                @for (p of paginas(); track p.id) {
+                  <option [value]="p.id" [selected]="p.id === gerarPara()">{{ p.nome }}</option>
+                }
+              </select>
+            </label>
+          </div>
+          <button
+            type="button"
+            class="kx-btn kx-btn--primary"
+            [disabled]="!gerarPara()"
+            (click)="gerarDoMapa()"
+          >
+            Gerar fluxo
+          </button>
+          @if (erroGerar()) {
+            <p class="kcxn__aviso--erro kcxn__msg" role="alert">{{ erroGerar() }}</p>
+          }
+        </details>
+
+        @if (fluxo(); as f) {
+          <label class="kcxn__campo">
+            Nome do fluxo
+            <input
+              type="text"
+              maxlength="80"
+              [value]="f.nome"
+              (change)="definirFluxo('nome', valor($event))"
+            />
+          </label>
+          <label class="kcxn__campo">
+            Objetivo da pessoa
+            <input
+              type="text"
+              maxlength="200"
+              placeholder="O que ela quer conseguir?"
+              [value]="f.objetivo"
+              (change)="definirFluxo('objetivo', valor($event))"
+            />
+          </label>
+
+          <h2 class="kcxn__titulo">Passos ({{ f.passos.length }})</h2>
+          <ol class="kcxn__passos">
+            @for (p of f.passos; track p.id; let i = $index) {
+              <li
+                [id]="'passo-' + p.id"
+                [class]="'kcxn__passo kcxn__passo--' + p.tipo"
+                [class.kcxn__passo--sel]="selecionada() === p.id"
+              >
+                <div class="kcxn__passo-topo">
+                  <select
+                    [attr.aria-label]="'Tipo do passo ' + (i + 1)"
+                    (change)="definirPasso(p.id, 'tipo', valor($event))"
+                  >
+                    @for (t of tipos; track t[0]) {
+                      <option [value]="t[0]" [selected]="t[0] === p.tipo">{{ t[1].nome }}</option>
+                    }
+                  </select>
+                  <input
+                    type="text"
+                    maxlength="120"
+                    [placeholder]="p.tipo === 'inicio' ? 'Onde começa' : 'Descreva o passo'"
+                    [attr.aria-label]="'Texto do passo ' + (i + 1)"
+                    [value]="p.rotulo"
+                    (change)="definirPasso(p.id, 'rotulo', valor($event))"
+                  />
+                  <span class="kcxn__passo-ops">
+                    <button type="button" (click)="moverPasso(i, -1)" aria-label="Subir passo">
+                      ↑
+                    </button>
+                    <button type="button" (click)="moverPasso(i, 1)" aria-label="Descer passo">
+                      ↓
+                    </button>
+                    <button type="button" (click)="removerPasso(p.id)" aria-label="Apagar passo">
+                      ✕
+                    </button>
+                  </span>
+                </div>
+                @if (p.tipo === 'tela') {
+                  <label class="kcxn__sub">
+                    Página
+                    <select (change)="definirPasso(p.id, 'telaId', valor($event))">
+                      <option value="" [selected]="!p.telaId">(nenhuma)</option>
+                      @for (pg of paginas(); track pg.id) {
+                        <option [value]="pg.id" [selected]="pg.id === p.telaId">
+                          {{ pg.nome }}
+                        </option>
+                      }
+                    </select>
+                  </label>
+                }
+                @if (p.tipo === 'decisao') {
+                  <div class="kcxn__sub kcxn__sub--duas">
+                    <label>
+                      Sim →
+                      <select (change)="definirPasso(p.id, 'sim', valor($event))">
+                        <option value="" [selected]="!p.sim">Escolha…</option>
+                        @for (o of f.passos; track o.id) {
+                          @if (o.id !== p.id) {
+                            <option [value]="o.id" [selected]="o.id === p.sim">
+                              {{ rotuloPasso(o) }}
+                            </option>
+                          }
+                        }
+                      </select>
+                    </label>
+                    <label>
+                      Não →
+                      <select (change)="definirPasso(p.id, 'nao', valor($event))">
+                        <option value="" [selected]="!p.nao">Escolha…</option>
+                        @for (o of f.passos; track o.id) {
+                          @if (o.id !== p.id) {
+                            <option [value]="o.id" [selected]="o.id === p.nao">
+                              {{ rotuloPasso(o) }}
+                            </option>
+                          }
+                        }
+                      </select>
+                    </label>
+                  </div>
+                } @else if (p.tipo !== 'fim') {
+                  <label class="kcxn__sub">
+                    Depois vai para
+                    <select (change)="definirPasso(p.id, 'proximo', valor($event))">
+                      <option value="" [selected]="!p.proximo">O passo seguinte</option>
+                      @for (o of f.passos; track o.id) {
+                        @if (o.id !== p.id) {
+                          <option [value]="o.id" [selected]="o.id === p.proximo">
+                            {{ rotuloPasso(o) }}
+                          </option>
+                        }
+                      }
+                    </select>
+                  </label>
+                }
+              </li>
+            }
+          </ol>
+          <div class="kcxn__add" role="group" aria-label="Adicionar passo">
+            @for (t of tipos; track t[0]) {
+              <button
+                type="button"
+                class="kx-btn kx-btn--ghost"
+                [title]="t[1].dica"
+                [disabled]="f.passos.length >= limitePassos"
+                (click)="adicionarPasso(t[0])"
+              >
+                + {{ t[1].nome }}
+              </button>
+            }
+          </div>
+          @if (avisosFluxo().length) {
+            <ul class="kcxn__avisos">
+              @for (a of avisosFluxo(); track a.texto) {
+                <li [class]="'kcxn__aviso--' + a.nivel">{{ a.texto }}</li>
+              }
+            </ul>
+          }
+          <button type="button" class="kx-btn kx-btn--ghost kcxn__excluir" (click)="excluirFluxo()">
+            Excluir este fluxo
+          </button>
+        }
+      </aside>
+
+      <section class="kcxn__palco" aria-label="Fluxo de interação">
+        @if (svgFluxo(); as svg) {
+          <div
+            class="kcxn__svg"
+            [class.kcxn__svg--claro]="tema() === 'claro'"
+            role="presentation"
+            [innerHTML]="svg"
+            (click)="clicarNoMapa($event)"
+          ></div>
+          <p class="kx-muted kcxn__dica">
+            Pílula = início e fim · Tela = página das Telas · Retângulo = ação · Losango = decisão
+            (sim/não).
+          </p>
+        } @else {
+          <div class="kcxn__vazio">
+            <p>Nenhum fluxo ainda.</p>
+            <p class="kx-muted">
+              Crie um do zero ou gere a partir do mapa: por exemplo, da Home até o Carrinho.
+            </p>
+          </div>
+        }
+      </section>
+    </div>
+  }
+</div>

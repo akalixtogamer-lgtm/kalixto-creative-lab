@@ -100,8 +100,8 @@
   }
   function lerCor(c) {
     const t = c.trim();
-    const rgb3 = lerRgb(t);
-    if (rgb3) return rgb3;
+    const rgb4 = lerRgb(t);
+    if (rgb4) return rgb4;
     if (!HEX.test(t)) throw new Error(`KCX: cor inv\xE1lida "${c}".`);
     let h = t.slice(1);
     if (h.length <= 4) h = [...h].map((x) => x + x).join("");
@@ -1464,10 +1464,10 @@
     }
     return p;
   }
-  function desserializar(texto) {
+  function desserializar(texto2) {
     let bruto;
     try {
-      bruto = JSON.parse(texto);
+      bruto = JSON.parse(texto2);
     } catch (e) {
       return { ok: false, erro: `JSON inv\xE1lido: ${e.message}` };
     }
@@ -4704,21 +4704,259 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
     return sets.length;
   }
 
+  // src/app/kcx/projeto/navegacao.ts
+  var TIPOS_PASSO = {
+    inicio: { nome: "In\xEDcio", dica: 'Onde a tarefa come\xE7a (ex.: "Abre o app").' },
+    tela: { nome: "Tela", dica: "Uma p\xE1gina das Telas que a pessoa v\xEA." },
+    acao: { nome: "A\xE7\xE3o", dica: 'O que a pessoa faz (ex.: "Toca em Comprar").' },
+    decisao: { nome: "Decis\xE3o", dica: "Uma pergunta com dois caminhos: sim e n\xE3o." },
+    fim: { nome: "Fim", dica: "A tarefa conclu\xEDda (ou abandonada)." }
+  };
+  var TIPOS2 = Object.keys(TIPOS_PASSO);
+  var CORES_ESCURO = {
+    fundo: "#0f0e17",
+    caixa: "#1d1b2c",
+    borda: "#3a3656",
+    texto: "#f4f2fb",
+    suave: "#a9a4c4",
+    acento: "#d4119f",
+    linha: "#8f89b3",
+    erro: "#f43f5e",
+    aviso: "#f59e0b"
+  };
+  var hexOk = (c, padrao) => /^#[0-9a-f]{6}$/i.test(c) ? c : padrao;
+  function corDoNo(n, c) {
+    return n.estado === "inicio" ? c.acento : n.estado === "erro" ? c.erro : n.estado === "aviso" ? c.aviso : c.borda;
+  }
+  var FORMATO_DIAGRAMA = "kcx-diagrama";
+  function lerArquivoDiagrama(textoArquivo) {
+    var _a, _b, _c, _d;
+    let o;
+    try {
+      o = JSON.parse(textoArquivo);
+    } catch (e) {
+      return { erro: "JSON inv\xE1lido." };
+    }
+    if ((o == null ? void 0 : o["formato"]) !== FORMATO_DIAGRAMA) return { erro: "N\xE3o \xE9 um diagrama KCX." };
+    const d = o["diagrama"];
+    const num = (n) => typeof n === "number" && Number.isFinite(n) && Math.abs(n) < 1e5;
+    if (!d || !Array.isArray(d.nos) || !Array.isArray(d.arestas) || !num(d.largura) || !num(d.altura))
+      return { erro: "Diagrama incompleto." };
+    if (d.nos.length > 300 || d.arestas.length > 600) return { erro: "Diagrama grande demais." };
+    const formas = ["pagina", "pilula", "retangulo", "losango", "tela"];
+    for (const n of d.nos)
+      if (![n.x, n.y, n.w, n.h].every(num) || !formas.includes(n.forma) || typeof n.titulo !== "string" || !Array.isArray(n.linhas))
+        return { erro: "Caixa inv\xE1lida no diagrama." };
+    for (const a of d.arestas)
+      if (typeof a.d !== "string" || !/^[MCL\d\s.-]+$/.test(a.d) || !num(a.lx) || !num(a.ly) || !num((_a = a.ponta) == null ? void 0 : _a.x) || !num((_b = a.ponta) == null ? void 0 : _b.y) || !num((_c = a.ponta) == null ? void 0 : _c.angulo))
+        return { erro: "Seta inv\xE1lida no diagrama." };
+    const cin = (_d = o["cores"]) != null ? _d : {};
+    const cores = Object.fromEntries(
+      Object.entries(CORES_ESCURO).map(([k, v]) => [
+        k,
+        typeof cin[k] === "string" ? hexOk(cin[k], v) : v
+      ])
+    );
+    return { diagrama: d, cores };
+  }
+
+  // src/app/kcx/figma/construir-diagrama.ts
+  var rgb3 = (hex3) => {
+    const n = parseInt(hex3.slice(1), 16);
+    return { r: (n >> 16 & 255) / 255, g: (n >> 8 & 255) / 255, b: (n & 255) / 255 };
+  };
+  var solido = (hex3, opacity = 1) => [{ type: "SOLID", color: rgb3(hex3), opacity }];
+  var escSvg = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  async function carregarFontes(f) {
+    const normal = { family: "Inter", style: "Regular" };
+    await f.loadFontAsync(normal);
+    for (const style of ["Semi Bold", "Bold"]) {
+      try {
+        await f.loadFontAsync({ family: "Inter", style });
+        return { normal, forte: { family: "Inter", style } };
+      } catch (e) {
+      }
+    }
+    return { normal, forte: normal };
+  }
+  function texto(f, fontes, conteudo, o) {
+    const t = f.createText();
+    t.fontName = o.forte ? fontes.forte : fontes.normal;
+    t.fontSize = o.tamanho;
+    t.characters = conteudo;
+    t.fills = solido(o.cor);
+    t.lineHeight = { value: Math.round(o.tamanho * 1.3), unit: "PIXELS" };
+    if (o.largura) {
+      t.textAutoResize = "HEIGHT";
+      t.resize(o.largura, t.height || o.tamanho * 1.3);
+    }
+    if (o.centro) t.textAlignHorizontal = "CENTER";
+    return t;
+  }
+  function caixa(f, fontes, n, c, tipo) {
+    var _a;
+    const borda = corDoNo(n, c);
+    const larg = n.estado ? 2 : 1;
+    const quadro = f.createFrame();
+    quadro.name = n.forma === "pagina" ? `P\xE1gina \xB7 ${n.titulo.replace(/\n/g, " ")}` : `${{ pilula: "In\xEDcio/Fim", retangulo: "A\xE7\xE3o", losango: "Decis\xE3o", tela: "Tela", pagina: "" }[n.forma]} \xB7 ${n.titulo.replace(/\n/g, " ")}`;
+    quadro.x = n.x;
+    quadro.y = n.y;
+    quadro.resize(n.w, n.h);
+    quadro.clipsContent = false;
+    (_a = quadro.setSharedPluginData) == null ? void 0 : _a.call(quadro, "kcx", "diagrama-no", `${tipo}:${n.id}`);
+    const centro = n.forma !== "pagina";
+    const corTitulo = n.forma === "pilula" && n.estado === "inicio" ? "#ffffff" : c.texto;
+    if (n.forma === "losango") {
+      quadro.fills = [];
+      const forma = f.createNodeFromSvg(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${n.w}" height="${n.h}" viewBox="0 0 ${n.w} ${n.h}"><polygon points="${n.w / 2},1 ${n.w - 1},${n.h / 2} ${n.w / 2},${n.h - 1} 1,${n.h / 2}" fill="${c.caixa}" stroke="${borda}" stroke-width="${larg}"/></svg>`
+      );
+      forma.name = "Losango";
+      forma.fills = [];
+      quadro.appendChild(forma);
+    } else {
+      quadro.fills = solido(n.forma === "pilula" && n.estado === "inicio" ? c.acento : c.caixa);
+      quadro.strokes = solido(borda);
+      quadro.strokeWeight = larg;
+      quadro.cornerRadius = n.forma === "pilula" ? n.h / 2 : 12;
+      if (n.forma === "pagina" || n.forma === "tela") {
+        const barra = f.createRectangle();
+        barra.name = "Barra do navegador";
+        barra.resize(n.w, 18);
+        barra.fills = solido(borda, 0.55);
+        barra.topLeftRadius = 12;
+        barra.topRightRadius = 12;
+        quadro.appendChild(barra);
+      }
+    }
+    const titulo = texto(f, fontes, n.titulo, {
+      tamanho: 14,
+      cor: corTitulo,
+      forte: true,
+      centro,
+      largura: n.w - 28
+    });
+    titulo.name = "T\xEDtulo";
+    titulo.x = 14;
+    const linhasTitulo = n.titulo.split("\n").length;
+    titulo.y = n.forma === "pagina" || n.forma === "tela" ? 26 : n.forma === "retangulo" ? 8 : Math.round(n.h / 2 - linhasTitulo * 18 / 2);
+    quadro.appendChild(titulo);
+    if (n.linhas.length) {
+      const linhas = texto(f, fontes, n.linhas.map((l) => centro ? l : `\u25AA ${l}`).join("\n"), {
+        tamanho: 12,
+        cor: c.suave,
+        centro,
+        largura: n.w - 28
+      });
+      linhas.name = n.forma === "pagina" ? "Se\xE7\xF5es" : "Detalhe";
+      linhas.x = 14;
+      linhas.y = titulo.y + linhasTitulo * 18 + 4;
+      quadro.appendChild(linhas);
+    }
+    if (n.etiqueta && n.forma !== "pilula") {
+      const et = texto(f, fontes, n.etiqueta, {
+        tamanho: 9,
+        cor: n.estado === "inicio" ? c.acento : c.suave,
+        forte: true
+      });
+      et.name = "Etiqueta";
+      et.letterSpacing = { value: 1, unit: "PIXELS" };
+      et.x = n.w - 12 - (et.width || 40);
+      et.y = 3;
+      quadro.appendChild(et);
+    }
+    return quadro;
+  }
+  function ponta(x, y, angulo) {
+    const a = angulo * Math.PI / 180;
+    const p = (dx, dy) => `${Math.round((x + dx * Math.cos(a) - dy * Math.sin(a)) * 10) / 10} ${Math.round((y + dx * Math.sin(a) + dy * Math.cos(a)) * 10) / 10}`;
+    return `M${p(0, 0)} L${p(-10, -5)} L${p(-10, 5)} Z`;
+  }
+  async function construirDiagrama(f, d, c) {
+    var _a, _b, _c, _d, _e;
+    const fontes = await carregarFontes(f);
+    const quadro = f.createFrame();
+    quadro.name = `${d.tipo === "mapa" ? "Mapa de navega\xE7\xE3o" : "Fluxo"} \xB7 ${d.nome}`;
+    quadro.resize(d.largura, d.altura);
+    quadro.fills = solido(c.fundo);
+    quadro.cornerRadius = 16;
+    quadro.clipsContent = false;
+    (_a = quadro.setSharedPluginData) == null ? void 0 : _a.call(quadro, "kcx", "diagrama", d.tipo);
+    for (const a of d.arestas) {
+      const traco = a.volta ? ' stroke-dasharray="6 5"' : "";
+      const seta = f.createNodeFromSvg(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${d.largura}" height="${d.altura}" viewBox="0 0 ${d.largura} ${d.altura}"><path d="${escSvg(a.d)}" fill="none" stroke="${c.linha}" stroke-width="1.6"${traco}/><path d="${ponta(a.ponta.x, a.ponta.y, a.ponta.angulo)}" fill="${c.linha}"/></svg>`
+      );
+      seta.name = `Seta \xB7 ${a.rotulo || "liga\xE7\xE3o"}`;
+      seta.fills = [];
+      seta.x = 0;
+      seta.y = 0;
+      quadro.appendChild(seta);
+    }
+    for (const n of d.nos) quadro.appendChild(caixa(f, fontes, n, c, d.tipo));
+    for (const a of d.arestas) {
+      if (!a.rotulo) continue;
+      const et = f.createFrame();
+      et.name = `Gatilho \xB7 ${a.rotulo}`;
+      et.layoutMode = "HORIZONTAL";
+      et.primaryAxisSizingMode = "AUTO";
+      et.counterAxisSizingMode = "AUTO";
+      et.paddingLeft = et.paddingRight = 8;
+      et.paddingTop = et.paddingBottom = 4;
+      et.cornerRadius = 6;
+      et.fills = solido(c.fundo);
+      et.strokes = solido(c.borda);
+      et.strokeWeight = 1;
+      et.appendChild(texto(f, fontes, a.rotulo, { tamanho: 11, cor: c.suave }));
+      quadro.appendChild(et);
+      et.x = Math.round(a.lx - (et.width || 0) / 2);
+      et.y = Math.round(a.ly - (et.height || 0) / 2);
+    }
+    const centro = (_c = (_b = f.viewport) == null ? void 0 : _b.center) != null ? _c : { x: 0, y: 0 };
+    quadro.x = Math.round(centro.x - d.largura / 2);
+    quadro.y = Math.round(centro.y - d.altura / 2);
+    f.currentPage.appendChild(quadro);
+    f.currentPage.selection = [quadro];
+    (_e = (_d = f.viewport) == null ? void 0 : _d.scrollAndZoomIntoView) == null ? void 0 : _e.call(_d, [quadro]);
+    return { nome: quadro.name, caixas: d.nos.length, setas: d.arestas.length, id: quadro.id };
+  }
+
   // figma-bridge/src/code.ts
   figma.showUI(__html__, { width: 460, height: 660, themeColors: true, title: "KCX \xB7 Figma Bridge" });
   function responder(msg) {
     figma.ui.postMessage(msg);
   }
-  function ler(texto, modo) {
+  function ler(texto2, modo) {
     var _a, _b;
-    const r = desserializar(texto);
+    const r = desserializar(texto2);
     if (!r.ok) return { erro: r.erro, problemas: (_b = (_a = r.validacao) == null ? void 0 : _a.erros) != null ? _b : [] };
     const m = modo != null ? modo : r.pacote.exportacao.modo === "pacote" ? "completo" : r.pacote.exportacao.modo;
     return { pacote: r.pacote, plano: planejarFigma(r.pacote, m), avisos: r.validacao.avisos };
   }
+  var ehDiagrama = (texto2) => texto2.length < 5e6 && texto2.includes(`"${FORMATO_DIAGRAMA}"`);
   figma.ui.onmessage = async (msg) => {
     var _a;
     try {
+      if (msg.tipo === "analisar" && ehDiagrama(msg.texto)) {
+        const r = lerArquivoDiagrama(msg.texto);
+        if ("erro" in r) return responder({ tipo: "erro", erro: r.erro });
+        return responder({
+          tipo: "diagrama",
+          nome: r.diagrama.nome,
+          mapa: r.diagrama.tipo === "mapa",
+          caixas: r.diagrama.nos.length,
+          setas: r.diagrama.arestas.length,
+          largura: r.diagrama.largura,
+          altura: r.diagrama.altura
+        });
+      }
+      if (msg.tipo === "importar-diagrama") {
+        const r = lerArquivoDiagrama(msg.texto);
+        if ("erro" in r) return responder({ tipo: "erro", erro: r.erro });
+        const rel = await construirDiagrama(figma, r.diagrama, r.cores);
+        figma.notify(`KCX: ${rel.nome} \u2014 ${rel.caixas} caixa(s) e ${rel.setas} seta(s).`);
+        return responder(__spreadValues({ tipo: "diagrama-pronto" }, rel));
+      }
       if (msg.tipo === "analisar") {
         const r = ler(msg.texto, msg.modo);
         if ("erro" in r) return responder({ tipo: "erro", erro: r.erro, problemas: r.problemas });

@@ -29,17 +29,7 @@ import { Icon } from '../../../shared/components/icon/icon';
 import { KcxEstadoService, baixarArquivo } from '../kcx-estado.service';
 import { KcxFundacaoService } from '../kcx-fundacao.service';
 import { KcxMeusService } from '../kcx-meus.service';
-
-const CHAVE_TELA = 'kalixto-lab:kcx-tela:v1';
-
-function lerTela(): Tela | null {
-  try {
-    const t = JSON.parse(globalThis.localStorage?.getItem(CHAVE_TELA) ?? 'null') as Tela | null;
-    return t && Array.isArray(t.secoes) ? t : null;
-  } catch {
-    return null;
-  }
-}
+import { KcxProjetoService, LIMITE_TELAS } from '../kcx-projeto.service';
 
 /**
  * Telas (/kcx/telas): empilha componentes como seções de uma página e mostra
@@ -70,9 +60,10 @@ export class KcxTelas {
   ][];
   protected readonly zooms = [0.25, 0.4, 0.5, 0.75, 1];
 
-  protected readonly tela = signal<Tela>(
-    lerTela() ?? { nome: 'Página inicial', dispositivo: 'desktop', fidelidade: 'alta', secoes: [] },
-  );
+  protected readonly projeto = inject(KcxProjetoService);
+  protected readonly limiteTelas = LIMITE_TELAS;
+  /** A página aberta (o projeto pode ter várias). */
+  protected readonly tela = this.projeto.atual;
   protected readonly zoom = signal(0.5);
   protected readonly disponiveis = computed(() => this.meus.todos());
 
@@ -84,13 +75,6 @@ export class KcxTelas {
       untracked(() => {
         if (!this.tela().secoes.includes(id)) this.alterar((t) => t.secoes.push(id));
       });
-    });
-    effect(() => {
-      try {
-        globalThis.localStorage?.setItem(CHAVE_TELA, JSON.stringify(this.tela()));
-      } catch {
-        /* sem armazenamento: segue em memória */
-      }
     });
   }
 
@@ -135,9 +119,17 @@ export class KcxTelas {
   });
 
   private alterar(mudar: (t: Tela) => void): void {
-    const t = structuredClone(this.tela());
-    mudar(t);
-    this.tela.set(t);
+    this.projeto.alterarTela(this.tela().id, mudar);
+  }
+
+  /* ---------- Páginas do projeto ---------- */
+  protected novaPagina(): void {
+    this.projeto.novaTela();
+  }
+  protected excluirPagina(): void {
+    const t = this.tela();
+    if (t.secoes.length && !globalThis.confirm?.(`Excluir a página "${t.nome}"?`)) return;
+    this.projeto.excluir(t.id);
   }
 
   protected definir<K extends keyof Tela>(campo: K, valor: Tela[K]): void {
