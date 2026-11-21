@@ -19,6 +19,12 @@ import {
   SombraFundacao,
   TOKENS_COR,
   TokenCor,
+  FUNCOES_COR,
+  LAYOUT_PADRAO,
+  LayoutFundacao,
+  MOVIMENTO_PADRAO,
+  MovimentoFundacao,
+  USO_TEXTO,
   completarFundacao,
   cssDaFundacao,
   validarFundacao,
@@ -116,6 +122,57 @@ export class KcxFundacaoPagina {
   protected nome(texto: string): void {
     this.servico.alterar((f) => (f.nome = texto));
   }
+  protected readonly funcaoPadrao = FUNCOES_COR;
+  protected readonly usoPadrao = USO_TEXTO;
+  protected readonly camposMovimento = [
+    { id: 'rapido', nome: 'Rápido' },
+    { id: 'normal', nome: 'Normal' },
+    { id: 'lento', nome: 'Lento' },
+  ] as const;
+  protected readonly camposLayout = [
+    { id: 'container', nome: 'Conteúdo até (px)' },
+    { id: 'colunas', nome: 'Colunas' },
+    { id: 'gutter', nome: 'Entre colunas (px)' },
+    { id: 'margem', nome: 'Margem no celular (px)' },
+    { id: 'tablet', nome: 'Tablet a partir de (px)' },
+    { id: 'desktop', nome: 'Desktop a partir de (px)' },
+  ] as const;
+
+  protected funcao(t: TokenCor, texto: string): void {
+    this.servico.alterar((f) => {
+      const r = { ...f.funcoes };
+      if (texto.trim()) r[t] = texto.trim().slice(0, 300);
+      else delete r[t];
+      f.funcoes = r;
+    });
+  }
+  protected uso(n: NivelTexto, texto: string): void {
+    this.servico.alterar((f) => {
+      const r = { ...f.usoTexto };
+      if (texto.trim()) r[n] = texto.trim().slice(0, 300);
+      else delete r[n];
+      f.usoTexto = r;
+    });
+  }
+  protected movimento(k: Exclude<keyof MovimentoFundacao, 'easing'>, v: number): void {
+    const erros = this.servico.alterar(
+      (f) => (f.movimento = { ...MOVIMENTO_PADRAO, ...f.movimento, [k]: Math.round(v) }),
+    );
+    this.aviso.set(erros[0] ?? '');
+  }
+  protected curva(v: string): void {
+    const erros = this.servico.alterar(
+      (f) => (f.movimento = { ...MOVIMENTO_PADRAO, ...f.movimento, easing: v.trim() }),
+    );
+    this.aviso.set(erros[0] ?? '');
+  }
+  protected layout(k: keyof LayoutFundacao, v: number): void {
+    const erros = this.servico.alterar(
+      (f) => (f.layout = { ...LAYOUT_PADRAO, ...f.layout, [k]: Math.round(v) }),
+    );
+    this.aviso.set(erros[0] ?? '');
+  }
+
   protected cor(t: TokenCor, tema: Tema, hex: string): void {
     if (!/^#[0-9a-f]{6}$/i.test(hex)) return;
     this.servico.alterar((f) => (f.cores[t][tema] = hex.toLowerCase()));

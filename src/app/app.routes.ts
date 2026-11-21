@@ -84,6 +84,14 @@ export const routes: Routes = [
           import('./pages/kcx/kcx-compositor/kcx-compositor').then((m) => m.KcxCompositor),
       },
       {
+        path: 'kcx/design-system',
+        title: 'Design system · KCX Studio · Kalixto Creative Lab',
+        loadComponent: () =>
+          import('./pages/kcx/kcx-design-system/kcx-design-system').then(
+            (m) => m.KcxDesignSystemPagina,
+          ),
+      },
+      {
         path: 'kcx/fundacao',
         title: 'Fundação do design system · KCX Studio · Kalixto Creative Lab',
         loadComponent: () =>

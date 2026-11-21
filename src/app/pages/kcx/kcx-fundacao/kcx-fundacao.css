@@ -308,3 +308,20 @@ input[type='number'] {
   opacity: 0;
   cursor: pointer;
 }
+
+.kcxf__funcao,
+.kcxf__uso {
+  width: 100%;
+  min-width: 200px;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+  resize: vertical;
+}
+.kcxf__largo {
+  flex: 1 1 260px;
+}

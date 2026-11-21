@@ -100,8 +100,8 @@
   }
   function lerCor(c) {
     const t = c.trim();
-    const rgb2 = lerRgb(t);
-    if (rgb2) return rgb2;
+    const rgb3 = lerRgb(t);
+    if (rgb3) return rgb3;
     if (!HEX.test(t)) throw new Error(`KCX: cor inv\xE1lida "${c}".`);
     let h = t.slice(1);
     if (h.length <= 4) h = [...h].map((x) => x + x).join("");
@@ -518,6 +518,38 @@
     return erros;
   }
 
+  // src/app/kcx/cores.ts
+  var rgb = (hex3) => {
+    const h = hex3.replace("#", "").slice(0, 6);
+    return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+  };
+  var hex = (c) => "#" + c.map(
+    (x) => Math.round(Math.min(255, Math.max(0, x))).toString(16).padStart(2, "0")
+  ).join("");
+  var misturar = (a, b, t) => {
+    const x = rgb(a);
+    const y = rgb(b);
+    return hex(x.map((v, i) => v + (y[i] - v) * t));
+  };
+  var PASSOS_ESCALA = [
+    [50, -0.92],
+    [100, -0.82],
+    [200, -0.66],
+    [300, -0.46],
+    [400, -0.24],
+    [500, 0],
+    [600, 0.14],
+    [700, 0.3],
+    [800, 0.46],
+    [900, 0.62]
+  ];
+  function escalaTonal(base) {
+    return PASSOS_ESCALA.map(([passo, t]) => ({
+      passo,
+      cor: t === 0 ? base.toLowerCase().slice(0, 7) : t < 0 ? misturar(base, "#ffffff", -t) : misturar(base, "#000000", t)
+    }));
+  }
+
   // src/app/kcx/fundacao.ts
   var FORMATO_FUNDACAO = "kcx-fundacao";
   var VERSAO_FUNDACAO = "1.0.0";
@@ -562,6 +594,34 @@
   var CHAVES_RAIO = ["p", "m", "g", "pill"];
   var CHAVES_ESPACO = ["1", "2", "3", "4", "6", "8", "12", "16"];
   var CHAVES_SOMBRA = ["p", "m", "g"];
+  var MOVIMENTO_PADRAO = {
+    rapido: 150,
+    normal: 300,
+    lento: 500,
+    easing: "cubic-bezier(0.22, 1, 0.36, 1)"
+  };
+  var LAYOUT_PADRAO = {
+    container: 1200,
+    colunas: 12,
+    gutter: 24,
+    margem: 16,
+    tablet: 768,
+    desktop: 1024
+  };
+  var FUNCOES_COR = {
+    primaria: "A\xE7\xE3o principal: bot\xF5es de destaque, links, item ativo, foco. Use com modera\xE7\xE3o para n\xE3o perder a for\xE7a.",
+    secundaria: "A\xE7\xF5es e elementos de apoio: bot\xF5es secund\xE1rios, selos, gr\xE1ficos. Complementa a prim\xE1ria.",
+    destaque: "Detalhes que precisam saltar aos olhos: novidades, badges, realces pontuais.",
+    fundo: "Fundo da p\xE1gina. Base de todas as outras cores.",
+    superficie: "Cards, pain\xE9is, menus e janelas: tudo que fica \u201Cpor cima\u201D do fundo.",
+    borda: "Divis\xF3rias, contornos de campos e cards.",
+    texto: "T\xEDtulos e texto corrido. Precisa de contraste alto com o fundo e a superf\xEDcie.",
+    "texto-suave": "Textos de apoio: legendas, descri\xE7\xF5es, placeholders, datas.",
+    "sobre-primaria": "Texto e \xEDcones em cima da cor prim\xE1ria (ex.: r\xF3tulo do bot\xE3o principal).",
+    perigo: "Erros, a\xE7\xF5es destrutivas (excluir) e alertas cr\xEDticos.",
+    sucesso: "Confirma\xE7\xF5es, conclu\xEDdo, valores positivos.",
+    aviso: "Aten\xE7\xE3o sem ser erro: pend\xEAncias, limites pr\xF3ximos."
+  };
   var FUNDACAO_PADRAO = {
     formato: FORMATO_FUNDACAO,
     versao: VERSAO_FUNDACAO,
@@ -649,32 +709,49 @@
   };
   var HEX2 = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i;
   function validarFundacao(f) {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i;
     const erros = [];
     const o = f;
     if (!o || typeof o !== "object") return ["A funda\xE7\xE3o n\xE3o \xE9 um objeto."];
     if (o.formato !== FORMATO_FUNDACAO) erros.push(`formato deve ser "${FORMATO_FUNDACAO}".`);
     if (typeof o.nome !== "string" || !o.nome.trim()) erros.push("nome obrigat\xF3rio.");
     if (o.logo !== void 0) erros.push(...validarLogo(o.logo));
+    if (o.movimento !== void 0) {
+      const m = o.movimento;
+      for (const k of ["rapido", "normal", "lento"])
+        if (!(Number(m == null ? void 0 : m[k]) >= 0 && Number(m == null ? void 0 : m[k]) <= 5e3))
+          erros.push(`movimento.${k} precisa ser de 0 a 5000 ms.`);
+      if (!/^cubic-bezier\(\s*[-\d.]+\s*,\s*[-\d.]+\s*,\s*[-\d.]+\s*,\s*[-\d.]+\s*\)$/.test(
+        (_a = m == null ? void 0 : m.easing) != null ? _a : ""
+      ))
+        erros.push("movimento.easing precisa ser cubic-bezier(x1, y1, x2, y2).");
+    }
+    if (o.layout !== void 0) {
+      const l = o.layout;
+      for (const k of ["container", "colunas", "gutter", "margem", "tablet", "desktop"])
+        if (!(Number(l == null ? void 0 : l[k]) >= 0 && Number(l == null ? void 0 : l[k]) <= 4e3)) erros.push(`layout.${k} inv\xE1lido.`);
+      if (!(Number(l == null ? void 0 : l.colunas) >= 1 && Number(l == null ? void 0 : l.colunas) <= 24))
+        erros.push("layout.colunas vai de 1 a 24.");
+    }
     for (const t of TOKENS_COR) {
-      const c = (_a = o.cores) == null ? void 0 : _a[t];
-      if (!c || !HEX2.test((_b = c.escuro) != null ? _b : "") || !HEX2.test((_c = c.claro) != null ? _c : ""))
+      const c = (_b = o.cores) == null ? void 0 : _b[t];
+      if (!c || !HEX2.test((_c = c.escuro) != null ? _c : "") || !HEX2.test((_d = c.claro) != null ? _d : ""))
         erros.push(`cores.${t}: precisa de "escuro" e "claro" em hex (#rrggbb).`);
     }
     for (const k of ["titulo", "corpo", "mono"])
-      if (typeof ((_d = o.fontes) == null ? void 0 : _d[k]) !== "string" || !o.fontes[k].trim())
+      if (typeof ((_e = o.fontes) == null ? void 0 : _e[k]) !== "string" || !o.fontes[k].trim())
         erros.push(`fontes.${k} obrigat\xF3ria.`);
     for (const n of NIVEIS_TEXTO) {
-      const e = (_e = o.texto) == null ? void 0 : _e[n];
+      const e = (_f = o.texto) == null ? void 0 : _f[n];
       if (!e || !(e.tamanho > 0) || !(e.tamanhoCelular > 0) || !(e.altura > 0) || !(e.peso >= 100))
         erros.push(`texto.${n}: tamanho, tamanhoCelular, altura e peso positivos.`);
     }
     for (const k of CHAVES_RAIO)
-      if (!(Number((_f = o.raios) == null ? void 0 : _f[k]) >= 0)) erros.push(`raios.${k} precisa ser um n\xFAmero \u2265 0.`);
+      if (!(Number((_g = o.raios) == null ? void 0 : _g[k]) >= 0)) erros.push(`raios.${k} precisa ser um n\xFAmero \u2265 0.`);
     for (const k of CHAVES_ESPACO)
-      if (!(Number((_g = o.espacos) == null ? void 0 : _g[k]) >= 0)) erros.push(`espacos.${k} precisa ser um n\xFAmero \u2265 0.`);
+      if (!(Number((_h = o.espacos) == null ? void 0 : _h[k]) >= 0)) erros.push(`espacos.${k} precisa ser um n\xFAmero \u2265 0.`);
     for (const k of CHAVES_SOMBRA) {
-      const s = (_h = o.sombras) == null ? void 0 : _h[k];
+      const s = (_i = o.sombras) == null ? void 0 : _i[k];
       if (!s || [s.x, s.y, s.raio, s.espalhar, s.opacidade].some((x) => typeof x !== "number"))
         erros.push(`sombras.${k}: x, y, raio, espalhar e opacidade num\xE9ricos.`);
     }
@@ -683,7 +760,7 @@
   function completarFundacao(f) {
     var _a, _b;
     const p = FUNDACAO_PADRAO;
-    return __spreadValues({
+    return __spreadProps(__spreadValues(__spreadValues(__spreadValues({
       formato: FORMATO_FUNDACAO,
       versao: (_a = f.versao) != null ? _a : p.versao,
       nome: ((_b = f.nome) == null ? void 0 : _b.trim()) || p.nome,
@@ -703,8 +780,23 @@
           return [k, __spreadValues(__spreadValues({}, p.sombras[k]), (_a2 = f.sombras) == null ? void 0 : _a2[k])];
         })
       )
-    }, f.logo && !validarLogo(f.logo).length ? { logo: f.logo } : {});
+    }, f.logo && !validarLogo(f.logo).length ? { logo: f.logo } : {}), f.funcoes ? { funcoes: textosValidos(f.funcoes, TOKENS_COR) } : {}), f.usoTexto ? { usoTexto: textosValidos(f.usoTexto, NIVEIS_TEXTO) } : {}), {
+      movimento: __spreadValues(__spreadValues({}, MOVIMENTO_PADRAO), f.movimento),
+      layout: __spreadValues(__spreadValues({}, LAYOUT_PADRAO), f.layout)
+    });
   }
+  function textosValidos(o, chaves) {
+    const r = {};
+    for (const k of chaves) {
+      const t = o == null ? void 0 : o[k];
+      if (typeof t === "string" && t.trim()) r[k] = t.trim().slice(0, 300);
+    }
+    return r;
+  }
+  var funcaoDaCor = (f, t) => {
+    var _a;
+    return ((_a = f.funcoes) == null ? void 0 : _a[t]) || FUNCOES_COR[t];
+  };
   var PREFIXO_FUNDACAO = "Funda\xE7\xE3o";
   var nomeTokenCor = (t) => `${PREFIXO_FUNDACAO}/cor/${t}`;
   var nomeTokenRaio = (k) => `${PREFIXO_FUNDACAO}/raio/${k}`;
@@ -726,6 +818,7 @@
   var COLECAO_DIMENSOES = "KCX \xB7 Dimensions";
   var COLECAO_TIPOGRAFIA = "KCX \xB7 Typography";
   function variaveisDaFundacao(f) {
+    var _a, _b;
     const out = [];
     const base = (nome, colecao, tipo, valores, escopos, descricao) => ({
       nome,
@@ -747,7 +840,7 @@
           "COLOR",
           { Dark: corFigma(f.cores[t].escuro), Light: corFigma(f.cores[t].claro) },
           t.startsWith("texto") || t === "sobre-primaria" ? ["TEXT_FILL", "STROKE_COLOR"] : ["ALL_FILLS", "STROKE_COLOR", "EFFECT_COLOR"],
-          `Token de cor "${NOMES_COR[t]}" da funda\xE7\xE3o ${f.nome}.`
+          `${NOMES_COR[t]}: ${funcaoDaCor(f, t)}`
         )
       );
     for (const k of CHAVES_RAIO)
@@ -794,8 +887,56 @@
           `Fam\xEDlia da fonte de ${k === "titulo" ? "t\xEDtulos" : k === "corpo" ? "texto corrido" : "c\xF3digo"}.`
         )
       );
+    for (const t of TOKENS_ESCALA) {
+      const e = escalaTonal(f.cores[t].escuro);
+      const c = escalaTonal(f.cores[t].claro);
+      e.forEach(
+        ({ passo }, i) => out.push(
+          base(
+            `${PREFIXO_FUNDACAO}/escala/${t}/${passo}`,
+            COLECAO_CORES,
+            "COLOR",
+            { Dark: corFigma(e[i].cor), Light: corFigma(c[i].cor) },
+            ["ALL_FILLS", "STROKE_COLOR", "TEXT_FILL", "EFFECT_COLOR"],
+            `Escala de ${NOMES_COR[t]}: ${passo} (${passo < 500 ? "mais clara" : passo > 500 ? "mais escura" : "a pr\xF3pria cor"}).`
+          )
+        )
+      );
+    }
+    const mov = (_a = f.movimento) != null ? _a : MOVIMENTO_PADRAO;
+    for (const k of ["rapido", "normal", "lento"])
+      out.push(
+        base(
+          `${PREFIXO_FUNDACAO}/movimento/${k}`,
+          COLECAO_DIMENSOES,
+          "FLOAT",
+          { Desktop: mov[k], Celular: mov[k] },
+          [],
+          `[Documental] Dura\xE7\xE3o ${k} das anima\xE7\xF5es: ${mov[k]} ms (${mov.easing}).`
+        )
+      );
+    const lay = (_b = f.layout) != null ? _b : LAYOUT_PADRAO;
+    for (const k of ["container", "colunas", "gutter", "margem"])
+      out.push(
+        base(
+          `${PREFIXO_FUNDACAO}/layout/${k}`,
+          COLECAO_DIMENSOES,
+          "FLOAT",
+          { Desktop: lay[k], Celular: k === "colunas" ? 4 : k === "gutter" ? lay.margem : lay[k] },
+          k === "gutter" || k === "margem" ? ["GAP"] : k === "container" ? ["WIDTH_HEIGHT"] : [],
+          `Layout: ${k} (${k === "colunas" ? "colunas do grid" : "px"}).`
+        )
+      );
     return out;
   }
+  var TOKENS_ESCALA = [
+    "primaria",
+    "secundaria",
+    "destaque",
+    "perigo",
+    "sucesso",
+    "aviso"
+  ];
   function planoDaFundacao(f) {
     return {
       nome: f.nome,
@@ -839,7 +980,8 @@
     }
     return a === b;
   };
-  function candidatos(pv, tokens) {
+  function candidatos(pv, todos) {
+    const tokens = todos.filter((t) => !/\/(escala|layout|movimento)\//.test(t.nome));
     if (pv.tipo === "COLOR") return tokens.filter((t) => t.tipo === "COLOR");
     if (pv.tipo !== "FLOAT") return [];
     if (pv.escopos.includes("CORNER_RADIUS"))
@@ -1456,20 +1598,20 @@
     };
     const corVar = async (cor, opacidade = 1, alias) => {
       var _a2;
-      const hex = corDeFigma({ r: cor.r, g: cor.g, b: cor.b, a: ((_a2 = cor.a) != null ? _a2 : 1) * opacidade });
-      const existente = porCor.get(hex);
+      const hex3 = corDeFigma({ r: cor.r, g: cor.g, b: cor.b, a: ((_a2 = cor.a) != null ? _a2 : 1) * opacidade });
+      const existente = porCor.get(hex3);
       if (existente) return existente;
       const ligado = await nomeLigado(alias);
       const vid = idUnico(
         ligado ? camel(/^cor\b/i.test(ligado) ? ligado : `cor ${ligado}`) : `cor${porCor.size + 1}`
       );
-      porCor.set(hex, vid);
+      porCor.set(hex3, vid);
       vars.push(
         variavel({
           id: vid,
           nome: ligado ? /^cor\b/i.test(ligado) ? ligado : `Cor ${ligado}` : `Cor ${porCor.size}`,
           tipo: "color",
-          padrao: hex,
+          padrao: hex3,
           descricao: ligado ? `Vinda da vari\xE1vel \u201C${ligado}\u201D do Figma.` : "Cor lida do Figma.",
           grupo: "colors",
           secao: "aparencia",
@@ -3100,7 +3242,7 @@ ${cssAnim}`,
 
   // src/app/kcx/figma/construir/tipos.ts
   var CHAVE_PLUGIN = "kcx";
-  function rgb(c) {
+  function rgb2(c) {
     return { r: c.r, g: c.g, b: c.b };
   }
   async function variaveisLocais(figma2) {
@@ -3459,7 +3601,7 @@ ${cssAnim}`,
       if (p.tipo === "solido") {
         let paint = {
           type: "SOLID",
-          color: rgb(p.cor.valor),
+          color: rgb2(p.cor.valor),
           opacity: p.cor.valor.a,
           visible: true
         };
@@ -4298,7 +4440,7 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       t.fontName = this.fonte(familia, estilo);
       t.characters = conteudo;
       t.fontSize = tamanho;
-      t.fills = [{ type: "SOLID", color: rgb(cor) }];
+      t.fills = [{ type: "SOLID", color: rgb2(cor) }];
       t.layoutAlign = "STRETCH";
       t.textAutoResize = "HEIGHT";
       return t;

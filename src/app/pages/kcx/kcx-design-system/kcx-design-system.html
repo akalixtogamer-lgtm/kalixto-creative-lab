@@ -1,0 +1,70 @@
+<div class="kx-page" data-acento="magenta">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Design system</p>
+    <h1 class="kx-title">Design system {{ f().nome }}</h1>
+    <p class="kx-lead">
+      Toda a identidade visual num lugar: cores por função (e o porquê de cada uma), escalas,
+      contraste, tipografia e hierarquia, espaços, cantos, sombras, movimento, grid e componentes.
+      Tudo vem da <a routerLink="/kcx/fundacao">Fundação</a>: mudou lá, muda aqui, nos componentes e
+      no Figma.
+    </p>
+  </header>
+
+  <div class="kcxds__barra kx-glass">
+    <div class="kcxds__grupo" role="radiogroup" aria-label="Tema do guia">
+      <span>Tema</span>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="tema() === 'escuro'"
+        (click)="tema.set('escuro')"
+      >
+        Escuro
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="tema() === 'claro'"
+        (click)="tema.set('claro')"
+      >
+        Claro
+      </button>
+    </div>
+    <label class="kcxds__check">
+      <input
+        type="checkbox"
+        [checked]="comComponentes()"
+        (change)="comComponentes.set($any($event.target).checked)"
+      />
+      Mostrar componentes
+    </label>
+    <div class="kcxds__acoes">
+      <a class="kx-btn kx-btn--ghost" routerLink="/kcx/fundacao"
+        ><kx-icon name="layers" /> Editar a fundação</a
+      >
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarCss()">
+        Baixar tokens (CSS)
+      </button>
+      <button type="button" class="kx-btn kx-btn--primary" (click)="baixarGuia()">
+        <kx-icon name="download" /> Baixar guia (HTML)
+      </button>
+    </div>
+  </div>
+  @if (falhas().length) {
+    <p class="kcxds__aviso" role="status">
+      {{ falhas().length }} par{{ falhas().length > 1 ? 'es' : '' }} de cores abaixo do contraste
+      mínimo no tema {{ tema() }}: {{ falhas()[0].nome }}{{ falhas().length > 1 ? '…' : '' }}. Veja
+      "Acessibilidade de contraste" no guia e ajuste na Fundação.
+    </p>
+  }
+  <p class="kx-muted kcxds__dica">
+    Para PDF: baixe o guia, abra no navegador e use Imprimir → Salvar como PDF (cada seção começa
+    numa página).
+  </p>
+  <iframe
+    class="kcxds__guia"
+    sandbox=""
+    title="Guia do design system"
+    [srcdoc]="documento()"
+  ></iframe>
+</div>
