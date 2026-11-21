@@ -5,6 +5,21 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Pedidos da turma
+- **Cor do texto do botão** independente da cor do botão (Botão, Conjunto de botões, Botão
+  liga/desliga e Seletor de duas opções). Com a Fundação, nasce com "Texto sobre a primária".
+- **Subtítulo** nos cards de foto e de vídeo (liga/desliga, também no Figma).
+- **Carrossel** com até **15** slides; no desktop mostra **1, 3 ou 4** cards por vez e, no celular
+  (carrossel com até 440 px), **1**. No Figma, uma variante por posição.
+- **Telas:** arraste as seções **no próprio mockup** (ou na lista) para mudar a ordem.
+- **Tamanho em px** em qualquer componente: Largura e Altura no editor (preview, código, Telas e,
+  nos de tamanho fixo, Figma).
+- **Converter em outro tipo:** um desenho (ex.: trilho de cards vindo do Figma) vira Carrossel,
+  Navbar, Abas… aproveitando os itens que se repetem, os textos, as cores e os cantos.
+- **Design system do Figma → Fundação:** no plugin, "Enviar design system para o lab" lê
+  variáveis de cor e número, estilos de texto e de sombra e gera um `.kcx-fundacao.json` para
+  importar na Fundação.
+
 ### Adicionado — Seletor de duas opções (um ou outro)
 - Novo tipo **Seletor de duas opções** em Criar componente: escolhe **uma OU outra** (Português |
   Inglês, Mensal | Anual). A variável **Segunda opção escolhida** é verdadeiro/falso: falso = a

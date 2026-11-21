@@ -23,6 +23,7 @@
     'vidro    controles'
     'presets  controles'
     'codigo   controles'
+    'converter converter'
     'exportar exportar'
     'importar importar';
   align-items: start;
@@ -65,7 +66,7 @@
 @media (max-width: 1100px) {
   .kcxe__grid {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'palco' 'tamanho' 'vidro' 'controles' 'presets' 'codigo' 'exportar' 'importar';
+    grid-template-areas: 'palco' 'tamanho' 'vidro' 'controles' 'presets' 'codigo' 'converter' 'exportar' 'importar';
   }
   .kcxe__controles {
     position: static;
@@ -208,4 +209,23 @@
 .kcxe__tamanho-nota {
   margin: 0.5rem 0 0;
   font-size: 0.85rem;
+}
+
+.kcxe__converter {
+  grid-area: converter;
+  padding: var(--kx-space-5);
+}
+.kcxe__converter-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+.kcxe__converter-linha select {
+  font: inherit;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
 }

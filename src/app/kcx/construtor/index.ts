@@ -40,3 +40,4 @@ export function montarDoConstrutor(cfg: ConfigConstrutor): KcxComponente {
 }
 export * from './vidro';
 export * from './tamanho';
+export * from './converter';

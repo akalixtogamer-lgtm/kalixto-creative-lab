@@ -243,6 +243,33 @@
         />
       </section>
 
+      <section class="kcxe__converter kx-glass" aria-labelledby="kcxe-converter">
+        <h2 id="kcxe-converter" class="kcxe__h2">Converter em outro tipo</h2>
+        <p class="kx-muted">
+          Transforma este desenho (por exemplo, um trilho de cards vindo do Figma) em um tipo do
+          construtor: os cards que se repetem viram os itens (slides, links, abas…), os outros
+          textos, as cores e os cantos são aproveitados. Cria um componente novo e abre no
+          construtor para você revisar.
+        </p>
+        <div class="kcxe__converter-linha">
+          <select aria-label="Converter em" (change)="tipoConversao.set($any($event.target).value)">
+            @for (g of tiposConversao; track g.nome) {
+              <optgroup [label]="g.nome">
+                @for (t of g.tipos; track t.id) {
+                  <option [value]="t.id" [selected]="t.id === tipoConversao()">{{ t.nome }}</option>
+                }
+              </optgroup>
+            }
+          </select>
+          <button type="button" class="kx-btn kx-btn--primary" (click)="converter()">
+            Converter e abrir no construtor
+          </button>
+        </div>
+        @if (msgConversao()) {
+          <p class="kx-muted" role="status">{{ msgConversao() }}</p>
+        }
+      </section>
+
       <section class="kcxe__exportar kx-glass" aria-labelledby="kcxe-exportar">
         <h2 id="kcxe-exportar" class="kcxe__h2">Exportar para Figma</h2>
         <kx-kcx-exportar-painel [comp]="c" [valores]="valores()" [presetAtivo]="presetAtivo()" />

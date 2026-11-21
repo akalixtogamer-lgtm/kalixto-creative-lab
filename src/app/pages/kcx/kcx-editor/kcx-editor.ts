@@ -27,7 +27,16 @@ import { KcxImportarPainel } from '../kcx-importar-painel/kcx-importar-painel';
 import { KcxVariantes, valoresDaVariante } from '../kcx-variantes/kcx-variantes';
 import { KcxVidroPainel } from '../kcx-vidro-painel/kcx-vidro-painel';
 import { KcxFundacaoService } from '../kcx-fundacao.service';
-import { IDS_TAMANHO, valoresVidro } from '../../../kcx/construtor';
+import {
+  CATEGORIAS_CONSTRUTOR,
+  IDS_TAMANHO,
+  TIPOS_CONSTRUTOR,
+  converterParaTipo,
+  montarDoConstrutor,
+  slug,
+  valoresVidro,
+} from '../../../kcx/construtor';
+import { idLivre } from '../../../kcx/meus-componentes';
 import { fundoColorido } from '../../../kcx/plano-html';
 import { variantesDoComponente } from '../../../kcx/figma-plano';
 
@@ -102,6 +111,35 @@ export class KcxEditor {
   protected mudarTamanho(id: string, e: Event): void {
     const n = Math.round(Number((e.target as HTMLInputElement).value));
     if (Number.isFinite(n) && n >= 16 && n <= 2400) this.aplicarValores({ valores: { [id]: n } });
+  }
+
+  /* ---------- Converter em outro tipo (ex.: trilho do Figma → carrossel) ---------- */
+  protected readonly tiposConversao = CATEGORIAS_CONSTRUTOR.map((c) => ({
+    nome: c.nome,
+    tipos: TIPOS_CONSTRUTOR.filter((t) => t.categoria === c.id),
+  })).filter((c) => c.tipos.length);
+  protected readonly tipoConversao = signal('carrossel');
+  protected readonly msgConversao = signal('');
+
+  protected converter(): void {
+    const c = this.comp();
+    if (!c) return;
+    try {
+      const { cfg, aproveitado } = converterParaTipo(c, this.tipoConversao());
+      const id = idLivre(slug(cfg.nome), this.meus.ids());
+      const novo = montarDoConstrutor({ ...cfg, id });
+      const erros = this.meus.salvar(novo);
+      if (erros.length) {
+        this.msgConversao.set(erros[0]);
+        return;
+      }
+      this.msgConversao.set(
+        `Convertido: ${aproveitado.join(' · ') || 'estrutura padrão do tipo'}.`,
+      );
+      void this.router.navigate(['/kcx/criar'], { queryParams: { de: id } });
+    } catch (e) {
+      this.msgConversao.set((e as Error).message);
+    }
   }
 
   protected excluir(): void {
