@@ -5,6 +5,15 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Botão liga/desliga
+- Novo tipo **Botão liga/desliga** em Criar componente (Seguir/Seguindo, Favoritar, Silenciar):
+  desligado com contorno, ligado cheio, com **texto e ícone próprios** para cada lado.
+- Mesmos recursos dos outros botões: **Tamanhos** P/M/G, **Estados** (Hover, Pressionado, Foco e
+  Desativado, ligado e desligado), ícones trocáveis, três animações (Preenche, Pop, Ícone gira)
+  e o **Efeito vidro**.
+- Código acessível: `<button aria-pressed>` que alterna ao clicar. No Figma: 30 variantes
+  (Estado × Tamanho) e protótipo em que o clique liga e desliga com Smart Animate.
+
 ### Adicionado — Vidro (glassmorphism) em qualquer componente
 - Seção **Efeito vidro** na edição de **todo** componente (biblioteca, criados por tipo,
   montados ou importados do Figma): **Aplicar efeito vidro** / **Desligar vidro**, escolha da

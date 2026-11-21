@@ -35,6 +35,20 @@ export const NOTAS_FIGMA: Record<string, NotaFigma> = {
     nivel: 'codigo',
     texto: 'O pulso contínuo fica só no código. Ficam as variantes Padrão e Hover (com sombra).',
   },
+  // Botão liga/desliga
+  'botao-liga-desliga:preencher': {
+    nivel: 'igual',
+    texto: 'O clique troca Desligado ↔ Ligado com Smart Animate: a cor enche o botão suavemente.',
+  },
+  'botao-liga-desliga:pop': {
+    nivel: 'parcial',
+    texto:
+      'O clique liga e desliga com Smart Animate (curva com mola), mas sem o pulinho de escala.',
+  },
+  'botao-liga-desliga:girar': {
+    nivel: 'parcial',
+    texto: 'O clique troca o ícone com Smart Animate; o giro do ícone fica só no código.',
+  },
   // Conjunto de botões
   'botoes:elevar': { nivel: 'parcial', texto: SO_SOMBRA },
   'botoes:preencher': {
