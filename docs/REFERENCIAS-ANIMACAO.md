@@ -118,6 +118,30 @@ Motion design de interface escura com laranja, estilo painel/HUD.
 
 ---
 
+## Vídeo 9 — "Uma nova forma de apresentar" / Origin Café (@luccas2santos · 17 s)
+
+Anúncio de treinamento de sites cinematográficos, gravado num notebook.
+
+| # | O que aparece | Técnica | No lab |
+|---|---|---|---|
+| 9.1 | Cubo de gelo em que o café "nasce" por dentro e vira um copo de café gelado ("Cold built from within") | Sequência de quadros no scroll (canvas) | 🔁 Kit `image-sequence` |
+| 9.2 | Marcador lateral 01–04 que acende a seção da vez | Capítulos com ponto ativo e número "0N" | 🔁 Scroll Lab → *Capítulos com linha do tempo* |
+| 9.3 | Barista em stop-motion dentro do hero ("Small barista, serious coffee") | Vídeo em loop como fundo do hero | 🔁 Kit `room-3d` (vídeo na cena) · Interface Lab → *Hero editorial* |
+| 9.4 | Legendas do anúncio entrando por partes | Legenda cinética | 🔁 Kit `kinetic-captions` |
+
+## Vídeo 10 — "Como eu faço sites em 5 minutos usando IA" / Maison (@leobortolazzi.dev · 53 s)
+
+Site de imobiliária gerado com Claude Code, a partir de uma biblioteca de prompts.
+
+| # | O que aparece | Técnica | No lab |
+|---|---|---|---|
+| 10.1 | Voo de drone preso ao scroll atravessando a mansão, com uma legenda por cômodo ("Casas com história", "Pé-direito de 7 metros", "Volta para o poente") | Quadros desenhados pelo progresso + legendas por capítulo | ✅ [`arch-window-reveal`](../src/app/core/efeitos/kits/arch-window-reveal.kit.ts) · 🔁 kit `image-sequence` |
+| 10.2 | O voo sai por uma janela em arco recortada na página branca | `clip-path: inset(… round …)` animado pelo scroll (raio = metade da largura) | ✅ [`arch-window-reveal`](../src/app/core/efeitos/kits/arch-window-reveal.kit.ts) |
+| 10.3 | "Poucas casas bem vendidas" com foto presa e número grande "14" | Seção presa + número animado | 🔁 Scroll Lab → *Fixar uma seção* · Interface Lab → *Números* |
+| 10.4 | "Casas à venda": três cards que entram ao rolar | Revelar ao rolar | 🔁 Kits `scroll-reveal` e `fade-in` |
+| 10.5 | Biblioteca de prompts em grade com prévias | Bento grid | 🔁 Interface Lab → *Bento* |
+| 10.6 | Terminal do Claude Code escrevendo o código | Digitação de prompt | 🔁 Kit `typewriter-prompt` |
+
 ## As animações mais usadas hoje (importadas para o lab)
 
 Escolhidas cruzando as galerias abaixo (Awwwards, Recent/Godly, Landing.love, Made With GSAP, Codrops) com levantamentos de tendências de 2026: scroll storytelling, seções presas (sticky) e cards empilhados, tipografia cinética, bento grids e microinterações aparecem em todas. Todas foram reescritas do zero para o lab — nenhum código de terceiros foi copiado.

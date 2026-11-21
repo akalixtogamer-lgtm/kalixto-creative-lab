@@ -5,7 +5,7 @@
 | Item | Situação encontrada |
 |---|---|
 | Stack | Angular 22 standalone + signals, Vitest (jsdom), sem dependências de UI |
-| Biblioteca | 53 kits (`core/efeitos/kits/*.kit.ts`): ficha técnica, `params` (range/select), `gerar(valores)` → HTML/CSS/JS, versão Angular, explicação em 3 níveis, glossário |
+| Biblioteca | 54 kits (`core/efeitos/kits/*.kit.ts`): ficha técnica, `params` (range/select), `gerar(valores)` → HTML/CSS/JS, versão Angular, explicação em 3 níveis, glossário |
 | Preview dos kits | iframe `sandbox="allow-scripts"` + CSP `default-src 'none'`; **cada ajuste regenera o código e recria o iframe** (a animação recomeça) |
 | Parâmetros | Interpolados no texto do código — não existem como variáveis independentes; não há tipos cor/boolean/tempo/gradiente |
 | Presets | Só nas demos dos labs (fixos no código); presets do usuário no `ProgressoService` |

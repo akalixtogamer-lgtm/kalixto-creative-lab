@@ -54,6 +54,7 @@ import { DEVICE_SWITCHER } from './kits/device-switcher.kit';
 import { GLASS_CARD } from './kits/glass-card.kit';
 import { FROSTED_NAVBAR } from './kits/frosted-navbar.kit';
 import { BLUR_MODAL } from './kits/blur-modal.kit';
+import { ARCH_WINDOW_REVEAL } from './kits/arch-window-reveal.kit';
 
 /**
  * Registro central de efeitos.
@@ -122,6 +123,8 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   GLASS_CARD,
   FROSTED_NAVBAR,
   BLUR_MODAL,
+  // Referências em vídeo — lote 5 (sites cinematográficos: café e imobiliária)
+  ARCH_WINDOW_REVEAL,
 ];
 
 export function findKit(id: string): EffectKit | undefined {

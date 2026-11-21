@@ -5,6 +5,13 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Referências em vídeo, lote 5
+- **Voo que sai pela janela em arco** (`arch-window-reveal`): voo de câmera preso ao scroll com
+  legendas por cômodo, que termina encolhendo para uma janela em arco (ou círculo, ou retângulo)
+  recortada na página. Ficha técnica, controles, versão Angular e explicação em 3 níveis.
+- Mapa dos vídeos "Origin Café" e "Maison" em `docs/REFERENCIAS-ANIMACAO.md`: as demais
+  animações já estavam na plataforma.
+
 ### Adicionado — Projeto: briefing, moodboard, mapa e fluxos
 - **Briefing** (`/kcx/briefing`): importa **Word (.docx)**, .txt, .md ou o próprio .json, lido
   no navegador. Os títulos (Objetivo, Público-alvo, Tom de voz, Páginas, Prazo…) viram campos

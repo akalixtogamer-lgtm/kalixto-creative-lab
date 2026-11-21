@@ -1,0 +1,22 @@
+<section #secao class="voo-janela" [style.--q]="q()">
+  <div class="cena-fixa">
+    <div class="pagina">
+      <p class="marca">MAISON</p>
+      <h2 class="titulo-pagina">Poucas casas,<br />bem vendidas.</h2>
+      <p class="texto-pagina">Cada imóvel é visitado, fotografado e contado como um filme.</p>
+    </div>
+    <div class="janela">
+      <canvas
+        #canvas
+        class="voo"
+        role="img"
+        aria-label="Voo de câmera atravessando os cômodos de uma casa até o jardim ao pôr do sol"
+      ></canvas>
+      <ol class="legendas" aria-hidden="true">
+        @for (l of legendas; track l; let i = $index) {
+          <li [class.ativa]="i === atual()">{{ l }}</li>
+        }
+      </ol>
+    </div>
+  </div>
+</section>
