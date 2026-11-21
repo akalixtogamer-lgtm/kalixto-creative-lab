@@ -1,4 +1,15 @@
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import {
@@ -117,7 +128,7 @@ export class KcxTelas {
       const plano = planejarFigma(criarPacote([c]), 'visual');
       const raiz = plano.componentes.find((x) => x.id === c.id)?.variantes[0]?.arvore;
       if (!raiz) return null;
-      return this.sanitizer.bypassSecurityTrustHtml(documentoDaTela(raiz, '#d9d6e6'));
+      return this.sanitizer.bypassSecurityTrustHtml(documentoDaTela(raiz, '#d9d6e6', true));
     } catch {
       return null;
     }
@@ -137,6 +148,59 @@ export class KcxTelas {
   protected adicionar(id: string): void {
     this.alterar((t) => t.secoes.push(id));
   }
+  /* ---------- Arrastar seções (no mockup e na lista) ---------- */
+  private readonly frame = viewChild<ElementRef<HTMLIFrameElement>>('frame');
+  /** Onde cada seção está dentro do mockup (px do aparelho) e a rolagem atual. */
+  protected readonly caixas = signal<{ x: number; y: number; w: number; h: number }[]>([]);
+  protected readonly rolagem = signal(0);
+  protected readonly arrastando = signal<number | null>(null);
+  protected readonly alvo = signal<number | null>(null);
+
+  private ouvirMockup = (() => {
+    const ouvir = (e: MessageEvent) => {
+      if (e.source !== this.frame()?.nativeElement.contentWindow) return;
+      const d = (e.data as { kcxTela?: { secoes: unknown; rolagem: unknown } })?.kcxTela;
+      if (!d || !Array.isArray(d.secoes)) return;
+      this.caixas.set(
+        d.secoes
+          .filter((b): b is { x: number; y: number; w: number; h: number } =>
+            ['x', 'y', 'w', 'h'].every((k) => Number.isFinite((b as Record<string, number>)?.[k])),
+          )
+          .slice(0, 50),
+      );
+      this.rolagem.set(Number(d.rolagem) || 0);
+    };
+    globalThis.addEventListener?.('message', ouvir);
+    inject(DestroyRef).onDestroy(() => globalThis.removeEventListener?.('message', ouvir));
+    return true;
+  })();
+
+  protected comecarArrastar(i: number, e: DragEvent): void {
+    this.arrastando.set(i);
+    e.dataTransfer?.setData('text/plain', String(i));
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+  }
+  protected sobre(j: number, e: DragEvent): void {
+    if (this.arrastando() === null) return;
+    e.preventDefault();
+    this.alvo.set(j);
+  }
+  protected soltar(j: number, e: DragEvent): void {
+    e.preventDefault();
+    const i = this.arrastando();
+    this.arrastando.set(null);
+    this.alvo.set(null);
+    if (i === null || i === j) return;
+    this.alterar((t) => {
+      const [x] = t.secoes.splice(i, 1);
+      t.secoes.splice(j, 0, x);
+    });
+  }
+  protected terminarArrastar(): void {
+    this.arrastando.set(null);
+    this.alvo.set(null);
+  }
+
   protected mover(i: number, d: -1 | 1): void {
     this.alterar((t) => {
       const j = i + d;

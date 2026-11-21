@@ -294,16 +294,20 @@ tudo();addEventListener('resize',tudo);
  * Página inteira no tamanho real (sem encaixar no espaço): para o mockup de
  * dispositivo. O iframe tem a largura do dispositivo e rola na vertical.
  */
-export function documentoDaTela(raiz: PlanoNo, fundo = '#0b0a14'): string {
+export function documentoDaTela(raiz: PlanoNo, fundo = '#0b0a14', medir = false): string {
+  // Com `medir`, um script avisa a página onde cada seção está (para arrastar no mockup).
+  const script = medir
+    ? `<script>(function(){function m(){var r=document.querySelector('#t>div');if(!r)return;var l=[].map.call(r.children,function(e){var b=e.getBoundingClientRect();return{x:b.left,y:b.top+scrollY,w:b.width,h:b.height}});parent.postMessage({kcxTela:{secoes:l,rolagem:scrollY}},'*')}addEventListener('load',m);addEventListener('resize',m);addEventListener('scroll',m,{passive:true});setTimeout(m,200)})();</script>`
+    : '';
   return `<!doctype html><html><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: https:; style-src 'unsafe-inline'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: https:; style-src 'unsafe-inline'${medir ? "; script-src 'unsafe-inline'" : ''}">
 <style>
 html,body{margin:0;background:${fundo}}
 body{overflow-x:hidden}
 #t{position:relative;margin:0 auto;width:max-content;min-width:100%}
 #t>*{min-height:100vh;justify-content:flex-start!important}
 .svg svg{display:block;width:100%;height:100%;overflow:visible}
-</style></head><body><div id="t">${planoParaHtml(raiz)}</div></body></html>`;
+</style></head><body><div id="t">${planoParaHtml(raiz)}</div>${script}</body></html>`;
 }
 
 /**

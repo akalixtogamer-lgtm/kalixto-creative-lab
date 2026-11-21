@@ -226,3 +226,62 @@
   margin: 0;
   color: #5b566b;
 }
+
+/* Arrastar seções no mockup */
+.kcxt__alcas {
+  position: absolute;
+  inset: 0 auto auto 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+.kcxt__caixa {
+  position: absolute;
+  border-radius: 6px;
+  outline: 2px dashed transparent;
+  outline-offset: -2px;
+  transition:
+    outline-color 0.15s,
+    background 0.15s;
+}
+.kcxt__tela:hover .kcxt__caixa {
+  outline-color: rgb(34 211 238 / 45%);
+}
+.kcxt__alcas--ativas .kcxt__caixa {
+  pointer-events: auto;
+}
+.kcxt__caixa--alvo {
+  outline-color: #22d3ee !important;
+  background: rgb(34 211 238 / 15%);
+}
+.kcxt__caixa--origem {
+  opacity: 0.5;
+  background: rgb(0 0 0 / 25%);
+}
+.kcxt__alca {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  transform-origin: 0 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #22d3ee;
+  color: #06131a;
+  font:
+    600 12px/1.4 system-ui,
+    sans-serif;
+  white-space: nowrap;
+  cursor: grab;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.kcxt__tela:hover .kcxt__alca,
+.kcxt__alca:focus-visible {
+  opacity: 1;
+}
+.kcxt__secoes li[draggable='true'] {
+  cursor: grab;
+}
+.kcxt__li--alvo {
+  outline: 2px dashed #22d3ee;
+}
