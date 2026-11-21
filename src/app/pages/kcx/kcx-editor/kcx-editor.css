@@ -19,6 +19,7 @@
   grid-template-columns: minmax(0, 1.6fr) minmax(300px, 1fr);
   grid-template-areas:
     'palco    controles'
+    'tamanho  controles'
     'vidro    controles'
     'presets  controles'
     'codigo   controles'
@@ -64,7 +65,7 @@
 @media (max-width: 1100px) {
   .kcxe__grid {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'palco' 'vidro' 'controles' 'presets' 'codigo' 'exportar' 'importar';
+    grid-template-areas: 'palco' 'tamanho' 'vidro' 'controles' 'presets' 'codigo' 'exportar' 'importar';
   }
   .kcxe__controles {
     position: static;
@@ -174,4 +175,37 @@
   margin-top: var(--kx-space-3, 12px);
   padding-top: var(--kx-space-3, 12px);
   border-top: 1px solid var(--kx-border);
+}
+
+.kcxe__tamanho {
+  grid-area: tamanho;
+  padding: var(--kx-space-4);
+}
+.kcxe__tamanho-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem 1rem;
+}
+.kcxe__tamanho-campos label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+.kcxe__tamanho-linha {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.kcxe__tamanho-linha input {
+  width: 7rem;
+  font: inherit;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+}
+.kcxe__tamanho-nota {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
 }

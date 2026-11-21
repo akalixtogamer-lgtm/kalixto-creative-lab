@@ -177,6 +177,42 @@
         <kx-kcx-controles [variaveis]="c.variaveis" [valores]="valores()" (mudou)="mudar($event)" />
       </section>
 
+      @if (tamanho(); as t) {
+        <section class="kcxe__tamanho kx-glass" aria-labelledby="kcxe-tamanho">
+          <h2 id="kcxe-tamanho" class="kcxe__h2">Tamanho (px)</h2>
+          <div class="kcxe__tamanho-campos">
+            @for (m of t; track m.id) {
+              <label
+                >{{ m.nome }}
+                <span class="kcxe__tamanho-linha">
+                  <input
+                    type="number"
+                    min="16"
+                    max="2400"
+                    [attr.aria-label]="m.nome"
+                    [value]="m.valor"
+                    (change)="mudarTamanho(m.id, $event)"
+                  />
+                  @if (m.valor !== m.padrao) {
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost"
+                      (click)="voltarTamanho(m.id, m.padrao)"
+                    >
+                      Original ({{ m.padrao }})
+                    </button>
+                  }
+                </span>
+              </label>
+            }
+          </div>
+          <p class="kx-muted kcxe__tamanho-nota">
+            Muda o preview, o código e as Telas. No Figma, vale para os componentes de tamanho fixo
+            (os que crescem com o conteúdo continuam assim).
+          </p>
+        </section>
+      }
+
       <section class="kcxe__vidro kx-glass" aria-labelledby="kcxe-vidro">
         <h2 id="kcxe-vidro" class="kcxe__h2">Efeito vidro (glassmorphism)</h2>
         <kx-kcx-vidro-painel

@@ -27,7 +27,7 @@ import { KcxImportarPainel } from '../kcx-importar-painel/kcx-importar-painel';
 import { KcxVariantes, valoresDaVariante } from '../kcx-variantes/kcx-variantes';
 import { KcxVidroPainel } from '../kcx-vidro-painel/kcx-vidro-painel';
 import { KcxFundacaoService } from '../kcx-fundacao.service';
-import { valoresVidro } from '../../../kcx/construtor';
+import { IDS_TAMANHO, valoresVidro } from '../../../kcx/construtor';
 import { fundoColorido } from '../../../kcx/plano-html';
 import { variantesDoComponente } from '../../../kcx/figma-plano';
 
@@ -78,6 +78,31 @@ export class KcxEditor {
   protected readonly montado = computed(
     () => (this.comp()?.origemCriacao?.config as { tipo?: string } | undefined)?.tipo === 'montado',
   );
+
+  /** Largura e altura em px (variáveis de tamanho que todo componente ganha). */
+  protected readonly tamanho = computed(() => {
+    const c = this.comp();
+    if (!c) return null;
+    const lista = [IDS_TAMANHO.largura, IDS_TAMANHO.altura]
+      .map((id) => c.variaveis.find((v) => v.id === id))
+      .filter((v) => !!v)
+      .map((v) => ({
+        id: v.id,
+        nome: v.nome,
+        padrao: Number(v.padrao),
+        valor: Number(this.valores()[v.id] ?? v.valor),
+      }));
+    return lista.length ? lista : null;
+  });
+
+  protected voltarTamanho(id: string, padrao: number): void {
+    this.aplicarValores({ valores: { [id]: padrao } });
+  }
+
+  protected mudarTamanho(id: string, e: Event): void {
+    const n = Math.round(Number((e.target as HTMLInputElement).value));
+    if (Number.isFinite(n) && n >= 16 && n <= 2400) this.aplicarValores({ valores: { [id]: n } });
+  }
 
   protected excluir(): void {
     const c = this.comp();
