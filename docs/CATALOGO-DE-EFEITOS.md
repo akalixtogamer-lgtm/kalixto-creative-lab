@@ -2,13 +2,13 @@
 
 > Gerado por `npm run docs:efeitos` a partir do registro (`src/app/core/efeitos/registry.ts`).
 
-Total: **114** itens — **54 kits** com ficha técnica completa e **60 demos** dos laboratórios.
+Total: **116** itens — **56 kits** com ficha técnica completa e **60 demos** dos laboratórios.
 
 | # | Categoria | Kits | Demos |
 |---|---|---|---|
 | 01 | Microinterações e UI | 4 | 3 |
 | 02 | Entradas, saídas e transições | 5 | 10 |
-| 03 | Scroll e parallax | 8 | 8 |
+| 03 | Scroll e parallax | 10 | 8 |
 | 04 | Tipografia e texto | 8 | 5 |
 | 05 | Mouse e cursor | 6 | 2 |
 | 06 | Cards, imagens e galerias | 3 | 4 |
@@ -72,6 +72,8 @@ Efeitos controlados pela rolagem da página.
 | [Cards empilhados no scroll](efeitos/sticky-stack.md) | Kit (ficha completa) | Intermediário | `/efeitos/sticky-stack` |
 | [Hero que abre no scroll](efeitos/scroll-zoom-hero.md) | Kit (ficha completa) | Intermediário | `/efeitos/scroll-zoom-hero` |
 | [Voo que sai pela janela em arco](efeitos/arch-window-reveal.md) | Kit (ficha completa) | Avançado | `/efeitos/arch-window-reveal` |
+| [Mergulho no título em profundidade](efeitos/depth-zoom-title.md) | Kit (ficha completa) | Avançado | `/efeitos/depth-zoom-title` |
+| [Mergulho pelo portal](efeitos/portal-zoom.md) | Kit (ficha completa) | Intermediário | `/efeitos/portal-zoom` |
 | Disparar animação ao rolar | Demo | Iniciante | `/labs/scroll?demo=gatilho` |
 | Animação presa à barra de rolagem | Demo | Intermediário | `/labs/scroll?demo=scrub` |
 | Fixar uma seção enquanto anima | Demo | Intermediário | `/labs/scroll?demo=pin` |

@@ -55,6 +55,8 @@ import { GLASS_CARD } from './kits/glass-card.kit';
 import { FROSTED_NAVBAR } from './kits/frosted-navbar.kit';
 import { BLUR_MODAL } from './kits/blur-modal.kit';
 import { ARCH_WINDOW_REVEAL } from './kits/arch-window-reveal.kit';
+import { DEPTH_ZOOM_TITLE } from './kits/depth-zoom-title.kit';
+import { PORTAL_ZOOM } from './kits/portal-zoom.kit';
 
 /**
  * Registro central de efeitos.
@@ -125,6 +127,9 @@ export const EFFECT_REGISTRY: EffectKit[] = [
   BLUR_MODAL,
   // Referências em vídeo — lote 5 (sites cinematográficos: café e imobiliária)
   ARCH_WINDOW_REVEAL,
+  // Referências em vídeo — lote 6 (templates animados: PRIMAL, Step into Wonder, óculos de RV)
+  DEPTH_ZOOM_TITLE,
+  PORTAL_ZOOM,
 ];
 
 export function findKit(id: string): EffectKit | undefined {

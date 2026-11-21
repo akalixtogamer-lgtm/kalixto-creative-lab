@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+
+.mergulho {
+  --p: 0;
+  height: 400vh;
+}
+.palco {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #eef1f6;
+}
+.titulo {
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Toda camada nasce no centro; o JS aplica escala e posição pela profundidade */
+.camada {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+.fundo {
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(ellipse at 50% 60%, #ffffff 0%, #dfe6f1 55%, #b9c4d6 100%);
+}
+.sujeito {
+  width: 42vmin;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #dff0ff 0%, #4f8cff 38%, #13235c 100%);
+  box-shadow:
+    0 30px 80px rgb(0 0 0 / 0.25),
+    inset -20px -30px 60px rgb(0 0 0 / 0.25);
+}
+.letra {
+  font:
+    400 clamp(4rem, 16vmin, 11rem) / 1 Georgia,
+    'Times New Roman',
+    serif;
+  color: #1c2440;
+}
+.letra:nth-child(3n) {
+  color: #d7263d;
+}
+
+.frase {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12vh;
+  z-index: 100;
+  margin: 0;
+  text-align: center;
+  font:
+    600 clamp(1.4rem, 4vw, 2.6rem) / 1.1 system-ui,
+    sans-serif;
+  color: #fff;
+  text-shadow: 0 2px 20px rgb(0 0 0 / 0.35);
+  opacity: clamp(0, calc((var(--p) - 0.7) * 4), 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mergulho {
+    height: auto;
+  }
+  .palco {
+    position: relative;
+  }
+  .frase {
+    opacity: 1;
+    color: #1c2440;
+    text-shadow: none;
+  }
+}

@@ -9,8 +9,13 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 - **Voo que sai pela janela em arco** (`arch-window-reveal`): voo de câmera preso ao scroll com
   legendas por cômodo, que termina encolhendo para uma janela em arco (ou círculo, ou retângulo)
   recortada na página. Ficha técnica, controles, versão Angular e explicação em 3 níveis.
-- Mapa dos vídeos "Origin Café" e "Maison" em `docs/REFERENCIAS-ANIMACAO.md`: as demais
-  animações já estavam na plataforma.
+- **Mergulho no título em profundidade** (`depth-zoom-title`): a câmera entra na cena e as letras
+  do título, umas na frente e outras atrás do objeto, passam por ela (referência "PRIMAL").
+- **Mergulho pelo portal** (`portal-zoom`): zoom através de um furo feito com `mask-image` —
+  círculo, oval ou as duas lentes de um óculos de RV (referências "Step into Wonder" e "Enter
+  spatial freedom").
+- Mapa dos vídeos "Origin Café", "Maison" e "templates animados" em
+  `docs/REFERENCIAS-ANIMACAO.md`: as demais animações já estavam na plataforma.
 
 ### Adicionado — Projeto: briefing, moodboard, mapa e fluxos
 - **Briefing** (`/kcx/briefing`): importa **Word (.docx)**, .txt, .md ou o próprio .json, lido

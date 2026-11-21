@@ -142,6 +142,21 @@ Site de imobiliária gerado com Claude Code, a partir de uma biblioteca de promp
 | 10.5 | Biblioteca de prompts em grade com prévias | Bento grid | 🔁 Interface Lab → *Bento* |
 | 10.6 | Terminal do Claude Code escrevendo o código | Digitação de prompt | 🔁 Kit `typewriter-prompt` |
 
+## Vídeo 11 — "50 templates animados no Figma" (@danielsnows · 42 s)
+
+Vitrine de templates de sites animados (PRIMAL, Step into Wonder, Why so curious?, óculos de RV, Frost…).
+
+| # | O que aparece | Técnica | No lab |
+|---|---|---|---|
+| 11.1 | "PRIMAL": o leopardo vem para a câmera e as letras do título estão umas na frente, outras atrás dele | Camadas em profundidade (escala = z ÷ (z − câmera)) com z-index por profundidade | ✅ [`depth-zoom-title`](../src/app/core/efeitos/kits/depth-zoom-title.kit.ts) |
+| 11.2 | "Step into Wonder": a câmera entra pelo portal de flores | Zoom através de um furo com `mask-image` | ✅ [`portal-zoom`](../src/app/core/efeitos/kits/portal-zoom.kit.ts) |
+| 11.3 | "Enter spatial freedom": o óculos de RV vira de frente e a câmera entra pelas lentes até a sala virtual | Duas máscaras com `mask-composite: intersect` + zoom | ✅ [`portal-zoom`](../src/app/core/efeitos/kits/portal-zoom.kit.ts) (formato *duas lentes*) |
+| 11.4 | Carrossel de cards ao lado do portal e cards flutuando nas nuvens ("Create beyond reality") | Carrossel + parallax em camadas | 🔁 Carrossel (KCX) · kits `layered-parallax` e `glass-card` |
+| 11.5 | Gato "Why so curious?" com cursor em anel | Cursor personalizado | 🔁 Kit `custom-cursor` |
+| 11.6 | "FROST": título atrás da montanha, saindo do desfoque | Texto atrás do objeto + foco | 🔁 Interface Lab → *Texto atrás do objeto* · kit `text-reveal` |
+| 11.7 | Pássaro que voa de longe até pousar no hero | Caminho de movimento + escala | 🔁 SVG Lab → *Motion path* · kit `image-sequence` |
+| 11.8 | "Unleash yourself": tigre andando e portal vermelho (torii) com brilho | Vídeo no hero + luz | 🔁 Kits `image-sequence` e `light-beams` |
+
 ## As animações mais usadas hoje (importadas para o lab)
 
 Escolhidas cruzando as galerias abaixo (Awwwards, Recent/Godly, Landing.love, Made With GSAP, Codrops) com levantamentos de tendências de 2026: scroll storytelling, seções presas (sticky) e cards empilhados, tipografia cinética, bento grids e microinterações aparecem em todas. Todas foram reescritas do zero para o lab — nenhum código de terceiros foi copiado.

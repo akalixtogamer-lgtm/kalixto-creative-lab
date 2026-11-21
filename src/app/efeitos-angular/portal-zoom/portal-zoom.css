@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+
+.portal {
+  --p: 0;
+  height: 350vh;
+}
+.cenas {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Atrás: o lugar para onde o portal leva */
+.destino {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 70% 25%, #fff4c9 0 4%, transparent 18%),
+    linear-gradient(180deg, #8ec5ff 0%, #ffd1e8 55%, #ffe7c7 70%, #7fc6a4 71%, #2f7d64 100%);
+  scale: calc(1.25 - 0.25 * var(--p));
+}
+.texto-destino {
+  margin: 0;
+  text-align: center;
+  font:
+    400 clamp(2rem, 6vw, 4.5rem) / 1.05 Georgia,
+    serif;
+  color: #1d2b3a;
+  opacity: clamp(0, calc((var(--p) - 0.75) * 5), 1);
+}
+
+/* Na frente: a cena com o furo, que cresce cada vez mais rápido (p³) */
+.moldura {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      transparent 18vmin,
+      rgb(255 190 140 / 0.85) 18.8vmin,
+      transparent 23vmin
+    ),
+    radial-gradient(circle at 15% 85%, #ff5f8f 0 2.5%, transparent 3%),
+    radial-gradient(circle at 82% 78%, #ffb347 0 2%, transparent 2.5%),
+    radial-gradient(circle at 25% 20%, #c86bff 0 1.5%, transparent 2%),
+    radial-gradient(circle at 75% 15%, #ff8fab 0 1.8%, transparent 2.3%),
+    radial-gradient(ellipse at 50% 50%, #3c1d4f 0%, #170b22 70%);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 18vmin, #000 18.6vmin);
+  mask-composite: intersect;
+  scale: calc(1 + 13 * var(--p) * var(--p) * var(--p));
+  opacity: clamp(0, calc((1 - var(--p)) * 8), 1);
+}
+
+.texto-entrada {
+  position: absolute;
+  left: 6vw;
+  bottom: 10vh;
+  margin: 0;
+  font:
+    400 clamp(1.8rem, 5vw, 3.6rem) / 1 Georgia,
+    serif;
+  color: #fff;
+  opacity: calc(1 - var(--p) * 4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal {
+    height: auto;
+  }
+  .cenas {
+    position: relative;
+    height: auto;
+  }
+  .moldura,
+  .texto-entrada {
+    display: none;
+  }
+  .destino {
+    position: relative;
+    height: 100vh;
+    scale: 1;
+  }
+  .texto-destino {
+    opacity: 1;
+  }
+}

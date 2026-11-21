@@ -81,4 +81,7 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'blur-modal': () => import('./blur-modal/blur-modal').then((m) => m.BlurModal),
   'arch-window-reveal': () =>
     import('./arch-window-reveal/arch-window-reveal').then((m) => m.ArchWindowReveal),
+  'depth-zoom-title': () =>
+    import('./depth-zoom-title/depth-zoom-title').then((m) => m.DepthZoomTitle),
+  'portal-zoom': () => import('./portal-zoom/portal-zoom').then((m) => m.PortalZoom),
 };
