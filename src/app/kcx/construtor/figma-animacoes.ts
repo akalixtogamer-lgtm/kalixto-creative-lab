@@ -274,6 +274,18 @@ export const NOTAS_FIGMA: Record<string, NotaFigma> = {
     nivel: 'igual',
     texto: 'Uma variante por opção; a linha escolhida ganha fundo com Smart Animate.',
   },
+  'seletor-duplo:deslizar': {
+    nivel: 'igual',
+    texto: 'Clicar na outra opção faz o destaque deslizar com Smart Animate.',
+  },
+  'seletor-duplo:mola': {
+    nivel: 'igual',
+    texto: 'Clicar na outra opção faz o destaque deslizar com curva de mola (Gentle).',
+  },
+  'seletor-duplo:sumir': {
+    nivel: 'parcial',
+    texto: 'No Figma o destaque desliza (Smart Animate) em vez de sumir e aparecer.',
+  },
   'switch:deslizar': {
     nivel: 'igual',
     texto: 'Clicar liga e desliga; a bolinha desliza com Smart Animate.',
