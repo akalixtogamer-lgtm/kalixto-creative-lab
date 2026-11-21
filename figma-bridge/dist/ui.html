@@ -181,6 +181,15 @@
     <div class="barra"><button id="enviarSelecao">Enviar seleção para o lab</button></div>
     <p id="msgSelecao" class="muted"></p>
 
+    <h2>Design system do Figma → Fundação</h2>
+    <p class="muted">
+      Lê as variáveis de cor e de número (espaços, raios), os estilos de texto e de sombra deste
+      arquivo e gera um .kcx-fundacao.json. No lab: KCX Studio → Fundação → “Importar”. Os nomes são
+      reconhecidos em português ou inglês (primary, background, body, h1, spacing, radius…).
+    </p>
+    <div class="barra"><button id="enviarDs">Enviar design system para o lab</button></div>
+    <div id="msgDs" class="muted"></div>
+
     <script>
       const $ = (id) => document.getElementById(id);
       let texto = '';
@@ -231,6 +240,10 @@
       $('exportar').addEventListener('click', () => {
         $('msgExportar').textContent = 'Lendo…';
         enviar({ tipo: 'exportar-alteracoes' });
+      });
+      $('enviarDs').addEventListener('click', () => {
+        $('msgDs').textContent = 'Lendo variáveis e estilos…';
+        enviar({ tipo: 'enviar-design-system' });
       });
       $('enviarSelecao').addEventListener('click', () => {
         $('msgSelecao').textContent = 'Lendo a seleção…';
@@ -324,6 +337,20 @@
           $('msgSelecao').textContent =
             `“${m.nome}” virou ${m.id}.kcx.json com ${m.variaveis} variáveis.` +
             (m.avisos.length ? ' ' + m.avisos.join(' ') : '');
+        }
+        if (m.tipo === 'design-system') {
+          const arquivo = (m.nome || 'design-system')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+          baixar(`${arquivo || 'design-system'}.kcx-fundacao.json`, m.texto);
+          $('msgDs').innerHTML =
+            `<p>Fundação “${esc(m.nome)}” gerada. Reconhecido:</p><ul>${m.reconhecido.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>` +
+            (m.padrao.length
+              ? `<p>Ficou com o padrão do KCX: ${esc(m.padrao.join(', '))}.</p>`
+              : '');
         }
         if (m.tipo === 'alteracoes') {
           baixar(`${m.arquivo.componente}.kcx-alteracoes.json`, JSON.stringify(m.arquivo, null, 2));
