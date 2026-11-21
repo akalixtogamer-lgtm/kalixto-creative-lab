@@ -451,10 +451,38 @@
   var SVG_B64 = /^data:image\/svg\+xml;base64,([A-Za-z0-9+/]+=*)$/;
   var SVG_TXT = new RegExp("^data:image\\/svg\\+xml(;charset=utf-8)?,(.+)$", "is");
   var PERIGOSO = /<script|<foreignObject|\son[a-z]+\s*=|javascript:|<iframe|<embed|<object/i;
+  var B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   function decodificarBase64(b64) {
-    const bin = atob(b64);
-    const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
+    const limpo = b64.replace(/=+$/, "");
+    const bytes = [];
+    let buf = 0;
+    let bits = 0;
+    for (const ch of limpo) {
+      const v = B64.indexOf(ch);
+      if (v < 0) throw new Error("base64 inv\xE1lido");
+      buf = buf << 6 | v;
+      bits += 6;
+      if (bits >= 8) {
+        bits -= 8;
+        bytes.push(buf >> bits & 255);
+      }
+    }
+    let out = "";
+    for (let i = 0; i < bytes.length; i++) {
+      const b = bytes[i];
+      if (b < 128) out += String.fromCharCode(b);
+      else if (b >= 192 && b < 224)
+        out += String.fromCharCode((b & 31) << 6 | bytes[++i] & 63);
+      else if (b >= 224 && b < 240)
+        out += String.fromCharCode(
+          (b & 15) << 12 | (bytes[++i] & 63) << 6 | bytes[++i] & 63
+        );
+      else {
+        const cp = (b & 7) << 18 | (bytes[++i] & 63) << 12 | (bytes[++i] & 63) << 6 | bytes[++i] & 63;
+        out += String.fromCodePoint(cp);
+      }
+    }
+    return out;
   }
   function svgDaDataUrl(src) {
     try {

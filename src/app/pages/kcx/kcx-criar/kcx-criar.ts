@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, linkedSignal, signal, untracked } from '@angular/core';
-import { lerImagem } from '../../../kcx/logo';
+import { lerImagem } from '../../../kcx/logo-arquivo';
 import { Router, RouterLink } from '@angular/router';
 import {
   CATEGORIAS_CONSTRUTOR,

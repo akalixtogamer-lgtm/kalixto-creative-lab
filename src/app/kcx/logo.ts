@@ -27,10 +27,44 @@ const SVG_B64 = /^data:image\/svg\+xml;base64,([A-Za-z0-9+/]+=*)$/;
 const SVG_TXT = /^data:image\/svg\+xml(;charset=utf-8)?,(.+)$/is;
 const PERIGOSO = /<script|<foreignObject|\son[a-z]+\s*=|javascript:|<iframe|<embed|<object/i;
 
+const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+/** Base64 → texto UTF-8 (sem atob/TextDecoder: roda também no plugin do Figma). */
 function decodificarBase64(b64: string): string {
-  const bin = atob(b64);
-  const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
-  return new TextDecoder().decode(bytes);
+  const limpo = b64.replace(/=+$/, '');
+  const bytes: number[] = [];
+  let buf = 0;
+  let bits = 0;
+  for (const ch of limpo) {
+    const v = B64.indexOf(ch);
+    if (v < 0) throw new Error('base64 inválido');
+    buf = (buf << 6) | v;
+    bits += 6;
+    if (bits >= 8) {
+      bits -= 8;
+      bytes.push((buf >> bits) & 0xff);
+    }
+  }
+  let out = '';
+  for (let i = 0; i < bytes.length; i++) {
+    const b = bytes[i];
+    if (b < 0x80) out += String.fromCharCode(b);
+    else if (b >= 0xc0 && b < 0xe0)
+      out += String.fromCharCode(((b & 0x1f) << 6) | (bytes[++i] & 0x3f));
+    else if (b >= 0xe0 && b < 0xf0)
+      out += String.fromCharCode(
+        ((b & 0x0f) << 12) | ((bytes[++i] & 0x3f) << 6) | (bytes[++i] & 0x3f),
+      );
+    else {
+      const cp =
+        ((b & 0x07) << 18) |
+        ((bytes[++i] & 0x3f) << 12) |
+        ((bytes[++i] & 0x3f) << 6) |
+        (bytes[++i] & 0x3f);
+      out += String.fromCodePoint(cp);
+    }
+  }
+  return out;
 }
 
 /** Texto do SVG de uma data URL SVG (ou null se não for SVG). */
@@ -107,25 +141,4 @@ export function noDaImagem(
       : [{ tipo: 'solido', cor: '#8a84a8' }],
     ...extra,
   };
-}
-
-/** Lê um arquivo do computador e devolve a logo (data URL + tamanho natural). */
-export async function lerImagem(arquivo: File): Promise<KcxLogo> {
-  if (arquivo.size > MAX_BYTES_IMAGEM)
-    throw new Error(`Imagem muito grande: até ${Math.round(MAX_BYTES_IMAGEM / 1024)} KB.`);
-  const src = await new Promise<string>((ok, erro) => {
-    const r = new FileReader();
-    r.onload = () => ok(String(r.result));
-    r.onerror = () => erro(new Error('Não deu para ler o arquivo.'));
-    r.readAsDataURL(arquivo);
-  });
-  const p = problemaDaImagem(src);
-  if (p) throw new Error(p);
-  const { largura, altura } = await new Promise<{ largura: number; altura: number }>((ok) => {
-    const img = new Image();
-    img.onload = () => ok({ largura: img.naturalWidth || 200, altura: img.naturalHeight || 60 });
-    img.onerror = () => ok({ largura: 200, altura: 60 });
-    img.src = src;
-  });
-  return { src, largura, altura, nome: arquivo.name };
 }

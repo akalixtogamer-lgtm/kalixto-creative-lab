@@ -84,11 +84,9 @@ function cinzasProfundos<T>(valor: T, fid: Fidelidade): T {
   return valor;
 }
 
+/** Bloco cinza (SVG 4×4 #c8c8c8) no lugar de fotos e logos nos wireframes. */
 const CINZA_IMG =
-  'data:image/svg+xml;base64,' +
-  btoa(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="4" height="4" fill="#c8c8c8"/></svg>',
-  );
+  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNjOGM4YzgiLz48L3N2Zz4=';
 
 /** Preenchimentos de imagem viram cinza (wireframe não mostra fotos). */
 function semFotos(n: KcxNo): KcxNo {

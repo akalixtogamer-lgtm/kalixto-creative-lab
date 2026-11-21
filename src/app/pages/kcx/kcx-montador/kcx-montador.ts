@@ -23,7 +23,8 @@ import {
   validarMontagem,
 } from '../../../kcx/construtor';
 import { fundoColorido } from '../../../kcx/plano-html';
-import { KcxLogo, larguraPara, lerImagem } from '../../../kcx/logo';
+import { KcxLogo, larguraPara } from '../../../kcx/logo';
+import { lerImagem } from '../../../kcx/logo-arquivo';
 import {
   CHAVES_ESPACO,
   CHAVES_RAIO,

@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { ehImagemValida, lerImagem } from '../../../kcx/logo';
+import { ehImagemValida } from '../../../kcx/logo';
+import { lerImagem } from '../../../kcx/logo-arquivo';
 import { RouterLink } from '@angular/router';
 import {
   CHAVES_ESPACO,
