@@ -38,3 +38,4 @@ export function montarDoConstrutor(cfg: ConfigConstrutor): KcxComponente {
     : [];
   return construirComponente(def, { ...cfg, itens });
 }
+export * from './vidro';

@@ -1,0 +1,76 @@
+<p class="kx-muted kcxv__intro">
+  Transforme qualquer camada deste componente em vidro: fundo e borda translúcidos e desfoque do que
+  fica atrás. Salva uma cópia em Meus componentes; o original não muda. No Figma sai como
+  <strong>Background blur</strong>.
+</p>
+
+<div class="kcxv__campos">
+  <label
+    >Camada
+    <select aria-label="Camada com vidro" (change)="camada.set(valor($event))">
+      @for (k of camadas(); track k.id) {
+        <option [value]="k.id" [selected]="k.id === camada()">
+          {{ recuo(k.nivel) }}{{ k.nome }}
+        </option>
+      }
+    </select>
+  </label>
+  <label
+    >Fundo · {{ fundo() }}%
+    <input
+      type="range"
+      min="0"
+      max="100"
+      step="5"
+      aria-label="Opacidade do fundo do vidro"
+      [value]="fundo()"
+      (input)="fundo.set(numero($event))"
+    />
+  </label>
+  <label
+    >Borda · {{ borda() }}%
+    <input
+      type="range"
+      min="0"
+      max="100"
+      step="5"
+      aria-label="Opacidade da borda do vidro"
+      [value]="borda()"
+      (input)="borda.set(numero($event))"
+    />
+  </label>
+  <label
+    >Desfoque
+    <select aria-label="Desfoque do vidro" (change)="desfoque.set($any(valor($event)))">
+      @for (k of desfoques; track k) {
+        <option [value]="k" [selected]="k === desfoque()">
+          {{ k.toUpperCase() }} · {{ px[k] }} px
+        </option>
+      }
+    </select>
+  </label>
+</div>
+
+@if (erro()) {
+  <p class="kcxv__aviso" role="alert">{{ erro() }}</p>
+}
+@if (vidro(); as v) {
+  <kx-kcx-variantes
+    [comp]="v.comp"
+    [alturaPrevia]="280"
+    [seletores]="false"
+    [fundo]="fundoPrevia()"
+  />
+  @for (a of v.avisos; track a) {
+    <p class="kcxv__aviso">{{ a }}</p>
+  }
+  <div class="kcxv__acoes">
+    <button type="button" class="kx-btn kx-btn--primary" (click)="salvar()">
+      Salvar versão de vidro
+    </button>
+    <span class="kx-muted">Vai para Meus componentes como "{{ v.comp.nome }}".</span>
+  </div>
+}
+@for (e of erros(); track e) {
+  <p class="kcxv__aviso" role="alert">{{ e }}</p>
+}

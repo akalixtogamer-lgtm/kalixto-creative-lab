@@ -25,6 +25,7 @@ import { KcxCodigoPainel } from '../kcx-codigo-painel/kcx-codigo-painel';
 import { KcxExportarPainel } from '../kcx-exportar-painel/kcx-exportar-painel';
 import { KcxImportarPainel } from '../kcx-importar-painel/kcx-importar-painel';
 import { KcxVariantes, valoresDaVariante } from '../kcx-variantes/kcx-variantes';
+import { KcxVidroPainel } from '../kcx-vidro-painel/kcx-vidro-painel';
 import { variantesDoComponente } from '../../../kcx/figma-plano';
 
 const NIVEL_ROTULO = {
@@ -52,6 +53,7 @@ const NIVEL_ROTULO = {
     KcxExportarPainel,
     KcxImportarPainel,
     KcxVariantes,
+    KcxVidroPainel,
   ],
   templateUrl: './kcx-editor.html',
   styleUrl: './kcx-editor.css',
@@ -72,6 +74,11 @@ export class KcxEditor {
   /** Criado no Montador visual (reabre lá, não no construtor de tipos). */
   protected readonly montado = computed(
     () => (this.comp()?.origemCriacao?.config as { tipo?: string } | undefined)?.tipo === 'montado',
+  );
+
+  /** Cópia "· vidro" feita no painel de vidro (não reabre no construtor). */
+  protected readonly deVidro = computed(
+    () => (this.comp()?.origemCriacao?.config as { tipo?: string } | undefined)?.tipo === 'vidro',
   );
 
   protected excluir(): void {

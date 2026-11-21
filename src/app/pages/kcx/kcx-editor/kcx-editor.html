@@ -25,10 +25,14 @@
         <div class="kcxe__meu">
           <span class="kx-chip"
             >Meu componente{{
-              doConstrutor() ? ' · criado no construtor' : ' · importado do Figma'
+              deVidro()
+                ? ' · versão de vidro'
+                : doConstrutor()
+                  ? ' · criado no construtor'
+                  : ' · importado do Figma'
             }}</span
           >
-          @if (doConstrutor()) {
+          @if (doConstrutor() && !deVidro()) {
             <a
               class="kx-btn kx-btn--ghost"
               [routerLink]="[montado() ? '/kcx/montar' : '/kcx/criar']"
@@ -186,6 +190,11 @@
           (aplicar)="aplicarValores($event)"
           (restaurar)="restaurar()"
         />
+      </section>
+
+      <section class="kcxe__vidro kx-glass" aria-labelledby="kcxe-vidro">
+        <h2 id="kcxe-vidro" class="kcxe__h2">Efeito vidro (glassmorphism)</h2>
+        <kx-kcx-vidro-painel [comp]="c" />
       </section>
 
       <section class="kcxe__codigo" aria-labelledby="kcxe-codigo">
