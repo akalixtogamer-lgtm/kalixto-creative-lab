@@ -601,3 +601,21 @@ dd .kcxc__aviso-figma {
   font-size: 0.85em;
   opacity: 0.85;
 }
+
+.kcxc__arquivo-logo {
+  position: relative;
+  cursor: pointer;
+  justify-self: start;
+}
+.kcxc__arquivo-logo input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.kcxc__check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

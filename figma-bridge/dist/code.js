@@ -445,6 +445,79 @@
     }));
   }
 
+  // src/app/kcx/logo.ts
+  var MAX_BYTES_IMAGEM = 400 * 1024;
+  var RASTER = /^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/]+=*$/;
+  var SVG_B64 = /^data:image\/svg\+xml;base64,([A-Za-z0-9+/]+=*)$/;
+  var SVG_TXT = new RegExp("^data:image\\/svg\\+xml(;charset=utf-8)?,(.+)$", "is");
+  var PERIGOSO = /<script|<foreignObject|\son[a-z]+\s*=|javascript:|<iframe|<embed|<object/i;
+  var B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  function decodificarBase64(b64) {
+    const limpo = b64.replace(/=+$/, "");
+    const bytes = [];
+    let buf = 0;
+    let bits = 0;
+    for (const ch of limpo) {
+      const v = B64.indexOf(ch);
+      if (v < 0) throw new Error("base64 inv\xE1lido");
+      buf = buf << 6 | v;
+      bits += 6;
+      if (bits >= 8) {
+        bits -= 8;
+        bytes.push(buf >> bits & 255);
+      }
+    }
+    let out = "";
+    for (let i = 0; i < bytes.length; i++) {
+      const b = bytes[i];
+      if (b < 128) out += String.fromCharCode(b);
+      else if (b >= 192 && b < 224)
+        out += String.fromCharCode((b & 31) << 6 | bytes[++i] & 63);
+      else if (b >= 224 && b < 240)
+        out += String.fromCharCode(
+          (b & 15) << 12 | (bytes[++i] & 63) << 6 | bytes[++i] & 63
+        );
+      else {
+        const cp = (b & 7) << 18 | (bytes[++i] & 63) << 12 | (bytes[++i] & 63) << 6 | bytes[++i] & 63;
+        out += String.fromCodePoint(cp);
+      }
+    }
+    return out;
+  }
+  function svgDaDataUrl(src) {
+    try {
+      const b = SVG_B64.exec(src);
+      if (b) return decodificarBase64(b[1]);
+      const t = SVG_TXT.exec(src);
+      if (t) return decodeURIComponent(t[2]);
+    } catch (e) {
+      return null;
+    }
+    return null;
+  }
+  function problemaDaImagem(src) {
+    if (typeof src !== "string" || !src.startsWith("data:image/"))
+      return "Envie um arquivo de imagem (PNG, JPG, WebP, GIF ou SVG).";
+    if (src.length * 0.75 > MAX_BYTES_IMAGEM)
+      return `Imagem muito grande: at\xE9 ${Math.round(MAX_BYTES_IMAGEM / 1024)} KB.`;
+    if (RASTER.test(src)) return null;
+    const svg = svgDaDataUrl(src);
+    if (svg === null) return "Formato n\xE3o aceito: use PNG, JPG, WebP, GIF ou SVG.";
+    if (!/<svg[\s>]/i.test(svg)) return "O arquivo SVG n\xE3o tem uma tag <svg>.";
+    if (PERIGOSO.test(svg)) return "Este SVG tem script ou eventos: exporte de novo sem eles.";
+    return null;
+  }
+  function validarLogo(l) {
+    const o = l;
+    if (!o || typeof o !== "object") return ["logo precisa ser um objeto."];
+    const erros = [];
+    const p = problemaDaImagem(o.src);
+    if (p) erros.push(`logo: ${p}`);
+    for (const k of ["largura", "altura"])
+      if (!(Number(o[k]) > 0 && Number(o[k]) <= 1e4)) erros.push(`logo.${k} precisa ser > 0.`);
+    return erros;
+  }
+
   // src/app/kcx/fundacao.ts
   var FORMATO_FUNDACAO = "kcx-fundacao";
   var VERSAO_FUNDACAO = "1.0.0";
@@ -582,6 +655,7 @@
     if (!o || typeof o !== "object") return ["A funda\xE7\xE3o n\xE3o \xE9 um objeto."];
     if (o.formato !== FORMATO_FUNDACAO) erros.push(`formato deve ser "${FORMATO_FUNDACAO}".`);
     if (typeof o.nome !== "string" || !o.nome.trim()) erros.push("nome obrigat\xF3rio.");
+    if (o.logo !== void 0) erros.push(...validarLogo(o.logo));
     for (const t of TOKENS_COR) {
       const c = (_a = o.cores) == null ? void 0 : _a[t];
       if (!c || !HEX2.test((_b = c.escuro) != null ? _b : "") || !HEX2.test((_c = c.claro) != null ? _c : ""))
@@ -609,7 +683,7 @@
   function completarFundacao(f) {
     var _a, _b;
     const p = FUNDACAO_PADRAO;
-    return {
+    return __spreadValues({
       formato: FORMATO_FUNDACAO,
       versao: (_a = f.versao) != null ? _a : p.versao,
       nome: ((_b = f.nome) == null ? void 0 : _b.trim()) || p.nome,
@@ -629,7 +703,7 @@
           return [k, __spreadValues(__spreadValues({}, p.sombras[k]), (_a2 = f.sombras) == null ? void 0 : _a2[k])];
         })
       )
-    };
+    }, f.logo && !validarLogo(f.logo).length ? { logo: f.logo } : {});
   }
   var PREFIXO_FUNDACAO = "Funda\xE7\xE3o";
   var nomeTokenCor = (t) => `${PREFIXO_FUNDACAO}/cor/${t}`;
@@ -923,6 +997,7 @@
     ["x", "y", "largura", "altura", "raio", "opacidade", "visivel", "rotacao", "svg"].forEach((k) => add(k, no[k]));
     (_a = no.preenchimentos) == null ? void 0 : _a.forEach((p, i) => {
       if (p.tipo === "solido") add(`preenchimentos[${i}].cor`, p.cor);
+      else if (p.tipo === "imagem") return;
       else if (p.tipo === "gradiente-variavel") {
         add(`preenchimentos[${i}].variavel`, { $var: p.variavel });
         add(`preenchimentos[${i}].tamanho`, p.tamanho);
@@ -934,6 +1009,7 @@
     });
     const pintura = (p, campo) => {
       if (p.tipo === "solido") add(`${campo}.cor`, p.cor);
+      else if (p.tipo === "imagem") return;
       else if (p.tipo === "gradiente-variavel") {
         add(`${campo}.variavel`, { $var: p.variavel });
         add(`${campo}.tamanho`, p.tamanho);
@@ -2421,6 +2497,8 @@ ${cssAnim}`,
       var _a2, _b2, _c2;
       if (f.tipo === "solido")
         return { tipo: "solido", cor: corRef(f.cor, campoCor, onde(rotulo), ctx) };
+      if (f.tipo === "imagem")
+        return { tipo: "imagem", src: f.src, ajuste: f.ajuste === "preencher" ? "FILL" : "FIT" };
       if (f.tipo === "gradiente-linear" || f.tipo === "gradiente-conico") {
         const ang = (_a2 = literal(f.angulo, ctx)) != null ? _a2 : f.tipo === "gradiente-linear" ? 90 : 0;
         return {
@@ -3368,6 +3446,16 @@ ${cssAnim}`,
     pintura(p, onde) {
       var _a;
       const f = this.figma;
+      if (p.tipo === "imagem") {
+        try {
+          const b64 = p.src.slice(p.src.indexOf(",") + 1);
+          const img = f.createImage(f.base64Decode(b64));
+          return { type: "IMAGE", imageHash: img.hash, scaleMode: p.ajuste, visible: true };
+        } catch (e) {
+          this.rel.avisos.push(`${onde}: imagem n\xE3o importada (${e.message}).`);
+          return { type: "SOLID", color: { r: 0.54, g: 0.52, b: 0.66 }, visible: true };
+        }
+      }
       if (p.tipo === "solido") {
         let paint = {
           type: "SOLID",

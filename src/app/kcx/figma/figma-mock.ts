@@ -229,6 +229,13 @@ export function criarFigmaMock() {
     createEllipse: () => new NoMock('ELLIPSE'),
     createText: () => new NoMock('TEXT'),
     createComponent: () => new NoMock('COMPONENT'),
+    imagens: [] as Uint8Array[],
+    base64Decode: (b64: string) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)),
+    createImage(bytes: Uint8Array) {
+      if (!bytes.length) throw new Error('imagem vazia');
+      this.imagens.push(bytes);
+      return { hash: `img-${this.imagens.length}` };
+    },
     createNodeFromSvg: (svg: string) => {
       const f = new NoMock('FRAME');
       const v = new NoMock('VECTOR');

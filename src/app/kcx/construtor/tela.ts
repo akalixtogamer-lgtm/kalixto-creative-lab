@@ -84,6 +84,25 @@ function cinzasProfundos<T>(valor: T, fid: Fidelidade): T {
   return valor;
 }
 
+/** Bloco cinza (SVG 4×4 #c8c8c8) no lugar de fotos e logos nos wireframes. */
+const CINZA_IMG =
+  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNjOGM4YzgiLz48L3N2Zz4=';
+
+/** Preenchimentos de imagem viram cinza (wireframe não mostra fotos). */
+function semFotos(n: KcxNo): KcxNo {
+  return {
+    ...n,
+    ...(n.preenchimentos
+      ? {
+          preenchimentos: n.preenchimentos.map((p) =>
+            p.tipo === 'imagem' ? { tipo: 'solido' as const, cor: '#c8c8c8' } : p,
+          ),
+        }
+      : {}),
+    ...(n.filhos ? { filhos: n.filhos.map(semFotos) } : {}),
+  };
+}
+
 const ehImagem = (v: KcxVariavel) =>
   v.tipo === 'string' &&
   v.vinculos.some((x) => x.alvo.tipo === 'atributo' && x.alvo.atributo === 'src');
@@ -119,8 +138,16 @@ export function aplicarFidelidade(comp: KcxComponente, fid: Fidelidade): KcxComp
       if (v.modos) v.modos = cinzasProfundos(v.modos, fid);
     }
   }
-  c.estrutura = cinzasProfundos(c.estrutura, fid);
+  c.estrutura = semFotos(cinzasProfundos(c.estrutura, fid));
   c.codigo = cinzasProfundos(c.codigo, fid);
+  // Fotos e logos (PNG/JPG…) viram um bloco cinza no wireframe.
+  c.codigo = {
+    ...c.codigo,
+    html: c.codigo.html.replace(
+      /data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/]+=*/g,
+      CINZA_IMG,
+    ),
+  };
   // Presets e estados guardam valores de cor: também passam pela fidelidade.
   const cores = new Set(c.variaveis.filter((v) => v.tipo === 'color').map((v) => v.id));
   for (const e of c.estados)

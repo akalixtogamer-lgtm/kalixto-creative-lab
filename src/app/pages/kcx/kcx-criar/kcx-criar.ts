@@ -1,4 +1,5 @@
-import { Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, signal, untracked } from '@angular/core';
+import { lerImagem } from '../../../kcx/logo-arquivo';
 import { Router, RouterLink } from '@angular/router';
 import {
   CATEGORIAS_CONSTRUTOR,
@@ -13,6 +14,7 @@ import {
   configPadrao,
   montarDoConstrutor,
   slug,
+  temMarca,
   tipoConstrutor,
 } from '../../../kcx/construtor';
 import { montarDocumentoKcx } from '../../../kcx/documento';
@@ -138,7 +140,8 @@ export class KcxCriar {
     const base = configPadrao(def, `Meu ${def.nome.toLowerCase()}`);
     // Com a fundação ligada, todo componente novo já nasce com os tokens dela.
     const f = this.fundacaoSrv.paraPacote();
-    return f ? { ...base, ...construtorDaFundacao(f) } : base;
+    const comFundacao = f ? { ...base, ...construtorDaFundacao(f) } : base;
+    return this.comLogo(comFundacao, def);
   });
 
   protected readonly def = computed<DefinicaoTipo>(
@@ -226,7 +229,7 @@ export class KcxCriar {
     if (def.id !== this.cfg().tipo) {
       const atual = this.cfg();
       const novo = configPadrao(def, `Meu ${def.nome.toLowerCase()}`);
-      this.cfg.set({ ...novo, cores: atual.cores, raio: atual.raio });
+      this.cfg.set(this.comLogo({ ...novo, cores: atual.cores, raio: atual.raio }, def));
       this.variante.set('');
     }
     this.erros.set([]);
@@ -397,6 +400,40 @@ export class KcxCriar {
   protected readonly usaTextoBotao = computed(
     () => !!this.resultado().comp?.variaveis.some((v) => v.id === 'corTextoBotao'),
   );
+
+  /* ---------- Logo (tipos com marca: navbar, rodapé, menus) ---------- */
+  protected readonly temMarca = computed(() => temMarca(this.def()));
+  protected readonly logoFundacao = computed(() => this.fundacaoSrv.fundacao().logo);
+  protected readonly avisoLogo = signal('');
+
+  /** Componente novo com marca já nasce com a logo da fundação (se houver). */
+  private comLogo(cfg: ConfigConstrutor, def: DefinicaoTipo): ConfigConstrutor {
+    const logo = untracked(this.fundacaoSrv.fundacao).logo;
+    return logo && temMarca(def) ? { ...cfg, logo } : cfg;
+  }
+
+  protected usarLogoDaFundacao(usar: boolean): void {
+    const logo = this.logoFundacao();
+    this.cfg.update((c) => {
+      const { logo: _antiga, ...resto } = c;
+      void _antiga;
+      return usar && logo ? { ...resto, logo } : resto;
+    });
+  }
+
+  protected async enviarLogo(e: Event): Promise<void> {
+    const input = e.target as HTMLInputElement;
+    const arquivo = input.files?.[0];
+    input.value = '';
+    this.avisoLogo.set('');
+    if (!arquivo) return;
+    try {
+      const logo = await lerImagem(arquivo);
+      this.cfg.update((c) => ({ ...c, logo }));
+    } catch (err) {
+      this.avisoLogo.set((err as Error).message);
+    }
+  }
 
   protected enviarMidia(e: Event): void {
     const arquivo = (e.target as HTMLInputElement).files?.[0];

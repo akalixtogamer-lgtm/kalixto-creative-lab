@@ -12,6 +12,7 @@
  * TypeScript puro (roda no lab, nos testes e no plugin do Figma).
  */
 import type { FigmaCor, FigmaValor, PlanoFigma, PlanoNo, PlanoVariavel } from './figma-plano';
+import { KcxLogo, validarLogo } from './logo';
 import { corFigma } from './unidades';
 
 export const FORMATO_FUNDACAO = 'kcx-fundacao';
@@ -102,6 +103,8 @@ export interface KcxFundacao {
   /** Escala de 4 px: espaco/4 = 16 px. */
   espacos: Record<ChaveEspaco, number>;
   sombras: Record<ChaveSombra, SombraFundacao>;
+  /** Logo da marca (opcional): entra na navbar, no rodapé e no montador. */
+  logo?: KcxLogo;
 }
 
 /** Fundação padrão: identidade Kalixto. */
@@ -202,6 +205,7 @@ export function validarFundacao(f: unknown): string[] {
   if (!o || typeof o !== 'object') return ['A fundação não é um objeto.'];
   if (o.formato !== FORMATO_FUNDACAO) erros.push(`formato deve ser "${FORMATO_FUNDACAO}".`);
   if (typeof o.nome !== 'string' || !o.nome.trim()) erros.push('nome obrigatório.');
+  if (o.logo !== undefined) erros.push(...validarLogo(o.logo));
   for (const t of TOKENS_COR) {
     const c = o.cores?.[t];
     if (!c || !HEX.test(c.escuro ?? '') || !HEX.test(c.claro ?? ''))
@@ -244,6 +248,7 @@ export function completarFundacao(f: Partial<KcxFundacao>): KcxFundacao {
     sombras: Object.fromEntries(
       CHAVES_SOMBRA.map((k) => [k, { ...p.sombras[k], ...f.sombras?.[k] }]),
     ) as KcxFundacao['sombras'],
+    ...(f.logo && !validarLogo(f.logo).length ? { logo: f.logo } : {}),
   };
 }
 

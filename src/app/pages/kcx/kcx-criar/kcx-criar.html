@@ -96,6 +96,52 @@
               </select>
             </label>
           }
+          @if (temMarca()) {
+            <fieldset class="kcxc__itens">
+              <legend>Logo</legend>
+              @if (logoFundacao()) {
+                <label class="kcxc__check">
+                  <input
+                    type="checkbox"
+                    [checked]="!!cfg().logo"
+                    (change)="usarLogoDaFundacao($any($event.target).checked)"
+                  />
+                  Usar a logo no lugar do texto da marca
+                </label>
+              } @else {
+                <p class="kx-muted">
+                  Sem logo na <a routerLink="/kcx/fundacao">Fundação</a>. Envie uma aqui ou lá (lá
+                  ela vale para todos os componentes).
+                </p>
+              }
+              <label class="kx-btn kx-btn--ghost kcxc__arquivo-logo"
+                >{{ cfg().logo ? 'Trocar a logo deste componente' : 'Enviar uma logo' }}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                  aria-label="Arquivo da logo"
+                  (change)="enviarLogo($event)"
+                />
+              </label>
+              @if (cfg().logo) {
+                <label class="kcxc__campo">
+                  <span>Altura da logo · {{ cfg().alturaLogo ?? 32 }} px</span>
+                  <input
+                    type="range"
+                    min="16"
+                    max="80"
+                    step="2"
+                    aria-label="Altura da logo"
+                    [value]="cfg().alturaLogo ?? 32"
+                    (input)="mudar('alturaLogo', +valor($event))"
+                  />
+                </label>
+              }
+              @if (avisoLogo()) {
+                <p class="kcxc__erro" role="alert">{{ avisoLogo() }}</p>
+              }
+            </fieldset>
+          }
           @if (def().itens; as d) {
             <fieldset class="kcxc__itens">
               <legend>

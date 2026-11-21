@@ -171,6 +171,7 @@ export function refsDoNo(no: KcxNo): { campo: string; ref: KcxRef<unknown> }[] {
   ).forEach((k) => add(k, no[k]));
   no.preenchimentos?.forEach((p, i) => {
     if (p.tipo === 'solido') add(`preenchimentos[${i}].cor`, p.cor);
+    else if (p.tipo === 'imagem') return;
     else if (p.tipo === 'gradiente-variavel') {
       add(`preenchimentos[${i}].variavel`, { $var: p.variavel });
       add(`preenchimentos[${i}].tamanho`, p.tamanho);
@@ -185,6 +186,7 @@ export function refsDoNo(no: KcxNo): { campo: string; ref: KcxRef<unknown> }[] {
     campo: string,
   ) => {
     if (p.tipo === 'solido') add(`${campo}.cor`, p.cor);
+    else if (p.tipo === 'imagem') return;
     else if (p.tipo === 'gradiente-variavel') {
       add(`${campo}.variavel`, { $var: p.variavel });
       add(`${campo}.tamanho`, p.tamanho);
