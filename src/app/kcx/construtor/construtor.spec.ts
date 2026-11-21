@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validarPacote } from '../validar';
+import { validarComponente, validarPacote } from '../validar';
 import { criarPacote, serializar } from '../serializar';
 import { eixosDoComponente, planejarFigma, variantesDoComponente } from '../figma-plano';
 import { documentoDaVariante } from '../plano-html';
@@ -164,6 +164,24 @@ describe('Construtor KCX — todos os tipos', () => {
       expect(trilho(1).x).toBeCloseTo(-(L + 16), 3);
       expect(trilho(0).filhos).toHaveLength(15);
     }
+  });
+
+  it('carrossel: subtítulo dentro de cada slide, abaixo do título (código e Figma)', () => {
+    const def = TIPOS_CONSTRUTOR.find((t) => t.id === 'carrossel')!;
+    const cfg = configPadrao(def);
+    expect(cfg.subItens![0]).toBe('Toda quinta, 19h');
+    const c = montarDoConstrutor({ ...cfg, subItens: cfg.itens.map((_, i) => `Sub ${i + 1}`) });
+    expect(validarComponente(c, c.id)).toEqual([]);
+    expect(c.codigo.html).toMatch(
+      /<h3 data-kcx-item="1">Turma de samba<\/h3><p data-kcx-sub="1" class="[^"]+__sub">Sub 1<\/p>/,
+    );
+    expect(c.variaveis.find((v) => v.id === 'subItem2')!.padrao).toBe('Sub 2');
+    const plano = planejarFigma(criarPacote([c], { agora }));
+    const slide = plano.componentes[0].variantes[0].arvore.filhos[0].filhos[0].filhos[0];
+    const textos = slide.filhos[0].filhos.map((n) => n.texto?.conteudo.valor);
+    expect(textos).toEqual(['Turma de samba', 'Sub 1']);
+    const sem = montarDoConstrutor({ ...cfg, recursos: { ...cfg.recursos, subtitulo: false } });
+    expect(sem.codigo.html).not.toContain('data-kcx-sub');
   });
 
   it('conjunto de botões: Entrar e Criar conta × P/M/G × Padrão/Hover, com cor e nome de cada um', async () => {

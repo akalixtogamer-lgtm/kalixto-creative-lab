@@ -87,11 +87,13 @@ export function converterParaTipo(comp: KcxComponente, tipoId: string): Conversa
   const grupo = grupoRepetido(raiz);
   const doGrupo = new Set<string>();
   let itens: string[] = [];
+  const subs: string[] = [];
   if (grupo) {
     for (const f of grupo.filhos) {
       const t = textosDe(f);
       if (!t.length) continue;
       itens.push(t[0].texto.slice(0, 60));
+      subs.push((t[1]?.texto ?? '').slice(0, 80));
       t.forEach((x) => doGrupo.add(x.texto));
     }
   }
@@ -103,6 +105,10 @@ export function converterParaTipo(comp: KcxComponente, tipoId: string): Conversa
     itens = itens.slice(0, max);
     for (let i = itens.length; i < min; i++) itens.push(padrao[i] ?? `Item ${i + 1}`);
     cfg.itens = itens;
+    if (def.subItens && subs.some(Boolean)) {
+      cfg.subItens = itens.map((_, i) => subs[i] ?? '');
+      aproveitado.push('subtítulos de cada card');
+    }
     aproveitado.push(`${itens.length} ${def.itens.rotulo.toLowerCase()}(s) do desenho`);
     if (def.porTela && itens.length > 4) cfg.porTela = Math.min(4, def.porTela);
   } else if (itens.length) resto.unshift(...itens);

@@ -75,6 +75,15 @@ describe('Converter um desenho em outro tipo', () => {
       'Aula 7',
     ]);
     expect(cfg.textos['legenda']).toBe('Nossas aulas');
+    expect(cfg.subItens).toEqual([
+      'Descrição 1',
+      'Descrição 2',
+      'Descrição 3',
+      'Descrição 4',
+      'Descrição 5',
+      'Descrição 6',
+      'Descrição 7',
+    ]);
     expect(cfg.cores.fundo).toBe(FUNDACAO_PADRAO.cores.fundo.escuro);
     expect(cfg.raio).toBe(FUNDACAO_PADRAO.raios.g);
     expect(aproveitado.join(' ')).toContain('7 slide');

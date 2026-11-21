@@ -39,6 +39,8 @@ export interface ConfigConstrutor {
   textos: Record<string, string>;
   /** Lista do tipo (links, slides, abas, perguntas…). */
   itens: string[];
+  /** Subtítulo de cada item, nos tipos com `subItens` (ex.: linha abaixo do título do slide). */
+  subItens?: string[];
   /** Id da animação escolhida entre as do tipo. */
   animacao: string;
   cores: CoresConstrutor;
@@ -166,6 +168,8 @@ export interface DefinicaoTipo {
   gerar(cfg: ConfigConstrutor, b: Blocos): Partes;
   /** Carrossel: cards por vez no desktop de um componente novo. */
   porTela?: number;
+  /** Uma segunda linha por item (subtítulo do slide), ligada a um recurso. */
+  subItens?: { rotulo: string; padrao: string[]; recurso: string };
 }
 
 /* ============================== Blocos de montagem ============================== */
@@ -269,6 +273,35 @@ export class Blocos {
   }
 
   /** HTML de um item da lista, ligado a item<N>. */
+  idSubItem(i: number): string {
+    return `subItem${i + 1}`;
+  }
+
+  /** HTML do subtítulo do item i (data-kcx-sub). */
+  subItem(i: number, tag = 'p', attrs = ''): string {
+    return `<${tag} data-kcx-sub="${i + 1}"${attrs ? ' ' + attrs : ''}>${escHtml(this.cfg.subItens?.[i] ?? '')}</${tag}>`;
+  }
+
+  /** Nó do Figma do subtítulo do item i. */
+  noSubItem(
+    i: number,
+    opts: { tamanho?: KcxRef<number>; estilo?: string; cor?: KcxRef<string> } = {},
+  ): KcxNo {
+    return {
+      id: `sub-${i + 1}`,
+      nome: `Subtítulo ${i + 1}`,
+      tipo: 'texto',
+      preenchimentos: [{ tipo: 'solido', cor: opts.cor ?? this.cor('texto') }],
+      texto: {
+        conteudo: { $var: this.idSubItem(i) },
+        tamanho: opts.tamanho ?? this.fonte,
+        familia: 'Inter',
+        estilo: opts.estilo ?? 'Regular',
+        propriedade: `Subtítulo ${i + 1}`,
+      },
+    };
+  }
+
   item(i: number, tag = 'span', attrs = ''): string {
     return `<${tag} data-kcx-item="${i + 1}"${attrs ? ' ' + attrs : ''}>${escHtml(this.cfg.itens[i] ?? '')}</${tag}>`;
   }
@@ -642,6 +675,7 @@ export function configPadrao(def: DefinicaoTipo, nome = def.nome): ConfigConstru
     recursos: Object.fromEntries((def.recursos ?? []).map((r) => [r.id, r.padrao])),
     icones: Object.fromEntries((def.icones ?? []).map((i) => [i.id, i.padrao])),
     ...(def.porTela ? { porTela: def.porTela } : {}),
+    ...(def.subItens ? { subItens: [...def.subItens.padrao] } : {}),
   };
 }
 
@@ -815,6 +849,26 @@ function variaveisBase(b: Blocos, def: DefinicaoTipo): KcxVariavel[] {
       }),
     ),
   );
+  if (def.subItens && b.tem(def.subItens.recurso))
+    cfg.itens.forEach((_, i) =>
+      vars.push(
+        variavel({
+          id: b.idSubItem(i),
+          nome: `${def.subItens!.rotulo} ${i + 1}`,
+          tipo: 'string',
+          padrao: cfg.subItens?.[i] ?? '',
+          descricao: `${def.subItens!.rotulo} do item ${i + 1}.`,
+          grupo: 'components',
+          secao: 'aparencia',
+          vinculos: [
+            {
+              propriedade: 'Texto',
+              alvo: { tipo: 'texto', seletor: `.${b.C} [data-kcx-sub="${i + 1}"]` },
+            },
+          ],
+        }),
+      ),
+    );
   if (cfg.telas) {
     for (const v of vars) {
       if (v.id === 'espaco') v.modos = { celular: Math.round(Number(v.valor) * 0.75) };

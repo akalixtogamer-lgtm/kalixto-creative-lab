@@ -23,7 +23,25 @@ export const CARROSSEL: DefinicaoTipo = {
     min: 2,
     max: 15,
   },
+  subItens: {
+    rotulo: 'Subtítulo',
+    recurso: 'subtitulo',
+    padrao: [
+      'Toda quinta, 19h',
+      'Sábado, 10h',
+      'Dezembro',
+      'Sexta, 20h',
+      'Terça, 18h',
+      'Quarta, 19h',
+    ],
+  },
   recursos: [
+    {
+      id: 'subtitulo',
+      nome: 'Subtítulo no slide',
+      descricao: 'Uma linha menor abaixo do título de cada slide.',
+      padrao: true,
+    },
     {
       id: 'automatico',
       nome: 'Passa sozinho',
@@ -96,10 +114,11 @@ export const CARROSSEL: DefinicaoTipo = {
       ],
     });
     const fade = cfg.animacao === 'fade';
+    const comSub = b.tem('subtitulo');
     const html = `<section class="${C}" data-ativo="1" data-automatico="false" aria-roledescription="carrossel" aria-label="${escHtml(cfg.nome)}">
   <div class="${C}__janela">
     <div class="${C}__trilho">
-      ${cfg.itens.map((_, i) => `<article class="${C}__slide" data-slide="${i + 1}" aria-roledescription="slide" aria-label="${i + 1} de ${n}" style="--h:${i * 47}deg">${b.item(i, 'h3')}</article>`).join('\n      ')}
+      ${cfg.itens.map((_, i) => `<article class="${C}__slide" data-slide="${i + 1}" aria-roledescription="slide" aria-label="${i + 1} de ${n}" style="--h:${i * 47}deg"><div class="${C}__textos">${b.item(i, 'h3')}${comSub ? b.subItem(i, 'p', `class="${C}__sub"`) : ''}</div></article>`).join('\n      ')}
     </div>
     <button class="${C}__seta ${C}__seta--ant" type="button" aria-label="Slide anterior">${svgIcone(ICONES.esquerda, `${C}__icone`)}</button>
     <button class="${C}__seta ${C}__seta--prox" type="button" aria-label="Próximo slide">${svgIcone(ICONES.direita, `${C}__icone`)}</button>
@@ -119,6 +138,8 @@ export const CARROSSEL: DefinicaoTipo = {
 .${C}__janela { position: relative; overflow: hidden; border-radius: ${v('raio')}; ${k > 1 ? '' : 'aspect-ratio: 16 / 9;'} }
 .${C}__trilho { display: ${fade && k === 1 ? 'grid' : 'flex'}; gap: var(--gap); height: 100%; ${fade && k === 1 ? '' : `transform: translateX(calc((${v('ativo')} - 1) * -1 * (100% + var(--gap)) / var(--por))); transition: transform ${v('duracao')} ${v('easing')};`} }
 .${C}__slide { ${fade && k === 1 ? 'grid-area: 1 / 1; opacity: 0; transition: opacity ' + v('duracao') + ' ' + v('easing') + ';' : 'flex: 0 0 calc((100% - (var(--por) - 1) * var(--gap)) / var(--por));'}${k > 1 ? ` aspect-ratio: 3 / 4; border-radius: ${v('raio')};` : ''} min-width: 0; overflow: hidden; display: grid; place-items: end start; padding: calc(${v('espaco')} * 1.25); background: linear-gradient(135deg, ${v('primaria')}, ${v('superficie')}); filter: hue-rotate(var(--h)); ${cfg.animacao === 'escala' ? `transform: scale(.88); opacity: .6; transition: transform ${v('duracao')} ${v('easing')}, opacity ${v('duracao')} ${v('easing')};` : ''} }
+.${C}__textos { display: grid; gap: .25em; }
+.${C}__sub { margin: 0; color: rgb(255 255 255 / .85); font-size: calc(${v('fonte')} * ${k > 1 ? 0.8125 : 0.9375}); text-shadow: 0 1px 8px rgb(0 0 0 / .4); }
 .${C}__slide h3 { margin: 0; font-size: calc(${v('fonte')} * ${k > 1 ? 1.125 : 1.5}); overflow-wrap: anywhere; color: #fff; text-shadow: 0 2px 12px rgb(0 0 0 / .4); }
 ${regrasAtivo} { opacity: 1; transform: none; }
 .${C}__seta { position: absolute; top: 50%; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: color-mix(in srgb, ${v('fundo')} 70%, transparent); color: ${v('texto')}; transform: translateY(-50%); }
@@ -178,11 +199,27 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
           `Slide ${i + 1}`,
           'horizontal',
           [
-            b.noItem(i, {
-              tamanho: b.fonteX(k > 1 ? 1.125 : 1.5, 'slide-tamanho'),
-              estilo: 'Bold',
-              cor: '#ffffff',
-            }),
+            b.pilha(
+              `slide-${i + 1}-textos`,
+              'Textos',
+              'vertical',
+              [
+                b.noItem(i, {
+                  tamanho: b.fonteX(k > 1 ? 1.125 : 1.5, 'slide-tamanho'),
+                  estilo: 'Bold',
+                  cor: '#ffffff',
+                }),
+                ...(comSub
+                  ? [
+                      b.noSubItem(i, {
+                        tamanho: b.fonteX(k > 1 ? 0.8125 : 0.9375, 'sub-tamanho'),
+                        cor: '#ffffffd9',
+                      }),
+                    ]
+                  : []),
+              ],
+              { espaco: 4 },
+            ),
           ],
           {
             x: i * (L + GAP),

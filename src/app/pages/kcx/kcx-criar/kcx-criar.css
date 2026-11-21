@@ -596,3 +596,8 @@ dd .kcxc__aviso-figma {
   color: inherit;
   font: inherit;
 }
+
+.kcxc__sub-item {
+  font-size: 0.85em;
+  opacity: 0.85;
+}

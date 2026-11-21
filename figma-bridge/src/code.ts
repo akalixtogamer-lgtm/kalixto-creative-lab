@@ -17,6 +17,7 @@ import {
   detectarDuplicados,
   importarNoFigma,
   lerAlteracoes,
+  limparTracejados,
   ModoDuplicados,
 } from '../../src/app/kcx/figma/construir';
 
@@ -26,6 +27,7 @@ type Mensagem =
   | { tipo: 'exportar-alteracoes' }
   | { tipo: 'enviar-selecao' }
   | { tipo: 'enviar-design-system' }
+  | { tipo: 'limpar-tracejado' }
   | { tipo: 'fechar' };
 
 figma.showUI(__html__, { width: 460, height: 660, themeColors: true, title: 'KCX · Figma Bridge' });
@@ -139,6 +141,11 @@ figma.ui.onmessage = async (msg: Mensagem) => {
         reconhecido: r.reconhecido,
         padrao: r.padrao,
       });
+    }
+    if (msg.tipo === 'limpar-tracejado') {
+      const n = limparTracejados(figma);
+      figma.notify(`KCX: borda tracejada removida de ${n} conjunto(s) de variantes.`);
+      responder({ tipo: 'tracejado', n });
     }
     if (msg.tipo === 'fechar') figma.closePlugin();
   } catch (e) {

@@ -181,6 +181,14 @@
     <div class="barra"><button id="enviarSelecao">Enviar seleção para o lab</button></div>
     <p id="msgSelecao" class="muted"></p>
 
+    <h2>Borda tracejada</h2>
+    <p class="muted">
+      O Figma cria cada conjunto de variantes com uma borda roxa tracejada. O plugin já importa sem
+      ela; para arquivos importados antes, tire de todos os conjuntos desta página:
+    </p>
+    <div class="barra"><button id="limparTracejado">Tirar a borda tracejada</button></div>
+    <p id="msgTracejado" class="muted"></p>
+
     <h2>Design system do Figma → Fundação</h2>
     <p class="muted">
       Lê as variáveis de cor e de número (espaços, raios), os estilos de texto e de sombra deste
@@ -241,6 +249,7 @@
         $('msgExportar').textContent = 'Lendo…';
         enviar({ tipo: 'exportar-alteracoes' });
       });
+      $('limparTracejado').addEventListener('click', () => enviar({ tipo: 'limpar-tracejado' }));
       $('enviarDs').addEventListener('click', () => {
         $('msgDs').textContent = 'Lendo variáveis e estilos…';
         enviar({ tipo: 'enviar-design-system' });
@@ -338,6 +347,9 @@
             `“${m.nome}” virou ${m.id}.kcx.json com ${m.variaveis} variáveis.` +
             (m.avisos.length ? ' ' + m.avisos.join(' ') : '');
         }
+        if (m.tipo === 'tracejado')
+          $('msgTracejado').textContent =
+            `Pronto: ${m.n} conjunto(s) de variantes sem a borda tracejada.`;
         if (m.tipo === 'design-system') {
           const arquivo = (m.nome || 'design-system')
             .normalize('NFD')

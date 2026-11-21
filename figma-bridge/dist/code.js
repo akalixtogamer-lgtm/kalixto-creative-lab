@@ -3606,6 +3606,7 @@ ${cssAnim}`,
         let raiz;
         if (comps.length > 1) {
           raiz = f.combineAsVariants(comps, f.currentPage);
+          semTracejado(raiz);
           comps.forEach((k, i) => {
             k.x = 20;
             k.y = 20 + i * (k.height + 40);
@@ -3991,6 +3992,7 @@ ${cssAnim}`,
       if (variantes.length > 1) {
         principal = f.combineAsVariants(variantes, f.currentPage);
         principal.name = c.nome;
+        semTracejado(principal);
         const larg = Math.max(...variantes.map((v) => v.width)) + 40;
         const alt = Math.max(...variantes.map((v) => v.height)) + 40;
         variantes.forEach((v, i) => {
@@ -4030,6 +4032,13 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       return principal;
     }
   };
+  function semTracejado(conjunto) {
+    try {
+      conjunto.strokes = [];
+      conjunto.dashPattern = [];
+    } catch (e) {
+    }
+  }
 
   // src/app/kcx/figma/construir/construtor.ts
   var Construtor = class extends BaseNos {
@@ -4458,6 +4467,13 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
     };
   }
 
+  // src/app/kcx/figma/construir.ts
+  function limparTracejados(figma2) {
+    const sets = figma2.currentPage.findAll((n) => n.type === "COMPONENT_SET");
+    sets.forEach((n) => semTracejado(n));
+    return sets.length;
+  }
+
   // figma-bridge/src/code.ts
   figma.showUI(__html__, { width: 460, height: 660, themeColors: true, title: "KCX \xB7 Figma Bridge" });
   function responder(msg) {
@@ -4569,6 +4585,11 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
           reconhecido: r.reconhecido,
           padrao: r.padrao
         });
+      }
+      if (msg.tipo === "limpar-tracejado") {
+        const n = limparTracejados(figma);
+        figma.notify(`KCX: borda tracejada removida de ${n} conjunto(s) de variantes.`);
+        responder({ tipo: "tracejado", n });
       }
       if (msg.tipo === "fechar") figma.closePlugin();
     } catch (e) {

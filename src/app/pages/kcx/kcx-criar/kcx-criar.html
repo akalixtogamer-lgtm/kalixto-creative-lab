@@ -120,6 +120,17 @@
                     [value]="item"
                     (input)="mudarItem(i, valor($event))"
                   />
+                  @if (comSubItens()) {
+                    <input
+                      type="text"
+                      maxlength="80"
+                      class="kcxc__sub-item"
+                      [attr.aria-label]="'Subtítulo ' + (i + 1)"
+                      placeholder="Subtítulo"
+                      [value]="cfg().subItens?.[i] ?? ''"
+                      (input)="mudarSubItem(i, valor($event))"
+                    />
+                  }
                   <div class="kcxc__item-acoes">
                     <button
                       type="button"

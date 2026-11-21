@@ -8,7 +8,11 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 ### Adicionado — Pedidos da turma
 - **Cor do texto do botão** independente da cor do botão (Botão, Conjunto de botões, Botão
   liga/desliga e Seletor de duas opções). Com a Fundação, nasce com "Texto sobre a primária".
-- **Subtítulo** nos cards de foto e de vídeo (liga/desliga, também no Figma).
+- **Subtítulo** nos cards de foto e de vídeo e **dentro de cada slide do carrossel**, abaixo do
+  título (um campo por slide em Criar componente; também no Figma). Na conversão de um trilho do
+  Figma, o segundo texto de cada card vira o subtítulo.
+- **Sem borda tracejada:** o plugin tira a borda roxa tracejada que o Figma põe nos conjuntos de
+  variantes, e o botão "Tirar a borda tracejada" limpa os que já estavam no arquivo.
 - **Carrossel** com até **15** slides; no desktop mostra **1, 3 ou 4** cards por vez e, no celular
   (carrossel com até 440 px), **1**. No Figma, uma variante por posição.
 - **Telas:** arraste as seções **no próprio mockup** (ou na lista) para mudar a ordem.
