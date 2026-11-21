@@ -171,6 +171,15 @@ function svgNo(n: PlanoNo, defs: string[], x0: number, y0: number): string {
   const preench = (p: PlanoPaint | undefined) => {
     if (!p) return 'none';
     if (p.tipo === 'solido') return cor(p.cor.valor);
+    if (p.tipo === 'imagem') {
+      if (!/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/]+=*$/.test(p.src))
+        return '#8a84a8';
+      const idP = `i-${n.id}-${defs.length}`;
+      defs.push(
+        `<pattern id="${idP}" patternContentUnits="objectBoundingBox" width="1" height="1"><image href="${p.src}" width="1" height="1" preserveAspectRatio="xMidYMid ${p.ajuste === 'FILL' ? 'slice' : 'meet'}"/></pattern>`,
+      );
+      return `url(#${idP})`;
+    }
     const id = `g-${n.id}-${defs.length}`;
     const { p1, p2 } = extremos(p.transformacao);
     defs.push(

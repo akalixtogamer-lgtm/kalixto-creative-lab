@@ -21,6 +21,7 @@ import {
   construtorDaFundacao,
   estiloDoPeso,
 } from '../fundacao';
+import { ehImagemValida, noDaImagem, problemaDaImagem } from '../logo';
 import { estadosDs } from './estados-ds';
 import { Blocos, ConfigConstrutor, DefinicaoTipo, escHtml, slug } from './montar';
 
@@ -85,6 +86,8 @@ export interface CamadaMontada {
   tamanho?: number;
   /* imagem */
   url?: string;
+  /** Como a imagem ocupa a caixa: preencher (corta) ou caber (logo inteira). */
+  ajuste?: 'preencher' | 'caber';
   filhos?: CamadaMontada[];
 }
 
@@ -592,6 +595,10 @@ export function validarMontagem(m: Montagem): string[] {
       if (v !== undefined && !(Number.isInteger(v) && v >= 0 && v <= 100))
         erros.push(`"${c.nome}": a opacidade vai de 0 a 100%.`);
     }
+    if (c.url?.startsWith('data:')) {
+      const p = problemaDaImagem(c.url);
+      if (p) erros.push(`"${c.nome}": ${p}`);
+    }
     if (c.desfoque && !(c.desfoque in DESFOQUES)) erros.push(`"${c.nome}": desfoque inválido.`);
   }
   if (m.eixos?.tipo && !m.raiz.fundo)
@@ -971,16 +978,20 @@ function gerarMontado(cfg: ConfigConstrutor, b: Blocos, m: Montagem) {
         tipo: 'string',
         padrao: c.url ?? '',
         descricao:
-          'Endereço da imagem (https://… ou data:). No Figma, arraste a foto para a camada.',
+          'Imagem enviada do computador (vai para o Figma) ou endereço https:// (no Figma, arraste a foto para a camada).',
         grupo: 'components',
         secao: 'aparencia',
         vinculos: [
           { propriedade: 'src', alvo: { tipo: 'atributo', seletor: sel, atributo: 'src' } },
         ],
       });
+      const ajuste = c.ajuste ?? 'preencher';
+      const enviada = !!c.url && ehImagemValida(c.url);
       cssPartes.push(
-        `${sel} { display: block; flex: none; width: ${L}px; height: ${A}px; object-fit: cover;${r ? ` border-radius: ${r.css};` : ''} background: ${cor('superficie').css}; }`,
+        `${sel} { display: block; flex: none; width: ${L}px; height: ${A}px; object-fit: ${ajuste === 'caber' ? 'contain' : 'cover'};${r ? ` border-radius: ${r.css};` : ''}${enviada ? '' : ` background: ${cor('superficie').css};`} }`,
       );
+      // Imagem enviada do computador vai para o Figma (SVG vira vetor; PNG/JPG, imagem).
+      if (enviada) return noDaImagem(c.id, c.nome, c.url!, L, A, ajuste, r ? { raio: r.ref } : {});
       return {
         id: c.id,
         nome: c.nome,

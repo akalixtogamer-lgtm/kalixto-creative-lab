@@ -303,6 +303,16 @@ export abstract class BaseVariaveis {
 
   protected pintura(p: PlanoPaint, onde: string): any {
     const f = this.figma;
+    if (p.tipo === 'imagem') {
+      try {
+        const b64 = p.src.slice(p.src.indexOf(',') + 1);
+        const img = f.createImage(f.base64Decode(b64));
+        return { type: 'IMAGE', imageHash: img.hash, scaleMode: p.ajuste, visible: true };
+      } catch (e) {
+        this.rel.avisos.push(`${onde}: imagem não importada (${(e as Error).message}).`);
+        return { type: 'SOLID', color: { r: 0.54, g: 0.52, b: 0.66 }, visible: true };
+      }
+    }
     if (p.tipo === 'solido') {
       let paint: any = {
         type: 'SOLID',

@@ -22,7 +22,13 @@ export function corCss(c: FigmaCor | undefined, opacidade = 1): string {
   return `rgba(${v(c.r)}, ${v(c.g)}, ${v(c.b)}, ${Math.round(a * 1000) / 1000})`;
 }
 
+const IMAGEM_SEGURA = /^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/]+=*$/;
+
 function pinturaCss(p: PlanoPaint): string {
+  if (p.tipo === 'imagem')
+    return IMAGEM_SEGURA.test(p.src)
+      ? `url("${p.src}") center / ${p.ajuste === 'FILL' ? 'cover' : 'contain'} no-repeat`
+      : 'linear-gradient(#8a84a8, #8a84a8)';
   if (p.tipo === 'solido') {
     const c = corCss(p.cor.valor);
     return `linear-gradient(${c}, ${c})`;

@@ -1,5 +1,6 @@
 import type { Montagem } from './montado';
 import type { KcxFundacao } from '../fundacao';
+import { KcxLogo, ehSvg, larguraPara, noDaImagem, validarLogo } from '../logo';
 /**
  * Construtor KCX — monta um componente completo (variáveis, código, estrutura
  * do Figma, estados e interações) a partir de um tipo + os nomes e a animação
@@ -63,6 +64,10 @@ export interface ConfigConstrutor {
   montagem?: Montagem;
   /** Montador visual: a fundação (tokens) usada na montagem. */
   fundacaoMontagem?: KcxFundacao;
+  /** Logo da marca: troca o texto da marca (navbar, rodapé, menus) pela imagem. */
+  logo?: KcxLogo;
+  /** Altura da logo em px (padrão 32). */
+  alturaLogo?: number;
 }
 
 /** Tema oposto (para o modo Claro/Escuro). */
@@ -828,10 +833,46 @@ const CSS_SEM_MOVIMENTO = (b: Blocos) => `
 }`;
 
 /** Gera o componente KCX completo. */
+/** Tipos com marca em texto: a logo entra no lugar do texto da marca. */
+export const temMarca = (def: DefinicaoTipo) => def.textos.some((t) => t.id === 'marca');
+
+function aplicarLogo(
+  def: DefinicaoTipo,
+  cfg: ConfigConstrutor,
+  b: Blocos,
+  partes: ReturnType<DefinicaoTipo['gerar']>,
+): void {
+  const logo = cfg.logo;
+  if (!logo || !temMarca(def) || validarLogo(logo).length) return;
+  const C = b.C;
+  const H = Math.min(120, Math.max(12, Math.round(cfg.alturaLogo ?? 32)));
+  const W = larguraPara(logo, H);
+  const alt = escHtml(b.texto('marca') || logo.nome || 'Logo');
+  const img = `<img class="${C}__marca ${C}__logo" src="${logo.src}" alt="${alt}" width="${W}" height="${H}">`;
+  const re = new RegExp(`<(\\w+) class="${C}__marca"[^>]*>[\\s\\S]*?</\\1>`);
+  if (!re.test(partes.html)) return;
+  partes.html = partes.html.replace(re, img);
+  partes.css += `\n.${C}__logo { display: block; flex: none; width: auto; height: ${H}px; object-fit: contain; }`;
+  const trocar = (n: KcxNo): KcxNo =>
+    n.id === 't-marca'
+      ? noDaImagem('logo', 'Logo', logo.src, W, H, 'caber')
+      : n.filhos
+        ? { ...n, filhos: n.filhos.map(trocar) }
+        : n;
+  partes.estrutura = trocar(partes.estrutura);
+  partes.editavel = [
+    ...(partes.editavel ?? []),
+    ehSvg(logo.src)
+      ? 'Logo em SVG: vetores editáveis no Figma'
+      : 'Logo como imagem (troque pelo arquivo novo com Fill → Image)',
+  ];
+}
+
 export function construirComponente(def: DefinicaoTipo, cfg: ConfigConstrutor): KcxComponente {
   const b = new Blocos(cfg);
   const partes = def.gerar(cfg, b);
   aplicarPartesOpcionais(def, b, partes);
+  aplicarLogo(def, cfg, b, partes);
   const anim = def.animacoes.find((a) => a.id === cfg.animacao) ?? def.animacoes[0];
   const hoje = new Date().toISOString().slice(0, 10);
   const variaveis = [...variaveisBase(b, def), ...b.extras, ...(partes.variaveis ?? [])];

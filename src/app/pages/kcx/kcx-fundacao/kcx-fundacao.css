@@ -279,3 +279,32 @@ input[type='number'] {
     position: static;
   }
 }
+
+.kcxf__logo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+.kcxf__logo img {
+  max-height: 64px;
+  max-width: 240px;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: repeating-conic-gradient(rgb(127 127 127 / 18%) 0 25%, transparent 0 50%) 0 0 / 16px
+    16px;
+}
+.kcxf__logo-acoes {
+  display: flex;
+  gap: 0.5rem;
+}
+.kcxf__arquivo {
+  position: relative;
+  cursor: pointer;
+}
+.kcxf__arquivo input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}

@@ -249,3 +249,19 @@ textarea {
 .kcxm__vidro {
   justify-self: start;
 }
+
+.kcxm__imagem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.kcxm__arquivo {
+  position: relative;
+  cursor: pointer;
+}
+.kcxm__arquivo input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
