@@ -1,0 +1,39 @@
+<section #secao class="mergulho" [style.--p]="p()">
+  <div class="palco">
+    <h1 class="titulo" aria-label="Origem">
+      @for (k of camadas; track $index; let i = $index) {
+        @switch (k.tipo) {
+          @case ('letra') {
+            <span
+              class="camada letra"
+              aria-hidden="true"
+              [style.z-index]="i + 1"
+              [style.transform]="estilos()[i].transform"
+              [style.opacity]="estilos()[i].opacity"
+              >{{ k.texto }}</span
+            >
+          }
+          @case ('sujeito') {
+            <span
+              class="camada sujeito"
+              role="img"
+              aria-label="Esfera brilhante no centro da cena"
+              [style.z-index]="i + 1"
+              [style.transform]="estilos()[i].transform"
+              [style.opacity]="estilos()[i].opacity"
+            ></span>
+          }
+          @default {
+            <span
+              class="camada fundo"
+              [style.z-index]="i + 1"
+              [style.transform]="estilos()[i].transform"
+              [style.opacity]="estilos()[i].opacity"
+            ></span>
+          }
+        }
+      }
+    </h1>
+    <p class="frase">Vá além do que se vê.</p>
+  </div>
+</section>

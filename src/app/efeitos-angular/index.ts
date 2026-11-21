@@ -79,4 +79,9 @@ export const COMPONENTES_ANGULAR: Record<string, () => Promise<Type<unknown>>> =
   'glass-card': () => import('./glass-card/glass-card').then((m) => m.GlassCard),
   'frosted-navbar': () => import('./frosted-navbar/frosted-navbar').then((m) => m.FrostedNavbar),
   'blur-modal': () => import('./blur-modal/blur-modal').then((m) => m.BlurModal),
+  'arch-window-reveal': () =>
+    import('./arch-window-reveal/arch-window-reveal').then((m) => m.ArchWindowReveal),
+  'depth-zoom-title': () =>
+    import('./depth-zoom-title/depth-zoom-title').then((m) => m.DepthZoomTitle),
+  'portal-zoom': () => import('./portal-zoom/portal-zoom').then((m) => m.PortalZoom),
 };
