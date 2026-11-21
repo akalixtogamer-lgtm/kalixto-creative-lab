@@ -139,7 +139,7 @@
     <label class="zona" id="zona">
       <input type="file" id="arquivo" accept=".json,application/json" />
       <strong>Escolher ou soltar um .kcx.json</strong><br /><span class="muted"
-        >ou cole o conteúdo abaixo</span
+        >também mapas e fluxos (.kcx-diagrama.json) · ou cole o conteúdo abaixo</span
       >
     </label>
     <textarea
@@ -338,6 +338,22 @@
           $('msgExportar').textContent = '';
         }
         if (m.tipo === 'analise') mostrarAnalise(m);
+        if (m.tipo === 'diagrama') {
+          $('resultado').innerHTML =
+            `<h2>${m.mapa ? 'Mapa de navegação' : 'Fluxo de interação'}</h2><p class="ok">✓ “${esc(m.nome)}” · ${m.caixas} caixa(s), ${m.setas} seta(s) · ${m.largura} × ${m.altura} px</p>` +
+            `<p class="muted">Vira um frame com cada página ou passo como caixa editável, as setas como vetores e os gatilhos como etiquetas.</p>` +
+            `<div class="barra"><button class="primario" id="importarDiagrama">Criar no Figma</button></div>`;
+          $('importarDiagrama').addEventListener('click', () => {
+            $('importarDiagrama').disabled = true;
+            enviar({ tipo: 'importar-diagrama', texto });
+          });
+        }
+        if (m.tipo === 'diagrama-pronto') {
+          $('resultado').innerHTML =
+            `<h2>Criado</h2><p class="ok">✓ ${esc(m.nome)}: ${m.caixas} caixa(s) e ${m.setas} seta(s), selecionado na página.</p>` +
+            '<div class="barra"><button id="fechar">Fechar</button></div>';
+          $('fechar').addEventListener('click', () => enviar({ tipo: 'fechar' }));
+        }
         if (m.tipo === 'progresso')
           $('resultado').insertAdjacentHTML('beforeend', `<p class="muted">${esc(m.texto)}</p>`);
         if (m.tipo === 'concluido') mostrarRelatorio(m.relatorio);

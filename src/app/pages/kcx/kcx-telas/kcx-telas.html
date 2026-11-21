@@ -9,9 +9,46 @@
     </p>
   </header>
 
+  <nav class="kcxt__paginas" aria-label="Páginas do projeto">
+    <span class="kcxt__rotulo">Páginas</span>
+    @for (p of projeto.telas(); track p.id) {
+      <button
+        type="button"
+        class="kcxt__pagina"
+        [attr.aria-current]="p.id === tela().id ? 'page' : null"
+        (click)="projeto.selecionar(p.id)"
+      >
+        {{ p.nome || 'Sem nome' }}
+        <small>{{ p.secoes.length }}</small>
+      </button>
+    }
+    <button
+      type="button"
+      class="kcxt__pagina kcxt__pagina--nova"
+      [disabled]="projeto.telas().length >= limiteTelas"
+      (click)="novaPagina()"
+    >
+      + Nova página
+    </button>
+    <span class="kcxt__paginas-acoes">
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="projeto.duplicar(tela().id)">
+        Duplicar
+      </button>
+      <button
+        type="button"
+        class="kx-btn kx-btn--ghost"
+        [disabled]="projeto.telas().length <= 1"
+        (click)="excluirPagina()"
+      >
+        Excluir
+      </button>
+      <a class="kx-btn kx-btn--ghost" routerLink="/kcx/mapa">Mapa de navegação</a>
+    </span>
+  </nav>
+
   <div class="kcxt__barra kx-glass">
     <label class="kcxt__nome">
-      Nome da tela
+      Nome da página
       <input type="text" [value]="tela().nome" (change)="definir('nome', valor($event))" />
     </label>
     <div class="kcxt__grupo" role="radiogroup" aria-label="Dispositivo">

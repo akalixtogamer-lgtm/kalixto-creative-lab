@@ -92,6 +92,23 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'kcx/briefing',
+        title: 'Briefing · KCX Studio · Kalixto Creative Lab',
+        loadComponent: () =>
+          import('./pages/kcx/kcx-briefing/kcx-briefing').then((m) => m.KcxBriefingPagina),
+      },
+      {
+        path: 'kcx/moodboard',
+        title: 'Moodboard · KCX Studio · Kalixto Creative Lab',
+        loadComponent: () =>
+          import('./pages/kcx/kcx-moodboard/kcx-moodboard').then((m) => m.KcxMoodboardPagina),
+      },
+      {
+        path: 'kcx/mapa',
+        title: 'Mapa de navegação e fluxos · KCX Studio · Kalixto Creative Lab',
+        loadComponent: () => import('./pages/kcx/kcx-mapa/kcx-mapa').then((m) => m.KcxMapaPagina),
+      },
+      {
         path: 'kcx/fundacao',
         title: 'Fundação do design system · KCX Studio · Kalixto Creative Lab',
         loadComponent: () =>

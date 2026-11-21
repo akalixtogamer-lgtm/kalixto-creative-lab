@@ -5,6 +5,23 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Projeto: briefing, moodboard, mapa e fluxos
+- **Briefing** (`/kcx/briefing`): importa **Word (.docx)**, .txt, .md ou o próprio .json, lido
+  no navegador. Os títulos (Objetivo, Público-alvo, Tom de voz, Páginas, Prazo…) viram campos
+  editáveis e o resto vai para Observações. Baixa em Markdown ou .json. As páginas listadas viram
+  páginas das Telas com um clique.
+- **Moodboard** (`/kcx/moodboard`): até **20 imagens** (PNG, JPG, WebP, GIF, AVIF), reduzidas e
+  guardadas no navegador (IndexedDB). Legenda, arrastar para reordenar, mosaico ou grade, lupa,
+  paleta tirada das imagens com sugestão de papéis e "Levar para a Fundação". Baixa em HTML.
+- **Telas com várias páginas:** criar, duplicar e excluir páginas (a tela única antiga é migrada).
+- **Mapa de navegação** (`/kcx/mapa`): as páginas e as ligações entre elas (com o gatilho),
+  desenhadas em camadas pelos cliques a partir do início. Aponta páginas sem entrada, becos sem
+  saída e páginas a mais de 3 cliques.
+- **Fluxos de interação:** início, telas, ações, decisões (sim/não) e fim, com análise de passos
+  soltos. Dá para gerar um fluxo pelo caminho mais curto do mapa.
+- **Para o Figma:** mapa e fluxo baixam em SVG ou `.kcx-diagrama.json`; o plugin cria um frame
+  com caixas editáveis, setas e os gatilhos como etiquetas.
+
 ### Adicionado — Design system completo
 - **Página Design system** (`/kcx/design-system`, link no KCX Studio): um guia vivo gerado da
   Fundação, com capa e logo, sumário, cores por função, escalas tonais, contraste, tipografia,

@@ -1,0 +1,312 @@
+.kcxn__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 0.9rem 1.25rem;
+  margin-bottom: 1rem;
+}
+.kcxn__abas,
+.kcxn__grupo {
+  display: flex;
+  gap: 0.35rem;
+}
+.kcxn__abas button,
+.kcxn__grupo button,
+.kcxn__chip {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.kcxn__abas button small {
+  font-size: 0.72rem;
+  opacity: 0.75;
+}
+.kcxn__abas button[aria-selected='true'],
+.kcxn__grupo button[aria-checked='true'],
+.kcxn__chip[aria-current='true'] {
+  background: var(--kx-gradient-btn);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+.kcxn__chip--novo {
+  border-style: dashed;
+}
+.kcxn__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+.kcxn__layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+.kcxn__painel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  max-height: calc(100vh - 140px);
+  overflow: auto;
+  position: sticky;
+  top: 1rem;
+}
+.kcxn__titulo {
+  font-size: 1rem;
+  margin: 0.5rem 0 0;
+}
+.kcxn__dica {
+  font-size: 0.82rem;
+  margin: 0;
+}
+.kcxn__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+.kcxn__campo input,
+.kcxn__campo select,
+.kcxn__ligacoes input,
+.kcxn__passo select,
+.kcxn__passo input {
+  font: inherit;
+  font-size: 0.88rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 7px;
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  background: rgb(255 255 255 / 4%);
+  color: inherit;
+  min-width: 0;
+}
+.kcxn__campo select option,
+.kcxn__passo select option {
+  color: #111;
+}
+.kcxn__nova {
+  display: grid;
+  gap: 0.5rem;
+}
+.kcxn__duas,
+.kcxn__sub--duas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.kcxn__avisos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+.kcxn__avisos li,
+.kcxn__msg {
+  padding: 0.45rem 0.6rem;
+  border-radius: 7px;
+  border-left: 3px solid;
+}
+.kcxn__avisos button {
+  font: inherit;
+  font-size: 0.8rem;
+  margin-left: 0.35rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.kcxn__aviso--erro {
+  background: rgb(244 63 94 / 12%);
+  border-color: #f43f5e;
+}
+.kcxn__aviso--aviso {
+  background: rgb(245 158 11 / 12%);
+  border-color: #f59e0b;
+}
+.kcxn__aviso--dica {
+  background: rgb(34 227 255 / 10%);
+  border-color: #22e3ff;
+}
+.kcxn__ligacoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.kcxn__ligacoes li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.3rem 0.4rem;
+  padding: 0.45rem;
+  border-radius: 8px;
+  background: rgb(255 255 255 / 4%);
+  font-size: 0.85rem;
+}
+.kcxn__ligacoes li input {
+  grid-column: 1;
+}
+.kcxn__ligacao--sel {
+  outline: 1px solid var(--kx-acento, #22e3ff);
+}
+.kcxn__par {
+  grid-column: 1 / -1;
+}
+.kcxn__x,
+.kcxn__passo-ops button {
+  font: inherit;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.kcxn__fluxos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.kcxn__gerar {
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+}
+.kcxn__gerar summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.kcxn__gerar > * + * {
+  margin-top: 0.6rem;
+}
+.kcxn__gerar .kx-btn {
+  display: inline-flex;
+}
+.kcxn__passos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.kcxn__passo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-radius: 9px;
+  background: rgb(255 255 255 / 4%);
+  border-left: 3px solid var(--kx-border, rgb(255 255 255 / 25%));
+}
+.kcxn__passo--inicio,
+.kcxn__passo--fim {
+  border-left-color: var(--kx-acento, #22e3ff);
+}
+.kcxn__passo--decisao {
+  border-left-color: #f59e0b;
+}
+.kcxn__passo--tela {
+  border-left-color: #a78bfa;
+}
+.kcxn__passo--sel {
+  outline: 2px solid var(--kx-acento, #22e3ff);
+}
+.kcxn__passo-topo {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'tipo ops'
+    'texto texto';
+  gap: 0.35rem;
+  align-items: center;
+}
+.kcxn__passo-topo select {
+  grid-area: tipo;
+  justify-self: start;
+  min-width: 8rem;
+}
+.kcxn__passo-topo input {
+  grid-area: texto;
+}
+.kcxn__passo-topo .kcxn__passo-ops {
+  grid-area: ops;
+}
+.kcxn__passo-ops {
+  display: flex;
+  gap: 0.2rem;
+}
+.kcxn__sub {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+}
+.kcxn__sub--duas label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.kcxn__add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.kcxn__add .kx-btn {
+  font-size: 0.82rem;
+  padding: 0.3rem 0.7rem;
+}
+.kcxn__excluir {
+  align-self: flex-start;
+  font-size: 0.85rem;
+}
+.kcxn__palco {
+  min-width: 0;
+}
+.kcxn__svg {
+  overflow: auto;
+  max-height: calc(100vh - 160px);
+  border-radius: 14px;
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  background: #0f0e17;
+  margin-bottom: 0.5rem;
+}
+.kcxn__svg--claro {
+  background: #fff;
+}
+.kcxn__vazio {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  min-height: 320px;
+  border-radius: 14px;
+  border: 1px dashed var(--kx-border, rgb(255 255 255 / 22%));
+  padding: 2rem;
+}
+.kcxn__vazio p {
+  margin: 0.25rem 0;
+}
+@media (max-width: 900px) {
+  .kcxn__layout {
+    grid-template-columns: 1fr;
+  }
+  .kcxn__painel {
+    position: static;
+    max-height: none;
+  }
+}

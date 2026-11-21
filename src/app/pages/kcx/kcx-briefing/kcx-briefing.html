@@ -1,0 +1,144 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Projeto · Briefing</p>
+    <h1 class="kx-title">Briefing</h1>
+    <p class="kx-lead">
+      Traga o briefing do cliente em <strong>Word (.docx)</strong>, <strong>.txt</strong> ou
+      <strong>.md</strong>: os títulos (Objetivo, Público-alvo, Tom de voz, Páginas…) viram campos e
+      tudo fica editável. As páginas listadas viram páginas das
+      <a routerLink="/kcx/telas">Telas</a> e do <a routerLink="/kcx/mapa">mapa de navegação</a>.
+    </p>
+  </header>
+
+  <section
+    class="kcxb__importar kx-glass"
+    [class.kcxb__importar--sobre]="sobre()"
+    (dragover)="arrastarSobre($event)"
+    (dragleave)="sobre.set(false)"
+    (drop)="soltar($event)"
+    aria-labelledby="kcxb-importar"
+  >
+    <div>
+      <h2 id="kcxb-importar" class="kcxb__titulo">Importar o briefing</h2>
+      <p class="kx-muted">
+        Arraste o arquivo para cá ou escolha. O arquivo é lido no seu navegador e não é enviado para
+        lugar nenhum.
+      </p>
+      @if (temConteudo()) {
+        <div class="kcxb__modo" role="radiogroup" aria-label="Ao importar">
+          <span>Ao importar:</span>
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="modo() === 'trocar'"
+            (click)="modo.set('trocar')"
+          >
+            Trocar tudo
+          </button>
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="modo() === 'juntar'"
+            (click)="modo.set('juntar')"
+          >
+            Preencher só os vazios
+          </button>
+        </div>
+      }
+    </div>
+    <label class="kx-btn kx-btn--primary kcxb__arquivo">
+      <kx-icon name="upload" /> Escolher arquivo
+      <input
+        type="file"
+        accept=".docx,.txt,.md,.markdown,.json,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        (change)="escolher($event)"
+      />
+    </label>
+  </section>
+
+  @if (status(); as s) {
+    <p [class]="'kcxb__status kcxb__status--' + s.tipo" role="status">{{ s.texto }}</p>
+  }
+
+  <div class="kcxb__barra">
+    <p class="kcxb__progresso">
+      <strong>{{ progresso().feitos }}/{{ progresso().total }}</strong> campos essenciais
+      @if (progresso().faltam.length) {
+        <span class="kx-muted">· faltam: {{ progresso().faltam.join(', ') }}</span>
+      }
+    </p>
+    <div class="kcxb__acoes">
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarMd()">
+        <kx-icon name="download" /> Baixar (.md)
+      </button>
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarJson()">
+        Salvar arquivo (.json)
+      </button>
+      <button
+        type="button"
+        class="kx-btn kx-btn--ghost"
+        [disabled]="!temConteudo()"
+        (click)="limpar()"
+      >
+        Limpar
+      </button>
+    </div>
+  </div>
+
+  <form class="kcxb__form" (submit)="$event.preventDefault()">
+    @for (c of campos; track c.id) {
+      <div class="kcxb__campo" [class.kcxb__campo--longo]="c.longo">
+        <label [for]="'kcxb-' + c.id">
+          {{ c.rotulo }}
+          @if (reconhecidos().has(c.id)) {
+            <span class="kcxb__selo">do arquivo</span>
+          }
+        </label>
+        <small [id]="'kcxb-dica-' + c.id" class="kx-muted">{{ c.dica }}</small>
+        @if (c.longo) {
+          <textarea
+            [id]="'kcxb-' + c.id"
+            [attr.aria-describedby]="'kcxb-dica-' + c.id"
+            [value]="b()[c.id]"
+            [attr.maxlength]="limite"
+            rows="4"
+            (input)="definir(c.id, valor($event))"
+          ></textarea>
+        } @else {
+          <input
+            type="text"
+            [id]="'kcxb-' + c.id"
+            [attr.aria-describedby]="'kcxb-dica-' + c.id"
+            [value]="b()[c.id]"
+            maxlength="300"
+            (input)="definir(c.id, valor($event))"
+          />
+        }
+        @if (c.id === 'paginas' && paginas().length) {
+          <div class="kcxb__paginas">
+            <ul>
+              @for (p of paginas(); track p) {
+                <li>{{ p }}</li>
+              }
+            </ul>
+            <button type="button" class="kx-btn kx-btn--primary" (click)="criarPaginas()">
+              Criar {{ paginas().length }} página(s) nas Telas
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </form>
+
+  <nav class="kcxb__proximos" aria-label="Próximos passos do projeto">
+    <a class="kx-btn kx-btn--ghost" routerLink="/kcx/moodboard"
+      ><kx-icon name="palette" /> Moodboard</a
+    >
+    <a class="kx-btn kx-btn--ghost" routerLink="/kcx/mapa"
+      ><kx-icon name="route" /> Mapa e fluxos</a
+    >
+    <a class="kx-btn kx-btn--ghost" routerLink="/kcx/fundacao"
+      ><kx-icon name="layers" /> Fundação</a
+    >
+  </nav>
+</div>
