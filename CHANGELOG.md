@@ -5,6 +5,21 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Design system completo
+- **Página Design system** (`/kcx/design-system`, link no KCX Studio): um guia vivo gerado da
+  Fundação, com capa e logo, sumário, cores por função, escalas tonais, contraste, tipografia,
+  espaçamento, raios, sombras, movimento, grid, componentes e código dos tokens. Tema escuro ou
+  claro, e aviso quando algum par de cores não atinge o contraste mínimo.
+- **Baixar o guia** em HTML (pronto para imprimir em PDF) e os **tokens em CSS**.
+- **Cores por função:** cada cor ganhou um campo "Função" (Marca, Superfícies, Texto e Feedback),
+  que vai para o guia e para a descrição das variáveis no Figma.
+- **Escalas tonais 50–900** das cores de marca e de feedback (`--kx-<cor>-<passo>`), também como
+  variáveis no Figma.
+- **Contraste WCAG 2.1** calculado para os pares principais (AA, AAA ou Falha).
+- **Hierarquia de texto com uso:** cada nível (Display, H1… Legenda) diz onde se usa.
+- **Movimento** (durações rápida, normal e lenta e a curva) e **layout** (container, colunas,
+  gutter, margem e pontos de quebra), com as classes `.kx-container` e `.kx-grid`.
+
 ### Adicionado — Pedidos da turma
 - **Cor do texto do botão** independente da cor do botão (Botão, Conjunto de botões, Botão
   liga/desliga e Seletor de duas opções). Com a Fundação, nasce com "Texto sobre a primária".

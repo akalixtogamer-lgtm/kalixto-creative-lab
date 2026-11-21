@@ -24,6 +24,9 @@
       Levar a fundação junto em todo componente exportado para o Figma
     </label>
     <div class="kcxf__acoes">
+      <a class="kx-btn kx-btn--primary" routerLink="/kcx/design-system"
+        >Ver o guia do design system</a
+      >
       <button type="button" class="kx-btn kx-btn--primary" (click)="baixarFigma()">
         <kx-icon name="download" /> Enviar para o Figma (.kcx.json)
       </button>
@@ -86,13 +89,17 @@
 
       <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-cores">
         <h2 id="kcxf-cores" class="kx-section-title">Cores</h2>
-        <p class="kx-muted">Cada token tem a versão do tema escuro e a do claro.</p>
+        <p class="kx-muted">
+          Cada token tem a versão do tema escuro e a do claro, e uma <strong>função</strong>: onde e
+          para que usar. A função aparece no guia e na descrição da variável no Figma.
+        </p>
         <table class="kcxf__tabela">
           <thead>
             <tr>
               <th scope="col">Token</th>
               <th scope="col">Escuro</th>
               <th scope="col">Claro</th>
+              <th scope="col">Função</th>
             </tr>
           </thead>
           <tbody>
@@ -120,6 +127,17 @@
                     </span>
                   </td>
                 }
+                <td>
+                  <textarea
+                    class="kcxf__funcao"
+                    rows="2"
+                    maxlength="300"
+                    [value]="f().funcoes?.[t] ?? ''"
+                    [placeholder]="funcaoPadrao[t]"
+                    (change)="funcao(t, valor($event))"
+                    [attr.aria-label]="'Função de ' + nomesCor[t]"
+                  ></textarea>
+                </td>
               </tr>
             }
           </tbody>
@@ -163,6 +181,7 @@
               <th scope="col">Celular (px)</th>
               <th scope="col">Altura</th>
               <th scope="col">Letras (px)</th>
+              <th scope="col">Uso</th>
             </tr>
           </thead>
           <tbody>
@@ -233,6 +252,17 @@
                     [attr.aria-label]="'Espaçamento de letras de ' + nomesTexto[n]"
                   />
                 </td>
+                <td>
+                  <input
+                    type="text"
+                    class="kcxf__uso"
+                    maxlength="300"
+                    [value]="f().usoTexto?.[n] ?? ''"
+                    [placeholder]="usoPadrao[n]"
+                    (change)="uso(n, valor($event))"
+                    [attr.aria-label]="'Uso de ' + nomesTexto[n]"
+                  />
+                </td>
               </tr>
             }
           </tbody>
@@ -301,6 +331,50 @@
             </label>
           </div>
         }
+      </section>
+
+      <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-movimento">
+        <h2 id="kcxf-movimento" class="kx-section-title">Movimento e layout</h2>
+        <p class="kx-muted">
+          Durações das animações e a curva padrão; largura do conteúdo, grid e pontos de quebra.
+        </p>
+        <div class="kcxf__linha">
+          @for (k of camposMovimento; track k.id) {
+            <label>
+              {{ k.nome }} (ms)
+              <input
+                type="number"
+                min="0"
+                max="5000"
+                [value]="f().movimento?.[k.id]"
+                (change)="movimento(k.id, numero($event))"
+              />
+            </label>
+          }
+          <label class="kcxf__largo">
+            Curva (easing)
+            <input
+              type="text"
+              [value]="f().movimento?.easing"
+              (change)="curva(valor($event))"
+              aria-label="Curva padrão das animações"
+            />
+          </label>
+        </div>
+        <div class="kcxf__linha">
+          @for (k of camposLayout; track k.id) {
+            <label>
+              {{ k.nome }}
+              <input
+                type="number"
+                min="1"
+                max="4000"
+                [value]="f().layout?.[k.id]"
+                (change)="layout(k.id, numero($event))"
+              />
+            </label>
+          }
+        </div>
       </section>
     </div>
 

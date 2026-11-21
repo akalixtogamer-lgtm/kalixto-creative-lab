@@ -13,6 +13,7 @@
  */
 import type { FigmaCor, FigmaValor, PlanoFigma, PlanoNo, PlanoVariavel } from './figma-plano';
 import { KcxLogo, validarLogo } from './logo';
+import { escalaTonal } from './cores';
 import { corFigma } from './unidades';
 
 export const FORMATO_FUNDACAO = 'kcx-fundacao';
@@ -105,7 +106,109 @@ export interface KcxFundacao {
   sombras: Record<ChaveSombra, SombraFundacao>;
   /** Logo da marca (opcional): entra na navbar, no rodapé e no montador. */
   logo?: KcxLogo;
+  /** Função de cada cor (onde e para que usar). Ausente = texto padrão do KCX. */
+  funcoes?: Partial<Record<TokenCor, string>>;
+  /** Uso de cada nível de texto. Ausente = texto padrão do KCX. */
+  usoTexto?: Partial<Record<NivelTexto, string>>;
+  /** Movimento: durações (ms) e curva padrão. */
+  movimento?: MovimentoFundacao;
+  /** Layout: largura do conteúdo, grid e pontos de quebra (px). */
+  layout?: LayoutFundacao;
 }
+
+export interface MovimentoFundacao {
+  rapido: number;
+  normal: number;
+  lento: number;
+  /** cubic-bezier(x1, y1, x2, y2) */
+  easing: string;
+}
+
+export interface LayoutFundacao {
+  /** Largura máxima do conteúdo. */
+  container: number;
+  colunas: number;
+  /** Espaço entre colunas. */
+  gutter: number;
+  /** Margem lateral no celular. */
+  margem: number;
+  /** A partir de quantos px vale tablet e desktop. */
+  tablet: number;
+  desktop: number;
+}
+
+export const MOVIMENTO_PADRAO: MovimentoFundacao = {
+  rapido: 150,
+  normal: 300,
+  lento: 500,
+  easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+};
+
+export const LAYOUT_PADRAO: LayoutFundacao = {
+  container: 1200,
+  colunas: 12,
+  gutter: 24,
+  margem: 16,
+  tablet: 768,
+  desktop: 1024,
+};
+
+/** Grupos de cor por função. */
+export const GRUPOS_COR: { id: string; nome: string; descricao: string; tokens: TokenCor[] }[] = [
+  {
+    id: 'marca',
+    nome: 'Marca',
+    descricao: 'As cores que identificam a marca e chamam para a ação.',
+    tokens: ['primaria', 'secundaria', 'destaque'],
+  },
+  {
+    id: 'superficies',
+    nome: 'Superfícies',
+    descricao: 'Fundos e divisões: dão estrutura sem disputar atenção.',
+    tokens: ['fundo', 'superficie', 'borda'],
+  },
+  {
+    id: 'texto',
+    nome: 'Texto',
+    descricao: 'Leitura: contraste alto para o principal, menor para o apoio.',
+    tokens: ['texto', 'texto-suave', 'sobre-primaria'],
+  },
+  {
+    id: 'feedback',
+    nome: 'Feedback',
+    descricao: 'Estados do sistema: erro, sucesso e atenção.',
+    tokens: ['perigo', 'sucesso', 'aviso'],
+  },
+];
+
+/** Função padrão de cada cor (a pessoa pode reescrever na Fundação). */
+export const FUNCOES_COR: Record<TokenCor, string> = {
+  primaria:
+    'Ação principal: botões de destaque, links, item ativo, foco. Use com moderação para não perder a força.',
+  secundaria:
+    'Ações e elementos de apoio: botões secundários, selos, gráficos. Complementa a primária.',
+  destaque: 'Detalhes que precisam saltar aos olhos: novidades, badges, realces pontuais.',
+  fundo: 'Fundo da página. Base de todas as outras cores.',
+  superficie: 'Cards, painéis, menus e janelas: tudo que fica “por cima” do fundo.',
+  borda: 'Divisórias, contornos de campos e cards.',
+  texto: 'Títulos e texto corrido. Precisa de contraste alto com o fundo e a superfície.',
+  'texto-suave': 'Textos de apoio: legendas, descrições, placeholders, datas.',
+  'sobre-primaria': 'Texto e ícones em cima da cor primária (ex.: rótulo do botão principal).',
+  perigo: 'Erros, ações destrutivas (excluir) e alertas críticos.',
+  sucesso: 'Confirmações, concluído, valores positivos.',
+  aviso: 'Atenção sem ser erro: pendências, limites próximos.',
+};
+
+/** Uso padrão de cada nível de texto. */
+export const USO_TEXTO: Record<NivelTexto, string> = {
+  display: 'Chamada principal de páginas e heróis. Uma por tela.',
+  h1: 'Título da página.',
+  h2: 'Títulos de seção.',
+  h3: 'Títulos de cards e blocos menores.',
+  corpo: 'Texto corrido, parágrafos e a maior parte da interface.',
+  pequeno: 'Rótulos de botões, campos e textos secundários.',
+  legenda: 'Notas, datas, créditos e informações de apoio.',
+};
 
 /** Fundação padrão: identidade Kalixto. */
 export const FUNDACAO_PADRAO: KcxFundacao = {
@@ -206,6 +309,25 @@ export function validarFundacao(f: unknown): string[] {
   if (o.formato !== FORMATO_FUNDACAO) erros.push(`formato deve ser "${FORMATO_FUNDACAO}".`);
   if (typeof o.nome !== 'string' || !o.nome.trim()) erros.push('nome obrigatório.');
   if (o.logo !== undefined) erros.push(...validarLogo(o.logo));
+  if (o.movimento !== undefined) {
+    const m = o.movimento;
+    for (const k of ['rapido', 'normal', 'lento'] as const)
+      if (!(Number(m?.[k]) >= 0 && Number(m?.[k]) <= 5000))
+        erros.push(`movimento.${k} precisa ser de 0 a 5000 ms.`);
+    if (
+      !/^cubic-bezier\(\s*[-\d.]+\s*,\s*[-\d.]+\s*,\s*[-\d.]+\s*,\s*[-\d.]+\s*\)$/.test(
+        m?.easing ?? '',
+      )
+    )
+      erros.push('movimento.easing precisa ser cubic-bezier(x1, y1, x2, y2).');
+  }
+  if (o.layout !== undefined) {
+    const l = o.layout;
+    for (const k of ['container', 'colunas', 'gutter', 'margem', 'tablet', 'desktop'] as const)
+      if (!(Number(l?.[k]) >= 0 && Number(l?.[k]) <= 4000)) erros.push(`layout.${k} inválido.`);
+    if (!(Number(l?.colunas) >= 1 && Number(l?.colunas) <= 24))
+      erros.push('layout.colunas vai de 1 a 24.');
+  }
   for (const t of TOKENS_COR) {
     const c = o.cores?.[t];
     if (!c || !HEX.test(c.escuro ?? '') || !HEX.test(c.claro ?? ''))
@@ -249,8 +371,26 @@ export function completarFundacao(f: Partial<KcxFundacao>): KcxFundacao {
       CHAVES_SOMBRA.map((k) => [k, { ...p.sombras[k], ...f.sombras?.[k] }]),
     ) as KcxFundacao['sombras'],
     ...(f.logo && !validarLogo(f.logo).length ? { logo: f.logo } : {}),
+    ...(f.funcoes ? { funcoes: textosValidos(f.funcoes, TOKENS_COR) } : {}),
+    ...(f.usoTexto ? { usoTexto: textosValidos(f.usoTexto, NIVEIS_TEXTO) } : {}),
+    movimento: { ...MOVIMENTO_PADRAO, ...f.movimento },
+    layout: { ...LAYOUT_PADRAO, ...f.layout },
   };
 }
+
+function textosValidos<K extends string>(o: Partial<Record<K, string>>, chaves: readonly K[]) {
+  const r: Partial<Record<K, string>> = {};
+  for (const k of chaves) {
+    const t = o?.[k];
+    if (typeof t === 'string' && t.trim()) r[k] = t.trim().slice(0, 300);
+  }
+  return r;
+}
+
+/** Função da cor (a escrita pela pessoa ou a padrão). */
+export const funcaoDaCor = (f: KcxFundacao, t: TokenCor) => f.funcoes?.[t] || FUNCOES_COR[t];
+/** Uso do nível de texto (o escrito pela pessoa ou o padrão). */
+export const usoDoTexto = (f: KcxFundacao, n: NivelTexto) => f.usoTexto?.[n] || USO_TEXTO[n];
 
 /* ============================== Nomes ============================== */
 
@@ -339,7 +479,7 @@ export function variaveisDaFundacao(f: KcxFundacao): PlanoVariavel[] {
         t.startsWith('texto') || t === 'sobre-primaria'
           ? ['TEXT_FILL', 'STROKE_COLOR']
           : ['ALL_FILLS', 'STROKE_COLOR', 'EFFECT_COLOR'],
-        `Token de cor "${NOMES_COR[t]}" da fundação ${f.nome}.`,
+        `${NOMES_COR[t]}: ${funcaoDaCor(f, t)}`,
       ),
     );
   for (const k of CHAVES_RAIO)
@@ -386,8 +526,59 @@ export function variaveisDaFundacao(f: KcxFundacao): PlanoVariavel[] {
         `Família da fonte de ${k === 'titulo' ? 'títulos' : k === 'corpo' ? 'texto corrido' : 'código'}.`,
       ),
     );
+  // Escalas tonais das cores de marca (50–900), nos dois temas.
+  for (const t of TOKENS_ESCALA) {
+    const e = escalaTonal(f.cores[t].escuro);
+    const c = escalaTonal(f.cores[t].claro);
+    e.forEach(({ passo }, i) =>
+      out.push(
+        base(
+          `${PREFIXO_FUNDACAO}/escala/${t}/${passo}`,
+          COLECAO_CORES,
+          'COLOR',
+          { Dark: corFigma(e[i].cor), Light: corFigma(c[i].cor) },
+          ['ALL_FILLS', 'STROKE_COLOR', 'TEXT_FILL', 'EFFECT_COLOR'],
+          `Escala de ${NOMES_COR[t]}: ${passo} (${passo < 500 ? 'mais clara' : passo > 500 ? 'mais escura' : 'a própria cor'}).`,
+        ),
+      ),
+    );
+  }
+  const mov = f.movimento ?? MOVIMENTO_PADRAO;
+  for (const k of ['rapido', 'normal', 'lento'] as const)
+    out.push(
+      base(
+        `${PREFIXO_FUNDACAO}/movimento/${k}`,
+        COLECAO_DIMENSOES,
+        'FLOAT',
+        { Desktop: mov[k], Celular: mov[k] },
+        [],
+        `[Documental] Duração ${k} das animações: ${mov[k]} ms (${mov.easing}).`,
+      ),
+    );
+  const lay = f.layout ?? LAYOUT_PADRAO;
+  for (const k of ['container', 'colunas', 'gutter', 'margem'] as const)
+    out.push(
+      base(
+        `${PREFIXO_FUNDACAO}/layout/${k}`,
+        COLECAO_DIMENSOES,
+        'FLOAT',
+        { Desktop: lay[k], Celular: k === 'colunas' ? 4 : k === 'gutter' ? lay.margem : lay[k] },
+        k === 'gutter' || k === 'margem' ? ['GAP'] : k === 'container' ? ['WIDTH_HEIGHT'] : [],
+        `Layout: ${k} (${k === 'colunas' ? 'colunas do grid' : 'px'}).`,
+      ),
+    );
   return out;
 }
+
+/** Cores que ganham escala tonal (50–900). */
+export const TOKENS_ESCALA: TokenCor[] = [
+  'primaria',
+  'secundaria',
+  'destaque',
+  'perigo',
+  'sucesso',
+  'aviso',
+];
 
 /** Estilos de texto e de sombra da fundação. */
 export function planoDaFundacao(f: KcxFundacao): PlanoFundacao {
@@ -442,7 +633,9 @@ const igual = (a: FigmaValor | undefined, b: FigmaValor | undefined): boolean =>
 };
 
 /** Categoria de um token pela coleção e pelos escopos de uma variável de componente. */
-function candidatos(pv: PlanoVariavel, tokens: PlanoVariavel[]): PlanoVariavel[] {
+function candidatos(pv: PlanoVariavel, todos: PlanoVariavel[]): PlanoVariavel[] {
+  // Escalas, layout e movimento são referência: os componentes ligam nos tokens base.
+  const tokens = todos.filter((t) => !/\/(escala|layout|movimento)\//.test(t.nome));
   if (pv.tipo === 'COLOR') return tokens.filter((t) => t.tipo === 'COLOR');
   if (pv.tipo !== 'FLOAT') return [];
   if (pv.escopos.includes('CORNER_RADIUS'))
@@ -575,14 +768,38 @@ export function cssDaFundacao(f: KcxFundacao): string {
     const e = f.texto[n];
     return `.kx-texto-${n} { font-family: var(--kx-fonte-${e.familia}); font-weight: ${e.peso}; font-size: var(${cssVar(`texto/${n}/tamanho`)}); line-height: var(${cssVar(`texto/${n}/altura`)}); letter-spacing: ${e.espacamento}px; }`;
   }).join('\n');
+  const escalas = (modo: 'escuro' | 'claro') =>
+    TOKENS_ESCALA.flatMap((t) =>
+      escalaTonal(f.cores[t][modo]).map((x) => `  ${cssVar(`escala/${t}/${x.passo}`)}: ${x.cor};`),
+    ).join('\n');
+  const mov = f.movimento ?? MOVIMENTO_PADRAO;
+  const lay = f.layout ?? LAYOUT_PADRAO;
+  const extras = [
+    `  ${cssVar('movimento/rapido')}: ${mov.rapido}ms;`,
+    `  ${cssVar('movimento/normal')}: ${mov.normal}ms;`,
+    `  ${cssVar('movimento/lento')}: ${mov.lento}ms;`,
+    `  ${cssVar('movimento/easing')}: ${mov.easing};`,
+    `  ${cssVar('layout/container')}: ${lay.container}px;`,
+    `  ${cssVar('layout/colunas')}: ${lay.colunas};`,
+    `  ${cssVar('layout/gutter')}: ${lay.gutter}px;`,
+    `  ${cssVar('layout/margem')}: ${lay.margem}px;`,
+  ].join('\n');
   return `/* Fundação ${f.nome} — gerada pelo KCX Studio (formato ${FORMATO_FUNDACAO} ${f.versao}) */
 :root {
 ${linhas('escuro')}
+${escalas('escuro')}
 ${medidas}
+${extras}
 }
 [data-tema='claro'] {
 ${linhas('claro')}
+${escalas('claro')}
 }
+/* Grid: ${lay.colunas} colunas a partir de ${lay.desktop}px, 8 no tablet (${lay.tablet}px), 4 no celular */
+.kx-container { width: 100%; max-width: var(${cssVar('layout/container')}); margin-inline: auto; padding-inline: var(${cssVar('layout/margem')}); }
+.kx-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(${cssVar('layout/gutter')}); }
+@media (min-width: ${lay.tablet}px) { .kx-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+@media (min-width: ${lay.desktop}px) { .kx-grid { grid-template-columns: repeat(var(${cssVar('layout/colunas')}), minmax(0, 1fr)); } }
 ${celular ? `@media (max-width: 640px) {\n  :root {\n${celular}\n  }\n}\n` : ''}${classes}
 `;
 }
