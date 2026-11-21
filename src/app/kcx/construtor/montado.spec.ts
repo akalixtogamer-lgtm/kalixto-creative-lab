@@ -12,6 +12,7 @@ import {
   configMontada,
   montagemPadrao,
   novaCamada,
+  temVidro,
   todasCamadas,
   validarMontagem,
 } from './montado';
@@ -164,5 +165,58 @@ describe('Modelos e eixos do montador', () => {
     m.raiz.fundo = null;
     m.eixos = { tipo: true };
     expect(validarMontagem(m).join(' ')).toContain('fundo');
+  });
+
+  it('vidro: fundo e borda translúcidos e Background blur no Figma', async () => {
+    const modelo = MODELOS_MONTADOR.find((x) => x.id === 'card-vidro')!;
+    const m = modelo.criar();
+    expect(temVidro(m.raiz)).toBe(true);
+    const comp = montarDoConstrutor(configMontada('Vidro', m, FUNDACAO_PADRAO));
+    expect(comp.codigo.css).toContain('backdrop-filter: blur(16px)');
+    expect(comp.codigo.css).toContain('-webkit-backdrop-filter: blur(16px)');
+    expect(comp.codigo.css).toMatch(
+      /background: color-mix\(in srgb, var\([^)]+\) 35%, transparent\)/,
+    );
+    expect(comp.codigo.css).toMatch(
+      /border: 1px solid color-mix\(in srgb, var\([^)]+\) 20%, transparent\)/,
+    );
+    const pacote = criarPacote([comp], { fundacao: FUNDACAO_PADRAO });
+    const plano = planejarFigma(pacote);
+    const raiz = plano.componentes[0].variantes[0].arvore;
+    expect(raiz.efeitos).toContainEqual(
+      expect.objectContaining({
+        tipo: 'BACKGROUND_BLUR',
+        raio: expect.objectContaining({ valor: 32 }),
+      }),
+    );
+    const a = (p: unknown) => (p as { cor: { valor: { a: number } } }).cor.valor.a;
+    expect(a(raiz.preenchimentos[0])).toBeCloseTo(0.35, 2);
+    expect(a((raiz.traco as unknown as { pintura: unknown }).pintura)).toBeCloseTo(0.2, 2);
+    // a variável translúcida existe nos dois temas (Dark/Light)
+    const vars = plano.colecoes.flatMap((c) => c.variaveis);
+    const fundo = vars.find((v) => v.nome.endsWith('/fundo-raiz'))!;
+    expect(Object.keys(fundo.valores).length).toBeGreaterThanOrEqual(2);
+    const rel = await importarNoFigma(
+      criarFigmaMock().figma,
+      plano,
+      serializar(pacote),
+      'atualizar',
+    );
+    expect(rel.vinculosFalhos).toEqual([]);
+  });
+
+  it('vidro com eixo Tipo: a opacidade vale no Primário; opacidade fora de 0–100 é recusada', () => {
+    const m = MODELOS_MONTADOR.find((x) => x.id === 'botao')!.criar();
+    m.raiz.opacidadeFundo = 40;
+    const comp = montarDoConstrutor(configMontada('Botão', m, FUNDACAO_PADRAO));
+    const plano = planejarFigma(criarPacote([comp], { fundacao: FUNDACAO_PADRAO }));
+    const achar = (nome: string) =>
+      plano.componentes[0].variantes.find((v) => v.nome === nome)!.arvore;
+    const a = (n: ReturnType<typeof achar>) =>
+      (n.preenchimentos[0] as { cor: { valor: { a: number } } }).cor.valor.a;
+    expect(a(achar('Estado=Padrão, Tipo=Primário, Tamanho=M'))).toBeCloseTo(0.4, 2);
+    expect(a(achar('Estado=Padrão, Tipo=Fantasma, Tamanho=M'))).toBe(0);
+    m.raiz.opacidadeFundo = 140;
+    expect(validarMontagem(m).join(' ')).toContain('0 a 100');
   });
 });

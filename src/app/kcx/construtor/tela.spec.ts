@@ -91,4 +91,16 @@ describe('Telas (mockup e wireframe)', () => {
     expect(t.subcomponentes).toHaveLength(1);
     expect(t.estrutura.filhos).toHaveLength(2);
   });
+
+  it('fundo colorido: gradiente com as cores da fundação (cinza no wireframe)', () => {
+    const t = montarTela({ ...tela('alta'), fundo: 'colorido' }, comps, FUNDACAO_PADRAO);
+    expect(t.codigo.css).toContain('linear-gradient(135deg');
+    const p = t.estrutura.preenchimentos![0];
+    expect(p.tipo).toBe('gradiente-linear');
+    const w = montarTela({ ...tela('media'), fundo: 'colorido' }, comps, FUNDACAO_PADRAO);
+    const cores = (w.estrutura.preenchimentos![0] as { paradas: { cor: string }[] }).paradas.map(
+      (x) => x.cor,
+    );
+    for (const c of cores) expect(c.slice(1, 3)).toBe(c.slice(3, 5));
+  });
 });

@@ -10,6 +10,7 @@
  * no Figma, cada seção continua ligada ao seu componente.
  */
 import { KcxComponente, KcxNo, KcxVariavel } from '../kcx.types';
+import { aplicarAtributosNoHtml } from '../documento';
 import { blocoRoot, resolverSaidas, valoresAtuais } from '../resolver';
 import { corHex, lerCor } from '../unidades';
 import { FUNDACAO_PADRAO, KcxFundacao, construtorDaFundacao } from '../fundacao';
@@ -42,6 +43,8 @@ export interface Tela {
   fidelidade: Fidelidade;
   /** Ids dos componentes, de cima para baixo (pode repetir). */
   secoes: string[];
+  /** Fundo da página: liso (cor de fundo) ou colorido (gradiente, para ver vidro). */
+  fundo?: 'liso' | 'colorido';
 }
 
 /* ============================== Fidelidade ============================== */
@@ -182,15 +185,29 @@ export function montarTela(
     altura: disp.altura,
     gerar(cfg, b) {
       const C = b.C;
+      const colorido = tela.fundo === 'colorido';
+      const tons = (['primaria', 'destaque', 'secundaria'] as const).map((t) =>
+        corNaFidelidade(fundacao.cores[t].escuro, tela.fidelidade),
+      );
+      const fundoCss = colorido
+        ? `linear-gradient(135deg, ${tons[0]}, ${tons[1]} 50%, ${tons[2]})`
+        : b.v('fundo');
       const css = [
-        `.${C} { display: flex; flex-direction: column; align-items: center; gap: 32px; width: 100%; max-width: ${disp.largura}px; min-height: ${disp.altura}px; margin: 0 auto; padding: 32px 0; background: ${b.v('fundo')}; }`,
+        `.${C} { display: flex; flex-direction: column; align-items: center; gap: 32px; width: 100%; max-width: ${disp.largura}px; min-height: ${disp.altura}px; margin: 0 auto; padding: 32px 0; background: ${fundoCss}; }`,
         ...subs.map(
           (s) =>
             `/* ${s.nome} */\n${blocoRoot(resolverSaidas(s.variaveis, valoresAtuais(s.variaveis)))}\n${s.codigo.css}`,
         ),
       ].join('\n\n');
       const html = `<main class="${C}">\n${secoes
-        .map((s) => `  <section class="${C}__secao">\n${subDe(s.id).codigo.html}\n  </section>`)
+        .map((s) => {
+          const sub = subDe(s.id);
+          const html = aplicarAtributosNoHtml(
+            sub.codigo.html,
+            resolverSaidas(sub.variaveis, valoresAtuais(sub.variaveis)),
+          );
+          return `  <section class="${C}__secao">\n${html}\n  </section>`;
+        })
         .join('\n')}\n</main>`;
       const filhos: KcxNo[] = secoes.map((s, i) => ({
         id: `secao-${i + 1}`,
@@ -204,7 +221,15 @@ export function montarTela(
           py: 32,
           alinhar: 'centro',
           largura: disp.largura,
-          preenchimentos: [{ tipo: 'solido', cor: b.cor('fundo') }],
+          preenchimentos: [
+            colorido
+              ? {
+                  tipo: 'gradiente-linear',
+                  angulo: 135,
+                  paradas: tons.map((cor, i) => ({ posicao: i / 2, cor })),
+                }
+              : { tipo: 'solido', cor: b.cor('fundo') },
+          ],
         }),
       };
       return {

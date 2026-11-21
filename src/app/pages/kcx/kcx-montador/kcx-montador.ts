@@ -2,12 +2,15 @@ import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
+  CHAVES_DESFOQUE,
   CamadaMontada,
   ConfigConstrutor,
+  DESFOQUES,
   MODELOS_MONTADOR,
   ModeloMontador,
   Montagem,
   TipoCamada,
+  VIDRO,
   acharCamada,
   configMontada,
   montagemPadrao,
@@ -15,9 +18,11 @@ import {
   novaCamada,
   paiDe,
   slug,
+  temVidro,
   todasCamadas,
   validarMontagem,
 } from '../../../kcx/construtor';
+import { fundoColorido } from '../../../kcx/plano-html';
 import {
   CHAVES_ESPACO,
   CHAVES_RAIO,
@@ -62,6 +67,8 @@ export class KcxMontador {
   protected readonly raios = CHAVES_RAIO;
   protected readonly espacos = CHAVES_ESPACO;
   protected readonly sombras = CHAVES_SOMBRA;
+  protected readonly desfoques = CHAVES_DESFOQUE;
+  protected readonly pxDesfoque = DESFOQUES;
   protected readonly icones = Object.keys(ICONES_KCX);
   protected readonly tiposNovos: { tipo: TipoCamada; rotulo: string }[] = [
     { tipo: 'caixa', rotulo: 'Caixa' },
@@ -92,6 +99,17 @@ export class KcxMontador {
   protected readonly camada = computed(
     () => acharCamada(this.montagem().raiz, this.selecionada()) ?? this.montagem().raiz,
   );
+  /** null = automático (colorido quando há vidro ou transparência). */
+  protected readonly fundoColoridoEscolhido = signal<boolean | null>(null);
+  protected readonly fundoColoridoAtivo = computed(
+    () => this.fundoColoridoEscolhido() ?? temVidro(this.montagem().raiz),
+  );
+  protected readonly fundoPrevia = computed(() => {
+    if (!this.fundoColoridoAtivo()) return '#0b0a14';
+    const c = this.fundacao().cores;
+    return fundoColorido([c.primaria.escuro, c.destaque.escuro, c.secundaria.escuro]);
+  });
+
   protected readonly problemas = computed(() => validarMontagem(this.montagem()));
 
   private readonly idFinal = computed(
@@ -134,6 +152,26 @@ export class KcxMontador {
       if (!c) return;
       if (valor === '' || valor === null || valor === undefined) delete c[campo];
       else c[campo] = valor;
+    });
+  }
+
+  /** Porcentagem 0–100; 100 = sólido (o campo some da montagem). */
+  protected mudarOpacidade(campo: 'opacidadeFundo' | 'opacidadeBorda', e: Event): void {
+    const v = Math.round(Math.min(100, Math.max(0, Number((e.target as HTMLInputElement).value))));
+    this.mudar(campo, Number.isFinite(v) && v < 100 ? v : undefined);
+  }
+
+  /** Receita de vidro na caixa selecionada (mantém o fundo e a borda já escolhidos). */
+  protected aplicarVidro(): void {
+    const id = this.selecionada();
+    this.editar((m) => {
+      const c = acharCamada(m.raiz, id);
+      if (!c || c.tipo !== 'caixa') return;
+      c.fundo ??= VIDRO.fundo;
+      c.borda ??= VIDRO.borda;
+      c.opacidadeFundo = VIDRO.opacidadeFundo;
+      c.opacidadeBorda = VIDRO.opacidadeBorda;
+      c.desfoque = VIDRO.desfoque;
     });
   }
 

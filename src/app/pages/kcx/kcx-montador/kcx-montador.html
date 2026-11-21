@@ -127,7 +127,20 @@
     <!-- Prévia -->
     <section class="kcxm__previa" aria-label="Prévia">
       @if (resultado().comp; as comp) {
-        <kx-kcx-variantes [comp]="comp" [(selecionada)]="variante" [alturaPrevia]="360" />
+        <kx-kcx-variantes
+          [comp]="comp"
+          [(selecionada)]="variante"
+          [alturaPrevia]="360"
+          [fundo]="fundoPrevia()"
+        />
+        <label class="kcxm__fundo-previa">
+          <input
+            type="checkbox"
+            [checked]="fundoColoridoAtivo()"
+            (change)="fundoColoridoEscolhido.set($any($event.target).checked)"
+          />
+          Fundo colorido atrás da prévia (para ver vidro e transparência)
+        </label>
         <p class="kx-muted kcxm__nota">
           {{ comp.variaveis.length }} variáveis · {{ variantesFigma() }}
           {{ variantesFigma() > 1 ? 'variantes' : 'variante' }} no Figma. Prévia "como fica no
@@ -268,6 +281,19 @@
               >
             </label>
             <label
+              >Opacidade do fundo · {{ c.opacidadeFundo ?? 100 }}%
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                aria-label="Opacidade do fundo"
+                [disabled]="!c.fundo"
+                [value]="c.opacidadeFundo ?? 100"
+                (change)="mudarOpacidade('opacidadeFundo', $event)"
+              />
+            </label>
+            <label
               >Borda
               <span class="kcxm__cor"
                 ><i [style.background]="corDe(c.borda)"></i>
@@ -284,6 +310,19 @@
                   }
                 </select></span
               >
+            </label>
+            <label
+              >Opacidade da borda · {{ c.opacidadeBorda ?? 100 }}%
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                aria-label="Opacidade da borda"
+                [disabled]="!c.borda"
+                [value]="c.opacidadeBorda ?? 100"
+                (change)="mudarOpacidade('opacidadeBorda', $event)"
+              />
             </label>
             <label
               >Raio
@@ -315,6 +354,28 @@
                 }
               </select>
             </label>
+            <label
+              >Desfoque do fundo (vidro)
+              <select
+                aria-label="Desfoque do fundo"
+                [value]="c.desfoque ?? ''"
+                (change)="mudar('desfoque', opcional($event))"
+              >
+                <option value="">Sem desfoque</option>
+                @for (k of desfoques; track k) {
+                  <option [value]="k" [selected]="k === (c.desfoque ?? '')">
+                    Desfoque {{ k.toUpperCase() }} · {{ pxDesfoque[k] }} px
+                  </option>
+                }
+              </select>
+            </label>
+            <button type="button" class="kx-btn kx-btn--ghost kcxm__vidro" (click)="aplicarVidro()">
+              Aplicar efeito vidro
+            </button>
+            <p class="kx-muted kcxm__nota">
+              Vidro = fundo translúcido + borda clara + desfoque do que fica atrás. No Figma sai
+              como Background blur.
+            </p>
           </fieldset>
         }
 

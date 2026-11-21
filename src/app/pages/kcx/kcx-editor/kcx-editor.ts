@@ -25,6 +25,10 @@ import { KcxCodigoPainel } from '../kcx-codigo-painel/kcx-codigo-painel';
 import { KcxExportarPainel } from '../kcx-exportar-painel/kcx-exportar-painel';
 import { KcxImportarPainel } from '../kcx-importar-painel/kcx-importar-painel';
 import { KcxVariantes, valoresDaVariante } from '../kcx-variantes/kcx-variantes';
+import { KcxVidroPainel } from '../kcx-vidro-painel/kcx-vidro-painel';
+import { KcxFundacaoService } from '../kcx-fundacao.service';
+import { valoresVidro } from '../../../kcx/construtor';
+import { fundoColorido } from '../../../kcx/plano-html';
 import { variantesDoComponente } from '../../../kcx/figma-plano';
 
 const NIVEL_ROTULO = {
@@ -52,6 +56,7 @@ const NIVEL_ROTULO = {
     KcxExportarPainel,
     KcxImportarPainel,
     KcxVariantes,
+    KcxVidroPainel,
   ],
   templateUrl: './kcx-editor.html',
   styleUrl: './kcx-editor.css',
@@ -129,7 +134,25 @@ export class KcxEditor {
     const c = this.comp();
     if (!c) return '';
     const codigo = this.codigoEditado() ?? undefined;
-    return montarDocumentoKcx(c, untracked(this.valores), { modo: 'preview', codigo });
+    return montarDocumentoKcx(c, untracked(this.valores), {
+      modo: 'preview',
+      codigo,
+      fundo: this.fundoPalco(),
+    });
+  });
+
+  /** Com vidro ligado, o palco ganha um fundo colorido (senão o desfoque não aparece). */
+  private readonly vidroLigado = computed(() => {
+    const c = this.comp();
+    if (!c) return false;
+    const padrao = valoresVidro(c, false);
+    return Object.entries(padrao).some(([id, v]) => (this.valores()[id] ?? v) !== v);
+  });
+  private readonly fundacao = inject(KcxFundacaoService).fundacao;
+  private readonly fundoPalco = computed(() => {
+    if (!this.vidroLigado()) return undefined;
+    const k = this.fundacao().cores;
+    return fundoColorido([k.primaria.escuro, k.destaque.escuro, k.secundaria.escuro]);
   });
 
   /* ---------- Comparação antes/depois ---------- */
@@ -153,6 +176,7 @@ export class KcxEditor {
     return montarDocumentoKcx(c, untracked(this.valoresAntes), {
       modo: 'preview',
       codigo: this.codigoEditado() ?? undefined,
+      fundo: this.fundoPalco(),
     });
   });
   protected readonly alteradas = computed(() => {

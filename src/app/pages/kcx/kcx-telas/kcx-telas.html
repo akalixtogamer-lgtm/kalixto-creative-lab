@@ -41,6 +41,26 @@
         </button>
       }
     </div>
+    <div class="kcxt__grupo" role="radiogroup" aria-label="Fundo da tela">
+      <span class="kcxt__rotulo">Fundo</span>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="(tela().fundo ?? 'liso') === 'liso'"
+        (click)="definir('fundo', 'liso')"
+      >
+        Liso
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="tela().fundo === 'colorido'"
+        title="Gradiente com as cores da fundação: ideal para ver componentes de vidro"
+        (click)="definir('fundo', 'colorido')"
+      >
+        Colorido
+      </button>
+    </div>
     <p class="kx-muted kcxt__dica">{{ fidelidade().nome }}: {{ fidelidade().descricao }}</p>
     <div class="kcxt__acoes">
       <button

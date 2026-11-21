@@ -25,6 +25,27 @@ import { estadosDs } from './estados-ds';
 import { Blocos, ConfigConstrutor, DefinicaoTipo, escHtml, slug } from './montar';
 
 export const MONTADO_ID = 'montado';
+
+export type ChaveDesfoque = 'p' | 'm' | 'g';
+/** Desfoque do fundo em px de CSS (`backdrop-filter: blur(…)`). */
+export const DESFOQUES: Record<ChaveDesfoque, number> = { p: 8, m: 16, g: 24 };
+export const CHAVES_DESFOQUE = Object.keys(DESFOQUES) as ChaveDesfoque[];
+
+/** Receita do efeito vidro (glassmorphism) aplicada a uma caixa. */
+export const VIDRO = {
+  fundo: 'superficie',
+  opacidadeFundo: 35,
+  borda: 'texto',
+  opacidadeBorda: 20,
+  desfoque: 'm',
+} as const satisfies Partial<CamadaMontada>;
+
+/** A caixa usa transparência ou desfoque (pede um fundo colorido para aparecer). */
+export function temVidro(c: CamadaMontada): boolean {
+  return todasCamadas(c).some(
+    (x) => !!x.desfoque || (x.opacidadeFundo ?? 100) < 100 || (x.opacidadeBorda ?? 100) < 100,
+  );
+}
 export const MAX_CAMADAS = 60;
 export const MAX_PROFUNDIDADE = 6;
 
@@ -47,6 +68,12 @@ export interface CamadaMontada {
   borda?: TokenCor | null;
   raio?: ChaveRaio | null;
   sombra?: ChaveSombra | null;
+  /** Opacidade do fundo em % (0–100); ausente = 100 (sólido). */
+  opacidadeFundo?: number;
+  /** Opacidade da borda em % (0–100); ausente = 100. */
+  opacidadeBorda?: number;
+  /** Desfoque do que fica atrás da caixa (vidro). No Figma: Background blur. */
+  desfoque?: ChaveDesfoque | null;
   /** px; 0/ausente = automático. Também vale para imagem. */
   largura?: number;
   altura?: number;
@@ -224,6 +251,17 @@ export const MODELOS_MONTADOR: ModeloMontador[] = [
     criar: montagemPadrao,
   },
   {
+    id: 'card-vidro',
+    nome: 'Card de vidro',
+    descricao: 'Glassmorphism: fundo translúcido, borda clara e desfoque do que fica atrás.',
+    sugestao: 'Meu card de vidro',
+    criar: () => {
+      const m = montagemPadrao();
+      Object.assign(m.raiz, VIDRO, { nome: 'Card de vidro', raio: 'g' });
+      return m;
+    },
+  },
+  {
     id: 'navbar',
     nome: 'Navbar',
     descricao: 'Logo, links e botão de ação numa barra horizontal.',
@@ -273,6 +311,17 @@ export const MODELOS_MONTADOR: ModeloMontador[] = [
         ],
       },
     }),
+  },
+  {
+    id: 'navbar-vidro',
+    nome: 'Navbar de vidro',
+    descricao: 'A Navbar fosca: o conteúdo da página aparece desfocado por trás.',
+    sugestao: 'Minha navbar de vidro',
+    criar: () => {
+      const m = MODELOS_MONTADOR.find((x) => x.id === 'navbar')!.criar();
+      Object.assign(m.raiz, VIDRO, { nome: 'Navbar de vidro' });
+      return m;
+    },
   },
   {
     id: 'chip',
@@ -538,6 +587,12 @@ export function validarMontagem(m: Montagem): string[] {
     ids.add(c.id);
     if (c.tipo !== 'caixa' && c.filhos?.length)
       erros.push(`"${c.nome}" não é caixa e não pode ter filhos.`);
+    for (const k of ['opacidadeFundo', 'opacidadeBorda'] as const) {
+      const v = c[k];
+      if (v !== undefined && !(Number.isInteger(v) && v >= 0 && v <= 100))
+        erros.push(`"${c.nome}": a opacidade vai de 0 a 100%.`);
+    }
+    if (c.desfoque && !(c.desfoque in DESFOQUES)) erros.push(`"${c.nome}": desfoque inválido.`);
   }
   if (m.eixos?.tipo && !m.raiz.fundo)
     erros.push('Para ter o eixo Tipo, escolha um fundo para a camada principal.');
@@ -753,6 +808,22 @@ function gerarMontado(cfg: ConfigConstrutor, b: Blocos, m: Montagem) {
         })
       : undefined;
   const idDe = (ref: KcxRef<string>) => (ref as { $var: string }).$var;
+  /** Cor do token com transparência: variável derivada no Figma, color-mix no CSS. */
+  const translucida = (
+    base: { ref: KcxRef<string>; css: string },
+    pct: number | undefined,
+    nome: string,
+  ): { ref: KcxRef<string>; css: string } =>
+    pct === undefined || pct >= 100
+      ? base
+      : {
+          ref: {
+            $derivado: idDe(base.ref),
+            nome,
+            transformar: [{ op: 'alpha', valor: pct / 100 }],
+          } as never,
+          css: `color-mix(in srgb, ${base.css} ${pct}%, transparent)`,
+        };
   /** Cor que muda com o Tipo: o fundo da principal vira contorno/conteúdo. */
   const porTipo = (
     nome: string,
@@ -927,17 +998,20 @@ function gerarMontado(cfg: ConfigConstrutor, b: Blocos, m: Montagem) {
     const py = c.padY ? (raiz ? espacoTam(c.padY, 'pad-y') : espaco(c.padY)) : null;
     const tipoAqui = raiz && !!eixoTipo;
     const fundoBase = c.fundo ? cor(c.fundo) : null;
+    const opFundo = (c.opacidadeFundo ?? 100) / 100;
     const fundo =
       fundoBase && tipoAqui
         ? {
             ref: porTipo('fundo-tipo', idDe(fundoBase.ref), idDe(fundoBase.ref), {
-              primario: 1,
+              primario: opFundo,
               secundario: 0,
               fantasma: 0,
             }),
-            css: fundoBase.css,
+            css: translucida(fundoBase, c.opacidadeFundo, 'x').css,
           }
-        : fundoBase;
+        : fundoBase
+          ? translucida(fundoBase, c.opacidadeFundo, `fundo-${c.id}`)
+          : null;
     const borda =
       tipoAqui && fundoBase
         ? {
@@ -949,7 +1023,7 @@ function gerarMontado(cfg: ConfigConstrutor, b: Blocos, m: Montagem) {
             css: 'transparent',
           }
         : c.borda
-          ? cor(c.borda)
+          ? translucida(cor(c.borda), c.opacidadeBorda, `borda-${c.id}`)
           : null;
     if (raiz && eixoTam && (c.padX || c.padY))
       for (const kk of ['p', 'g'] as const) {
@@ -965,6 +1039,7 @@ function gerarMontado(cfg: ConfigConstrutor, b: Blocos, m: Montagem) {
       );
     const r = c.raio ? raio(c.raio) : null;
     const s = c.sombra ? sombra(c.sombra) : null;
+    const blur = c.desfoque ? DESFOQUES[c.desfoque] : 0;
     const alinhar = c.alinhar ?? (dir === 'vertical' ? 'inicio' : 'centro');
     const ai = { inicio: 'flex-start', centro: 'center', fim: 'flex-end' }[alinhar];
     cssPartes.push(
@@ -976,6 +1051,7 @@ function gerarMontado(cfg: ConfigConstrutor, b: Blocos, m: Montagem) {
         borda ? ` border: 1px solid ${borda.css};` : ' border: 0;',
         r ? ` border-radius: ${r.css};` : '',
         s ? ` box-shadow: ${s.css};` : '',
+        blur ? ` -webkit-backdrop-filter: blur(${blur}px); backdrop-filter: blur(${blur}px);` : '',
         c.largura ? ` width: ${c.largura}px;` : '',
         c.altura ? ` min-height: ${c.altura}px;` : '',
         raiz ? ' position: relative; text-align: left; font: inherit; color: inherit;' : '',
@@ -985,6 +1061,8 @@ function gerarMontado(cfg: ConfigConstrutor, b: Blocos, m: Montagem) {
     const filhos = (c.filhos ?? []).map((x) => no(x));
     const efeitos: KcxEfeito[] = [];
     if (s) efeitos.push(s.efeito);
+    // O raio do Background blur no Figma é o dobro do blur() do CSS.
+    if (blur) efeitos.push({ tipo: 'desfoque-fundo', raio: blur * 2 });
     if (raiz && ds) efeitos.push(ds.efeitoAnel(b.cor('primaria')));
     return b.pilha(
       c.id,
@@ -1031,6 +1109,9 @@ function gerarMontado(cfg: ConfigConstrutor, b: Blocos, m: Montagem) {
       ...(m.interativo ? ['Variantes Padrão, Hover, Pressionado, Foco e Desativado'] : []),
       ...(eixoTipo ? ['Eixo Tipo: Primário, Secundário (contorno) e Fantasma'] : []),
       ...(eixoTam ? ['Eixo Tamanho: P, M e G (margem interna e textos)'] : []),
+      ...(temVidro(m.raiz)
+        ? ['Vidro: fundo e borda translúcidos (variáveis com transparência) e Background blur']
+        : []),
     ],
     tags: ['montado', slug(cfg.nome)],
   };

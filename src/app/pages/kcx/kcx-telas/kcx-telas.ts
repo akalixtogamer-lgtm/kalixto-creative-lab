@@ -15,7 +15,7 @@ import { KcxComponente } from '../../../kcx/kcx.types';
 import { documentoDaTela } from '../../../kcx/plano-html';
 import { criarPacote, serializar } from '../../../kcx/serializar';
 import { Icon } from '../../../shared/components/icon/icon';
-import { baixarArquivo } from '../kcx-estado.service';
+import { KcxEstadoService, baixarArquivo } from '../kcx-estado.service';
 import { KcxFundacaoService } from '../kcx-fundacao.service';
 import { KcxMeusService } from '../kcx-meus.service';
 
@@ -83,10 +83,19 @@ export class KcxTelas {
     });
   }
 
+  private readonly estado = inject(KcxEstadoService);
+  /** Seções com os valores editados no editor (ex.: vidro ligado). */
   protected readonly secoes = computed(() =>
     this.tela()
       .secoes.map((id) => this.meus.buscar(id))
-      .filter((c): c is KcxComponente => !!c),
+      .filter((c): c is KcxComponente => !!c)
+      .map((c) => {
+        const vals = this.estado.valores(c);
+        return {
+          ...c,
+          variaveis: c.variaveis.map((v) => ({ ...v, valor: vals[v.id] ?? v.valor })),
+        };
+      }),
   );
   protected readonly dispositivo = computed(() => DISPOSITIVOS[this.tela().dispositivo]);
   protected readonly fidelidade = computed(() => FIDELIDADES[this.tela().fidelidade]);

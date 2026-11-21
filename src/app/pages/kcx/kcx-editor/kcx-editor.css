@@ -19,6 +19,7 @@
   grid-template-columns: minmax(0, 1.6fr) minmax(300px, 1fr);
   grid-template-areas:
     'palco    controles'
+    'vidro    controles'
     'presets  controles'
     'codigo   controles'
     'exportar exportar'
@@ -47,6 +48,10 @@
   grid-area: codigo;
   min-width: 0;
 }
+.kcxe__vidro {
+  grid-area: vidro;
+  padding: var(--kx-space-4);
+}
 .kcxe__exportar {
   grid-area: exportar;
   padding: var(--kx-space-5);
@@ -59,7 +64,7 @@
 @media (max-width: 1100px) {
   .kcxe__grid {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'palco' 'controles' 'presets' 'codigo' 'exportar' 'importar';
+    grid-template-areas: 'palco' 'vidro' 'controles' 'presets' 'codigo' 'exportar' 'importar';
   }
   .kcxe__controles {
     position: static;

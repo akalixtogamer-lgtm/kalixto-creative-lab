@@ -51,6 +51,8 @@ export interface OpcoesDocumento {
   modo: 'preview' | 'exportado';
   /** Código editado no Code Lab (substitui o do componente). */
   codigo?: KcxCodigo;
+  /** Fundo do palco (valor de `background`), ex.: fundo colorido para ver vidro. */
+  fundo?: string;
 }
 
 /** CSS completo: palco + bloco :root com as variáveis + CSS do componente. */
@@ -85,7 +87,7 @@ export function montarDocumentoKcx(
 <meta http-equiv="Content-Security-Policy" content="${CSP_KCX}">
 <title>${t} · KCX · Kalixto Creative Lab</title>
 <style>
-${proteger(cssCompleto(comp, valores, codigo), 'style')}
+${proteger(cssCompleto(comp, valores, codigo), 'style')}${op.fundo ? `\nbody { background: ${proteger(op.fundo, 'style')}; }` : ''}
 </style>
 </head>
 <body>

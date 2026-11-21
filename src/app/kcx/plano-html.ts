@@ -301,6 +301,26 @@ export function documentoDaTela(raiz: PlanoNo, fundo = '#0b0a14'): string {
 html,body{margin:0;background:${fundo}}
 body{overflow-x:hidden}
 #t{position:relative;margin:0 auto;width:max-content;min-width:100%}
+#t>*{min-height:100vh;justify-content:flex-start!important}
 .svg svg{display:block;width:100%;height:100%;overflow:visible}
 </style></head><body><div id="t">${planoParaHtml(raiz)}</div></body></html>`;
+}
+
+/**
+ * Fundo colorido (manchas em gradiente) para ver vidro e transparência: em cima
+ * de um fundo liso, o desfoque não aparece.
+ */
+export function fundoColorido(cores: [string, string, string], base = '#0b0a14'): string {
+  const [a, b, c] = cores.map(corCssSegura);
+  return [
+    `radial-gradient(circle at 18% 22%, ${a} 0, transparent 38%)`,
+    `radial-gradient(circle at 82% 30%, ${b} 0, transparent 36%)`,
+    `radial-gradient(circle at 50% 85%, ${c} 0, transparent 40%)`,
+    corCssSegura(base),
+  ].join(', ');
+}
+
+/** Só aceita cores hex (o valor vai para dentro de um <style>). */
+function corCssSegura(c: string): string {
+  return /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : '#0b0a14';
 }

@@ -177,6 +177,15 @@
         <kx-kcx-controles [variaveis]="c.variaveis" [valores]="valores()" (mudou)="mudar($event)" />
       </section>
 
+      <section class="kcxe__vidro kx-glass" aria-labelledby="kcxe-vidro">
+        <h2 id="kcxe-vidro" class="kcxe__h2">Efeito vidro (glassmorphism)</h2>
+        <kx-kcx-vidro-painel
+          [comp]="c"
+          [valores]="valores()"
+          (aplicar)="aplicarValores({ valores: $event })"
+        />
+      </section>
+
       <section class="kcxe__presets kx-glass" aria-labelledby="kcxe-presets">
         <h2 id="kcxe-presets" class="kcxe__h2">Presets</h2>
         <kx-kcx-presets-painel
