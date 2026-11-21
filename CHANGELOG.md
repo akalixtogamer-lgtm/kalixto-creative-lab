@@ -5,6 +5,25 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Seletor de duas opções (um ou outro)
+- Novo tipo **Seletor de duas opções** em Criar componente: escolhe **uma OU outra** (Português |
+  Inglês, Mensal | Anual). A variável **Segunda opção escolhida** é verdadeiro/falso: falso = a
+  primeira, verdadeiro = a segunda. Os dois textos são editáveis.
+- Tamanhos P/M/G, estado Desativado, três animações (Desliza, com mola, Troca suave) e a opção de
+  trocar o tema no protótipo do Figma.
+- Código acessível: `role="radiogroup"` com dois `role="radio"`; clique ou setas do teclado trocam
+  e o componente dispara um evento `change`. No Figma: Primeira/Segunda (+ Desativado) × Tamanho,
+  e clicar na outra opção faz o destaque deslizar (Smart Animate).
+
+### Adicionado — Botão liga/desliga
+- Novo tipo **Botão liga/desliga** em Criar componente (Seguir/Seguindo, Favoritar, Silenciar):
+  desligado com contorno, ligado cheio, com **texto e ícone próprios** para cada lado.
+- Mesmos recursos dos outros botões: **Tamanhos** P/M/G, **Estados** (Hover, Pressionado, Foco e
+  Desativado, ligado e desligado), ícones trocáveis, três animações (Preenche, Pop, Ícone gira)
+  e o **Efeito vidro**.
+- Código acessível: `<button aria-pressed>` que alterna ao clicar. No Figma: 30 variantes
+  (Estado × Tamanho) e protótipo em que o clique liga e desliga com Smart Animate.
+
 ### Adicionado — Vidro (glassmorphism) em qualquer componente
 - Seção **Efeito vidro** na edição de **todo** componente (biblioteca, criados por tipo,
   montados ou importados do Figma): **Aplicar efeito vidro** / **Desligar vidro**, escolha da

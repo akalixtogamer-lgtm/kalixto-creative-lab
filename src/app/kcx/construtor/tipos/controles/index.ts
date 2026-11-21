@@ -7,6 +7,7 @@ import { DefinicaoTipo } from '../../montar';
 import { CHECKBOX } from './checkbox';
 import { RADIO } from './radio';
 import { SWITCH } from './switch';
+import { SELETOR_DUPLO } from './seletor-duplo';
 import { BREADCRUMB } from './breadcrumb';
 import { PAGINACAO } from './paginacao';
 import { STEPPER } from './stepper';
@@ -18,6 +19,7 @@ export const TIPOS_CONTROLES: DefinicaoTipo[] = [
   CHECKBOX,
   RADIO,
   SWITCH,
+  SELETOR_DUPLO,
   BREADCRUMB,
   PAGINACAO,
   STEPPER,

@@ -35,6 +35,20 @@ export const NOTAS_FIGMA: Record<string, NotaFigma> = {
     nivel: 'codigo',
     texto: 'O pulso contínuo fica só no código. Ficam as variantes Padrão e Hover (com sombra).',
   },
+  // Botão liga/desliga
+  'botao-liga-desliga:preencher': {
+    nivel: 'igual',
+    texto: 'O clique troca Desligado ↔ Ligado com Smart Animate: a cor enche o botão suavemente.',
+  },
+  'botao-liga-desliga:pop': {
+    nivel: 'parcial',
+    texto:
+      'O clique liga e desliga com Smart Animate (curva com mola), mas sem o pulinho de escala.',
+  },
+  'botao-liga-desliga:girar': {
+    nivel: 'parcial',
+    texto: 'O clique troca o ícone com Smart Animate; o giro do ícone fica só no código.',
+  },
   // Conjunto de botões
   'botoes:elevar': { nivel: 'parcial', texto: SO_SOMBRA },
   'botoes:preencher': {
@@ -259,6 +273,18 @@ export const NOTAS_FIGMA: Record<string, NotaFigma> = {
   'radio:cartao': {
     nivel: 'igual',
     texto: 'Uma variante por opção; a linha escolhida ganha fundo com Smart Animate.',
+  },
+  'seletor-duplo:deslizar': {
+    nivel: 'igual',
+    texto: 'Clicar na outra opção faz o destaque deslizar com Smart Animate.',
+  },
+  'seletor-duplo:mola': {
+    nivel: 'igual',
+    texto: 'Clicar na outra opção faz o destaque deslizar com curva de mola (Gentle).',
+  },
+  'seletor-duplo:sumir': {
+    nivel: 'parcial',
+    texto: 'No Figma o destaque desliza (Smart Animate) em vez de sumir e aparecer.',
   },
   'switch:deslizar': {
     nivel: 'igual',
