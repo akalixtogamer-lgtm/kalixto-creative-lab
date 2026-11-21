@@ -238,3 +238,14 @@ textarea {
   flex-wrap: wrap;
   gap: var(--kx-space-4, 16px);
 }
+
+.kcxm__fundo-previa {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+.kcxm__vidro {
+  justify-self: start;
+}

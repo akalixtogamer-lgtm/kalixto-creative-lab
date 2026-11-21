@@ -75,6 +75,8 @@ export class KcxVariantes {
   readonly previa = input(true);
   /** Altura da prévia da variante escolhida. */
   readonly alturaPrevia = input(200);
+  /** Fundo atrás das prévias (valor de `background`, ex.: `fundoColorido(...)`). */
+  readonly fundo = input<string>('#0b0a14');
 
   /** Mostrar os botões de cada eixo. */
   readonly seletores = input(true);
@@ -99,7 +101,7 @@ export class KcxVariantes {
     return {
       nome: v.nome,
       props: v.propriedades,
-      doc: this.sanitizer.bypassSecurityTrustHtml(documentoDaVariante(v.arvore)),
+      doc: this.sanitizer.bypassSecurityTrustHtml(documentoDaVariante(v.arvore, this.fundo())),
     };
   });
 
@@ -122,6 +124,7 @@ export class KcxVariantes {
         vs.map((v) => ({ arvore: v.arvore, rotulo: this.rotulo(v.propriedades) })),
         {
           altura: this.alturaMiniatura(),
+          fundo: this.fundo(),
           cores: this.coresDoTema(),
           selecionada: untracked(() => this.indiceAtual()),
         },

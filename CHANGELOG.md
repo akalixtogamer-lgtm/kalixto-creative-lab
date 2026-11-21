@@ -5,6 +5,17 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Vidro (glassmorphism) no Montador
+- **Opacidade do fundo e da borda** (0–100%) em qualquer caixa, sempre com as cores da fundação.
+  No código vira `color-mix(...)`; no Figma, variável de cor com transparência nos temas Dark e
+  Light.
+- **Desfoque do fundo** P, M e G (8, 16 e 24 px): `backdrop-filter` no código e **Background
+  blur** no Figma.
+- Botão **Aplicar efeito vidro** e modelos **Card de vidro** e **Navbar de vidro**.
+- **Fundo colorido** atrás da prévia do Montador (liga sozinho quando há vidro) e fundo
+  **Colorido** nas Telas (gradiente com as cores da fundação, em cinza nos wireframes).
+- Telas: a página ocupa a altura toda do aparelho na prévia.
+
 ### Adicionado — Telas: mockup de desktop e celular, wireframes
 - **Telas** em `/kcx/telas`: empilhe componentes como seções de uma página (adicionar,
   reordenar, tirar; a mesma seção pode repetir) e veja num **mockup de desktop** (1440 × 900,
