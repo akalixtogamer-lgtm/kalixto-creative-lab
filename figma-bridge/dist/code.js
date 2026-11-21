@@ -520,6 +520,7 @@
 
   // src/app/kcx/fundacao.ts
   var FORMATO_FUNDACAO = "kcx-fundacao";
+  var VERSAO_FUNDACAO = "1.0.0";
   var TOKENS_COR = [
     "primaria",
     "secundaria",
@@ -561,6 +562,91 @@
   var CHAVES_RAIO = ["p", "m", "g", "pill"];
   var CHAVES_ESPACO = ["1", "2", "3", "4", "6", "8", "12", "16"];
   var CHAVES_SOMBRA = ["p", "m", "g"];
+  var FUNDACAO_PADRAO = {
+    formato: FORMATO_FUNDACAO,
+    versao: VERSAO_FUNDACAO,
+    nome: "Kalixto",
+    cores: {
+      primaria: { escuro: "#d4119f", claro: "#b00d84" },
+      secundaria: { escuro: "#7c3aed", claro: "#6d28d9" },
+      destaque: { escuro: "#22e3ff", claro: "#0891b2" },
+      fundo: { escuro: "#0b0a14", claro: "#ffffff" },
+      superficie: { escuro: "#1a1530", claro: "#f3f1fb" },
+      borda: { escuro: "#2e2850", claro: "#dcd8ec" },
+      texto: { escuro: "#f4f2ff", claro: "#1a1530" },
+      "texto-suave": { escuro: "#a9a3c9", claro: "#5b5675" },
+      "sobre-primaria": { escuro: "#ffffff", claro: "#ffffff" },
+      perigo: { escuro: "#ff5c7a", claro: "#dc2626" },
+      sucesso: { escuro: "#3ddc97", claro: "#15803d" },
+      aviso: { escuro: "#ffb547", claro: "#b45309" }
+    },
+    fontes: { titulo: "Space Grotesk", corpo: "Inter", mono: "JetBrains Mono" },
+    texto: {
+      display: {
+        familia: "titulo",
+        peso: 700,
+        tamanho: 56,
+        tamanhoCelular: 40,
+        altura: 1.1,
+        espacamento: -1
+      },
+      h1: {
+        familia: "titulo",
+        peso: 700,
+        tamanho: 40,
+        tamanhoCelular: 32,
+        altura: 1.15,
+        espacamento: -0.5
+      },
+      h2: {
+        familia: "titulo",
+        peso: 700,
+        tamanho: 32,
+        tamanhoCelular: 26,
+        altura: 1.2,
+        espacamento: 0
+      },
+      h3: {
+        familia: "titulo",
+        peso: 600,
+        tamanho: 24,
+        tamanhoCelular: 20,
+        altura: 1.3,
+        espacamento: 0
+      },
+      corpo: {
+        familia: "corpo",
+        peso: 400,
+        tamanho: 16,
+        tamanhoCelular: 15,
+        altura: 1.5,
+        espacamento: 0
+      },
+      pequeno: {
+        familia: "corpo",
+        peso: 400,
+        tamanho: 14,
+        tamanhoCelular: 13,
+        altura: 1.45,
+        espacamento: 0
+      },
+      legenda: {
+        familia: "corpo",
+        peso: 500,
+        tamanho: 12,
+        tamanhoCelular: 12,
+        altura: 1.4,
+        espacamento: 0.4
+      }
+    },
+    raios: { p: 6, m: 12, g: 20, pill: 999 },
+    espacos: { "1": 4, "2": 8, "3": 12, "4": 16, "6": 24, "8": 32, "12": 48, "16": 64 },
+    sombras: {
+      p: { x: 0, y: 2, raio: 6, espalhar: 0, opacidade: 0.18 },
+      m: { x: 0, y: 8, raio: 24, espalhar: -4, opacidade: 0.24 },
+      g: { x: 0, y: 20, raio: 48, espalhar: -8, opacidade: 0.32 }
+    }
+  };
   var HEX2 = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i;
   function validarFundacao(f) {
     var _a, _b, _c, _d, _e, _f, _g, _h;
@@ -593,6 +679,31 @@
         erros.push(`sombras.${k}: x, y, raio, espalhar e opacidade num\xE9ricos.`);
     }
     return erros;
+  }
+  function completarFundacao(f) {
+    var _a, _b;
+    const p = FUNDACAO_PADRAO;
+    return __spreadValues({
+      formato: FORMATO_FUNDACAO,
+      versao: (_a = f.versao) != null ? _a : p.versao,
+      nome: ((_b = f.nome) == null ? void 0 : _b.trim()) || p.nome,
+      cores: __spreadValues(__spreadValues({}, p.cores), f.cores),
+      fontes: __spreadValues(__spreadValues({}, p.fontes), f.fontes),
+      texto: Object.fromEntries(
+        NIVEIS_TEXTO.map((n) => {
+          var _a2;
+          return [n, __spreadValues(__spreadValues({}, p.texto[n]), (_a2 = f.texto) == null ? void 0 : _a2[n])];
+        })
+      ),
+      raios: __spreadValues(__spreadValues({}, p.raios), f.raios),
+      espacos: __spreadValues(__spreadValues({}, p.espacos), f.espacos),
+      sombras: Object.fromEntries(
+        CHAVES_SOMBRA.map((k) => {
+          var _a2;
+          return [k, __spreadValues(__spreadValues({}, p.sombras[k]), (_a2 = f.sombras) == null ? void 0 : _a2[k])];
+        })
+      )
+    }, f.logo && !validarLogo(f.logo).length ? { logo: f.logo } : {});
   }
   var PREFIXO_FUNDACAO = "Funda\xE7\xE3o";
   var nomeTokenCor = (t) => `${PREFIXO_FUNDACAO}/cor/${t}`;
@@ -1840,6 +1951,222 @@ ${cssAnim}`,
       },
       origemCriacao: { tipo: "figma" }
     };
+  }
+
+  // src/app/kcx/figma/ler-design-system.ts
+  var norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  var PISTAS_COR = [
+    [
+      "sobre-primaria",
+      /\b(on primary|sobre primaria|primary foreground|primary contrast|on brand)\b/
+    ],
+    [
+      "texto-suave",
+      /\b(text (secondary|muted|subtle|soft)|muted|texto (suave|secundario)|foreground muted|subtle)\b/
+    ],
+    ["secundaria", /\b(secondary|secundaria)\b/],
+    ["destaque", /\b(accent|destaque|highlight|tertiary)\b/],
+    ["perigo", /\b(danger|error|erro|perigo|destructive|negative)\b/],
+    ["sucesso", /\b(success|sucesso|positive)\b/],
+    ["aviso", /\b(warning|aviso|alerta|caution)\b/],
+    ["superficie", /\b(surface|superficie|card|panel|elevated)\b/],
+    ["borda", /\b(border|borda|stroke|outline|divider)\b/],
+    ["fundo", /\b(background|fundo|bg|canvas|page)\b/],
+    ["texto", /\b(text|texto|foreground|fg|on background|on surface)\b/],
+    ["primaria", /\b(primary|primaria|brand|marca|principal)\b/]
+  ];
+  var ehEscuro = (m) => /dark|escuro|noite|night/i.test(m);
+  var ehClaro = (m) => /light|claro|dia|day/i.test(m);
+  var HEX3 = /^#[0-9a-f]{6}$/i;
+  function pesoDe(estilo) {
+    const e = estilo.toLowerCase();
+    if (/black|heavy|extra ?bold|ultra ?bold/.test(e)) return 800;
+    if (/semi ?bold|demi/.test(e)) return 600;
+    if (/bold/.test(e)) return 700;
+    if (/medium/.test(e)) return 500;
+    return 400;
+  }
+  function nivelDe(nome) {
+    const n = norm(nome);
+    if (/\b(display|hero|jumbo)\b/.test(n)) return "display";
+    if (/\b(h1|heading 1|title 1|titulo 1|headline 1|title large)\b/.test(n)) return "h1";
+    if (/\b(h2|heading 2|title 2|titulo 2|headline 2|title medium)\b/.test(n)) return "h2";
+    if (/\b(h3|heading 3|title 3|titulo 3|headline 3|title small|subtitle|subtitulo)\b/.test(n))
+      return "h3";
+    if (/\b(caption|legenda|overline|label small|tiny)\b/.test(n)) return "legenda";
+    if (/\b(small|pequeno|body small|label|footnote)\b/.test(n)) return "pequeno";
+    if (/\b(body|corpo|paragraph|paragrafo|text|texto|regular|base)\b/.test(n)) return "corpo";
+    return null;
+  }
+  var celular = (px) => px <= 20 ? px : Math.round(px * 0.8);
+  function fundacaoDoFigma(ds) {
+    var _a, _b, _c, _d, _e, _f, _g;
+    const reconhecido = [];
+    const padrao = [];
+    const f = JSON.parse(JSON.stringify(FUNDACAO_PADRAO));
+    f.nome = ((_a = ds.arquivo) == null ? void 0 : _a.trim()) || "Design system do Figma";
+    const cores = ds.variaveis.filter((v) => v.tipo === "COLOR");
+    const usado = /* @__PURE__ */ new Set();
+    for (const [token, pista] of PISTAS_COR) {
+      const candidatas = cores.filter((v2) => !usado.has(v2.nome) && pista.test(norm(v2.nome)));
+      const v = (_b = candidatas.find((c2) => /\b(500|base|default|padrao|main)\b/.test(norm(c2.nome)))) != null ? _b : candidatas.sort((a, b) => a.nome.length - b.nome.length)[0];
+      if (!v) {
+        padrao.push(`cor ${token}`);
+        continue;
+      }
+      const modos = Object.keys(v.valores);
+      const escuro = modos.find(ehEscuro);
+      const claro = modos.find(ehClaro);
+      const um = String(v.valores[modos[0]]);
+      const e = String(escuro ? v.valores[escuro] : claro ? v.valores[claro] : um);
+      const c = String(claro ? v.valores[claro] : um);
+      if (!HEX3.test(e) || !HEX3.test(c)) {
+        padrao.push(`cor ${token}`);
+        continue;
+      }
+      usado.add(v.nome);
+      f.cores[token] = { escuro: e.toLowerCase(), claro: c.toLowerCase() };
+      reconhecido.push(`cor ${token} \u2190 "${v.nome}"`);
+    }
+    const porNivel = /* @__PURE__ */ new Map();
+    for (const s of ds.estilosTexto) {
+      const n = nivelDe(s.nome);
+      if (n && !porNivel.has(n)) porNivel.set(n, s);
+    }
+    const titulo = (_d = (_c = porNivel.get("h1")) != null ? _c : porNivel.get("display")) != null ? _d : porNivel.get("h2");
+    const corpo = (_e = porNivel.get("corpo")) != null ? _e : porNivel.get("pequeno");
+    if (titulo) f.fontes.titulo = titulo.familia;
+    if (corpo) f.fontes.corpo = corpo.familia;
+    const mono = ds.estilosTexto.find((s) => /mono|code|codigo/i.test(s.familia + " " + s.nome));
+    if (mono) f.fontes.mono = mono.familia;
+    for (const n of NIVEIS_TEXTO) {
+      const s = porNivel.get(n);
+      if (!s) {
+        padrao.push(`texto ${n}`);
+        continue;
+      }
+      const t = {
+        familia: s.familia === f.fontes.titulo && n !== "corpo" ? "titulo" : "corpo",
+        peso: pesoDe(s.estilo),
+        tamanho: Math.round(s.tamanho),
+        tamanhoCelular: celular(Math.round(s.tamanho)),
+        altura: s.alturaLinha ? Math.round(s.alturaLinha / s.tamanho * 100) / 100 : f.texto[n].altura,
+        espacamento: Math.round(((_f = s.espacamento) != null ? _f : 0) * 10) / 10
+      };
+      f.texto[n] = t;
+      reconhecido.push(`texto ${n} \u2190 "${s.nome}" (${s.familia} ${t.tamanho}px)`);
+    }
+    const numeros = ds.variaveis.filter((v) => v.tipo === "FLOAT");
+    const valor = (v) => Number(v.valores[Object.keys(v.valores)[0]]);
+    const espacos = numeros.filter(
+      (v) => /\b(spacing|space|espaco|espacamento|gap|padding|margin|size)\b/.test(
+        norm(`${v.colecao} ${v.nome}`)
+      )
+    );
+    if (espacos.length) {
+      const lista = espacos.map(valor).filter((x) => x > 0 && x <= 512);
+      for (const k of CHAVES_ESPACO) {
+        const alvo = Number(k) * 4;
+        const melhor = lista.reduce(
+          (m, x) => m === null || Math.abs(x - alvo) < Math.abs(m - alvo) ? x : m,
+          null
+        );
+        if (melhor !== null && Math.abs(melhor - alvo) <= alvo * 0.5) {
+          f.espacos[k] = melhor;
+        } else padrao.push(`espa\xE7o ${k}`);
+      }
+      reconhecido.push(`espa\xE7os \u2190 ${espacos.length} vari\xE1vel(is)`);
+    } else padrao.push("espa\xE7os");
+    const raios = numeros.filter(
+      (v) => /\b(radius|raio|radii|corner|rounded)\b/.test(norm(`${v.colecao} ${v.nome}`))
+    );
+    if (raios.length) {
+      const pista = {
+        p: /\b(sm|small|s|p|pequeno|xs)\b/,
+        m: /\b(md|medium|m|medio|default|base)\b/,
+        g: /\b(lg|large|l|g|grande|xl)\b/,
+        pill: /\b(full|pill|round|circle|999|9999)\b/
+      };
+      for (const k of CHAVES_RAIO) {
+        const v = raios.find((r) => pista[k].test(norm(r.nome)));
+        if (v) {
+          f.raios[k] = valor(v);
+          reconhecido.push(`raio ${k} \u2190 "${v.nome}"`);
+        } else padrao.push(`raio ${k}`);
+      }
+    } else padrao.push("raios");
+    const sombras = (_g = ds.sombras) != null ? _g : [];
+    if (sombras.length) {
+      const ord = [...sombras].sort((a, b) => a.raio - b.raio);
+      const pega = (i) => ord[Math.min(ord.length - 1, i)];
+      ["p", "m", "g"].forEach((k, i) => {
+        const s = pega(Math.round(i * (ord.length - 1) / 2));
+        f.sombras[k] = { x: s.x, y: s.y, raio: s.raio, espalhar: s.espalhar, opacidade: s.opacidade };
+      });
+      reconhecido.push(`sombras \u2190 ${sombras.length} estilo(s) de efeito`);
+    } else padrao.push("sombras");
+    return { fundacao: completarFundacao(f), reconhecido, padrao };
+  }
+  var hexDe = (c) => "#" + [c.r, c.g, c.b].map(
+    (x) => Math.round(Math.min(1, Math.max(0, x)) * 255).toString(16).padStart(2, "0")
+  ).join("");
+  async function lerDesignSystem(figma2) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r;
+    const colecoes = (_a = await figma2.variables.getLocalVariableCollectionsAsync()) != null ? _a : [];
+    const variaveis = [];
+    const resolver = async (valor, modo, prof = 0) => {
+      var _a2;
+      const v = valor;
+      if (v && v.type === "VARIABLE_ALIAS" && v.id && prof < 5) {
+        const alvo = await figma2.variables.getVariableByIdAsync(v.id);
+        if (!alvo) return void 0;
+        const val = (_a2 = alvo.valuesByMode[modo]) != null ? _a2 : Object.values(alvo.valuesByMode)[0];
+        return resolver(val, modo, prof + 1);
+      }
+      return valor;
+    };
+    for (const col of colecoes) {
+      for (const id of (_b = col.variableIds) != null ? _b : []) {
+        const v = await figma2.variables.getVariableByIdAsync(id);
+        if (!v || v.resolvedType !== "COLOR" && v.resolvedType !== "FLOAT") continue;
+        const valores = {};
+        for (const m of (_c = col.modes) != null ? _c : []) {
+          const bruto = await resolver(v.valuesByMode[m.modeId], m.modeId);
+          if (v.resolvedType === "COLOR" && bruto && typeof bruto === "object")
+            valores[m.name] = hexDe(bruto);
+          else if (typeof bruto === "number") valores[m.name] = bruto;
+        }
+        if (Object.keys(valores).length)
+          variaveis.push({ nome: v.name, colecao: col.name, tipo: v.resolvedType, valores });
+      }
+    }
+    const textos = (_e = await ((_d = figma2.getLocalTextStylesAsync) == null ? void 0 : _d.call(figma2))) != null ? _e : [];
+    const estilosTexto = textos.map((s) => {
+      var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2;
+      return {
+        nome: s.name,
+        familia: (_b2 = (_a2 = s.fontName) == null ? void 0 : _a2.family) != null ? _b2 : "Inter",
+        estilo: (_d2 = (_c2 = s.fontName) == null ? void 0 : _c2.style) != null ? _d2 : "Regular",
+        tamanho: Number(s.fontSize) || 16,
+        alturaLinha: ((_e2 = s.lineHeight) == null ? void 0 : _e2.unit) === "PIXELS" ? s.lineHeight.value : ((_f2 = s.lineHeight) == null ? void 0 : _f2.unit) === "PERCENT" ? s.lineHeight.value / 100 * (Number(s.fontSize) || 16) : void 0,
+        espacamento: ((_g2 = s.letterSpacing) == null ? void 0 : _g2.unit) === "PIXELS" ? s.letterSpacing.value : ((_h2 = s.letterSpacing) == null ? void 0 : _h2.unit) === "PERCENT" ? s.letterSpacing.value / 100 * (Number(s.fontSize) || 16) : 0
+      };
+    });
+    const efeitos = (_g = await ((_f = figma2.getLocalEffectStylesAsync) == null ? void 0 : _f.call(figma2))) != null ? _g : [];
+    const sombras = [];
+    for (const e of efeitos) {
+      const s = ((_h = e.effects) != null ? _h : []).find((x) => x.type === "DROP_SHADOW");
+      if (s)
+        sombras.push({
+          nome: e.name,
+          x: (_j = (_i = s.offset) == null ? void 0 : _i.x) != null ? _j : 0,
+          y: (_l = (_k = s.offset) == null ? void 0 : _k.y) != null ? _l : 0,
+          raio: (_m = s.radius) != null ? _m : 0,
+          espalhar: (_n = s.spread) != null ? _n : 0,
+          opacidade: Math.round(((_p = (_o = s.color) == null ? void 0 : _o.a) != null ? _p : 0.25) * 100) / 100
+        });
+    }
+    return { arquivo: (_r = (_q = figma2.root) == null ? void 0 : _q.name) != null ? _r : "Figma", variaveis, estilosTexto, sombras };
   }
 
   // src/app/kcx/icones.ts
@@ -3367,6 +3694,7 @@ ${cssAnim}`,
         let raiz;
         if (comps.length > 1) {
           raiz = f.combineAsVariants(comps, f.currentPage);
+          semTracejado(raiz);
           comps.forEach((k, i) => {
             k.x = 20;
             k.y = 20 + i * (k.height + 40);
@@ -3752,6 +4080,7 @@ ${cssAnim}`,
       if (variantes.length > 1) {
         principal = f.combineAsVariants(variantes, f.currentPage);
         principal.name = c.nome;
+        semTracejado(principal);
         const larg = Math.max(...variantes.map((v) => v.width)) + 40;
         const alt = Math.max(...variantes.map((v) => v.height)) + 40;
         variantes.forEach((v, i) => {
@@ -3791,6 +4120,13 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
       return principal;
     }
   };
+  function semTracejado(conjunto) {
+    try {
+      conjunto.strokes = [];
+      conjunto.dashPattern = [];
+    } catch (e) {
+    }
+  }
 
   // src/app/kcx/figma/construir/construtor.ts
   var Construtor = class extends BaseNos {
@@ -4219,6 +4555,13 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
     };
   }
 
+  // src/app/kcx/figma/construir.ts
+  function limparTracejados(figma2) {
+    const sets = figma2.currentPage.findAll((n) => n.type === "COMPONENT_SET");
+    sets.forEach((n) => semTracejado(n));
+    return sets.length;
+  }
+
   // figma-bridge/src/code.ts
   figma.showUI(__html__, { width: 460, height: 660, themeColors: true, title: "KCX \xB7 Figma Bridge" });
   function responder(msg) {
@@ -4314,6 +4657,27 @@ Limita\xE7\xF5es: ${c.limitacoes.join(" ")}`;
           variaveis: comp.variaveis.length,
           avisos: comp.compatibilidade.figma.parcial
         });
+      }
+      if (msg.tipo === "enviar-design-system") {
+        const ds = await lerDesignSystem(figma);
+        if (!ds.variaveis.length && !ds.estilosTexto.length)
+          return responder({
+            tipo: "erro",
+            erro: "Este arquivo n\xE3o tem vari\xE1veis nem estilos de texto locais para enviar."
+          });
+        const r = fundacaoDoFigma(ds);
+        responder({
+          tipo: "design-system",
+          nome: r.fundacao.nome,
+          texto: JSON.stringify(r.fundacao, null, 2),
+          reconhecido: r.reconhecido,
+          padrao: r.padrao
+        });
+      }
+      if (msg.tipo === "limpar-tracejado") {
+        const n = limparTracejados(figma);
+        figma.notify(`KCX: borda tracejada removida de ${n} conjunto(s) de variantes.`);
+        responder({ tipo: "tracejado", n });
       }
       if (msg.tipo === "fechar") figma.closePlugin();
     } catch (e) {

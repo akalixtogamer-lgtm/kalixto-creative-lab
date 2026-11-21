@@ -114,7 +114,7 @@ export const BOTOES: DefinicaoTipo = {
     const efeito: Record<string, string> = {
       elevar: `.${C}__btn:hover, .${C}__btn:focus-visible { transform: translateY(-3px); box-shadow: ${sombra}; }`,
       preencher: `.${C}__btn { background: transparent; color: var(--cor); box-shadow: inset 0 0 0 2px var(--cor); }
-.${C}__btn:hover, .${C}__btn:focus-visible { background: var(--cor); color: ${v('fundo')}; }`,
+.${C}__btn:hover, .${C}__btn:focus-visible { background: var(--cor); color: ${b.textoBotao()}; }`,
       brilho: `.${C}__btn:hover, .${C}__btn:focus-visible { box-shadow: 0 0 0 4px color-mix(in srgb, var(--cor) 25%, transparent), ${sombra}; }`,
     };
     const html = `<div class="${C}" data-tamanho="m" data-destaque="b1">
@@ -126,7 +126,7 @@ export const BOTOES: DefinicaoTipo = {
   border: 0;
   border-radius: ${v('raio')};
   background: var(--cor);
-  color: ${v('fundo')};
+  color: ${b.textoBotao()};
   font-weight: 600;
   transition: transform ${v('duracao')} ${v('easing')}, box-shadow ${v('duracao')} ${v('easing')}, background ${v('duracao')} ${v('easing')}, color ${v('duracao')} ${v('easing')};
 }
@@ -209,13 +209,13 @@ ${b.tem('estados') ? estadosCss(b, `.${C}__btn`) : ''}`;
           tipo: 'texto',
           preenchimentos: p
             ? [
-                { tipo: 'solido', cor: { $var: 'corFundo' } },
+                { tipo: 'solido', cor: { $var: 'corTextoBotao' } },
                 {
                   tipo: 'solido',
                   cor: doBotao('corBotao', 'rotulo-cor', [{ op: 'alpha', variavel: p.vazio }]),
                 },
               ]
-            : [{ tipo: 'solido', cor: { $var: 'corFundo' } }],
+            : [{ tipo: 'solido', cor: { $var: 'corTextoBotao' } }],
           texto: {
             conteudo: doBotao('item', 'botao-rotulo'),
             tamanho: porTamanho('fonte', 'botao-fonte'),

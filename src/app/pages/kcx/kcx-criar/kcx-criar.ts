@@ -304,7 +304,7 @@ export class KcxCriar {
   protected paletaAtiva(cores: CoresConstrutor): boolean {
     const a = this.cfg().cores;
     return (Object.keys(cores) as (keyof CoresConstrutor)[]).every(
-      (k) => a[k].toLowerCase() === cores[k].toLowerCase(),
+      (k) => (a[k] ?? '').toLowerCase() === (cores[k] ?? '').toLowerCase(),
     );
   }
 
@@ -333,6 +333,20 @@ export class KcxCriar {
     this.cfg.update((c) => ({ ...c, cores: { ...c.cores, [nome]: valor } }));
   }
 
+  /** O tipo tem subtítulo por item (ex.: slide do carrossel) e o recurso está ligado. */
+  protected readonly comSubItens = computed(() => {
+    const d = this.def().subItens;
+    return !!d && this.cfg().recursos?.[d.recurso] === true;
+  });
+
+  protected mudarSubItem(i: number, valor: string): void {
+    this.cfg.update((c) => {
+      const subs = c.itens.map((_, j) => c.subItens?.[j] ?? '');
+      subs[i] = valor;
+      return { ...c, subItens: subs };
+    });
+  }
+
   protected mudarItem(i: number, valor: string): void {
     this.cfg.update((c) => ({ ...c, itens: c.itens.map((x, j) => (j === i ? valor : x)) }));
   }
@@ -344,6 +358,7 @@ export class KcxCriar {
       ...c,
       itens: [...c.itens, `${d.rotulo} ${c.itens.length + 1}`],
       coresItens: c.coresItens ? [...c.coresItens, ''] : undefined,
+      subItens: c.subItens ? [...c.subItens, ''] : undefined,
     }));
   }
 
@@ -354,6 +369,7 @@ export class KcxCriar {
       ...c,
       itens: c.itens.filter((_, j) => j !== i),
       coresItens: c.coresItens?.filter((_, j) => j !== i),
+      subItens: c.subItens?.filter((_, j) => j !== i),
     }));
     this.variante.set('');
   }
@@ -372,12 +388,18 @@ export class KcxCriar {
       ...c,
       itens: troca(c.itens),
       coresItens: this.def().coresPorItem ? troca(cores) : c.coresItens,
+      subItens: c.subItens ? troca(c.itens.map((_, k) => c.subItens?.[k] ?? '')) : undefined,
     });
   }
 
   protected valor(e: Event): string {
     return (e.target as HTMLInputElement).value;
   }
+
+  /** O tipo tem botão cheio: mostra a cor do texto do botão (independente da cor do botão). */
+  protected readonly usaTextoBotao = computed(
+    () => !!this.resultado().comp?.variaveis.some((v) => v.id === 'corTextoBotao'),
+  );
 
   /* ---------- Logo (tipos com marca: navbar, rodapé, menus) ---------- */
   protected readonly temMarca = computed(() => temMarca(this.def()));

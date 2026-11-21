@@ -245,6 +245,9 @@ export function criarFigmaMock() {
     },
     combineAsVariants: (nos: NoMock[], pai: NoMock) => {
       const set = new NoMock('COMPONENT_SET');
+      // Como no Figma: o conjunto nasce com a borda roxa tracejada.
+      set.strokes = [{ type: 'SOLID', color: { r: 0.59, g: 0.28, b: 1 } }];
+      (set as unknown as { dashPattern: number[] }).dashPattern = [10, 5];
       nos.forEach((n) => set.appendChild(n));
       pai.appendChild(set);
       return set;

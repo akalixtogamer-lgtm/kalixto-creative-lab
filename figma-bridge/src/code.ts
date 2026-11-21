@@ -10,12 +10,14 @@
  */
 import { criarPacote, desserializar, serializar } from '../../src/app/kcx/serializar';
 import { lerSelecao } from '../../src/app/kcx/figma/ler-selecao';
+import { fundacaoDoFigma, lerDesignSystem } from '../../src/app/kcx/figma/ler-design-system';
 import { planejarFigma } from '../../src/app/kcx/figma-plano';
 import { KcxModoExportacao } from '../../src/app/kcx/kcx.types';
 import {
   detectarDuplicados,
   importarNoFigma,
   lerAlteracoes,
+  limparTracejados,
   ModoDuplicados,
 } from '../../src/app/kcx/figma/construir';
 
@@ -24,6 +26,8 @@ type Mensagem =
   | { tipo: 'importar'; texto: string; modo?: KcxModoExportacao; duplicados: ModoDuplicados }
   | { tipo: 'exportar-alteracoes' }
   | { tipo: 'enviar-selecao' }
+  | { tipo: 'enviar-design-system' }
+  | { tipo: 'limpar-tracejado' }
   | { tipo: 'fechar' };
 
 figma.showUI(__html__, { width: 460, height: 660, themeColors: true, title: 'KCX · Figma Bridge' });
@@ -121,6 +125,27 @@ figma.ui.onmessage = async (msg: Mensagem) => {
         variaveis: comp.variaveis.length,
         avisos: comp.compatibilidade.figma.parcial,
       });
+    }
+    if (msg.tipo === 'enviar-design-system') {
+      const ds = await lerDesignSystem(figma);
+      if (!ds.variaveis.length && !ds.estilosTexto.length)
+        return responder({
+          tipo: 'erro',
+          erro: 'Este arquivo não tem variáveis nem estilos de texto locais para enviar.',
+        });
+      const r = fundacaoDoFigma(ds);
+      responder({
+        tipo: 'design-system',
+        nome: r.fundacao.nome,
+        texto: JSON.stringify(r.fundacao, null, 2),
+        reconhecido: r.reconhecido,
+        padrao: r.padrao,
+      });
+    }
+    if (msg.tipo === 'limpar-tracejado') {
+      const n = limparTracejados(figma);
+      figma.notify(`KCX: borda tracejada removida de ${n} conjunto(s) de variantes.`);
+      responder({ tipo: 'tracejado', n });
     }
     if (msg.tipo === 'fechar') figma.closePlugin();
   } catch (e) {

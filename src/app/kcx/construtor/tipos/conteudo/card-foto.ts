@@ -12,6 +12,12 @@ export const CARD_FOTO: DefinicaoTipo = {
   textos: [
     { id: 'titulo', rotulo: 'Título', padrao: 'Aula de samba no pé' },
     {
+      id: 'subtitulo',
+      rotulo: 'Subtítulo',
+      padrao: 'Iniciantes · quinta, 19h',
+      recurso: 'subtitulo',
+    },
+    {
       id: 'texto',
       rotulo: 'Descrição',
       padrao: 'Toda quinta, 19h, com turma iniciante e avançada.',
@@ -19,6 +25,12 @@ export const CARD_FOTO: DefinicaoTipo = {
     { id: 'botao', rotulo: 'Botão', padrao: 'Ver mais' },
   ],
   recursos: [
+    {
+      id: 'subtitulo',
+      nome: 'Subtítulo',
+      descricao: 'Uma linha menor abaixo do título (categoria, data, local).',
+      padrao: true,
+    },
     {
       id: 'partes',
       nome: 'Partes liga/desliga',
@@ -35,6 +47,7 @@ export const CARD_FOTO: DefinicaoTipo = {
   partes: [
     { no: 'imagem', nome: 'Imagem', classe: 'midia' },
     { no: 't-titulo', nome: 'Título', classe: 'titulo' },
+    { no: 't-subtitulo', nome: 'Subtítulo', classe: 'subtitulo' },
     { no: 't-texto', nome: 'Descrição', classe: 'texto' },
     { no: 'acao', nome: 'Botão', classe: 'acao' },
   ],
@@ -73,7 +86,7 @@ export const CARD_FOTO: DefinicaoTipo = {
     const html = `<article class="${C}">
   <div class="${C}__midia"><img class="${C}__img" src="" alt="${escHtml(b.texto('titulo'))}" loading="lazy"></div>
   <div class="${C}__corpo">
-    ${b.span('titulo', 'h3')}
+    ${b.span('titulo', 'h3')}${b.tem('subtitulo') ? `\n    ${b.span('subtitulo', 'p')}` : ''}
     ${b.span('texto', 'p')}
     <a class="${C}__acao" href="#">${b.span('botao')}</a>
   </div>
@@ -90,6 +103,7 @@ export const CARD_FOTO: DefinicaoTipo = {
 .${C}__img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform calc(${v('duracao')} * 2) ${v('easing')}; }
 .${C}__corpo { display: grid; gap: calc(${v('espaco')} * .5); padding: ${v('espaco')}; }
 .${C}__titulo { margin: 0; font-size: calc(${v('fonte')} * 1.25); }
+.${C}__subtitulo { margin: -.25em 0 0; color: ${v('primaria')}; font-size: calc(${v('fonte')} * .8125); font-weight: 600; letter-spacing: .02em; }
 .${C}__texto { margin: 0; color: ${v('suave')}; line-height: 1.5; }
 .${C}__acao { justify-self: start; padding: .55em 1em; border-radius: ${v('raio')}; background: ${v('primaria')}; color: ${v('fundo')}; font-weight: 600; text-decoration: none; }
 ${efeito[cfg.animacao] ?? efeito['zoom']}`;
@@ -103,6 +117,16 @@ ${efeito[cfg.animacao] ?? efeito['zoom']}`;
           estilo: 'Bold',
           preencher: true,
         }),
+        ...(b.tem('subtitulo')
+          ? [
+              b.noTexto('subtitulo', 'Subtítulo', {
+                cor: b.cor('primaria'),
+                tamanho: b.fonteX(0.8125, 'subtitulo-tamanho'),
+                estilo: 'Semi Bold',
+                preencher: true,
+              }),
+            ]
+          : []),
         b.noTexto('texto', 'Descrição', { cor: b.cor('suave'), preencher: true }),
         ...(b.tem('slot')
           ? [

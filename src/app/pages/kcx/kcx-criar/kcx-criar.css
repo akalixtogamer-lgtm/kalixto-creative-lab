@@ -597,6 +597,11 @@ dd .kcxc__aviso-figma {
   font: inherit;
 }
 
+.kcxc__sub-item {
+  font-size: 0.85em;
+  opacity: 0.85;
+}
+
 .kcxc__arquivo-logo {
   position: relative;
   cursor: pointer;

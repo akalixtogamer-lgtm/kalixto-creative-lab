@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { KCX_COMPONENTES } from '../../kcx/componentes';
-import { comVidroEditavel } from '../../kcx/construtor';
+import { comTamanhoEditavel, comVidroEditavel } from '../../kcx/construtor';
 import { KcxComponente, KcxPacote } from '../../kcx/kcx.types';
 import { KcxRecuperavel, RepositorioMeusComponentes } from '../../kcx/meus-componentes';
 
@@ -31,7 +31,7 @@ export class KcxMeusService {
   private readonly comVidro = computed(() =>
     [...KCX_COMPONENTES, ...this.meus()].map((c) => {
       try {
-        return comVidroEditavel(c, this.camadasVidro()[c.id]);
+        return comVidroEditavel(comTamanhoEditavel(c), this.camadasVidro()[c.id]);
       } catch {
         return { comp: c, camada: '', avisos: [] as string[] };
       }

@@ -90,7 +90,14 @@
       }
       <ol class="kcxt__secoes">
         @for (s of secoes(); track $index; let i = $index) {
-          <li>
+          <li
+            draggable="true"
+            [class.kcxt__li--alvo]="alvo() === i && arrastando() !== i"
+            (dragstart)="comecarArrastar(i, $event)"
+            (dragover)="sobre(i, $event)"
+            (drop)="soltar(i, $event)"
+            (dragend)="terminarArrastar()"
+          >
             <span>{{ s.nome }}</span>
             <span class="kcxt__ops">
               <button type="button" (click)="mover(i, -1)" [attr.aria-label]="'Subir ' + s.nome">
@@ -149,13 +156,48 @@
         >
           @if (documento(); as doc) {
             <iframe
-              sandbox=""
+              #frame
+              sandbox="allow-scripts"
               [title]="'Mockup ' + dispositivo().nome + ' de ' + tela().nome"
               [srcdoc]="doc"
               [style.width.px]="dispositivo().largura"
               [style.height.px]="dispositivo().altura"
               [style.transform]="'scale(' + zoom() + ')'"
             ></iframe>
+            <!-- Alças para arrastar cada seção (as posições vêm do próprio mockup). -->
+            <div
+              class="kcxt__alcas"
+              [class.kcxt__alcas--ativas]="arrastando() !== null"
+              [style.width.px]="dispositivo().largura"
+              [style.transform]="'scale(' + zoom() + ') translateY(' + -rolagem() + 'px)'"
+            >
+              @for (cx of caixas(); track $index; let i = $index) {
+                @if (secoes()[i]; as s) {
+                  <div
+                    class="kcxt__caixa"
+                    [class.kcxt__caixa--alvo]="alvo() === i && arrastando() !== i"
+                    [class.kcxt__caixa--origem]="arrastando() === i"
+                    [style.left.px]="cx.x"
+                    [style.top.px]="cx.y"
+                    [style.width.px]="cx.w"
+                    [style.height.px]="cx.h"
+                    (dragover)="sobre(i, $event)"
+                    (drop)="soltar(i, $event)"
+                  >
+                    <span
+                      class="kcxt__alca"
+                      draggable="true"
+                      [style.transform]="'scale(' + 1 / zoom() + ')'"
+                      [attr.aria-label]="'Arrastar ' + s.nome"
+                      [title]="'Arraste para mudar a ordem: ' + s.nome"
+                      (dragstart)="comecarArrastar(i, $event)"
+                      (dragend)="terminarArrastar()"
+                      >⠿ {{ s.nome }}</span
+                    >
+                  </div>
+                }
+              }
+            </div>
           } @else {
             <p class="kcxt__vazio">A tela aparece aqui.</p>
           }

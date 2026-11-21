@@ -11,10 +11,17 @@ export const CARD_VIDEO: DefinicaoTipo = {
   midia: 'video',
   textos: [
     { id: 'titulo', rotulo: 'Título', padrao: 'Passo básico do forró' },
+    { id: 'subtitulo', rotulo: 'Subtítulo', padrao: 'Forró · aula 3', recurso: 'subtitulo' },
     { id: 'texto', rotulo: 'Descrição', padrao: 'Aula rápida para treinar em casa.' },
     { id: 'tempo', rotulo: 'Duração', padrao: '3:42' },
   ],
   recursos: [
+    {
+      id: 'subtitulo',
+      nome: 'Subtítulo',
+      descricao: 'Uma linha menor abaixo do título (categoria, data, local).',
+      padrao: true,
+    },
     {
       id: 'partes',
       nome: 'Partes liga/desliga',
@@ -25,6 +32,7 @@ export const CARD_VIDEO: DefinicaoTipo = {
   partes: [
     { no: 't-tempo', nome: 'Duração', classe: 'tempo' },
     { no: 't-titulo', nome: 'Título', classe: 'titulo' },
+    { no: 't-subtitulo', nome: 'Subtítulo', classe: 'subtitulo' },
     { no: 't-texto', nome: 'Descrição', classe: 'texto' },
   ],
   animacoes: [
@@ -64,7 +72,7 @@ export const CARD_VIDEO: DefinicaoTipo = {
     ${b.span('tempo')}
   </div>
   <div class="${C}__corpo">
-    ${b.span('titulo', 'h3')}
+    ${b.span('titulo', 'h3')}${b.tem('subtitulo') ? `\n    ${b.span('subtitulo', 'p')}` : ''}
     ${b.span('texto', 'p')}
   </div>
 </article>`;
@@ -87,6 +95,7 @@ export const CARD_VIDEO: DefinicaoTipo = {
 .${C}__tempo { position: absolute; z-index: 2; right: 8px; bottom: 8px; padding: 2px 8px; border-radius: 999px; background: rgb(0 0 0 / .6); color: #fff; font-size: .8em; }
 .${C}__corpo { display: grid; gap: calc(${v('espaco')} * .35); padding: ${v('espaco')}; }
 .${C}__titulo { margin: 0; font-size: calc(${v('fonte')} * 1.125); }
+.${C}__subtitulo { margin: -.25em 0 0; color: ${v('primaria')}; font-size: calc(${v('fonte')} * .8125); font-weight: 600; letter-spacing: .02em; }
 .${C}__texto { margin: 0; color: ${v('suave')}; }
 ${efeito[cfg.animacao] ?? efeito['play']}`;
     const js = `// Play/pause; o vídeo só carrega quando a pessoa clica.
@@ -160,6 +169,16 @@ document.querySelectorAll('.${C}').forEach((card) => {
               estilo: 'Bold',
               preencher: true,
             }),
+            ...(b.tem('subtitulo')
+              ? [
+                  b.noTexto('subtitulo', 'Subtítulo', {
+                    cor: b.cor('primaria'),
+                    tamanho: b.fonteX(0.8125, 'subtitulo-tamanho'),
+                    estilo: 'Semi Bold',
+                    preencher: true,
+                  }),
+                ]
+              : []),
             b.noTexto('texto', 'Descrição', { cor: b.cor('suave'), preencher: true }),
           ],
           { espaco: b.espacoX(0.35, 'corpo-gap'), px: b.espaco, py: b.espaco, encher: true },

@@ -146,6 +146,7 @@ export abstract class BaseNos extends BaseVariaveis {
       let raiz: No;
       if (comps.length > 1) {
         raiz = f.combineAsVariants(comps, f.currentPage);
+        semTracejado(raiz);
         comps.forEach((k, i) => {
           k.x = 20;
           k.y = 20 + i * (k.height + 40);
@@ -563,6 +564,7 @@ export abstract class BaseNos extends BaseVariaveis {
     if (variantes.length > 1) {
       principal = f.combineAsVariants(variantes, f.currentPage);
       principal.name = c.nome;
+      semTracejado(principal);
       // Variantes em grade (até 3 por linha).
       const larg = Math.max(...variantes.map((v) => v.width)) + 40;
       const alt = Math.max(...variantes.map((v) => v.height)) + 40;
@@ -601,5 +603,18 @@ export abstract class BaseNos extends BaseVariaveis {
     }
     this.rel.componentes.push({ nome: c.nome, id: principal.id, variantes: variantes.length });
     return principal;
+  }
+}
+
+/**
+ * O Figma cria o conjunto de variantes com uma borda roxa tracejada (é um
+ * traço de verdade, que sai junto no arquivo). O KCX tira: fica sem borda.
+ */
+export function semTracejado(conjunto: No): void {
+  try {
+    conjunto.strokes = [];
+    conjunto.dashPattern = [];
+  } catch {
+    /* tipos sem traço */
   }
 }

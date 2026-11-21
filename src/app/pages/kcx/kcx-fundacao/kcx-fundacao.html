@@ -30,13 +30,18 @@
       <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarCss()">Baixar CSS</button>
       <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarJson()">Baixar JSON</button>
       <label class="kx-btn kx-btn--ghost kcxf__arquivo">
-        Importar
+        Importar (JSON ou design system do Figma)
         <input type="file" accept=".json,application/json" (change)="importar($event)" />
       </label>
       <button type="button" class="kx-btn kx-btn--ghost" (click)="restaurar()">
         Restaurar padrão
       </button>
     </div>
+    <p class="kx-muted kcxf__dica-figma">
+      Tem um design system no Figma? No plugin <strong>Figma Bridge</strong>, clique em “Enviar
+      design system para o lab” e importe aqui o arquivo <code>.kcx-fundacao.json</code>: cores,
+      tipografia, espaços, raios e sombras entram na fundação.
+    </p>
     @if (aviso()) {
       <p class="kcxf__aviso" role="status">{{ aviso() }}</p>
     }

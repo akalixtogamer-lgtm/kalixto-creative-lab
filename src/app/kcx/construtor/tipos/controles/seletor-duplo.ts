@@ -183,7 +183,7 @@ ${des ? `  opacity: ${v('opacidade')};\n` : ''}}
   transition: color ${v('duracao')} ${v('easing')};
 }
 .${C}__op:hover { color: ${v('primaria')}; }
-.${C}__op[aria-checked="true"] { color: ${v('fundo')}; }
+.${C}__op[aria-checked="true"] { color: ${b.textoBotao()}; }
 .${C}__op:focus-visible { outline: 3px solid color-mix(in srgb, ${v('primaria')} 45%, transparent); outline-offset: 2px; }
 ${
   comTamanhos
@@ -266,8 +266,8 @@ ${
               preencher: true,
               cor:
                 lado === 'a'
-                  ? corDa('opcao-a-cor', 'corTexto', 'corFundo')
-                  : corDa('opcao-b-cor', 'corFundo', 'corTexto'),
+                  ? corDa('opcao-a-cor', 'corTexto', 'corTextoBotao')
+                  : corDa('opcao-b-cor', 'corTextoBotao', 'corTexto'),
             },
           ),
         ],

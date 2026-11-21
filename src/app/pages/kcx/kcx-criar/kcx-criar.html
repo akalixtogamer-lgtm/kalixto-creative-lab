@@ -81,6 +81,21 @@
               />
             </label>
           }
+          @if (def().porTela) {
+            <label class="kcxc__campo">
+              <span>Cards por vez no desktop (no celular é sempre 1)</span>
+              <select
+                aria-label="Cards por vez no desktop"
+                (change)="mudar('porTela', +valor($event))"
+              >
+                @for (k of [1, 3, 4]; track k) {
+                  <option [value]="k" [selected]="(cfg().porTela ?? 1) === k">
+                    {{ k === 1 ? '1 (slide grande)' : k + ' cards' }}
+                  </option>
+                }
+              </select>
+            </label>
+          }
           @if (temMarca()) {
             <fieldset class="kcxc__itens">
               <legend>Logo</legend>
@@ -151,6 +166,17 @@
                     [value]="item"
                     (input)="mudarItem(i, valor($event))"
                   />
+                  @if (comSubItens()) {
+                    <input
+                      type="text"
+                      maxlength="80"
+                      class="kcxc__sub-item"
+                      [attr.aria-label]="'Subtítulo ' + (i + 1)"
+                      placeholder="Subtítulo"
+                      [value]="cfg().subItens?.[i] ?? ''"
+                      (input)="mudarSubItem(i, valor($event))"
+                    />
+                  }
                   <div class="kcxc__item-acoes">
                     <button
                       type="button"
@@ -352,6 +378,16 @@
                 />
                 Texto</label
               >
+              @if (usaTextoBotao()) {
+                <label
+                  ><input
+                    type="color"
+                    [value]="cfg().cores.textoBotao ?? cfg().cores.fundo"
+                    (input)="mudarCor('textoBotao', valor($event))"
+                  />
+                  Texto do botão</label
+                >
+              }
             </div>
           </details>
           <label class="kcxc__campo">

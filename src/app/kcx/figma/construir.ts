@@ -16,4 +16,15 @@ export * from './construir/tipos';
 export { detectarDuplicados } from './construir/duplicados';
 export { importarNoFigma } from './construir/construtor';
 export { lerAlteracoes } from './construir/ler-alteracoes';
+import { semTracejado as semTracejadoRef } from './construir/base-nos';
+export { semTracejado } from './construir/base-nos';
+
+/** Tira a borda tracejada de todos os conjuntos de variantes da página (já importados). */
+export function limparTracejados(figma: {
+  currentPage: { findAll(f: (n: { type: string }) => boolean): unknown[] };
+}): number {
+  const sets = figma.currentPage.findAll((n) => n.type === 'COMPONENT_SET');
+  sets.forEach((n) => semTracejadoRef(n as never));
+  return sets.length;
+}
 export { gatilhoFigma, codigoTecla, transicaoFigma } from './construir/prototipo';

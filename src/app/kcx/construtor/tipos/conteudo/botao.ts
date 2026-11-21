@@ -71,6 +71,7 @@ export const BOTAO: DefinicaoTipo = {
   gerar(cfg, b) {
     const C = b.C;
     const v = (n: string) => b.v(n);
+    const txtBtn = b.textoBotao();
     const preencher = cfg.animacao === 'preencher';
     const comTipos = b.tem('tipos') && !preencher;
     const comTamanhos = b.tem('tamanhos');
@@ -223,12 +224,12 @@ export const BOTAO: DefinicaoTipo = {
       : undefined;
     const corTexto: KcxRef<string> = tipo
       ? porTipo('rotulo-cor', {
-          primario: 'corFundo',
+          primario: 'corTextoBotao',
           secundario: 'corPrimaria',
           terciario: 'corPrimaria',
-          destrutivo: 'corFundo',
+          destrutivo: 'corTextoBotao',
         })
-      : { $var: 'corFundo' };
+      : { $var: 'corTextoBotao' };
     const sombraCor: KcxRef<string> = tipo
       ? ({
           $derivado: tipo,
@@ -274,7 +275,7 @@ export const BOTAO: DefinicaoTipo = {
 .${C}:active { transform: translateY(0) scale(.98); }`,
       preencher: `.${C} { background: transparent; color: ${v('primaria')}; box-shadow: inset 0 0 0 2px ${v('primaria')}; isolation: isolate; overflow: hidden; }
 .${C}::before { content: ''; position: absolute; inset: 0; z-index: -1; background: ${v('primaria')}; transform: scaleX(0); transform-origin: left; transition: transform ${v('duracao')} ${v('easing')}; }
-.${C}:hover, .${C}:focus-visible { color: ${v('fundo')}; box-shadow: inset 0 0 0 2px ${v('primaria')}, ${s.sombraCss}; }
+.${C}:hover, .${C}:focus-visible { color: ${txtBtn}; box-shadow: inset 0 0 0 2px ${v('primaria')}, ${s.sombraCss}; }
 .${C}:hover::before, .${C}:focus-visible::before { transform: scaleX(1); }`,
       brilho: `.${C} { animation: ${C}-brilho calc(${v('duracao')} * 6) ease-in-out infinite; }
 @keyframes ${C}-brilho { 50% { box-shadow: ${s.sombraCss}, 0 0 0 6px color-mix(in srgb, ${v('primaria')} 25%, transparent); } }`,
@@ -308,7 +309,7 @@ export const BOTAO: DefinicaoTipo = {
   border: 0;
   border-radius: ${v('raio')};
   background: ${v('primaria')};
-  color: ${v('fundo')};
+  color: ${txtBtn};
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -461,7 +462,7 @@ ${ds ? ds.css(`.${C}`, v('primaria')) : ''}${
       estrutura.traco = { cor: b.cor('primaria'), espessura: 2 };
       const rotulo = estrutura.filhos!.find((f) => f.id === 't-rotulo')!;
       rotulo.preenchimentos = [
-        { tipo: 'solido', cor: { $var: 'corFundo' } },
+        { tipo: 'solido', cor: { $var: 'corTextoBotao' } },
         { tipo: 'solido', cor: b.corAlpha('corPrimaria', 'rotulo-cor', p.vazio) },
       ];
       estados = estados.map((e) =>
