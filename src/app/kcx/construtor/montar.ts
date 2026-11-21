@@ -61,6 +61,8 @@ export interface ConfigConstrutor {
   temaOposto?: { fundo: string; superficie: string; texto: string; suave: string };
   /** Cor do texto secundário. Ausente = #a9a3c9. Vem da fundação. */
   corSuave?: string;
+  /** Carrossel: quantos slides aparecem juntos no desktop (1, 3 ou 4). No celular é sempre 1. */
+  porTela?: number;
   /** Montador visual: as camadas do componente montado do zero. */
   montagem?: Montagem;
   /** Montador visual: a fundação (tokens) usada na montagem. */
@@ -162,6 +164,8 @@ export interface DefinicaoTipo {
   largura: number;
   altura: number;
   gerar(cfg: ConfigConstrutor, b: Blocos): Partes;
+  /** Carrossel: cards por vez no desktop de um componente novo. */
+  porTela?: number;
 }
 
 /* ============================== Blocos de montagem ============================== */
@@ -637,6 +641,7 @@ export function configPadrao(def: DefinicaoTipo, nome = def.nome): ConfigConstru
     midia: '',
     recursos: Object.fromEntries((def.recursos ?? []).map((r) => [r.id, r.padrao])),
     icones: Object.fromEntries((def.icones ?? []).map((i) => [i.id, i.padrao])),
+    ...(def.porTela ? { porTela: def.porTela } : {}),
   };
 }
 

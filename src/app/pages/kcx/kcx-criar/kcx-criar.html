@@ -81,6 +81,21 @@
               />
             </label>
           }
+          @if (def().porTela) {
+            <label class="kcxc__campo">
+              <span>Cards por vez no desktop (no celular é sempre 1)</span>
+              <select
+                aria-label="Cards por vez no desktop"
+                (change)="mudar('porTela', +valor($event))"
+              >
+                @for (k of [1, 3, 4]; track k) {
+                  <option [value]="k" [selected]="(cfg().porTela ?? 1) === k">
+                    {{ k === 1 ? '1 (slide grande)' : k + ' cards' }}
+                  </option>
+                }
+              </select>
+            </label>
+          }
           @if (def().itens; as d) {
             <fieldset class="kcxc__itens">
               <legend>

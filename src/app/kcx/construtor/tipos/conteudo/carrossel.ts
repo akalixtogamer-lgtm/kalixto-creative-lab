@@ -7,13 +7,21 @@ export const CARROSSEL: DefinicaoTipo = {
   nome: 'Carrossel',
   categoria: 'conteudo',
   uso: 'site e app',
-  descricao: 'Slides com setas, pontos, teclado e troca automática opcional.',
+  descricao:
+    'Até 15 slides ou cards com setas, pontos, teclado e troca automática. No desktop mostra 1, 3 ou 4 por vez; no celular, 1.',
   textos: [{ id: 'legenda', rotulo: 'Legenda', padrao: 'Use as setas, os pontos ou o teclado' }],
   itens: {
     rotulo: 'Slide',
-    padrao: ['Turma de samba', 'Aulão de sábado', 'Festival de dança'],
+    padrao: [
+      'Turma de samba',
+      'Aulão de sábado',
+      'Festival de dança',
+      'Forró pé de serra',
+      'Jazz funk',
+      'Dança de salão',
+    ],
     min: 2,
-    max: 6,
+    max: 15,
   },
   recursos: [
     {
@@ -41,13 +49,36 @@ export const CARROSSEL: DefinicaoTipo = {
     { id: 'fade', nome: 'Troca com fade', descricao: 'Um slide some e o outro aparece.' },
     { id: 'escala', nome: 'Desliza com zoom', descricao: 'Desliza e o slide ativo fica maior.' },
   ],
-  largura: 480,
-  altura: 330,
+  porTela: 3,
+  largura: 960,
+  altura: 420,
   gerar(cfg, b) {
     const C = b.C;
     const v = (n: string) => b.v(n);
     const n = cfg.itens.length;
-    const ativo = b.indiceAtivo('ativo', 'Slide ativo', n, 'Qual slide aparece.');
+    // Cards por vez no desktop (1, 3 ou 4); nunca mais que os slides que existem.
+    const k = Math.min(n, [1, 3, 4].includes(cfg.porTela ?? 1) ? (cfg.porTela ?? 1) : 1);
+    const posicoes = n - k + 1;
+    const ativo = b.indiceAtivo(
+      'ativo',
+      k > 1 ? 'Primeiro card à mostra' : 'Slide ativo',
+      posicoes,
+      k > 1 ? 'Qual card aparece primeiro (à esquerda).' : 'Qual slide aparece.',
+    );
+    b.extra({
+      id: 'porTela',
+      nome: 'Cards por vez (desktop)',
+      tipo: 'number',
+      padrao: k,
+      min: 1,
+      max: 4,
+      passo: 1,
+      descricao:
+        'Quantos aparecem juntos em telas largas. Com o carrossel estreito (celular, até 440 px) é sempre 1.',
+      grupo: 'components',
+      secao: 'aparencia',
+      vinculos: [{ propriedade: '--por-tela', alvo: { tipo: 'css-var', nome: `${b.P}-por-tela` } }],
+    });
     const auto = b.extra({
       id: 'automatico',
       nome: 'Troca automática',
@@ -84,24 +115,35 @@ export const CARROSSEL: DefinicaoTipo = {
     const pontosAtivos = cfg.itens
       .map((_, i) => `.${C}[data-ativo="${i + 1}"] [data-ir="${i + 1}"]`)
       .join(',\n');
-    const css = `.${C} { width: 100%; max-width: 480px; }
-.${C}__janela { position: relative; overflow: hidden; border-radius: ${v('raio')}; aspect-ratio: 16 / 9; }
-.${C}__trilho { display: ${fade ? 'grid' : 'flex'}; height: 100%; ${fade ? '' : `transform: translateX(calc((${v('ativo')} - 1) * -100%)); transition: transform ${v('duracao')} ${v('easing')};`} }
-.${C}__slide { ${fade ? 'grid-area: 1 / 1; opacity: 0; transition: opacity ' + v('duracao') + ' ' + v('easing') + ';' : 'flex: 0 0 100%;'} display: grid; place-items: end start; padding: calc(${v('espaco')} * 1.25); background: linear-gradient(135deg, ${v('primaria')}, ${v('superficie')}); filter: hue-rotate(var(--h)); ${cfg.animacao === 'escala' ? `transform: scale(.88); opacity: .6; transition: transform ${v('duracao')} ${v('easing')}, opacity ${v('duracao')} ${v('easing')};` : ''} }
-.${C}__slide h3 { margin: 0; font-size: calc(${v('fonte')} * 1.5); color: #fff; text-shadow: 0 2px 12px rgb(0 0 0 / .4); }
+    const css = `.${C} { --por: ${v('por-tela')}; --gap: ${k > 1 ? `calc(${v('espaco')} * .75)` : '0px'}; width: 100%; max-width: ${k > 1 ? 1040 : 480}px; container-type: inline-size; }
+.${C}__janela { position: relative; overflow: hidden; border-radius: ${v('raio')}; ${k > 1 ? '' : 'aspect-ratio: 16 / 9;'} }
+.${C}__trilho { display: ${fade && k === 1 ? 'grid' : 'flex'}; gap: var(--gap); height: 100%; ${fade && k === 1 ? '' : `transform: translateX(calc((${v('ativo')} - 1) * -1 * (100% + var(--gap)) / var(--por))); transition: transform ${v('duracao')} ${v('easing')};`} }
+.${C}__slide { ${fade && k === 1 ? 'grid-area: 1 / 1; opacity: 0; transition: opacity ' + v('duracao') + ' ' + v('easing') + ';' : 'flex: 0 0 calc((100% - (var(--por) - 1) * var(--gap)) / var(--por));'}${k > 1 ? ` aspect-ratio: 3 / 4; border-radius: ${v('raio')};` : ''} min-width: 0; overflow: hidden; display: grid; place-items: end start; padding: calc(${v('espaco')} * 1.25); background: linear-gradient(135deg, ${v('primaria')}, ${v('superficie')}); filter: hue-rotate(var(--h)); ${cfg.animacao === 'escala' ? `transform: scale(.88); opacity: .6; transition: transform ${v('duracao')} ${v('easing')}, opacity ${v('duracao')} ${v('easing')};` : ''} }
+.${C}__slide h3 { margin: 0; font-size: calc(${v('fonte')} * ${k > 1 ? 1.125 : 1.5}); overflow-wrap: anywhere; color: #fff; text-shadow: 0 2px 12px rgb(0 0 0 / .4); }
 ${regrasAtivo} { opacity: 1; transform: none; }
 .${C}__seta { position: absolute; top: 50%; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: color-mix(in srgb, ${v('fundo')} 70%, transparent); color: ${v('texto')}; transform: translateY(-50%); }
 .${C}__seta--ant { left: 10px; }
 .${C}__seta--prox { right: 10px; }
 .${C}__pontos { display: flex; justify-content: center; gap: 8px; margin-top: calc(${v('espaco')} * .75); }
 .${C}__ponto { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: ${v('suave')}; opacity: .5; transition: width ${v('duracao')} ${v('easing')}, opacity ${v('duracao')} ${v('easing')}, background ${v('duracao')} ${v('easing')}; }
-${pontosAtivos} { width: 24px; opacity: 1; background: ${v('primaria')}; }
-.${C}__legenda { margin: calc(${v('espaco')} * .5) 0 0; color: ${v('suave')}; text-align: center; font-size: .875em; }`;
+${pontosAtivos} { width: 24px; opacity: 1; background: ${v('primaria')}; }${
+      k > 1
+        ? `\n@container (min-width: 441px) { ${cfg.itens
+            .slice(posicoes)
+            .map((_, j) => `.${C} [data-ir="${posicoes + j + 1}"]`)
+            .join(', ')} { display: none; } }`
+        : ''
+    }
+.${C}__legenda { margin: calc(${v('espaco')} * .5) 0 0; color: ${v('suave')}; text-align: center; font-size: .875em; }
+@container (max-width: 440px) { .${C}__janela, .${C}__pontos { --por: 1; } }`;
     const js = `// Setas, pontos, teclado e troca automática (pausa no hover e no foco).
 document.querySelectorAll('.${C}').forEach((raiz) => {
-  const total = raiz.querySelectorAll('.${C}__slide').length;
+  const slides = raiz.querySelectorAll('.${C}__slide').length;
+  // Quantos aparecem juntos agora (3 ou 4 no desktop, 1 no celular).
+  const porVez = () => Math.max(1, Math.round(Number(getComputedStyle(raiz.querySelector('.${C}__janela')).getPropertyValue('--por')) || 1));
   const atual = () => Number(raiz.getAttribute('data-ativo')) || 1;
   const ir = (n) => {
+    const total = Math.max(1, slides - porVez() + 1);
     const alvo = ((n - 1 + total) % total) + 1;
     raiz.setAttribute('data-ativo', String(alvo));
     raiz.style.setProperty('${b.P}-ativo', String(alvo));
@@ -117,15 +159,17 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
   raiz.addEventListener('focusout', () => (pausado = false));
   setInterval(() => { if (raiz.getAttribute('data-automatico') === 'true' && !pausado) ir(atual() + 1); }, 4000);
 });`;
-    const W = 480;
-    const H = 270;
+    const GAP = k > 1 ? 16 : 0;
+    const W = k > 1 ? 960 : 480;
+    const L = (W - GAP * (k - 1)) / k;
+    const H = k > 1 ? Math.round((L * 4) / 3) : 270;
     const slides: KcxNo = {
       id: 'trilho',
       nome: 'Trilho',
       tipo: 'frame',
-      x: b.posicao(ativo, 'trilho-x', -W),
+      x: b.posicao(ativo, 'trilho-x', -(L + GAP)),
       y: 0,
-      largura: W * n,
+      largura: L * n + GAP * (n - 1),
       altura: H,
       preenchimentos: [],
       filhos: cfg.itens.map((_, i) =>
@@ -135,16 +179,17 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
           'horizontal',
           [
             b.noItem(i, {
-              tamanho: b.fonteX(1.5, 'slide-tamanho'),
+              tamanho: b.fonteX(k > 1 ? 1.125 : 1.5, 'slide-tamanho'),
               estilo: 'Bold',
               cor: '#ffffff',
             }),
           ],
           {
-            x: i * W,
+            x: i * (L + GAP),
             y: 0,
-            largura: W,
+            largura: L,
             altura: H,
+            ...(k > 1 ? { raio: b.raio } : {}),
             preenchimentos: [
               {
                 tipo: 'gradiente-linear',
@@ -190,11 +235,11 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
       id: 'pontos',
       nome: 'Pontos',
       tipo: 'frame',
-      largura: n * 16 + 16,
+      largura: posicoes * 16 + 16,
       altura: 8,
       preenchimentos: [],
       filhos: [
-        ...cfg.itens.map((_, i): KcxNo => ({
+        ...cfg.itens.slice(0, posicoes).map((_, i): KcxNo => ({
           id: `ponto-${i + 1}`,
           nome: `Ponto ${i + 1}`,
           tipo: 'elipse',
@@ -237,29 +282,30 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
       },
     );
     const interacoes: KcxInteracao[] = [];
-    for (let i = 1; i <= n; i++) {
-      interacoes.push(interacao('seta-prox', `slide${i}`, `slide${(i % n) + 1}`));
-      interacoes.push(interacao('seta-ant', `slide${i}`, `slide${((i - 2 + n) % n) + 1}`));
+    const P = posicoes;
+    for (let i = 1; i <= P; i++) {
+      interacoes.push(interacao('seta-prox', `slide${i}`, `slide${(i % P) + 1}`));
+      interacoes.push(interacao('seta-ant', `slide${i}`, `slide${((i - 2 + P) % P) + 1}`));
       if (b.tem('automatico'))
         interacoes.push({
-          ...interacao('carrossel', `slide${i}`, `slide${(i % n) + 1}`),
+          ...interacao('carrossel', `slide${i}`, `slide${(i % P) + 1}`),
           gatilho: 'atraso',
           atraso: 3000,
           duracao: 500,
         });
       if (b.tem('arrastar'))
         interacoes.push({
-          ...interacao('carrossel', `slide${i}`, `slide${(i % n) + 1}`),
+          ...interacao('carrossel', `slide${i}`, `slide${(i % P) + 1}`),
           gatilho: 'arrastar',
         });
       if (b.tem('teclado')) {
         interacoes.push({
-          ...interacao('carrossel', `slide${i}`, `slide${(i % n) + 1}`),
+          ...interacao('carrossel', `slide${i}`, `slide${(i % P) + 1}`),
           gatilho: 'tecla',
           tecla: 'ArrowRight',
         });
         interacoes.push({
-          ...interacao('carrossel', `slide${i}`, `slide${((i - 2 + n) % n) + 1}`),
+          ...interacao('carrossel', `slide${i}`, `slide${((i - 2 + P) % P) + 1}`),
           gatilho: 'tecla',
           tecla: 'ArrowLeft',
         });
@@ -270,11 +316,11 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
       css,
       js,
       estrutura,
-      estados: cfg.itens.map((t, i) => ({
+      estados: cfg.itens.slice(0, posicoes).map((t, i) => ({
         id: `slide${i + 1}`,
-        nome: `Slide ${i + 1}`,
+        nome: k > 1 ? `Cards ${i + 1}–${i + k}` : `Slide ${i + 1}`,
         gatilho: i === 0 ? ('padrao' as const) : ('active' as const),
-        descricao: `“${t}” à mostra.`,
+        descricao: k > 1 ? `Do “${t}” ao “${cfg.itens[i + k - 1]}” à mostra.` : `“${t}” à mostra.`,
         valores: { [ativo]: i + 1, [auto]: false },
       })),
       interacoes,
@@ -288,6 +334,11 @@ document.querySelectorAll('.${C}').forEach((raiz) => {
         'Uma variante por slide; no protótipo, as setas passam e voltam com Smart Animate (o trilho desliza de verdade)',
         'Slides como frames nativos: troque o gradiente por fotos',
         'Ponto ativo anda junto',
+        ...(k > 1
+          ? [
+              `${k} cards por vez no desktop; no código, no celular (carrossel com até 440 px) mostra 1 por vez`,
+            ]
+          : []),
       ],
       parcial: ['No Figma, fade e zoom também aparecem como deslize'],
       naoSuportado: ['Troca automática e arrastar com o dedo'],

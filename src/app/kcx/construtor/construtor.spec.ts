@@ -132,7 +132,8 @@ describe('Construtor KCX — todos os tipos', () => {
 
   it('carrossel: a seta passa para o próximo slide e o último volta ao primeiro', () => {
     const def = TIPOS_CONSTRUTOR.find((t) => t.id === 'carrossel')!;
-    const plano = planejarFigma(criarPacote([montarDoConstrutor(configPadrao(def))], { agora }));
+    const cfg = { ...configPadrao(def), porTela: 1, itens: ['A', 'B', 'C'] };
+    const plano = planejarFigma(criarPacote([montarDoConstrutor(cfg)], { agora }));
     const prox = plano.componentes[0].interacoes!.filter((i) => i.no === 'seta-prox');
     expect(prox.map((i) => `${i.variante} → ${i.destino}`)).toEqual([
       'Estado=Slide 1 → Estado=Slide 2',
@@ -142,6 +143,27 @@ describe('Construtor KCX — todos os tipos', () => {
     // o trilho anda: x = -(ativo - 1) × 480
     const trilho = (i: number) => plano.componentes[0].variantes[i].arvore.filhos[0].filhos[0];
     expect([0, 1, 2].map((i) => trilho(i).x)).toEqual([-0, -480, -960].map((x) => x || 0));
+  });
+
+  it('carrossel de cards: até 15, 3 ou 4 por vez no desktop e 1 no celular', () => {
+    const def = TIPOS_CONSTRUTOR.find((t) => t.id === 'carrossel')!;
+    expect(def.itens!.max).toBe(15);
+    expect(configPadrao(def).porTela).toBe(3);
+    const itens = Array.from({ length: 15 }, (_, i) => `Card ${i + 1}`);
+    for (const k of [3, 4]) {
+      const c = montarDoConstrutor({ ...configPadrao(def), itens, porTela: k });
+      expect(c.estados).toHaveLength(15 - k + 1);
+      expect(c.estados[0].nome).toBe(`Cards 1–${k}`);
+      expect(c.codigo.css).toContain('@container (max-width: 440px)');
+      expect(c.codigo.css).toContain('--por: 1;');
+      expect(c.variaveis.find((v) => v.id === 'porTela')!.padrao).toBe(k);
+      const plano = planejarFigma(criarPacote([c], { agora }));
+      const vs = plano.componentes[0].variantes;
+      const trilho = (i: number) => vs[i].arvore.filhos[0].filhos[0];
+      const L = (960 - 16 * (k - 1)) / k;
+      expect(trilho(1).x).toBeCloseTo(-(L + 16), 3);
+      expect(trilho(0).filhos).toHaveLength(15);
+    }
   });
 
   it('conjunto de botões: Entrar e Criar conta × P/M/G × Padrão/Hover, com cor e nome de cada um', async () => {
