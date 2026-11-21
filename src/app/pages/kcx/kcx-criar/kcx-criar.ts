@@ -301,7 +301,7 @@ export class KcxCriar {
   protected paletaAtiva(cores: CoresConstrutor): boolean {
     const a = this.cfg().cores;
     return (Object.keys(cores) as (keyof CoresConstrutor)[]).every(
-      (k) => a[k].toLowerCase() === cores[k].toLowerCase(),
+      (k) => (a[k] ?? '').toLowerCase() === (cores[k] ?? '').toLowerCase(),
     );
   }
 
@@ -375,6 +375,11 @@ export class KcxCriar {
   protected valor(e: Event): string {
     return (e.target as HTMLInputElement).value;
   }
+
+  /** O tipo tem botão cheio: mostra a cor do texto do botão (independente da cor do botão). */
+  protected readonly usaTextoBotao = computed(
+    () => !!this.resultado().comp?.variaveis.some((v) => v.id === 'corTextoBotao'),
+  );
 
   protected enviarMidia(e: Event): void {
     const arquivo = (e.target as HTMLInputElement).files?.[0];

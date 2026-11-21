@@ -517,7 +517,7 @@ export function construtorDaFundacao(
   f: KcxFundacao,
   tema: 'escuro' | 'claro' = 'escuro',
 ): {
-  cores: { primaria: string; fundo: string; superficie: string; texto: string };
+  cores: { primaria: string; fundo: string; superficie: string; texto: string; textoBotao: string };
   temaOposto: { fundo: string; superficie: string; texto: string; suave: string };
   corSuave: string;
   raio: number;
@@ -529,6 +529,7 @@ export function construtorDaFundacao(
       fundo: f.cores.fundo[tema],
       superficie: f.cores.superficie[tema],
       texto: f.cores.texto[tema],
+      textoBotao: f.cores['sobre-primaria'][tema],
     },
     temaOposto: {
       fundo: f.cores.fundo[outro],

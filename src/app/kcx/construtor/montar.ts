@@ -25,6 +25,8 @@ export interface CoresConstrutor {
   fundo: string;
   superficie: string;
   texto: string;
+  /** Cor do texto dos botões cheios (independente da cor do botão). Padrão: a cor de fundo. */
+  textoBotao?: string;
 }
 
 export interface ConfigConstrutor {
@@ -355,6 +357,27 @@ export class Blocos {
   /* ---------- Estrutura do Figma ---------- */
 
   /** Boolean invertido (ex.: esconder os links quando a vista é mobile). */
+  /**
+   * Cor do texto dos botões cheios, independente da cor do botão (variável
+   * corTextoBotao). Devolve o var() do CSS; no Figma use { $var: 'corTextoBotao' }.
+   */
+  textoBotao(): string {
+    if (!this.extras.some((v) => v.id === 'corTextoBotao'))
+      this.extra({
+        id: 'corTextoBotao',
+        nome: 'Cor do texto do botão',
+        tipo: 'color',
+        padrao: this.cfg.cores.textoBotao ?? this.cfg.cores.fundo,
+        descricao: 'Texto dos botões cheios, independente da cor do botão.',
+        grupo: 'colors',
+        secao: 'aparencia',
+        vinculos: [
+          { propriedade: 'texto-botao', alvo: { tipo: 'css-var', nome: `${this.P}-texto-botao` } },
+        ],
+      });
+    return this.v('texto-botao');
+  }
+
   nao(id: string, nome: string): KcxRef<boolean> {
     return {
       $derivado: id,

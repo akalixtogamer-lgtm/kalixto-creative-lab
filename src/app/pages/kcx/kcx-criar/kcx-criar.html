@@ -306,6 +306,16 @@
                 />
                 Texto</label
               >
+              @if (usaTextoBotao()) {
+                <label
+                  ><input
+                    type="color"
+                    [value]="cfg().cores.textoBotao ?? cfg().cores.fundo"
+                    (input)="mudarCor('textoBotao', valor($event))"
+                  />
+                  Texto do botão</label
+                >
+              }
             </div>
           </details>
           <label class="kcxc__campo">

@@ -50,7 +50,7 @@ describe('Fundação (tokens do design system)', () => {
       alias.flatMap((v) => Object.values(v.valores).map((x) => (x as { alias: string }).alias)),
     );
     expect(alvos).toContain('Fundação/cor/primaria');
-    expect(alvos).toContain('Fundação/cor/fundo');
+    expect(alvos).toContain('Fundação/cor/sobre-primaria');
     expect(alvos).toContain('Fundação/raio/m');
     expect(plano.fundacao!.estilosTexto).toHaveLength(NIVEIS_TEXTO.length);
     expect(plano.fundacao!.estilosSombra).toHaveLength(3);

@@ -122,7 +122,8 @@ export const BOTAO_LIGA: DefinicaoTipo = {
         { op: 'alphaPorOpcao', variavel: ligado, valores: { true: 1, false: 0 } },
       ],
     } as never;
-    const corTexto = porLado('liga-texto', 'corFundo', 'corPrimaria');
+    b.textoBotao();
+    const corTexto = porLado('liga-texto', 'corTextoBotao', 'corPrimaria');
 
     /* ---------- Tamanho (Figma) ---------- */
     const porTamanho = (campo: 'px' | 'py' | 'fonte' | 'icone', nome: string): KcxRef<number> =>
@@ -170,7 +171,7 @@ export const BOTAO_LIGA: DefinicaoTipo = {
   cursor: pointer;
   transition: background ${v('duracao')} ${v('easing')}, color ${v('duracao')} ${v('easing')}, transform ${v('duracao')} ${v('easing')};
 }
-.${C}[data-ligado="true"] { background: ${v('primaria')}; color: ${v('fundo')}; }
+.${C}[data-ligado="true"] { background: ${v('primaria')}; color: ${v('texto-botao')}; }
 .${C}__ligado { display: none; }
 .${C}[data-ligado="true"] .${C}__ligado { display: inline; }
 .${C}[data-ligado="true"] .${C}__desligado { display: none; }
