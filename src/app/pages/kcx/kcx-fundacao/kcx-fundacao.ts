@@ -1,4 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ehImagemValida, lerImagem } from '../../../kcx/logo';
 import { RouterLink } from '@angular/router';
 import {
   CHAVES_ESPACO,
@@ -76,6 +78,32 @@ export class KcxFundacaoPagina {
   /** Custom properties da prévia, no tema escolhido. */
   protected readonly estiloPrevia = computed(() => varsDaPrevia(this.f(), this.tema()));
   protected readonly css = computed(() => cssDaFundacao(this.f()));
+
+  private readonly sanitizer = inject(DomSanitizer);
+  /** Prévia da logo (só imagens validadas: sem script). */
+  protected readonly logoUrl = computed<SafeUrl | null>(() => {
+    const l = this.f().logo;
+    return l && ehImagemValida(l.src) ? this.sanitizer.bypassSecurityTrustUrl(l.src) : null;
+  });
+
+  protected async enviarLogo(e: Event): Promise<void> {
+    const input = e.target as HTMLInputElement;
+    const arquivo = input.files?.[0];
+    input.value = '';
+    if (!arquivo) return;
+    try {
+      const logo = await lerImagem(arquivo);
+      const erros = this.servico.alterar((f) => (f.logo = logo));
+      this.aviso.set(erros.length ? erros[0] : `Logo "${arquivo.name}" salva na fundação.`);
+    } catch (err) {
+      this.aviso.set((err as Error).message);
+    }
+  }
+
+  protected tirarLogo(): void {
+    this.servico.alterar((f) => delete f.logo);
+    this.aviso.set('Logo removida da fundação.');
+  }
 
   protected valor(e: Event): string {
     return (e.target as HTMLInputElement).value;

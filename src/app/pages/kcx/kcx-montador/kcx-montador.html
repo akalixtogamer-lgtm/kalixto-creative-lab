@@ -81,6 +81,9 @@
             + {{ n.rotulo }}
           </button>
         }
+        @if (fundacao().logo) {
+          <button type="button" class="kcxm__nova" (click)="adicionarLogo()">+ Logo</button>
+        }
       </div>
       <ul class="kcxm__arvore" role="tree" aria-label="Camadas do componente">
         <ng-container
@@ -450,9 +453,48 @@
         }
 
         @if (c.tipo === 'imagem') {
+          <div class="kcxm__imagem">
+            <label class="kx-btn kx-btn--ghost kcxm__arquivo"
+              >Enviar imagem do computador
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                (change)="enviarImagem($event)"
+              />
+            </label>
+            @if (fundacao().logo) {
+              <button type="button" class="kx-btn kx-btn--ghost" (click)="usarLogoNaCamada()">
+                Usar a logo da fundação
+              </button>
+            }
+          </div>
+          @if (msgImagem()) {
+            <p class="kx-muted kcxm__nota" role="status">{{ msgImagem() }}</p>
+          }
+          @if (c.url?.startsWith('data:')) {
+            <p class="kx-muted kcxm__nota">
+              Imagem enviada{{ c.nome ? ' (' + c.nome + ')' : '' }}: vai junto para o código e para
+              o Figma.
+              <button type="button" class="kx-btn kx-btn--ghost" (click)="mudar('url', undefined)">
+                Tirar
+              </button>
+            </p>
+          } @else {
+            <label
+              >Ou endereço da imagem (https://…)
+              <input type="url" [value]="c.url ?? ''" (change)="mudar('url', valor($event))" />
+            </label>
+          }
           <label
-            >Endereço da imagem (https://… ou vazio)
-            <input type="url" [value]="c.url ?? ''" (change)="mudar('url', valor($event))" />
+            >Ajuste
+            <select aria-label="Ajuste da imagem" (change)="mudar('ajuste', $any(valor($event)))">
+              <option value="preencher" [selected]="(c.ajuste ?? 'preencher') === 'preencher'">
+                Preencher (corta as sobras, para fotos)
+              </option>
+              <option value="caber" [selected]="c.ajuste === 'caber'">
+                Caber inteira (para logos)
+              </option>
+            </select>
           </label>
           <label
             >Largura (px)

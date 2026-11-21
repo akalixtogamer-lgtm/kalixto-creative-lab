@@ -23,6 +23,7 @@ import {
   validarMontagem,
 } from '../../../kcx/construtor';
 import { fundoColorido } from '../../../kcx/plano-html';
+import { KcxLogo, larguraPara, lerImagem } from '../../../kcx/logo';
 import {
   CHAVES_ESPACO,
   CHAVES_RAIO,
@@ -159,6 +160,77 @@ export class KcxMontador {
   protected mudarOpacidade(campo: 'opacidadeFundo' | 'opacidadeBorda', e: Event): void {
     const v = Math.round(Math.min(100, Math.max(0, Number((e.target as HTMLInputElement).value))));
     this.mudar(campo, Number.isFinite(v) && v < 100 ? v : undefined);
+  }
+
+  protected readonly msgImagem = signal('');
+
+  /** Lê a imagem do computador para a camada de imagem selecionada. */
+  protected async enviarImagem(e: Event): Promise<void> {
+    const input = e.target as HTMLInputElement;
+    const arquivo = input.files?.[0];
+    input.value = '';
+    if (!arquivo) return;
+    try {
+      const img = await lerImagem(arquivo);
+      this.colocarImagem(img, false);
+      this.msgImagem.set(`"${arquivo.name}" enviada.`);
+    } catch (err) {
+      this.msgImagem.set((err as Error).message);
+    }
+  }
+
+  protected usarLogoNaCamada(): void {
+    const logo = this.fundacao().logo;
+    if (logo) this.colocarImagem(logo, true);
+  }
+
+  /** Imagem na camada: mantém a proporção pela altura atual (logo: 40 px). */
+  private colocarImagem(img: KcxLogo, logo: boolean): void {
+    const id = this.selecionada();
+    this.editar((m) => {
+      const c = acharCamada(m.raiz, id);
+      if (!c || c.tipo !== 'imagem') return;
+      const altura = logo ? 40 : Math.min(c.altura ?? 160, img.altura);
+      c.url = img.src;
+      c.altura = altura;
+      c.largura = Math.min(1600, larguraPara(img, altura));
+      c.ajuste = logo ? 'caber' : (c.ajuste ?? 'preencher');
+      if (logo) c.nome = 'Logo';
+    });
+  }
+
+  /** Nova camada com a logo da fundação (dentro da caixa selecionada). */
+  protected adicionarLogo(): void {
+    const logo = this.fundacao().logo;
+    if (!logo) return;
+    const todas = todasCamadas(this.montagem().raiz);
+    // Já existe uma camada "Logo" em texto (ex.: modelo Navbar)? Vira a imagem no mesmo lugar.
+    const texto = todas.find(
+      (c) => c.tipo === 'texto' && (c.id === 'logo' || c.nome.toLowerCase() === 'logo'),
+    );
+    if (texto) {
+      this.editar((m) => {
+        const c = acharCamada(m.raiz, texto.id)!;
+        for (const k of ['texto', 'nivel', 'cor'] as const) delete c[k];
+        c.tipo = 'imagem';
+      });
+      this.selecionada.set(texto.id);
+      this.usarLogoNaCamada();
+      return;
+    }
+    // Senão, entra como a primeira camada da caixa selecionada.
+    const nova = novaCamada(
+      'imagem',
+      todas.map((c) => c.id),
+    );
+    const sel = this.selecionada();
+    this.editar((m) => {
+      const atual = acharCamada(m.raiz, sel) ?? m.raiz;
+      const destino = atual.tipo === 'caixa' ? atual : (paiDe(m.raiz, atual.id) ?? m.raiz);
+      (destino.filhos ??= []).unshift(nova);
+    });
+    this.selecionada.set(nova.id);
+    this.usarLogoNaCamada();
   }
 
   /** Receita de vidro na caixa selecionada (mantém o fundo e a borda já escolhidos). */

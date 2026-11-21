@@ -5,6 +5,16 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Logo
+- **Logo na Fundação** (PNG, JPG, WebP, GIF ou SVG, até 400 KB). SVG com script ou eventos é recusado.
+- **Criar componente:** Navbar, Menu sanduíche, Rodapé e Aviso usam a logo no lugar do texto da
+  marca (dá para enviar outra só para aquele componente e ajustar a altura).
+- **Montador:** botão **+ Logo** (transforma a camada "Logo" em imagem, ou entra no começo da
+  caixa) e, em qualquer camada de imagem, **Enviar imagem do computador**, **Usar a logo da
+  fundação** e o ajuste Preencher/Caber.
+- **Figma:** logo em SVG vira vetor editável; PNG/JPG viram preenchimento de imagem (IMAGE). Nos
+  wireframes de baixa e média fidelidade, fotos e logos viram um bloco cinza.
+
 ### Adicionado — Seletor de duas opções (um ou outro)
 - Novo tipo **Seletor de duas opções** em Criar componente: escolhe **uma OU outra** (Português |
   Inglês, Mensal | Anual). A variável **Segunda opção escolhida** é verdadeiro/falso: falso = a

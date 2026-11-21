@@ -47,6 +47,38 @@
 
   <div class="kcxf__layout">
     <div class="kcxf__editor">
+      <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-logo">
+        <h2 id="kcxf-logo" class="kx-section-title">Logo</h2>
+        <p class="kx-muted">
+          PNG, JPG, WebP, GIF ou SVG (até 400 KB). Entra no lugar do nome da marca na Navbar, no
+          Rodapé e nos menus, e no Montador com <strong>+ Logo</strong>. No Figma, SVG vira vetor
+          editável e as outras viram imagem.
+        </p>
+        <div class="kcxf__logo">
+          @if (logoUrl(); as url) {
+            <img [src]="url" [alt]="'Logo ' + f().nome" />
+          } @else {
+            <span class="kx-muted">Sem logo.</span>
+          }
+          <div class="kcxf__logo-acoes">
+            <label class="kx-btn kx-btn--primary kcxf__arquivo"
+              >{{ f().logo ? 'Trocar logo' : 'Enviar logo' }}
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                aria-label="Arquivo da logo"
+                (change)="enviarLogo($event)"
+              />
+            </label>
+            @if (f().logo) {
+              <button type="button" class="kx-btn kx-btn--ghost" (click)="tirarLogo()">
+                Tirar logo
+              </button>
+            }
+          </div>
+        </div>
+      </section>
+
       <section class="kx-section kcxf__bloco kx-glass" aria-labelledby="kcxf-cores">
         <h2 id="kcxf-cores" class="kx-section-title">Cores</h2>
         <p class="kx-muted">Cada token tem a versão do tema escuro e a do claro.</p>
