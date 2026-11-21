@@ -1,92 +1,84 @@
-import { Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, computed, inject, input, output } from '@angular/core';
 import {
-  CHAVES_DESFOQUE,
-  ChaveDesfoque,
-  DESFOQUES,
-  VIDRO_PADRAO,
-  camadaSugerida,
+  IDS_VIDRO,
   camadasParaVidro,
-  comVidro,
+  temVidroEditavel,
+  valoresVidro,
 } from '../../../kcx/construtor';
-import { KcxComponente } from '../../../kcx/kcx.types';
-import { fundoColorido } from '../../../kcx/plano-html';
-import { KcxFundacaoService } from '../kcx-fundacao.service';
+import { KcxComponente, KcxValor } from '../../../kcx/kcx.types';
+import { Valores } from '../../../kcx/resolver';
 import { KcxMeusService } from '../kcx-meus.service';
-import { KcxVariantes } from '../kcx-variantes/kcx-variantes';
+
+interface Controle {
+  id: string;
+  nome: string;
+  min: number;
+  max: number;
+  passo: number;
+  /** Como mostrar o valor: % para 0–1, px para o desfoque. */
+  formato: 'pct' | 'px';
+}
 
 /**
- * Efeito vidro (glassmorphism) em qualquer componente: escolhe a camada, a
- * opacidade do fundo e da borda e o desfoque, vê a prévia em cima de um fundo
- * colorido e salva uma cópia "· vidro" em Meus componentes.
+ * Efeito vidro (glassmorphism) dentro da edição de qualquer componente: liga e
+ * desliga, escolhe a camada e ajusta fundo, borda e desfoque. Mexe nas
+ * variáveis "Vidro · …" do próprio componente (preview ao vivo, código e Figma).
  */
 @Component({
   selector: 'kx-kcx-vidro-painel',
-  imports: [KcxVariantes],
   templateUrl: './kcx-vidro-painel.html',
   styleUrl: './kcx-vidro-painel.css',
 })
 export class KcxVidroPainel {
   readonly comp = input.required<KcxComponente>();
+  readonly valores = input.required<Valores>();
+  readonly aplicar = output<Record<string, KcxValor>>();
 
   private readonly meus = inject(KcxMeusService);
-  private readonly router = inject(Router);
-  private readonly fundacao = inject(KcxFundacaoService).fundacao;
 
-  protected readonly desfoques = CHAVES_DESFOQUE;
-  protected readonly px = DESFOQUES;
+  protected readonly disponivel = computed(() => temVidroEditavel(this.comp()));
   protected readonly camadas = computed(() => camadasParaVidro(this.comp()));
-  protected readonly camada = linkedSignal(() => camadaSugerida(this.comp()));
-  protected readonly fundo = signal(VIDRO_PADRAO.fundo);
-  protected readonly borda = signal(VIDRO_PADRAO.borda);
-  protected readonly desfoque = signal<ChaveDesfoque>(VIDRO_PADRAO.desfoque);
-  protected readonly erros = signal<string[]>([]);
+  protected readonly info = computed(() => this.meus.vidro(this.comp().id));
 
-  protected readonly resultado = computed(() => {
-    try {
-      return comVidro(
-        this.comp(),
-        {
-          fundo: this.fundo(),
-          borda: this.borda(),
-          desfoque: this.desfoque(),
-          camada: this.camada(),
-        },
-        this.meus.ids(),
-      );
-    } catch (e) {
-      return { erro: (e as Error).message };
-    }
-  });
-  protected readonly vidro = computed(() => {
-    const r = this.resultado();
-    return 'comp' in r ? r : null;
-  });
-  protected readonly erro = computed(() => {
-    const r = this.resultado();
-    return 'erro' in r ? r.erro : '';
+  protected readonly controles = computed<Controle[]>(() => {
+    const ids = new Set(this.comp().variaveis.map((v) => v.id));
+    const lista: Controle[] = [
+      { id: IDS_VIDRO.fundo, nome: 'Fundo', min: 0, max: 1, passo: 0.05, formato: 'pct' },
+      { id: IDS_VIDRO.veu, nome: 'Véu claro', min: 0, max: 1, passo: 0.05, formato: 'pct' },
+      { id: IDS_VIDRO.borda, nome: 'Borda', min: 0, max: 1, passo: 0.05, formato: 'pct' },
+      { id: IDS_VIDRO.desfoque, nome: 'Desfoque', min: 0, max: 40, passo: 1, formato: 'px' },
+    ];
+    return lista.filter((c) => ids.has(c.id));
   });
 
-  protected readonly fundoPrevia = computed(() => {
-    const c = this.fundacao().cores;
-    return fundoColorido([c.primaria.escuro, c.destaque.escuro, c.secundaria.escuro]);
+  /** Ligado = algum valor de vidro fora do padrão. */
+  protected readonly ligado = computed(() => {
+    const padrao = valoresVidro(this.comp(), false);
+    return Object.entries(padrao).some(([id, v]) => (this.valores()[id] ?? v) !== v);
   });
 
-  protected numero(e: Event): number {
-    return Math.round(Math.min(100, Math.max(0, Number((e.target as HTMLInputElement).value))));
+  protected valor(id: string): number {
+    const v = this.comp().variaveis.find((x) => x.id === id);
+    return Number(this.valores()[id] ?? v?.valor ?? 0);
   }
-  protected valor(e: Event): string {
-    return (e.target as HTMLSelectElement).value;
+  protected rotulo(c: Controle): string {
+    const v = this.valor(c.id);
+    return c.formato === 'pct' ? `${Math.round(v * 100)}%` : `${v} px`;
+  }
+
+  protected alternar(): void {
+    this.aplicar.emit(valoresVidro(this.comp(), !this.ligado()));
+  }
+  protected mudar(id: string, e: Event): void {
+    this.aplicar.emit({ [id]: Number((e.target as HTMLInputElement).value) });
+  }
+  protected trocarCamada(e: Event): void {
+    const ligado = this.ligado();
+    this.meus.definirCamadaVidro(this.comp().id, (e.target as HTMLSelectElement).value);
+    // Os ids das variáveis mudam com a camada: reaplica o efeito se estava ligado.
+    if (ligado) queueMicrotask(() => this.aplicar.emit(valoresVidro(this.comp(), true)));
   }
   protected recuo(nivel: number): string {
     return '  '.repeat(nivel);
-  }
-
-  protected salvar(): void {
-    const v = this.vidro();
-    if (!v) return;
-    const erros = this.meus.salvar(v.comp);
-    this.erros.set(erros);
-    if (!erros.length) void this.router.navigate(['/kcx', v.comp.id]);
   }
 }

@@ -1,76 +1,52 @@
-<p class="kx-muted kcxv__intro">
-  Transforme qualquer camada deste componente em vidro: fundo e borda translúcidos e desfoque do que
-  fica atrás. Salva uma cópia em Meus componentes; o original não muda. No Figma sai como
-  <strong>Background blur</strong>.
-</p>
+@if (disponivel()) {
+  <div class="kcxv__topo">
+    <button
+      type="button"
+      class="kx-btn"
+      [class.kx-btn--primary]="!ligado()"
+      [class.kx-btn--ghost]="ligado()"
+      [attr.aria-pressed]="ligado()"
+      (click)="alternar()"
+    >
+      {{ ligado() ? 'Desligar vidro' : 'Aplicar efeito vidro' }}
+    </button>
+    <p class="kx-muted kcxv__intro">
+      Fundo e borda translúcidos e desfoque do que fica atrás. Mexe nas variáveis
+      <strong>Vidro · …</strong> deste componente: o preview muda na hora, e o código e o Figma
+      (Background blur) acompanham.
+    </p>
+  </div>
 
-<div class="kcxv__campos">
-  <label
-    >Camada
-    <select aria-label="Camada com vidro" (change)="camada.set(valor($event))">
-      @for (k of camadas(); track k.id) {
-        <option [value]="k.id" [selected]="k.id === camada()">
-          {{ recuo(k.nivel) }}{{ k.nome }}
-        </option>
-      }
-    </select>
-  </label>
-  <label
-    >Fundo · {{ fundo() }}%
-    <input
-      type="range"
-      min="0"
-      max="100"
-      step="5"
-      aria-label="Opacidade do fundo do vidro"
-      [value]="fundo()"
-      (input)="fundo.set(numero($event))"
-    />
-  </label>
-  <label
-    >Borda · {{ borda() }}%
-    <input
-      type="range"
-      min="0"
-      max="100"
-      step="5"
-      aria-label="Opacidade da borda do vidro"
-      [value]="borda()"
-      (input)="borda.set(numero($event))"
-    />
-  </label>
-  <label
-    >Desfoque
-    <select aria-label="Desfoque do vidro" (change)="desfoque.set($any(valor($event)))">
-      @for (k of desfoques; track k) {
-        <option [value]="k" [selected]="k === desfoque()">
-          {{ k.toUpperCase() }} · {{ px[k] }} px
-        </option>
-      }
-    </select>
-  </label>
-</div>
+  <div class="kcxv__campos">
+    <label
+      >Camada
+      <select aria-label="Camada com vidro" (change)="trocarCamada($event)">
+        @for (k of camadas(); track k.id) {
+          <option [value]="k.id" [selected]="k.id === info()?.camada">
+            {{ recuo(k.nivel) }}{{ k.nome }}
+          </option>
+        }
+      </select>
+    </label>
+    @for (c of controles(); track c.id) {
+      <label
+        >{{ c.nome }} · {{ rotulo(c) }}
+        <input
+          type="range"
+          [min]="c.min"
+          [max]="c.max"
+          [step]="c.passo"
+          [attr.aria-label]="'Vidro: ' + c.nome"
+          [value]="valor(c.id)"
+          (input)="mudar(c.id, $event)"
+        />
+      </label>
+    }
+  </div>
 
-@if (erro()) {
-  <p class="kcxv__aviso" role="alert">{{ erro() }}</p>
-}
-@if (vidro(); as v) {
-  <kx-kcx-variantes
-    [comp]="v.comp"
-    [alturaPrevia]="280"
-    [seletores]="false"
-    [fundo]="fundoPrevia()"
-  />
-  @for (a of v.avisos; track a) {
+  @for (a of info()?.avisos ?? []; track a) {
     <p class="kcxv__aviso">{{ a }}</p>
   }
-  <div class="kcxv__acoes">
-    <button type="button" class="kx-btn kx-btn--primary" (click)="salvar()">
-      Salvar versão de vidro
-    </button>
-    <span class="kx-muted">Vai para Meus componentes como "{{ v.comp.nome }}".</span>
-  </div>
-}
-@for (e of erros(); track e) {
-  <p class="kcxv__aviso" role="alert">{{ e }}</p>
+} @else {
+  <p class="kx-muted">Este componente não tem uma caixa onde aplicar o vidro.</p>
 }

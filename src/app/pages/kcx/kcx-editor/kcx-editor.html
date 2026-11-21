@@ -25,14 +25,10 @@
         <div class="kcxe__meu">
           <span class="kx-chip"
             >Meu componente{{
-              deVidro()
-                ? ' · versão de vidro'
-                : doConstrutor()
-                  ? ' · criado no construtor'
-                  : ' · importado do Figma'
+              doConstrutor() ? ' · criado no construtor' : ' · importado do Figma'
             }}</span
           >
-          @if (doConstrutor() && !deVidro()) {
+          @if (doConstrutor()) {
             <a
               class="kx-btn kx-btn--ghost"
               [routerLink]="[montado() ? '/kcx/montar' : '/kcx/criar']"
@@ -181,6 +177,15 @@
         <kx-kcx-controles [variaveis]="c.variaveis" [valores]="valores()" (mudou)="mudar($event)" />
       </section>
 
+      <section class="kcxe__vidro kx-glass" aria-labelledby="kcxe-vidro">
+        <h2 id="kcxe-vidro" class="kcxe__h2">Efeito vidro (glassmorphism)</h2>
+        <kx-kcx-vidro-painel
+          [comp]="c"
+          [valores]="valores()"
+          (aplicar)="aplicarValores({ valores: $event })"
+        />
+      </section>
+
       <section class="kcxe__presets kx-glass" aria-labelledby="kcxe-presets">
         <h2 id="kcxe-presets" class="kcxe__h2">Presets</h2>
         <kx-kcx-presets-painel
@@ -190,11 +195,6 @@
           (aplicar)="aplicarValores($event)"
           (restaurar)="restaurar()"
         />
-      </section>
-
-      <section class="kcxe__vidro kx-glass" aria-labelledby="kcxe-vidro">
-        <h2 id="kcxe-vidro" class="kcxe__h2">Efeito vidro (glassmorphism)</h2>
-        <kx-kcx-vidro-painel [comp]="c" />
       </section>
 
       <section class="kcxe__codigo" aria-labelledby="kcxe-codigo">

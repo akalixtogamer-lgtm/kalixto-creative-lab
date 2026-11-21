@@ -1,16 +1,58 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { KCX_COMPONENTES } from '../../kcx/componentes';
+import { comVidroEditavel } from '../../kcx/construtor';
 import { KcxComponente, KcxPacote } from '../../kcx/kcx.types';
 import { KcxRecuperavel, RepositorioMeusComponentes } from '../../kcx/meus-componentes';
 
-/** Componentes de referência + os criados pela pessoa (construtor ou Figma). */
+const CHAVE_CAMADAS_VIDRO = 'kalixto-lab:kcx-vidro-camada:v1';
+
+function lerCamadas(): Record<string, string> {
+  try {
+    const x = JSON.parse(globalThis.localStorage?.getItem(CHAVE_CAMADAS_VIDRO) ?? '{}');
+    return x && typeof x === 'object' ? x : {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Componentes de referência + os criados pela pessoa (construtor ou Figma).
+ * Todos ganham as variáveis "Vidro · …" (desligadas por padrão), ligadas à
+ * camada escolhida no editor.
+ */
 @Injectable({ providedIn: 'root' })
 export class KcxMeusService {
   private readonly repo = new RepositorioMeusComponentes();
   readonly meus = signal<KcxComponente[]>(this.repo.listar());
   /** Guardados que não passam mais na validação: nunca somem sem a pessoa decidir. */
   readonly recuperaveis = signal<KcxRecuperavel[]>(this.repo.recuperaveis());
-  readonly todos = computed(() => [...KCX_COMPONENTES, ...this.meus()]);
+  /** Camada do vidro escolhida por componente (id → id da camada). */
+  readonly camadasVidro = signal<Record<string, string>>(lerCamadas());
+  private readonly comVidro = computed(() =>
+    [...KCX_COMPONENTES, ...this.meus()].map((c) => {
+      try {
+        return comVidroEditavel(c, this.camadasVidro()[c.id]);
+      } catch {
+        return { comp: c, camada: '', avisos: [] as string[] };
+      }
+    }),
+  );
+  readonly todos = computed(() => this.comVidro().map((r) => r.comp));
+
+  /** Camada com vidro e o que não sai igual no código/Figma. */
+  vidro(id: string): { camada: string; avisos: string[] } | undefined {
+    return this.comVidro().find((r) => r.comp.id === id);
+  }
+
+  definirCamadaVidro(id: string, camada: string): void {
+    const novo = { ...this.camadasVidro(), [id]: camada };
+    this.camadasVidro.set(novo);
+    try {
+      globalThis.localStorage?.setItem(CHAVE_CAMADAS_VIDRO, JSON.stringify(novo));
+    } catch {
+      /* sem armazenamento: vale até recarregar */
+    }
+  }
 
   buscar(id: string): KcxComponente | undefined {
     return this.todos().find((c) => c.id === id);

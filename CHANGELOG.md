@@ -6,13 +6,15 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 ## [Não publicado]
 
 ### Adicionado — Vidro (glassmorphism) em qualquer componente
-- Novo painel **Efeito vidro** no editor de **todo** componente (biblioteca, criados por tipo,
-  montados ou importados do Figma): escolhe a camada, a opacidade do fundo e da borda e o
-  desfoque, vê a prévia sobre fundo colorido e salva uma cópia "· vidro" em Meus componentes.
-  O original não muda.
-- No Figma: fundo e borda com transparência (inclusive cores de variáveis e gradientes) e
-  Background blur. No código: `color-mix`, contorno translúcido e `backdrop-filter`. Quando algo
-  não dá para fazer igual no código (fundo em gradiente, classe não encontrada), o painel avisa.
+- Seção **Efeito vidro** na edição de **todo** componente (biblioteca, criados por tipo,
+  montados ou importados do Figma): **Aplicar efeito vidro** / **Desligar vidro**, escolha da
+  camada e ajuste de fundo, véu, borda e desfoque, com o preview mudando na hora (o palco ganha
+  um fundo colorido quando o vidro está ligado).
+- Cada componente ganha as variáveis **Vidro · fundo / véu / borda / desfoque** (e o preset
+  "Vidro"). Desligado = igual ao original. No código: `color-mix` e `backdrop-filter`, só quando
+  a variável sai do padrão; no Figma: cores com transparência e **Background blur** ligados às
+  variáveis. Os valores ficam salvos e aparecem também nas Telas.
+- Quando algo não sai igual no código (fundo em gradiente, classe não encontrada), a seção avisa.
 
 ### Adicionado — Vidro (glassmorphism) no Montador
 - **Opacidade do fundo e da borda** (0–100%) em qualquer caixa, sempre com as cores da fundação.

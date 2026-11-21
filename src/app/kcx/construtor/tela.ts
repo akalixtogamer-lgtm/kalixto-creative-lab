@@ -10,6 +10,7 @@
  * no Figma, cada seção continua ligada ao seu componente.
  */
 import { KcxComponente, KcxNo, KcxVariavel } from '../kcx.types';
+import { aplicarAtributosNoHtml } from '../documento';
 import { blocoRoot, resolverSaidas, valoresAtuais } from '../resolver';
 import { corHex, lerCor } from '../unidades';
 import { FUNDACAO_PADRAO, KcxFundacao, construtorDaFundacao } from '../fundacao';
@@ -199,7 +200,14 @@ export function montarTela(
         ),
       ].join('\n\n');
       const html = `<main class="${C}">\n${secoes
-        .map((s) => `  <section class="${C}__secao">\n${subDe(s.id).codigo.html}\n  </section>`)
+        .map((s) => {
+          const sub = subDe(s.id);
+          const html = aplicarAtributosNoHtml(
+            sub.codigo.html,
+            resolverSaidas(sub.variaveis, valoresAtuais(sub.variaveis)),
+          );
+          return `  <section class="${C}__secao">\n${html}\n  </section>`;
+        })
         .join('\n')}\n</main>`;
       const filhos: KcxNo[] = secoes.map((s, i) => ({
         id: `secao-${i + 1}`,
