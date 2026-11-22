@@ -1,0 +1,104 @@
+@switch (vista()) {
+  @case ('site') {
+    @if (siteSeguro(); as src) {
+      <div
+        class="cmpr__site"
+        [style.width.px]="largura()"
+        [style.height.px]="altura()"
+        [style.transform]="'scale(' + zoom() + ')'"
+      >
+        <iframe
+          [src]="src"
+          title="Site de referência"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          referrerpolicy="no-referrer"
+          loading="lazy"
+          [class.cmpr__inerte]="inerte()"
+        ></iframe>
+      </div>
+    } @else {
+      <p class="cmpr__vazio">Informe o endereço do site na aba Referência.</p>
+    }
+  }
+  @case ('video') {
+    @if (videoUrl()) {
+      <video
+        #video
+        class="cmpr__midia"
+        [src]="videoUrl()"
+        playsinline
+        muted
+        preload="auto"
+        [class.cmpr__inerte]="inerte()"
+        (loadedmetadata)="aoCarregar(video)"
+        (timeupdate)="tempo.emit(video.currentTime)"
+        (seeked)="tempo.emit(video.currentTime)"
+        (play)="tocandoMudou.emit(true)"
+        (pause)="tocandoMudou.emit(false)"
+        (error)="aoErro(video)"
+      ></video>
+    } @else {
+      <p class="cmpr__vazio">Envie a gravação da referência na aba Referência.</p>
+    }
+  }
+  @case ('frame') {
+    @if (frame(); as f) {
+      <img
+        #imagem
+        class="cmpr__midia"
+        [src]="f.src"
+        [alt]="f.rotulo || 'Frame da referência'"
+        draggable="false"
+      />
+    } @else {
+      <p class="cmpr__vazio">Ainda não há frames. Extraia do vídeo ou envie imagens.</p>
+    }
+  }
+}
+
+@if (vista() === 'frame' && frame()) {
+  <svg class="cmpr__marcas" aria-hidden="true">
+    @for (e of caixasDoFrame(); track e.id) {
+      <g [class.cmpr__marca--ativa]="e.id === elementoAtivo()">
+        <rect
+          class="cmpr__caixa"
+          [attr.x]="e.caixaRef!.x * k()"
+          [attr.y]="e.caixaRef!.y * k()"
+          [attr.width]="e.caixaRef!.largura * k()"
+          [attr.height]="e.caixaRef!.altura * k()"
+        />
+        <text
+          class="cmpr__nome"
+          [attr.x]="e.caixaRef!.x * k() + 4"
+          [attr.y]="e.caixaRef!.y * k() - 5"
+        >
+          {{ e.nome }}
+        </text>
+      </g>
+    }
+  </svg>
+}
+
+@if (ferramenta() !== 'nenhuma' && vista() !== 'site') {
+  <div
+    class="cmpr__ferramenta"
+    [class.cmpr__ferramenta--gotas]="ferramenta() === 'conta-gotas'"
+    [attr.aria-label]="
+      ferramenta() === 'caixa' ? 'Desenhe a caixa do elemento' : 'Clique para tirar a cor'
+    "
+    (pointerdown)="apertar($event)"
+    (pointermove)="mover($event)"
+    (pointerup)="soltar()"
+    (pointercancel)="soltar()"
+  >
+    @if (desenho(); as d) {
+      <div
+        class="cmpr__desenho"
+        [style.left.px]="d.x"
+        [style.top.px]="d.y"
+        [style.width.px]="d.largura"
+        [style.height.px]="d.altura"
+      ></div>
+    }
+  </div>
+}

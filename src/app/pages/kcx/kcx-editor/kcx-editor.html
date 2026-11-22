@@ -25,7 +25,11 @@
         <div class="kcxe__meu">
           <span class="kx-chip"
             >Meu componente{{
-              doConstrutor() ? ' · criado no construtor' : ' · importado do Figma'
+              doConstrutor()
+                ? ' · criado no construtor'
+                : reconstrucao()
+                  ? ' · reconstrução de referência'
+                  : ' · importado do Figma'
             }}</span
           >
           @if (doConstrutor()) {
@@ -49,6 +53,15 @@
           <button type="button" class="kx-btn kx-btn--ghost" (click)="excluir()">Excluir</button>
         </div>
       }
+      <p class="kcxe__comparar">
+        <a
+          class="kx-btn kx-btn--ghost"
+          routerLink="/kcx/comparar"
+          [queryParams]="{ componente: c.id }"
+        >
+          <kx-icon name="compare" /> Comparar com uma referência
+        </a>
+      </p>
     </header>
 
     <div class="kcxe__grid">

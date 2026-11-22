@@ -5,6 +5,7 @@ import {
   effect,
   inject,
   input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -24,7 +25,7 @@ export type AcaoPreview = 'tocar' | 'pausar' | 'reiniciar' | 'velocidade';
  */
 @Component({
   selector: 'kx-kcx-preview',
-  host: { '[style.--kcxp-altura]': 'altura()' },
+  host: { '[style.--kcxp-altura]': 'altura()', '[style.--kcxp-fundo]': 'fundoFrame()' },
   template: `<div #host class="kcxp__host">
     <iframe class="kcxp__frame" sandbox="allow-scripts" [title]="titulo()"></iframe>
   </div>`,
@@ -38,7 +39,7 @@ export type AcaoPreview = 'tocar' | 'pausar' | 'reiniciar' | 'velocidade';
       height: var(--kcxp-altura, 360px);
       border: 1px solid var(--kx-border);
       border-radius: var(--kx-radius-md);
-      background: #0b0a14;
+      background: var(--kcxp-fundo, #0b0a14);
     }
   `,
 })
@@ -47,6 +48,10 @@ export class KcxPreview {
   readonly saidas = input.required<Saidas>();
   readonly titulo = input('Preview do componente KCX');
   readonly altura = input('clamp(300px, 48vh, 460px)');
+  /** Fundo do próprio iframe (ex.: transparente no overlay do comparador). */
+  readonly fundoFrame = input('#0b0a14');
+  /** Outras mensagens do documento (ex.: o inspetor do comparador). */
+  readonly mensagem = output<unknown>();
 
   /** Quantas vezes o documento foi carregado (as variáveis não recarregam). */
   readonly recargas = signal(0);
@@ -68,7 +73,7 @@ export class KcxPreview {
         this.enviar();
         if (this.velocidade !== 1) this.controlar('velocidade', this.velocidade);
         if (this.pausado) this.controlar('pausar');
-      }
+      } else this.mensagem.emit(e.data);
     };
     window.addEventListener('message', ouvir);
     inject(DestroyRef).onDestroy(() => window.removeEventListener('message', ouvir));
@@ -119,6 +124,11 @@ export class KcxPreview {
     if (acao === 'pausar') this.pausado = true;
     if (acao === 'tocar') this.pausado = false;
     this.frame?.contentWindow?.postMessage({ kcx: 'controle', acao, valor }, '*');
+  }
+
+  /** Manda uma mensagem para o documento (só ele recebe). */
+  mandar(dados: unknown): void {
+    this.frame?.contentWindow?.postMessage(dados, '*');
   }
 
   /** Recarrega o mesmo documento (volta tudo ao primeiro quadro). */

@@ -83,6 +83,10 @@ export class KcxEditor {
   protected readonly doConstrutor = computed(
     () => this.comp()?.origemCriacao?.tipo === 'construtor',
   );
+  /** Saiu do comparador Reference vs. Reconstruction. */
+  protected readonly reconstrucao = computed(
+    () => !!this.comp()?.metadados.tags.includes('reconstrucao'),
+  );
   /** Criado no Montador visual (reabre lá, não no construtor de tipos). */
   protected readonly montado = computed(
     () => (this.comp()?.origemCriacao?.config as { tipo?: string } | undefined)?.tipo === 'montado',

@@ -132,6 +132,12 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/kcx/kcx-telas/kcx-telas').then((m) => m.KcxTelas),
       },
       {
+        path: 'kcx/comparar',
+        title: 'Reference vs. Reconstruction · KCX Studio · Kalixto Creative Lab',
+        loadComponent: () =>
+          import('./pages/kcx/kcx-comparar/kcx-comparar').then((m) => m.KcxComparar),
+      },
+      {
         path: 'kcx/criar',
         title: 'Criar componente · KCX Studio · Kalixto Creative Lab',
         loadComponent: () => import('./pages/kcx/kcx-criar/kcx-criar').then((m) => m.KcxCriar),

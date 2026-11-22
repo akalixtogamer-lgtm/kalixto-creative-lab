@@ -10,6 +10,7 @@ import { ResultadoValidacao } from '../../../kcx/validar';
 import { desserializar } from '../../../kcx/serializar';
 import { KCX_JSON_SCHEMA } from '../../../kcx/kcx.schema';
 import { Icon } from '../../../shared/components/icon/icon';
+import { TAG_MOTION_LIBRARY } from '../../../kcx/comparar';
 import { baixarArquivo, lerArquivo } from '../kcx-estado.service';
 
 interface ResultadoImportacao {
@@ -35,6 +36,10 @@ export class KcxStudio {
   private readonly servicoMeus = inject(KcxMeusService);
   protected readonly meus = this.servicoMeus.meus;
   protected readonly recuperaveis = this.servicoMeus.recuperaveis;
+  /** Componentes marcados para a Motion Library (vêm do comparador). */
+  protected readonly motionLibrary = computed(() =>
+    this.meus().filter((c) => c.metadados.tags.includes(TAG_MOTION_LIBRARY)),
+  );
 
   protected baixarRecuperavel(i: number): void {
     const r = this.recuperaveis()[i];

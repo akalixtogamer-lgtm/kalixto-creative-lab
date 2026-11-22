@@ -1,0 +1,1859 @@
+<div class="kx-page cmp" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow">
+      <a routerLink="/kcx">KCX Studio</a> · Web Motion &amp; Interaction Analyzer
+    </p>
+    <h1 class="kx-title">Reference vs. Reconstruction</h1>
+    <p class="kx-lead">
+      Analise uma referência (site, gravação ou frames), reconstrua o efeito com um componente KCX e
+      compare os dois lado a lado, sobrepostos, no tempo e na interação, antes de salvar na
+      biblioteca. Cada ajuste vira uma variável do componente.
+    </p>
+  </header>
+
+  @if (avisoArmazenamento()) {
+    <p class="kx-callout" role="status">{{ avisoArmazenamento() }}</p>
+  }
+  @if (msg()) {
+    <p class="cmp__msg" role="status">
+      {{ msg() }}
+      <button type="button" class="cmp__x" aria-label="Fechar aviso" (click)="msg.set('')">
+        <kx-icon name="close" />
+      </button>
+    </p>
+  }
+
+  @if (!carregado()) {
+    <p class="kx-muted">Carregando comparações…</p>
+  } @else if (!sessao()) {
+    <section class="cmp__inicio kx-glass" aria-labelledby="cmp-nova">
+      <h2 id="cmp-nova">Nova comparação</h2>
+      <p class="kx-muted">
+        Escolha o componente que vai reconstruir a referência. Dá para trocar depois. Para criar um
+        componente novo, use o <a routerLink="/kcx/criar">construtor</a> ou o
+        <a routerLink="/kcx/montar">Montador</a>.
+      </p>
+      <div class="cmp__linha">
+        <label class="cmp__campo">
+          Nome
+          <input
+            type="text"
+            maxlength="120"
+            placeholder="Ex.: Anúncio Construtores de IA"
+            [value]="nomeNova()"
+            (input)="nomeNova.set(valorDe($event))"
+          />
+        </label>
+        <label class="cmp__campo">
+          Componente da reconstrução
+          <select [value]="componenteNova()" (change)="componenteNova.set(valorDe($event))">
+            @for (c of componentes(); track c.id) {
+              <option [value]="c.id" [selected]="c.id === componenteNova()">{{ c.nome }}</option>
+            }
+          </select>
+        </label>
+        <button type="button" class="kx-btn kx-btn--primary" (click)="criarSessao()">
+          Começar <kx-icon name="arrow-right" />
+        </button>
+        <label class="kx-btn kx-btn--ghost cmp__arquivo">
+          <kx-icon name="upload" /> Importar comparação
+          <input type="file" accept=".json,application/json" (change)="importarSessao($event)" />
+        </label>
+      </div>
+    </section>
+  } @else {
+    @let s = sessao()!;
+    @let r = s.referencia;
+
+    <!-- ============================== Sessão ============================== -->
+    <section class="cmp__sessao kx-glass" aria-label="Comparação">
+      <label class="cmp__campo">
+        Comparação
+        <select (change)="selecionarSessao(valorDe($event))">
+          @for (x of sessoes(); track x.id) {
+            <option [value]="x.id" [selected]="x.id === s.id">{{ x.nome }}</option>
+          }
+        </select>
+      </label>
+      <label class="cmp__campo cmp__campo--largo">
+        Nome
+        <input type="text" maxlength="120" [value]="s.nome" (change)="renomear(valorDe($event))" />
+      </label>
+      <label class="cmp__campo cmp__campo--largo">
+        Reconstrução a partir de
+        <select (change)="trocarComponente(valorDe($event))">
+          @for (c of componentes(); track c.id) {
+            <option [value]="c.id" [selected]="c.id === s.atual.componenteId">{{ c.nome }}</option>
+          }
+        </select>
+      </label>
+      <div class="cmp__acoes">
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="cmp_nova.showModal()">
+          Nova
+        </button>
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="exportarSessao()">
+          <kx-icon name="download" /> Exportar
+        </button>
+        <label class="kx-btn kx-btn--ghost cmp__arquivo">
+          <kx-icon name="upload" /> Importar
+          <input type="file" accept=".json,application/json" (change)="importarSessao($event)" />
+        </label>
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="excluirSessao()">
+          Excluir
+        </button>
+      </div>
+    </section>
+
+    <dialog #cmp_nova class="cmp__dialogo kx-glass" aria-labelledby="cmp-nova-t">
+      <h2 id="cmp-nova-t">Nova comparação</h2>
+      <label class="cmp__campo">
+        Nome
+        <input
+          type="text"
+          maxlength="120"
+          [value]="nomeNova()"
+          (input)="nomeNova.set(valorDe($event))"
+        />
+      </label>
+      <label class="cmp__campo">
+        Componente
+        <select (change)="componenteNova.set(valorDe($event))">
+          @for (c of componentes(); track c.id) {
+            <option [value]="c.id" [selected]="c.id === (componenteNova() || s.atual.componenteId)">
+              {{ c.nome }}
+            </option>
+          }
+        </select>
+      </label>
+      <div class="cmp__acoes">
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="cmp_nova.close()">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="kx-btn kx-btn--primary"
+          (click)="
+            componenteNova.set(componenteNova() || s.atual.componenteId);
+            criarSessao();
+            cmp_nova.close()
+          "
+        >
+          Criar
+        </button>
+      </div>
+    </dialog>
+
+    @if (!comp()) {
+      <p class="kx-callout">
+        O componente “{{ s.atual.componenteId }}” não existe mais neste navegador. Escolha outro em
+        “Reconstrução a partir de”.
+      </p>
+    }
+
+    <!-- ============================== Modos ============================== -->
+    <div class="cmp__modos" role="tablist" aria-label="Modo de comparação">
+      @for (
+        m of [
+          { id: 'lado', nome: 'Side by side', dica: 'Lado a lado, cada um no seu ritmo' },
+          { id: 'overlay', nome: 'Overlay', dica: 'Reconstrução por cima da referência' },
+          { id: 'sync', nome: 'Motion sync', dica: 'Mesmo ponto do tempo nos dois' },
+          { id: 'interacao', nome: 'Interaction test', dica: 'Teste hover, clique, scroll…' },
+        ];
+        track m.id
+      ) {
+        <button
+          type="button"
+          role="tab"
+          class="cmp__modo"
+          [attr.aria-selected]="modo() === m.id"
+          (click)="mudarModo($any(m.id))"
+        >
+          <strong>{{ m.nome }}</strong>
+          <small>{{ m.dica }}</small>
+        </button>
+      }
+    </div>
+
+    <!-- ============================== Barra do palco ============================== -->
+    <div class="cmp__barra kx-glass">
+      <label class="cmp__campo">
+        Viewport
+        <select (change)="viewport.set($any(valorDe($event))); ajustarZoom()">
+          <option value="referencia" [selected]="viewport() === 'referencia'">
+            Tamanho da referência ({{ r.tipo === 'url' ? 1440 : r.largura }} px)
+          </option>
+          @for (v of ['celular', 'tablet', 'desktop']; track v) {
+            <option [value]="v" [selected]="viewport() === v">
+              {{ $any(viewports)[v].nome }} ({{ $any(viewports)[v].largura }} px)
+            </option>
+          }
+        </select>
+      </label>
+      <label class="cmp__campo">
+        Zoom {{ (zoom() * 100).toFixed(0) }}%
+        <input
+          type="range"
+          min="0.1"
+          max="1.5"
+          step="0.01"
+          [value]="zoom()"
+          (input)="zoom.set(+valorDe($event))"
+        />
+      </label>
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="ajustarZoom()">
+        Caber na tela
+      </button>
+      <span class="kx-muted cmp__medida">{{ largura() }} × {{ altura() }} px</span>
+
+      @if (modo() === 'overlay') {
+        <div class="cmp__overlay-ctrl" aria-label="Controles do overlay">
+          <label class="cmp__campo">
+            Opacidade {{ (opacidade() * 100).toFixed(0) }}%
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              [value]="opacidade()"
+              (input)="opacidade.set(+valorDe($event))"
+            />
+          </label>
+          <label class="cmp__campo cmp__campo--curto">
+            X (px)
+            <input
+              type="number"
+              step="1"
+              [value]="alinhamento().x"
+              (change)="definirAlinhamento('x', valorDe($event))"
+            />
+          </label>
+          <label class="cmp__campo cmp__campo--curto">
+            Y (px)
+            <input
+              type="number"
+              step="1"
+              [value]="alinhamento().y"
+              (change)="definirAlinhamento('y', valorDe($event))"
+            />
+          </label>
+          <label class="cmp__campo cmp__campo--curto">
+            Escala
+            <input
+              type="number"
+              step="0.01"
+              min="0.05"
+              max="10"
+              [value]="alinhamento().escala"
+              (change)="definirAlinhamento('escala', valorDe($event))"
+            />
+          </label>
+          <div class="cmp__setas" role="group" aria-label="Mover a reconstrução 1 px">
+            <button type="button" aria-label="Esquerda" (click)="empurrar(-1, 0)">←</button>
+            <button type="button" aria-label="Cima" (click)="empurrar(0, -1)">↑</button>
+            <button type="button" aria-label="Baixo" (click)="empurrar(0, 1)">↓</button>
+            <button type="button" aria-label="Direita" (click)="empurrar(1, 0)">→</button>
+          </div>
+          <label class="cmp__campo">
+            Mistura
+            <select (change)="mistura.set($any(valorDe($event)))">
+              <option value="normal" [selected]="mistura() === 'normal'">Normal</option>
+              <option value="difference" [selected]="mistura() === 'difference'">
+                Diferença (mostra o que não bate)
+              </option>
+            </select>
+          </label>
+          <label class="cmp__check">
+            <input
+              type="checkbox"
+              [checked]="fundoTransparente()"
+              (change)="fundoTransparente.set(marcado($event))"
+            />
+            Fundo da reconstrução transparente
+          </label>
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="zerarAlinhamento()">
+            Zerar alinhamento
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- ============================== Palco ============================== -->
+    <div
+      id="cmp-palco"
+      #palco
+      class="cmp__palco"
+      [class.cmp__palco--overlay]="modo() === 'overlay'"
+      [style.--split]="split() + '%'"
+    >
+      <section class="cmp__painel cmp__painel--a" aria-labelledby="cmp-a">
+        <header class="cmp__cab">
+          <h2 id="cmp-a"><span class="cmp__letra">A</span> Original reference</h2>
+          <div class="cmp__vistas" role="group" aria-label="O que mostrar">
+            <button
+              type="button"
+              [attr.aria-pressed]="vista() === 'site'"
+              [disabled]="!r.url"
+              (click)="vista.set('site')"
+            >
+              Site
+            </button>
+            <button
+              type="button"
+              [attr.aria-pressed]="vista() === 'video'"
+              [disabled]="!videoUrl()"
+              (click)="vista.set('video')"
+            >
+              Vídeo
+            </button>
+            <button
+              type="button"
+              [attr.aria-pressed]="vista() === 'frame'"
+              [disabled]="!r.frames.length"
+              (click)="vista.set('frame')"
+            >
+              Frame
+            </button>
+          </div>
+          @if (vista() === 'video' && videoUrl() && modo() !== 'sync') {
+            <div class="cmp__tocador" role="group" aria-label="Reprodução da referência">
+              <button
+                type="button"
+                class="kx-btn kx-btn--ghost"
+                aria-label="Tocar"
+                (click)="refPainel.tocar()"
+              >
+                <kx-icon name="play" />
+              </button>
+              <button
+                type="button"
+                class="kx-btn kx-btn--ghost"
+                aria-label="Pausar"
+                (click)="refPainel.pausar()"
+              >
+                <kx-icon name="pause" />
+              </button>
+              <button
+                type="button"
+                class="kx-btn kx-btn--ghost"
+                aria-label="Voltar ao início"
+                (click)="refPainel.irPara(0)"
+              >
+                <kx-icon name="reset" />
+              </button>
+              <select
+                aria-label="Velocidade da referência"
+                (change)="refPainel.velocidade(+valorDe($event))"
+              >
+                @for (v of velocidades; track v) {
+                  <option [value]="v" [selected]="v === 1">{{ v }}×</option>
+                }
+              </select>
+              <span class="cmp__tempo">{{ fmt(tempoRef()) }}</span>
+              <button type="button" class="kx-btn kx-btn--ghost" (click)="capturarAgora()">
+                Capturar frame
+              </button>
+            </div>
+          }
+        </header>
+        @if (vista() === 'video' && videoUrl() && modo() !== 'sync' && (r.duracao ?? 0) > 0) {
+          <input
+            class="cmp__scrub"
+            type="range"
+            min="0"
+            [max]="r.duracao"
+            step="0.01"
+            aria-label="Posição no vídeo da referência"
+            [value]="tempoRef()"
+            (input)="refPainel.irPara(+valorDe($event))"
+          />
+        }
+        @if (erroVideo()) {
+          <p class="cmp__erro" role="alert">{{ erroVideo() }}</p>
+        }
+        <div class="cmp__corpo">
+          <kx-cmp-referencia
+            #refPainel
+            [vista]="vista()"
+            [url]="r.url"
+            [videoUrl]="videoUrl()"
+            [frame]="frameAtual()"
+            [largura]="largura()"
+            [altura]="altura()"
+            [zoom]="zoom()"
+            [elementos]="r.elementos"
+            [elementoAtivo]="elementoAtivo()"
+            [ferramenta]="ferramenta()"
+            [inerte]="modo() === 'overlay'"
+            (tempo)="tempoRef.set($event)"
+            (carregouVideo)="aoCarregarVideo($event)"
+            (erroVideo)="erroVideo.set($event)"
+            (caixa)="caixaDesenhada($event)"
+            (cor)="corColhida($event)"
+          />
+        </div>
+      </section>
+
+      <div
+        class="cmp__divisor"
+        role="separator"
+        tabindex="0"
+        aria-orientation="vertical"
+        aria-label="Redimensionar painéis (setas)"
+        [attr.aria-valuenow]="split()"
+        aria-valuemin="15"
+        aria-valuemax="85"
+        (pointerdown)="arrastarDivisor($event)"
+        (keydown)="teclaDivisor($event)"
+      ></div>
+
+      <section class="cmp__painel cmp__painel--b" aria-labelledby="cmp-b">
+        <header class="cmp__cab">
+          <h2 id="cmp-b"><span class="cmp__letra cmp__letra--b">B</span> KCX reconstruction</h2>
+          @if (comp(); as c) {
+            <a class="cmp__comp" [routerLink]="['/kcx', s.atual.componenteId]">{{ c.nome }}</a>
+          }
+          @if (modo() !== 'sync') {
+            <div class="cmp__tocador" role="group" aria-label="Reprodução da reconstrução">
+              <button
+                type="button"
+                class="kx-btn kx-btn--ghost"
+                aria-label="Tocar"
+                (click)="preview.controlar('tocar')"
+              >
+                <kx-icon name="play" />
+              </button>
+              <button
+                type="button"
+                class="kx-btn kx-btn--ghost"
+                aria-label="Pausar"
+                (click)="preview.controlar('pausar')"
+              >
+                <kx-icon name="pause" />
+              </button>
+              <button
+                type="button"
+                class="kx-btn kx-btn--ghost"
+                aria-label="Reiniciar"
+                (click)="preview.controlar('reiniciar')"
+              >
+                <kx-icon name="reset" />
+              </button>
+              <select
+                aria-label="Velocidade da reconstrução"
+                (change)="preview.controlar('velocidade', +valorDe($event))"
+              >
+                @for (v of velocidades; track v) {
+                  <option [value]="v" [selected]="v === 1">{{ v }}×</option>
+                }
+              </select>
+            </div>
+          }
+          <button
+            type="button"
+            class="kx-btn"
+            [class.kx-btn--primary]="inspecionando()"
+            [class.kx-btn--ghost]="!inspecionando()"
+            [attr.aria-pressed]="inspecionando()"
+            (click)="inspecionando() ? pararInspecao() : escolherNaReconstrucao({ tipo: 'ajuste' })"
+          >
+            {{ inspecionando() ? 'Clique num elemento… (Esc)' : 'Selecionar elemento' }}
+          </button>
+        </header>
+        <div class="cmp__corpo">
+          <div
+            class="cmp__escala"
+            [style.width.px]="largura() * zoom()"
+            [style.height.px]="altura() * zoom()"
+          >
+            <div
+              class="cmp__camada"
+              [style.width.px]="largura()"
+              [style.transform]="
+                modo() === 'overlay'
+                  ? 'translate(' +
+                    alinhamento().x * zoom() +
+                    'px, ' +
+                    alinhamento().y * zoom() +
+                    'px) scale(' +
+                    zoom() * alinhamento().escala +
+                    ')'
+                  : 'scale(' + zoom() + ')'
+              "
+              [style.opacity]="modo() === 'overlay' ? opacidade() : 1"
+              [style.mix-blend-mode]="modo() === 'overlay' ? mistura() : 'normal'"
+            >
+              <kx-kcx-preview
+                #preview
+                [documento]="documento()"
+                [saidas]="saidas()"
+                [altura]="altura() + 'px'"
+                [fundoFrame]="fundoTransparente() ? 'transparent' : '#0b0a14'"
+                titulo="Reconstrução KCX"
+                (mensagem)="aoMensagem($event)"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================== Motion sync ============================== -->
+    @if (modo() === 'sync') {
+      <section class="cmp__sync kx-glass" aria-labelledby="cmp-sync">
+        <h2 id="cmp-sync" class="cmp__h3">Linha do tempo sincronizada</h2>
+        <p class="kx-muted cmp__nota">
+          A base é {{ r.tipo === 'video' ? 'o tempo real do vídeo' : 'a sequência de estados' }}. Os
+          dois lados não precisam durar o mesmo: cada marco com tempo na referência <em>e</em> na
+          reconstrução vira um ponto de sincronia ({{ paresSync() }} agora). Entre dois pontos, o
+          tempo é proporcional.
+        </p>
+        <div class="cmp__tocador" role="group" aria-label="Controles do motion sync">
+          <button type="button" class="kx-btn kx-btn--primary" (click)="alternarSync()">
+            <kx-icon [name]="tocandoSync() ? 'pause' : 'play'" />
+            {{ tocandoSync() ? 'Pausar' : 'Reproduzir' }}
+          </button>
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="reiniciarSync()">
+            <kx-icon name="reset" /> Reiniciar
+          </button>
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="passoEstado(-1)">
+            ← Estado anterior
+          </button>
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="passoEstado(1)">
+            Próximo estado →
+          </button>
+          <label class="cmp__campo cmp__campo--curto">
+            Velocidade
+            <select (change)="mudarVelocidadeSync(+valorDe($event))">
+              @for (v of velocidades; track v) {
+                <option [value]="v" [selected]="v === velocidadeSync()">{{ v }}×</option>
+              }
+            </select>
+          </label>
+          <span class="cmp__tempo"
+            >Ref. {{ fmt(tempoRef()) }} · Rec. {{ fmt(tempoRec() / 1000) }}
+            @if (totalRec()) {
+              de {{ fmt(totalRec() / 1000) }}
+            }
+          </span>
+          <button type="button" class="kx-btn kx-btn--ghost" (click)="novoMarco('efeito')">
+            + Marco aqui
+          </button>
+        </div>
+        <div class="cmp__regua" (click)="clicarRegua($event)" aria-hidden="true">
+          <div class="cmp__trilho cmp__trilho--ref"><span>Ref.</span></div>
+          <div class="cmp__trilho cmp__trilho--rec"><span>Rec.</span></div>
+          @for (m of marcos(); track m.id) {
+            @if (m.ref !== null) {
+              <i
+                class="cmp__ponto cmp__ponto--ref"
+                [style.left.%]="posicao(m.ref)"
+                [title]="m.nome"
+              ></i>
+            }
+            @if (m.rec !== null) {
+              <i
+                class="cmp__ponto cmp__ponto--rec"
+                [style.left.%]="posicao(m.ref ?? m.rec)"
+                [title]="m.nome + ' · ' + fmt(m.rec)"
+              ></i>
+            }
+          }
+          <i class="cmp__cursor" [style.left.%]="posicao(tempoRef())"></i>
+        </div>
+        <input
+          class="cmp__scrub"
+          type="range"
+          min="0"
+          [max]="fimRegua()"
+          step="0.01"
+          aria-label="Ponto do tempo (referência)"
+          [value]="tempoRef()"
+          (input)="irParaSync(+valorDe($event))"
+        />
+        @if (marcos().length) {
+          <ol class="cmp__estados">
+            @for (m of marcos(); track m.id) {
+              <li>
+                <button type="button" (click)="m.ref !== null ? irParaSync(m.ref) : passoEstado(1)">
+                  <strong>{{ m.nome }}</strong>
+                  <small
+                    >ref. {{ m.ref !== null ? fmt(m.ref) : '—' }} · rec.
+                    {{ m.rec !== null ? fmt(m.rec) : '—' }}</small
+                  >
+                </button>
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--ghost cmp__mini"
+                  (click)="marcarAgora(m.id, 'rec')"
+                >
+                  Rec. = agora
+                </button>
+              </li>
+            }
+          </ol>
+        } @else {
+          <p class="kx-muted">
+            Crie marcos na aba Referência (ou em “+ Marco aqui”) para comparar pontos equivalentes.
+          </p>
+        }
+      </section>
+    }
+
+    <!-- ============================== Interaction test ============================== -->
+    @if (modo() === 'interacao') {
+      @let cc = contagemComportamentos();
+      <section class="cmp__interacao kx-glass" aria-labelledby="cmp-int">
+        <div class="cmp__int-col">
+          <h2 id="cmp-int" class="cmp__h3">Comportamentos da referência</h2>
+          <p class="kx-muted cmp__nota">
+            Teste cada um nos dois painéis. O registro ao lado mostra o que a reconstrução fez; use
+            “Usar como evidência” para ligar o teste ao comportamento.
+          </p>
+          <p class="cmp__contagem">
+            <span class="cmp__estado cmp__estado--corresponde"
+              >{{ cc.reproduzido }} reproduzidos</span
+            >
+            <span class="cmp__estado cmp__estado--proximo">{{ cc.difere }} diferem</span>
+            <span class="cmp__estado cmp__estado--difere">{{ cc.falta }} não implementados</span>
+            <span class="cmp__estado cmp__estado--sem-medicao"
+              >{{ cc.naoTestado }} não testados</span
+            >
+          </p>
+          <ul class="cmp__lista">
+            @for (c of r.comportamentos; track c.id) {
+              <li class="cmp__item">
+                <div class="cmp__linha">
+                  <select
+                    aria-label="Tipo"
+                    (change)="mudarComportamento(c.id, 'tipo', $any(valorDe($event)))"
+                  >
+                    @for (t of tiposComportamento; track t.id) {
+                      <option [value]="t.id" [selected]="t.id === c.tipo">{{ t.nome }}</option>
+                    }
+                  </select>
+                  <input
+                    type="text"
+                    maxlength="200"
+                    aria-label="O que acontece na referência"
+                    [value]="c.descricao"
+                    (change)="mudarComportamento(c.id, 'descricao', valorDe($event))"
+                  />
+                  <select
+                    aria-label="Status na reconstrução"
+                    (change)="mudarComportamento(c.id, 'status', $any(valorDe($event)))"
+                  >
+                    <option value="nao-testado" [selected]="c.status === 'nao-testado'">
+                      Não testado
+                    </option>
+                    <option value="reproduzido" [selected]="c.status === 'reproduzido'">
+                      Reproduzido
+                    </option>
+                    <option value="difere" [selected]="c.status === 'difere'">Difere</option>
+                    <option value="nao-implementado" [selected]="c.status === 'nao-implementado'">
+                      Não implementado
+                    </option>
+                  </select>
+                  <button
+                    type="button"
+                    class="cmp__x"
+                    aria-label="Remover comportamento"
+                    (click)="removerComportamento(c.id)"
+                  >
+                    <kx-icon name="close" />
+                  </button>
+                </div>
+                <div class="cmp__linha cmp__linha--pequena">
+                  <button
+                    type="button"
+                    class="kx-btn kx-btn--ghost cmp__mini"
+                    (click)="escolherNaReconstrucao({ tipo: 'comportamento', id: c.id })"
+                  >
+                    {{
+                      c.seletorRec
+                        ? 'Elemento: ' + c.seletorRec
+                        : 'Escolher elemento na reconstrução'
+                    }}
+                  </button>
+                  @if (eventoDe(c); as ev) {
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--primary cmp__mini"
+                      (click)="usarEvidencia(c)"
+                    >
+                      Usar como evidência: {{ ev.efeitos.length }} efeito(s)
+                    </button>
+                  }
+                </div>
+                @if (c.evidencia) {
+                  <p class="cmp__evidencia">{{ c.evidencia }}</p>
+                }
+              </li>
+            } @empty {
+              <li class="kx-muted">Nenhum comportamento listado ainda.</li>
+            }
+          </ul>
+          <div class="cmp__acoes">
+            @for (t of tiposComportamento; track t.id) {
+              <button
+                type="button"
+                class="kx-btn kx-btn--ghost cmp__mini"
+                (click)="novoComportamento(t.id)"
+              >
+                + {{ t.nome }}
+              </button>
+            }
+          </div>
+        </div>
+        <div class="cmp__int-col">
+          <h2 class="cmp__h3">Registro da reconstrução</h2>
+          <p class="kx-muted cmp__nota">
+            Passe o mouse, clique, role e arraste no Painel B. Cada interação mostra as transições,
+            animações e mudanças de estado que ela disparou em até 0,7 s.
+          </p>
+          <ol class="cmp__log" aria-live="polite">
+            @for (e of eventos(); track e.quando + e.seletor) {
+              <li [class.cmp__log--vazio]="!e.efeitos.length">
+                <strong>{{ e.tipo }}</strong> <code>{{ e.seletor }}</code>
+                @if (e.efeitos.length) {
+                  <ul>
+                    @for (f of e.efeitos; track f) {
+                      <li>{{ f }}</li>
+                    }
+                  </ul>
+                } @else {
+                  <small> · nenhum efeito</small>
+                }
+              </li>
+            } @empty {
+              <li class="kx-muted">Interaja com a reconstrução para registrar.</li>
+            }
+          </ol>
+          @if (eventos().length) {
+            <button type="button" class="kx-btn kx-btn--ghost cmp__mini" (click)="eventos.set([])">
+              Limpar registro
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ============================== Abas ============================== -->
+    <div class="cmp__abas" role="tablist" aria-label="Painéis de trabalho">
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="aba() === 'referencia'"
+        (click)="aba.set('referencia')"
+      >
+        Referência
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="aba() === 'ajustes'"
+        (click)="aba.set('ajustes')"
+      >
+        Ajustes
+        @if (ajustes().length) {
+          <span class="cmp__n">{{ ajustes().length }}</span>
+        }
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="aba() === 'fidelidade'"
+        (click)="aba.set('fidelidade')"
+      >
+        Fidelidade
+        <span class="cmp__mini-resumo" aria-label="Resumo">
+          <i class="cmp__bolinha cmp__bolinha--corresponde"></i>{{ resumo().corresponde }}
+          <i class="cmp__bolinha cmp__bolinha--proximo"></i>{{ resumo().proximo }}
+          <i class="cmp__bolinha cmp__bolinha--difere"></i>{{ resumo().difere }}
+        </span>
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="aba() === 'versoes'"
+        (click)="aba.set('versoes')"
+      >
+        Versões
+        @if (s.versoes.length) {
+          <span class="cmp__n">{{ s.versoes.length }}</span>
+        }
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="aba() === 'aprovacao'"
+        (click)="aba.set('aprovacao')"
+      >
+        Aprovação
+        @if (aprovada()) {
+          <kx-icon name="check" />
+        }
+      </button>
+    </div>
+
+    <div class="cmp__aba kx-glass" role="tabpanel">
+      @switch (aba()) {
+        <!-- ---------------------------- Referência ---------------------------- -->
+        @case ('referencia') {
+          <section aria-labelledby="cmp-fonte">
+            <h2 id="cmp-fonte" class="cmp__h3">Fonte da referência</h2>
+            <div
+              class="cmp__vistas cmp__vistas--grande"
+              role="radiogroup"
+              aria-label="Tipo de referência"
+            >
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="r.tipo === 'video'"
+                (click)="definirTipo('video')"
+              >
+                Gravação (vídeo)
+              </button>
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="r.tipo === 'url'"
+                (click)="definirTipo('url')"
+              >
+                Site (URL)
+              </button>
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="r.tipo === 'frames'"
+                (click)="definirTipo('frames')"
+              >
+                Imagens
+              </button>
+            </div>
+            @switch (r.tipo) {
+              @case ('url') {
+                <div class="cmp__linha">
+                  <label class="cmp__campo cmp__campo--largo">
+                    Endereço do site
+                    <input
+                      type="url"
+                      placeholder="https://exemplo.com"
+                      [value]="urlDigitada()"
+                      (input)="urlDigitada.set(valorDe($event))"
+                      (keydown.enter)="abrirUrl()"
+                    />
+                  </label>
+                  <button type="button" class="kx-btn kx-btn--primary" (click)="abrirUrl()">
+                    Abrir no Painel A
+                  </button>
+                </div>
+                <p class="kx-muted cmp__nota">
+                  Muitos sites não deixam ser abertos dentro de outro (o painel fica em branco).
+                  Nesse caso, grave a tela navegando no site e envie o vídeo. Um site de fora não
+                  pode ser medido por dentro: tire prints e envie como imagens para marcar elementos
+                  e cores, e registre os estados como marcos.
+                </p>
+              }
+              @case ('video') {
+                <div class="cmp__linha">
+                  <label class="kx-btn kx-btn--primary cmp__arquivo">
+                    <kx-icon name="upload" /> {{ videoUrl() ? 'Trocar vídeo' : 'Enviar gravação' }}
+                    <input type="file" accept="video/*" (change)="enviarVideo($event)" />
+                  </label>
+                  @if (r.videoNome) {
+                    <span class="kx-muted">
+                      {{ r.videoNome }} · {{ r.largura }} × {{ r.altura }} px
+                      @if (r.duracao) {
+                        · {{ fmt(r.duracao) }}
+                      }
+                    </span>
+                  }
+                </div>
+                @if (videoUrl()) {
+                  <div class="cmp__linha">
+                    <label class="cmp__campo cmp__campo--curto">
+                      Frames
+                      <input
+                        type="number"
+                        min="1"
+                        [max]="limiteFrames"
+                        [value]="quantosFrames()"
+                        (change)="quantosFrames.set(+valorDe($event))"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost"
+                      [disabled]="!!trabalhando()"
+                      (click)="extrair()"
+                    >
+                      Extrair frames espaçados
+                    </button>
+                    <button type="button" class="kx-btn kx-btn--ghost" (click)="capturarAgora()">
+                      Capturar o frame atual
+                    </button>
+                  </div>
+                } @else if (r.videoNome) {
+                  <p class="kx-muted cmp__nota">
+                    O vídeo desta comparação não está neste navegador: envie de novo.
+                  </p>
+                }
+              }
+            }
+            <div class="cmp__linha">
+              <label class="kx-btn kx-btn--ghost cmp__arquivo">
+                <kx-icon name="upload" /> Enviar imagens (prints, frames)
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+                  multiple
+                  (change)="enviarImagens($event)"
+                />
+              </label>
+              @if (trabalhando()) {
+                <span class="kx-muted" role="status">{{ trabalhando() }}</span>
+              }
+            </div>
+          </section>
+
+          <section aria-labelledby="cmp-frames">
+            <h2 id="cmp-frames" class="cmp__h3">
+              Frames ({{ r.frames.length }}/{{ limiteFrames }})
+            </h2>
+            @if (r.frames.length) {
+              <ul class="cmp__frames">
+                @for (f of r.frames; track f.id) {
+                  <li [class.cmp__frame--atual]="f.id === frameAtual()?.id">
+                    <button
+                      type="button"
+                      (click)="verFrame(f.id)"
+                      [attr.aria-label]="'Ver frame ' + (f.rotulo || fmt(f.tempo ?? 0))"
+                    >
+                      <img [src]="f.src" alt="" loading="lazy" />
+                      <small>{{ f.tempo !== null ? fmt(f.tempo) : f.rotulo || 'imagem' }}</small>
+                    </button>
+                    <button
+                      type="button"
+                      class="cmp__x"
+                      aria-label="Remover frame"
+                      (click)="removerFrame(f.id)"
+                    >
+                      <kx-icon name="close" />
+                    </button>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="kx-muted">
+                Os frames servem para marcar elementos, tirar cores e montar a sequência de estados.
+              </p>
+            }
+          </section>
+
+          <section aria-labelledby="cmp-marcos">
+            <h2 id="cmp-marcos" class="cmp__h3">
+              Sequência temporal: estados, efeitos e interações
+            </h2>
+            <p class="kx-muted cmp__nota">
+              Tempos em segundos. “Agora” usa a posição atual do vídeo (Ref.) ou da reconstrução no
+              Motion sync (Rec.). Início e fim dão a duração; a curva vista na referência vai para o
+              easing.
+            </p>
+            <div class="cmp__tabela-rolagem">
+              <table class="cmp__tabela">
+                <thead>
+                  <tr>
+                    <th scope="col">Marco</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Ref. início</th>
+                    <th scope="col">Ref. fim</th>
+                    <th scope="col">Rec. início</th>
+                    <th scope="col">Rec. fim</th>
+                    <th scope="col">Easing na ref.</th>
+                    <th scope="col">Elemento na rec.</th>
+                    <th scope="col"><span class="sr-only">Ações</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (m of marcos(); track m.id) {
+                    <tr>
+                      <td>
+                        <input
+                          type="text"
+                          maxlength="80"
+                          aria-label="Nome do marco"
+                          [value]="m.nome"
+                          (change)="mudarMarco(m.id, 'nome', valorDe($event))"
+                        />
+                        <input
+                          type="text"
+                          maxlength="500"
+                          class="cmp__anotacao"
+                          placeholder="Anotação"
+                          aria-label="Anotação"
+                          [value]="m.anotacao ?? ''"
+                          (change)="mudarMarco(m.id, 'anotacao', valorDe($event))"
+                        />
+                      </td>
+                      <td>
+                        <select
+                          aria-label="Tipo"
+                          (change)="mudarMarco(m.id, 'tipo', $any(valorDe($event)))"
+                        >
+                          @for (t of tiposMarco; track t.id) {
+                            <option [value]="t.id" [selected]="t.id === m.tipo">
+                              {{ t.nome }}
+                            </option>
+                          }
+                        </select>
+                      </td>
+                      @for (campo of ['ref', 'refFim', 'rec', 'recFim']; track campo) {
+                        <td class="cmp__tempo-campo">
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            [attr.aria-label]="campo"
+                            [value]="$any(m)[campo] ?? ''"
+                            (change)="tempoDigitado(m.id, $any(campo), valorDe($event))"
+                          />
+                          <button
+                            type="button"
+                            class="cmp__mini-btn"
+                            (click)="marcarAgora(m.id, $any(campo))"
+                          >
+                            agora
+                          </button>
+                        </td>
+                      }
+                      <td>
+                        <select
+                          aria-label="Easing visto na referência"
+                          (change)="mudarMarco(m.id, 'easingRef', valorDe($event))"
+                        >
+                          <option value="" [selected]="!m.easingRef">—</option>
+                          @for (e of easings; track e.valor) {
+                            <option [value]="e.valor" [selected]="e.valor === m.easingRef">
+                              {{ e.nome }}
+                            </option>
+                          }
+                        </select>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="kx-btn kx-btn--ghost cmp__mini"
+                          (click)="escolherNaReconstrucao({ tipo: 'marco', id: m.id })"
+                        >
+                          {{ m.seletorRec || 'Escolher' }}
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="cmp__x"
+                          aria-label="Remover marco"
+                          (click)="removerMarco(m.id)"
+                        >
+                          <kx-icon name="close" />
+                        </button>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="9" class="kx-muted">Nenhum marco ainda.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div class="cmp__acoes">
+              <button type="button" class="kx-btn kx-btn--ghost" (click)="novoMarco('estado')">
+                + Estado
+              </button>
+              <button type="button" class="kx-btn kx-btn--ghost" (click)="novoMarco('efeito')">
+                + Efeito
+              </button>
+              <button type="button" class="kx-btn kx-btn--ghost" (click)="novoMarco('interacao')">
+                + Interação
+              </button>
+            </div>
+          </section>
+
+          <section aria-labelledby="cmp-elementos">
+            <h2 id="cmp-elementos" class="cmp__h3">Elementos e anotações</h2>
+            <p class="kx-muted cmp__nota">
+              Desenhe a caixa no frame (ou no vídeo pausado), tire a cor com o conta-gotas e escolha
+              o elemento equivalente na reconstrução. É daí que saem as medidas de posição,
+              proporção, cor, tipografia e camadas.
+            </p>
+            <ul class="cmp__lista">
+              @for (e of r.elementos; track e.id) {
+                <li
+                  class="cmp__item"
+                  [class.cmp__item--ativo]="e.id === elementoAtivo()"
+                  (focusin)="elementoAtivo.set(e.id)"
+                >
+                  <div class="cmp__linha">
+                    <input
+                      type="text"
+                      maxlength="80"
+                      aria-label="Nome do elemento"
+                      [value]="e.nome"
+                      (change)="mudarElemento(e.id, 'nome', valorDe($event))"
+                    />
+                    <button
+                      type="button"
+                      class="kx-btn cmp__mini"
+                      [class.kx-btn--primary]="ferramenta() === 'caixa' && elementoAtivo() === e.id"
+                      [class.kx-btn--ghost]="
+                        !(ferramenta() === 'caixa' && elementoAtivo() === e.id)
+                      "
+                      (click)="usarFerramenta('caixa', e.id)"
+                    >
+                      {{ e.caixaRef ? 'Redesenhar caixa' : 'Desenhar caixa' }}
+                    </button>
+                    <button
+                      type="button"
+                      class="kx-btn cmp__mini"
+                      [class.kx-btn--primary]="
+                        ferramenta() === 'conta-gotas' && elementoAtivo() === e.id
+                      "
+                      [class.kx-btn--ghost]="
+                        !(ferramenta() === 'conta-gotas' && elementoAtivo() === e.id)
+                      "
+                      (click)="usarFerramenta('conta-gotas', e.id)"
+                    >
+                      Conta-gotas
+                    </button>
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost cmp__mini"
+                      (click)="escolherNaReconstrucao({ tipo: 'elemento', id: e.id })"
+                    >
+                      {{ e.seletorRec ? 'Na rec.: ' + e.seletorRec : 'Escolher na reconstrução' }}
+                    </button>
+                    @if (e.seletorRec) {
+                      <button
+                        type="button"
+                        class="kx-btn kx-btn--ghost cmp__mini"
+                        (click)="selecionarSeletor(e.seletorRec, e.nome)"
+                      >
+                        Ajustar
+                      </button>
+                    }
+                    <button
+                      type="button"
+                      class="cmp__x"
+                      aria-label="Remover elemento"
+                      (click)="removerElemento(e.id)"
+                    >
+                      <kx-icon name="close" />
+                    </button>
+                  </div>
+                  <div class="cmp__linha cmp__linha--pequena">
+                    <label class="cmp__campo cmp__campo--curto">
+                      Cor
+                      <span class="cmp__cor">
+                        <input
+                          type="color"
+                          [value]="e.corRef || '#000000'"
+                          (change)="mudarElemento(e.id, 'corRef', valorDe($event))"
+                        />
+                        <select
+                          aria-label="Comparar com"
+                          (change)="mudarElemento(e.id, 'corAlvo', $any(valorDe($event)))"
+                        >
+                          <option value="texto" [selected]="e.corAlvo !== 'fundo'">texto</option>
+                          <option value="fundo" [selected]="e.corAlvo === 'fundo'">fundo</option>
+                        </select>
+                      </span>
+                    </label>
+                    <label class="cmp__campo cmp__campo--curto">
+                      Fonte (px)
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.5"
+                        [value]="e.fonteRef ?? ''"
+                        (change)="numeroElemento(e.id, 'fonteRef', valorDe($event))"
+                      />
+                    </label>
+                    <label class="cmp__campo">
+                      Família
+                      <input
+                        type="text"
+                        maxlength="80"
+                        placeholder="Inter"
+                        [value]="e.familiaRef ?? ''"
+                        (change)="mudarElemento(e.id, 'familiaRef', valorDe($event))"
+                      />
+                    </label>
+                    <label class="cmp__campo cmp__campo--curto">
+                      Peso
+                      <input
+                        type="number"
+                        min="100"
+                        max="900"
+                        step="100"
+                        [value]="e.pesoRef ?? ''"
+                        (change)="numeroElemento(e.id, 'pesoRef', valorDe($event))"
+                      />
+                    </label>
+                    <label class="cmp__campo cmp__campo--curto">
+                      Camada (1 = frente)
+                      <input
+                        type="number"
+                        min="1"
+                        max="99"
+                        [value]="e.camadaRef ?? ''"
+                        (change)="numeroElemento(e.id, 'camadaRef', valorDe($event))"
+                      />
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    maxlength="500"
+                    class="cmp__anotacao"
+                    placeholder="Anotação do efeito ou detalhe"
+                    aria-label="Anotação"
+                    [value]="e.anotacao ?? ''"
+                    (change)="mudarElemento(e.id, 'anotacao', valorDe($event))"
+                  />
+                  @if (e.caixaRef) {
+                    <small class="kx-muted"
+                      >Caixa: {{ e.caixaRef.x }}, {{ e.caixaRef.y }} · {{ e.caixaRef.largura }} ×
+                      {{ e.caixaRef.altura }} px {{ e.frameId ? 'no frame' : 'no vídeo' }}</small
+                    >
+                  }
+                </li>
+              } @empty {
+                <li class="kx-muted">Nenhum elemento marcado.</li>
+              }
+            </ul>
+            <button type="button" class="kx-btn kx-btn--ghost" (click)="novoElemento()">
+              + Elemento
+            </button>
+          </section>
+        }
+
+        <!-- ---------------------------- Ajustes ---------------------------- -->
+        @case ('ajustes') {
+          <div class="cmp__ajustes">
+            <section aria-labelledby="cmp-sel">
+              <h2 id="cmp-sel" class="cmp__h3">Elemento selecionado</h2>
+              @if (selecionado(); as sel) {
+                <p>
+                  <strong>{{ sel.nome }}</strong>
+                  <code class="cmp__seletor">{{ sel.seletor }}</code>
+                  <button
+                    type="button"
+                    class="kx-btn kx-btn--ghost cmp__mini"
+                    (click)="destacar(sel.seletor, sel.nome)"
+                  >
+                    Mostrar
+                  </button>
+                </p>
+                @if (sel.medicao; as m) {
+                  <p class="kx-muted cmp__nota">
+                    {{ m.caixa.largura.toFixed(0) }} × {{ m.caixa.altura.toFixed(0) }} px · fonte
+                    {{ m.fonte }} px {{ m.peso }}
+                    @if (m.animacoes.length) {
+                      · animação {{ m.animacoes[0].nome }} {{ m.animacoes[0].duracao }} ms
+                      {{ m.animacoes[0].easing }}
+                    }
+                    @if (m.transicoes.length) {
+                      · transição {{ m.transicoes[0].propriedade }} {{ m.transicoes[0].duracao }} ms
+                    }
+                  </p>
+                }
+                <p class="kx-muted cmp__nota">
+                  Adicione uma propriedade: ela vira uma variável do componente e atualiza o Painel
+                  B na hora. O original não muda.
+                </p>
+                @for (g of gruposAjuste; track g) {
+                  <div class="cmp__grupo-aj">
+                    <span>{{ g }}</span>
+                    @for (d of ajustesDisponiveis; track d.id) {
+                      @if (d.grupo === g) {
+                        <button
+                          type="button"
+                          class="kx-btn kx-btn--ghost cmp__mini"
+                          (click)="adicionarAjuste(d.id)"
+                        >
+                          + {{ d.nome }}
+                        </button>
+                      }
+                    }
+                  </div>
+                }
+                <p class="kx-muted cmp__nota">
+                  Intensidade e distância de um efeito são variáveis do próprio componente: ficam em
+                  “Variáveis do componente”, ao lado.
+                </p>
+              } @else {
+                <p class="kx-muted">
+                  Clique em “Selecionar elemento” no Painel B e depois no elemento que quer ajustar
+                  — ou em “Ajustar” numa diferença do painel de fidelidade.
+                </p>
+              }
+
+              <h2 class="cmp__h3">Ajustes ({{ ajustes().length }})</h2>
+              @for (g of ajustesPorElemento(); track g.seletor) {
+                <fieldset class="cmp__fieldset">
+                  <legend>
+                    {{ g.elemento }} <code class="cmp__seletor">{{ g.seletor }}</code>
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost cmp__mini"
+                      (click)="selecionarSeletor(g.seletor, g.elemento)"
+                    >
+                      Selecionar
+                    </button>
+                  </legend>
+                  @for (a of g.itens; track a.id) {
+                    @let d = definicao(a.propriedade);
+                    <div class="cmp__ajuste">
+                      <label [for]="'aj-' + a.id">{{ d.nome }}</label>
+                      @switch (d.tipo) {
+                        @case ('color') {
+                          <span class="cmp__cor">
+                            <input
+                              type="color"
+                              [id]="'aj-' + a.id"
+                              [value]="$any(a.valor).slice(0, 7)"
+                              (input)="mudarAjuste(a.id, valorDe($event))"
+                            />
+                            <input
+                              type="text"
+                              aria-label="Hexadecimal"
+                              [value]="a.valor"
+                              (change)="mudarAjuste(a.id, valorDe($event))"
+                            />
+                          </span>
+                        }
+                        @case ('enum') {
+                          <select [id]="'aj-' + a.id" (change)="mudarAjuste(a.id, valorDe($event))">
+                            @for (o of opcoesAjuste(a); track o.valor) {
+                              <option [value]="o.valor" [selected]="o.valor === a.valor">
+                                {{ o.rotulo }}
+                              </option>
+                            }
+                          </select>
+                        }
+                        @default {
+                          <span class="cmp__num">
+                            <input
+                              type="range"
+                              [min]="d.min ?? 0"
+                              [max]="d.max ?? 100"
+                              [step]="d.passo ?? 1"
+                              [value]="a.valor"
+                              aria-hidden="true"
+                              tabindex="-1"
+                              (input)="mudarAjuste(a.id, valorDe($event))"
+                            />
+                            <input
+                              type="number"
+                              [id]="'aj-' + a.id"
+                              [min]="d.min ?? 0"
+                              [max]="d.max ?? 100"
+                              [step]="d.passo ?? 1"
+                              [value]="a.valor"
+                              (change)="mudarAjuste(a.id, valorDe($event))"
+                            />
+                            <small>{{ d.unidade }}</small>
+                          </span>
+                        }
+                      }
+                      <span class="cmp__escopo">
+                        <select
+                          aria-label="Breakpoint"
+                          (change)="mudarEscopo(a.id, valorDe($event))"
+                        >
+                          <option value="todos" [selected]="a.escopo.tipo === 'todos'">
+                            Todas as larguras
+                          </option>
+                          <option value="ate" [selected]="a.escopo.tipo === 'ate'">Até</option>
+                          <option value="acima" [selected]="a.escopo.tipo === 'acima'">
+                            Acima de
+                          </option>
+                        </select>
+                        @if (a.escopo.tipo !== 'todos') {
+                          <input
+                            type="number"
+                            min="200"
+                            max="4000"
+                            step="1"
+                            aria-label="Largura do breakpoint (px)"
+                            [value]="a.escopo.largura"
+                            (change)="mudarEscopo(a.id, a.escopo.tipo, valorDe($event))"
+                          />
+                          px
+                        }
+                      </span>
+                      <button
+                        type="button"
+                        class="cmp__x"
+                        aria-label="Remover ajuste"
+                        (click)="removerAjuste(a.id)"
+                      >
+                        <kx-icon name="close" />
+                      </button>
+                    </div>
+                  }
+                </fieldset>
+              } @empty {
+                <p class="kx-muted">Nenhum ajuste ainda.</p>
+              }
+            </section>
+
+            <section aria-labelledby="cmp-vars">
+              <h2 id="cmp-vars" class="cmp__h3">Variáveis do componente</h2>
+              @if (base(); as b) {
+                <p class="kx-muted cmp__nota">
+                  Cores, tipografia, medidas, intensidade, distância, velocidade e comportamento que
+                  o componente “{{ b.nome }}” já oferece.
+                  <button
+                    type="button"
+                    class="kx-btn kx-btn--ghost cmp__mini"
+                    (click)="restaurarVariaveis()"
+                  >
+                    Voltar ao padrão
+                  </button>
+                </p>
+                <kx-kcx-controles
+                  [variaveis]="b.variaveis"
+                  [valores]="valoresBase()"
+                  prefixo="cmp"
+                  (mudou)="mudarVariavel($event)"
+                />
+              }
+            </section>
+          </div>
+        }
+
+        <!-- ---------------------------- Fidelidade ---------------------------- -->
+        @case ('fidelidade') {
+          <div class="cmp__linha">
+            <button
+              type="button"
+              class="kx-btn kx-btn--primary"
+              [disabled]="medindo()"
+              (click)="medir()"
+            >
+              {{ medindo() ? 'Medindo…' : 'Medir reconstrução' }}
+            </button>
+            <button
+              type="button"
+              class="kx-btn kx-btn--ghost"
+              [disabled]="medindo()"
+              (click)="medirViewports()"
+            >
+              Medir em celular, tablet e desktop
+            </button>
+            <span class="kx-muted cmp__nota">
+              Sem nota geral: cada critério mostra a medida e a regra. Usar a mesma tecnologia da
+              referência não é requisito.
+            </span>
+          </div>
+          @for (g of criteriosPorGrupo(); track g.grupo) {
+            <section [attr.aria-labelledby]="'cmp-g-' + g.grupo">
+              <h2 [id]="'cmp-g-' + g.grupo" class="cmp__h3">{{ rotuloGrupo[g.grupo] }}</h2>
+              <ul class="cmp__criterios">
+                @for (c of g.itens; track c.id) {
+                  <li class="cmp__criterio">
+                    <div class="cmp__criterio-topo">
+                      <strong>{{ c.nome }}</strong>
+                      <span [class]="classeEstado(c.estado)">{{ rotuloEstado[c.estado] }}</span>
+                    </div>
+                    <p class="kx-muted cmp__regra">{{ c.criterio }}</p>
+                    @if (c.medidas.length) {
+                      <ul class="cmp__medidas">
+                        @for (m of c.medidas; track $index) {
+                          <li>
+                            <span
+                              [class]="classeEstado(m.estado)"
+                              [attr.aria-label]="rotuloEstado[m.estado]"
+                            ></span>
+                            {{ m.item }}: <span class="cmp__dif">{{ m.diferenca }}</span>
+                            @if (m.seletor && m.estado !== 'corresponde') {
+                              <button
+                                type="button"
+                                class="kx-btn kx-btn--ghost cmp__mini"
+                                (click)="selecionarSeletor(m.seletor, m.item)"
+                              >
+                                Ajustar
+                              </button>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    } @else if (c.comoMedir) {
+                      <p class="cmp__como">{{ c.comoMedir }}</p>
+                    }
+                  </li>
+                }
+              </ul>
+            </section>
+          }
+        }
+
+        <!-- ---------------------------- Versões ---------------------------- -->
+        @case ('versoes') {
+          <section aria-labelledby="cmp-salvar-v">
+            <h2 id="cmp-salvar-v" class="cmp__h3">Salvar versão</h2>
+            <div class="cmp__linha">
+              <label class="cmp__campo">
+                Nome
+                <input
+                  type="text"
+                  maxlength="120"
+                  [placeholder]="'Versão ' + (s.versoes.length + 1)"
+                  [value]="nomeVersao()"
+                  (input)="nomeVersao.set(valorDe($event))"
+                />
+              </label>
+              <label class="cmp__campo cmp__campo--largo">
+                Observações
+                <input
+                  type="text"
+                  maxlength="2000"
+                  [value]="obsVersao()"
+                  (input)="obsVersao.set(valorDe($event))"
+                />
+              </label>
+              <button
+                type="button"
+                class="kx-btn kx-btn--primary"
+                [disabled]="!base()"
+                (click)="salvarVersao()"
+              >
+                Salvar versão
+              </button>
+            </div>
+            <p class="kx-muted cmp__nota">
+              A versão guarda o componente, as variáveis que saíram do padrão, os ajustes, as
+              animações, as observações e o estado da fidelidade naquele momento. ({{
+                s.versoes.length
+              }}/{{ limiteVersoes }})
+            </p>
+          </section>
+
+          <section aria-labelledby="cmp-hist">
+            <h2 id="cmp-hist" class="cmp__h3">Histórico</h2>
+            <ul class="cmp__versoes">
+              @for (v of versoes(); track v.id) {
+                <li class="cmp__versao" [class.cmp__versao--aprovada]="v.aprovada">
+                  <div class="cmp__criterio-topo">
+                    <strong>{{ v.nome }}</strong>
+                    @if (v.aprovada) {
+                      <span class="cmp__estado cmp__estado--corresponde"
+                        ><kx-icon name="check" /> Aprovada</span
+                      >
+                    }
+                    <small class="kx-muted">{{ v.data | slice: 0 : 16 }}</small>
+                  </div>
+                  <p class="kx-muted cmp__nota">
+                    Componentes: {{ v.componentes.join(', ') }} ·
+                    {{ v.modificadas.length }} propriedade(s) modificada(s)
+                    @if (v.animacoes.length) {
+                      · animações: {{ v.animacoes.join(', ') }}
+                    }
+                  </p>
+                  @if (v.modificadas.length) {
+                    <p class="cmp__nota">
+                      {{ v.modificadas.slice(0, 8).join(' · ') }}
+                      @if (v.modificadas.length > 8) {
+                        …
+                      }
+                    </p>
+                  }
+                  @if (v.observacoes) {
+                    <p class="cmp__nota">“{{ v.observacoes }}”</p>
+                  }
+                  <p class="cmp__contagem">
+                    <span class="cmp__estado cmp__estado--corresponde"
+                      >{{ v.comparacao.corresponde }} corresponde</span
+                    >
+                    <span class="cmp__estado cmp__estado--proximo"
+                      >{{ v.comparacao.proximo }} próximo</span
+                    >
+                    <span class="cmp__estado cmp__estado--difere"
+                      >{{ v.comparacao.difere }} difere</span
+                    >
+                    <span class="cmp__estado cmp__estado--sem-medicao"
+                      >{{ v.comparacao.semMedicao }} sem medição</span
+                    >
+                  </p>
+                  <div class="cmp__acoes">
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost cmp__mini"
+                      (click)="restaurar(v)"
+                    >
+                      Restaurar
+                    </button>
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost cmp__mini"
+                      (click)="duplicar(v)"
+                    >
+                      Duplicar
+                    </button>
+                    @if (v.aprovada) {
+                      <button
+                        type="button"
+                        class="kx-btn kx-btn--ghost cmp__mini"
+                        (click)="aprovar(null)"
+                      >
+                        Retirar aprovação
+                      </button>
+                    } @else {
+                      <button
+                        type="button"
+                        class="kx-btn kx-btn--primary cmp__mini"
+                        (click)="aprovar(v)"
+                      >
+                        Definir como aprovada
+                      </button>
+                    }
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost cmp__mini"
+                      (click)="versaoA.set(v.id)"
+                    >
+                      Comparar como A
+                    </button>
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost cmp__mini"
+                      (click)="versaoB.set(v.id)"
+                    >
+                      como B
+                    </button>
+                    <button
+                      type="button"
+                      class="kx-btn kx-btn--ghost cmp__mini"
+                      (click)="excluirVersao(v)"
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                </li>
+              } @empty {
+                <li class="kx-muted">Nenhuma versão salva.</li>
+              }
+            </ul>
+          </section>
+
+          @if (s.versoes.length > 1) {
+            <section aria-labelledby="cmp-dif">
+              <h2 id="cmp-dif" class="cmp__h3">Comparar versões</h2>
+              <div class="cmp__linha">
+                <label class="cmp__campo">
+                  A
+                  <select (change)="versaoA.set(valorDe($event))">
+                    <option value="">—</option>
+                    @for (v of versoes(); track v.id) {
+                      <option [value]="v.id" [selected]="v.id === versaoA()">{{ v.nome }}</option>
+                    }
+                  </select>
+                </label>
+                <label class="cmp__campo">
+                  B
+                  <select (change)="versaoB.set(valorDe($event))">
+                    <option value="">—</option>
+                    @for (v of versoes(); track v.id) {
+                      <option [value]="v.id" [selected]="v.id === versaoB()">{{ v.nome }}</option>
+                    }
+                  </select>
+                </label>
+              </div>
+              @if (diferencas(); as d) {
+                @if (d.lista.length) {
+                  <table class="cmp__tabela">
+                    <thead>
+                      <tr>
+                        <th scope="col">O que mudou</th>
+                        <th scope="col">{{ d.a.nome }}</th>
+                        <th scope="col">{{ d.b.nome }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (x of d.lista; track x.campo) {
+                        <tr>
+                          <td>{{ x.campo }}</td>
+                          <td>{{ x.a }}</td>
+                          <td>{{ x.b }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                } @else {
+                  <p class="kx-muted">As duas versões são iguais.</p>
+                }
+              }
+            </section>
+          }
+        }
+
+        <!-- ---------------------------- Aprovação ---------------------------- -->
+        @case ('aprovacao') {
+          @if (aprovada(); as v) {
+            <p>
+              Versão aprovada: <strong>{{ v.nome }}</strong>
+              <small class="kx-muted"> ({{ v.data | slice: 0 : 16 }})</small>
+            </p>
+            <div class="cmp__linha">
+              <label class="cmp__campo cmp__campo--largo">
+                Nome do componente
+                <input
+                  type="text"
+                  maxlength="80"
+                  [placeholder]="s.nome"
+                  [value]="nomeComponente()"
+                  (input)="nomeComponente.set(valorDe($event))"
+                />
+              </label>
+            </div>
+            <div class="cmp__integracao">
+              <article class="cmp__acao-card">
+                <h3>Continuar editando</h3>
+                <p class="kx-muted">
+                  Volta para os ajustes. Salve uma nova versão quando terminar.
+                </p>
+                <button type="button" class="kx-btn kx-btn--ghost" (click)="continuarEditando()">
+                  Continuar editando
+                </button>
+              </article>
+              <article class="cmp__acao-card">
+                <h3>Salvar como componente</h3>
+                <p class="kx-muted">
+                  Vai para Meus componentes com os valores aprovados como padrão.
+                </p>
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--primary"
+                  (click)="salvarComoComponente()"
+                >
+                  Salvar como componente
+                </button>
+              </article>
+              <article class="cmp__acao-card">
+                <h3>Criar variante</h3>
+                <p class="kx-muted">
+                  Um componente irmão, marcado como variante de “{{ v.estado.componenteId }}”.
+                </p>
+                <button type="button" class="kx-btn kx-btn--ghost" (click)="criarVariante()">
+                  Criar variante
+                </button>
+              </article>
+              <article class="cmp__acao-card">
+                <h3>Motion Library</h3>
+                <p class="kx-muted">Aparece na Motion Library do KCX Studio.</p>
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--ghost"
+                  (click)="adicionarMotionLibrary()"
+                >
+                  Adicionar à Motion Library
+                </button>
+              </article>
+              <article class="cmp__acao-card">
+                <h3>Aplicar em página existente</h3>
+                <label class="cmp__campo">
+                  Página (Telas)
+                  <select (change)="telaAlvo.set(valorDe($event)); ondeTela.set('fim')">
+                    <option value="">Escolha…</option>
+                    @for (t of telas(); track t.id) {
+                      <option [value]="t.id" [selected]="t.id === telaAlvo()">
+                        {{ t.nome }} ({{ t.secoes.length }} seções)
+                      </option>
+                    }
+                  </select>
+                </label>
+                @if (telaAlvo()) {
+                  <label class="cmp__campo">
+                    Onde
+                    <select (change)="ondeTela.set(valorDe($event))">
+                      <option value="fim">No fim da página</option>
+                      <option value="inicio">No começo da página</option>
+                      @for (x of secoesTelaAlvo(); track x.i) {
+                        <option [value]="x.i">No lugar de “{{ x.nome }}”</option>
+                      }
+                    </select>
+                  </label>
+                }
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--ghost"
+                  [disabled]="!telaAlvo()"
+                  (click)="aplicarEmPagina()"
+                >
+                  Aplicar
+                </button>
+                <small class="kx-muted"
+                  >Moldes de página viram páginas em <a routerLink="/kcx/moldes">Moldes</a>.</small
+                >
+              </article>
+              <article class="cmp__acao-card">
+                <h3>Substituir componente existente</h3>
+                <label class="cmp__campo">
+                  Componente
+                  <select (change)="substituirAlvo.set(valorDe($event))">
+                    <option value="">Escolha…</option>
+                    @for (c of meusComponentes(); track c.id) {
+                      <option [value]="c.id" [selected]="c.id === substituirAlvo()">
+                        {{ c.nome }}
+                      </option>
+                    }
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  class="kx-btn kx-btn--ghost"
+                  [disabled]="!substituirAlvo()"
+                  (click)="substituir()"
+                >
+                  Substituir
+                </button>
+              </article>
+            </div>
+            @if (resultadoAcao(); as ra) {
+              <p class="cmp__resultado" role="status">
+                {{ ra.texto }}
+                @if (ra.id) {
+                  <a class="kx-btn kx-btn--primary cmp__mini" [routerLink]="['/kcx', ra.id]"
+                    >Abrir no editor <kx-icon name="arrow-right"
+                  /></a>
+                }
+                @if (ra.tela) {
+                  <a class="kx-btn kx-btn--ghost cmp__mini" routerLink="/kcx/telas">Ver a página</a>
+                }
+              </p>
+            }
+            @if (compAprovado(); as c) {
+              <details class="cmp__exportar">
+                <summary class="cmp__h3">Exportar código (HTML, CSS, JS, tokens, Figma)</summary>
+                <kx-kcx-exportar-painel [comp]="c" [valores]="valoresAprovado()" />
+              </details>
+            }
+          } @else {
+            <p>
+              Nenhuma versão aprovada. A aprovação é uma decisão sua: salve uma versão na aba
+              <button type="button" class="cmp__link" (click)="aba.set('versoes')">Versões</button>
+              e clique em “Definir como aprovada”. As métricas ajudam, mas não aprovam sozinhas.
+            </p>
+            @if (salvo(); as c) {
+              <p class="kx-muted">
+                Já salvo como <a [routerLink]="['/kcx', c.id]">{{ c.nome }}</a>.
+              </p>
+            }
+          }
+        }
+      }
+    </div>
+  }
+</div>

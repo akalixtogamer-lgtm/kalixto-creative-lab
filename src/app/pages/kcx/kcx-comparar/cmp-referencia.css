@@ -1,0 +1,82 @@
+:host {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: #050505;
+  border-radius: 10px;
+  flex: none;
+}
+.cmpr__site {
+  transform-origin: 0 0;
+}
+.cmpr__site iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+.cmpr__midia {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+.cmpr__inerte {
+  pointer-events: none;
+}
+.cmpr__vazio {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgb(255 255 255 / 70%);
+}
+.cmpr__marcas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.cmpr__caixa {
+  fill: rgb(255 45 170 / 8%);
+  stroke: #ff2daa;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 3;
+}
+.cmpr__marca--ativa .cmpr__caixa {
+  stroke: #00d9ff;
+  fill: rgb(0 217 255 / 12%);
+  stroke-dasharray: none;
+  stroke-width: 2;
+}
+.cmpr__nome {
+  font:
+    600 11px/1 system-ui,
+    sans-serif;
+  fill: #fff;
+  paint-order: stroke;
+  stroke: #050505;
+  stroke-width: 3px;
+}
+.cmpr__ferramenta {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  touch-action: none;
+}
+.cmpr__ferramenta--gotas {
+  cursor: copy;
+}
+.cmpr__desenho {
+  position: absolute;
+  border: 2px solid #00d9ff;
+  background: rgb(0 217 255 / 15%);
+  pointer-events: none;
+}

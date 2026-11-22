@@ -51,6 +51,9 @@
         ><kx-icon name="kcx" /> Criar componente</a
       >
       <a class="kx-btn kx-btn--ghost" routerLink="/kcx/montar">Montar do zero</a>
+      <a class="kx-btn kx-btn--ghost" routerLink="/kcx/comparar"
+        ><kx-icon name="compare" /> Reference vs. Reconstruction</a
+      >
       <a class="kx-btn kx-btn--ghost" routerLink="/kcx/fundacao">Fundação (tokens)</a>
       <a class="kx-btn kx-btn--ghost" routerLink="/kcx/design-system">Design system (guia)</a>
       <a class="kx-btn kx-btn--ghost" routerLink="/kcx/telas">Telas e wireframes</a>
@@ -86,6 +89,32 @@
     }
   </section>
 
+  @if (motionLibrary().length) {
+    <section class="kx-section" aria-labelledby="kcxs-motion">
+      <h2 id="kcxs-motion" class="kx-section-title">Motion Library</h2>
+      <p class="kx-muted">
+        Movimentos reconstruídos e aprovados no
+        <a routerLink="/kcx/comparar">Reference vs. Reconstruction</a>. Continuam ligados às
+        variáveis: cores, medidas, duração e comportamento seguem editáveis.
+      </p>
+      <div class="kcxs__cards">
+        @for (c of motionLibrary(); track c.id) {
+          <article class="kcxs__card kx-glass">
+            <h3>{{ c.nome }}</h3>
+            <p class="kx-muted">{{ c.descricao }}</p>
+            <ul class="kcxs__chips">
+              <li class="kx-chip">{{ c.variaveis.length }} variáveis</li>
+              <li class="kx-chip">{{ c.animacoes.length }} animação(ões)</li>
+            </ul>
+            <a class="kx-btn kx-btn--primary" [routerLink]="['/kcx', c.id]"
+              >Abrir editor <kx-icon name="arrow-right"
+            /></a>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
   @if (meus().length) {
     <section class="kx-section" aria-labelledby="kcxs-meus">
       <h2 id="kcxs-meus" class="kx-section-title">Meus componentes</h2>
@@ -96,7 +125,13 @@
             <p class="kx-muted">{{ c.descricao }}</p>
             <ul class="kcxs__chips">
               <li class="kx-chip">
-                {{ c.origemCriacao?.tipo === 'figma' ? 'Do Figma' : 'Construtor' }}
+                {{
+                  c.origemCriacao?.tipo === 'figma'
+                    ? 'Do Figma'
+                    : c.metadados.tags.includes('reconstrucao')
+                      ? 'Reconstrução'
+                      : 'Construtor'
+                }}
               </li>
               <li class="kx-chip">{{ c.variaveis.length }} variáveis</li>
               <li class="kx-chip">
