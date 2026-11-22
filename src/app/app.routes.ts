@@ -104,6 +104,12 @@ export const routes: Routes = [
           import('./pages/kcx/kcx-moodboard/kcx-moodboard').then((m) => m.KcxMoodboardPagina),
       },
       {
+        path: 'kcx/moldes',
+        title: 'Moldes de página · KCX Studio · Kalixto Creative Lab',
+        loadComponent: () =>
+          import('./pages/kcx/kcx-moldes/kcx-moldes').then((m) => m.KcxMoldesPagina),
+      },
+      {
         path: 'kcx/mapa',
         title: 'Mapa de navegação e fluxos · KCX Studio · Kalixto Creative Lab',
         loadComponent: () => import('./pages/kcx/kcx-mapa/kcx-mapa').then((m) => m.KcxMapaPagina),

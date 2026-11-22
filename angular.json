@@ -48,7 +48,8 @@
               "@fontsource/jetbrains-mono/latin-400.css",
               "@fontsource/jetbrains-mono/latin-700.css",
               "src/styles.css"
-            ]
+            ],
+            "allowedCommonJsDependencies": ["pako"]
           },
           "configurations": {
             "production": {

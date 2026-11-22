@@ -303,7 +303,7 @@ tudo();addEventListener('resize',tudo);
 export function documentoDaTela(raiz: PlanoNo, fundo = '#0b0a14', medir = false): string {
   // Com `medir`, um script avisa a página onde cada seção está (para arrastar no mockup).
   const script = medir
-    ? `<script>(function(){function m(){var r=document.querySelector('#t>div');if(!r)return;var l=[].map.call(r.children,function(e){var b=e.getBoundingClientRect();return{x:b.left,y:b.top+scrollY,w:b.width,h:b.height}});parent.postMessage({kcxTela:{secoes:l,rolagem:scrollY}},'*')}addEventListener('load',m);addEventListener('resize',m);addEventListener('scroll',m,{passive:true});setTimeout(m,200)})();</script>`
+    ? `<script>(function(){function m(){var r=document.querySelector('#t>div');if(!r)return;var l=[].map.call(r.children,function(e){var b=e.getBoundingClientRect();return{x:b.left,y:b.top+scrollY,w:b.width,h:b.height}});parent.postMessage({kcxTela:{secoes:l,rolagem:scrollY}},'*')}addEventListener('load',m);addEventListener('resize',m);addEventListener('scroll',m,{passive:true});setTimeout(m,200);addEventListener('message',function(e){if(e.source!==parent)return;var d=e.data&&e.data.kcxMover;if(!d)return;var r=document.querySelector('#t>div');var c=r&&r.children[d.i];if(!c||typeof d.x!=='number'||typeof d.y!=='number')return;c.style.left=d.x+'px';c.style.top=d.y+'px';m()})})();</script>`
     : '';
   return `<!doctype html><html><head><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data: https:; style-src 'unsafe-inline'${medir ? "; script-src 'unsafe-inline'" : ''}">

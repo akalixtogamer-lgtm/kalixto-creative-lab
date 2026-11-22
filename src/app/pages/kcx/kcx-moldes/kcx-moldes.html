@@ -1,0 +1,129 @@
+<div class="kx-page" data-acento="ciano">
+  <header class="kx-page-header">
+    <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Projeto · Moldes de página</p>
+    <h1 class="kx-title">Moldes de página</h1>
+    <p class="kx-lead">
+      Páginas já montadas com componentes para cada área. Compare as áreas, escolha um molde e ele
+      vira páginas nas <a routerLink="/kcx/telas">Telas</a>, com o mapa de navegação ligado. Depois,
+      troque qualquer seção por outro componente.
+    </p>
+  </header>
+
+  <div class="kcxmo__barra kx-glass">
+    <div class="kcxmo__grupo" role="radiogroup" aria-label="Cores e fontes">
+      <span>Cores e fontes</span>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="estilo() === 'molde'"
+        (click)="estilo.set('molde')"
+      >
+        Do molde
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="estilo() === 'minha'"
+        (click)="estilo.set('minha')"
+      >
+        Minha Fundação ({{ minha().nome }})
+      </button>
+    </div>
+    <label class="kx-btn kx-btn--ghost kcxmo__arquivo">
+      <kx-icon name="upload" /> Importar design system (.json)
+      <input type="file" accept=".json,application/json" (change)="importarDs($event)" />
+    </label>
+    <p class="kx-muted kcxmo__dica">
+      Aceita o arquivo da Fundação e o que o plugin gera do Figma ("Enviar design system para o
+      lab").
+    </p>
+  </div>
+  @if (mensagem(); as msg) {
+    <p [class]="'kcxmo__msg kcxmo__msg--' + msg.tipo" role="status">{{ msg.texto }}</p>
+  }
+
+  <nav class="kcxmo__areas" aria-label="Áreas">
+    @for (m of moldes; track m.id) {
+      <button
+        type="button"
+        class="kcxmo__area"
+        [attr.aria-pressed]="aberto() === m.id"
+        (click)="aberto.set(m.id)"
+      >
+        <span class="kcxmo__cores" aria-hidden="true">
+          @for (
+            c of [
+              fundacaoPara(m).cores.primaria.escuro,
+              fundacaoPara(m).cores.secundaria.escuro,
+              fundacaoPara(m).cores.fundo.escuro,
+            ];
+            track $index
+          ) {
+            <i [style.background]="c"></i>
+          }
+        </span>
+        <strong>{{ m.area }}</strong>
+        <small>{{ m.nome }}</small>
+      </button>
+    }
+  </nav>
+
+  <section class="kcxmo__detalhe" aria-labelledby="kcxmo-titulo">
+    <div class="kcxmo__previa" #moldura [style.--kcxmo-escala]="escala()">
+      <div class="kcxmo__navegador" aria-hidden="true"><i></i><i></i><i></i></div>
+      @if (previa(); as doc) {
+        <iframe
+          sandbox=""
+          [title]="'Prévia do molde ' + molde().nome"
+          [srcdoc]="doc"
+          loading="lazy"
+        ></iframe>
+      } @else {
+        <p class="kx-muted">Não deu para montar a prévia.</p>
+      }
+    </div>
+    <div class="kcxmo__info">
+      <p class="kx-eyebrow">{{ molde().area }}</p>
+      <h2 id="kcxmo-titulo" class="kcxmo__titulo">{{ molde().nome }}</h2>
+      <p class="kx-muted">{{ molde().descricao }}</p>
+
+      <h3 class="kcxmo__h3">Paleta e fontes</h3>
+      <div class="kcxmo__paleta">
+        @for (c of paleta(); track $index) {
+          <i [style.background]="c" [title]="c"></i>
+        }
+      </div>
+      <p class="kcxmo__fontes">
+        <strong>{{ fundacao().fontes.titulo }}</strong> nos títulos ·
+        {{ fundacao().fontes.corpo }} no texto
+      </p>
+
+      <h3 class="kcxmo__h3">Páginas</h3>
+      <ol class="kcxmo__paginas">
+        @for (p of molde().paginas; track p.nome) {
+          <li>
+            <strong>{{ p.nome }}</strong>
+            <span>{{ p.secoes.map((s) => s.nome).join(' · ') }}</span>
+          </li>
+        }
+      </ol>
+
+      <h3 class="kcxmo__h3">Animações que combinam</h3>
+      <ul class="kcxmo__anim">
+        @for (a of animacoes(); track a.id) {
+          <li>
+            <a [routerLink]="['/efeitos', a.id]">{{ a.nome }}</a>
+          </li>
+        }
+      </ul>
+
+      <button type="button" class="kx-btn kx-btn--primary" (click)="usar(molde())">
+        Usar este molde
+      </button>
+      <p class="kx-muted kcxmo__dica">
+        Cria {{ molde().paginas.length }} página(s) nas Telas e os componentes em "Meus
+        componentes". Nas Telas, use "Trocar" em cada seção para mudar o componente.
+      </p>
+    </div>
+  </section>
+</div>

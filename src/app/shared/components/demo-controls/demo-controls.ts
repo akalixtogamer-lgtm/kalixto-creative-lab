@@ -22,6 +22,28 @@ export class DemoControls {
     this.mudou.emit({ param, valor: param.tipo === 'range' ? Number(bruto) : bruto });
   }
 
+  /** Número digitado no campo: limitado ao intervalo e ao passo do controle. */
+  protected digitar(param: ParamDef, el: HTMLInputElement): void {
+    if (param.tipo !== 'range') return;
+    const n = Number(el.value.replace(',', '.'));
+    if (!Number.isFinite(n)) {
+      el.value = String(this.valores()[param.id]);
+      return;
+    }
+    const passos = Math.round(
+      (Math.min(param.max, Math.max(param.min, n)) - param.min) / param.passo,
+    );
+    const v = Number((param.min + passos * param.passo).toFixed(6));
+    el.value = String(v);
+    this.mudou.emit({ param, valor: v });
+  }
+
+  protected porcentagem(param: ParamDef): string {
+    if (param.tipo !== 'range') return '0%';
+    const t = param.max - param.min;
+    return `${t ? ((Number(this.valores()[param.id]) - param.min) / t) * 100 : 0}%`;
+  }
+
   protected exibir(param: ParamDef): string {
     const v = this.valores()[param.id];
     if (param.tipo === 'select') {

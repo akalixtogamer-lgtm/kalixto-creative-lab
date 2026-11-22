@@ -391,6 +391,33 @@ export abstract class BaseVariaveis {
       }
       return e;
     });
+    // Vidro no modelo do Figma: troca o Background blur pelo efeito Glass nativo.
+    // Arquivos/versões do Figma sem Glass recusam o efeito: fica o Background blur.
+    const blur = p.efeitos.find((ef) => ef.tipo === 'BACKGROUND_BLUR');
+    const vidro = blur && 'vidro' in blur ? blur.vidro : undefined;
+    if (blur && vidro && (vidro.luz > 0 || vidro.refracao > 0)) {
+      const atual = no.effects;
+      try {
+        no.effects = [
+          ...atual.filter((x: { type: string }) => x.type !== 'BACKGROUND_BLUR'),
+          {
+            type: 'GLASS',
+            visible: true,
+            lightIntensity: Math.min(1, Math.max(0, vidro.luz)),
+            lightAngle: vidro.angulo,
+            refraction: Math.min(1, Math.max(0, vidro.refracao)),
+            depth: Math.max(1, vidro.profundidade),
+            dispersion: Math.min(1, Math.max(0, vidro.dispersao)),
+            radius: Math.max(0, Number(blur.raio.valor) / 2),
+          },
+        ];
+      } catch (err) {
+        no.effects = atual;
+        this.rel.avisos.push(
+          `${onde}: este Figma não aceitou o efeito Glass (${(err as Error).message}); ficou o Background blur.`,
+        );
+      }
+    }
   }
 
   /* ------------------------------ Fontes ------------------------------ */

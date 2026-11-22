@@ -5,6 +5,25 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Vidro do Figma, moldes, Telas livres e PDF
+- **Vidro no modelo Glass do Figma** em qualquer componente: luz (ângulo e intensidade, com
+  controle de luz), refração, profundidade, dispersão, gelo e splay, além de fundo, véu e borda.
+  No Figma vira o **efeito Glass nativo**; no código, desfoque, realce e brilho direcional.
+- **Vidros prontos** (Líquido do Figma, Fosco, Gelo, Cristal, Fumê) e **Meus vidros**: salve
+  um vidro com nome e aplique em qualquer outro componente.
+- **Controles no estilo do Figma** (barra + campo numérico) no vidro e nos controles da
+  Biblioteca de efeitos e dos laboratórios.
+- **Design system em PDF** (A4, vetorial): capa com logo, sumário, cores por função, escalas,
+  contraste, tipografia, espaços, cantos, sombras, movimento, grid, componentes e tokens.
+- **Moldes de página** (`/kcx/moldes`) para dança, games, livros, música, café, moda, curso e
+  portfólio: páginas montadas com componentes, cores e fontes da área (ou a sua Fundação, ou um
+  design system importado), animações que combinam e o mapa de navegação já ligado.
+- **Trocar seção** nas Telas: outro tipo com o mesmo conteúdo (ex.: Carrossel → Galeria) ou
+  outro componente pronto.
+- **Telas em posição livre** (como no Figma): arraste com mouse, caneta ou dedo, com ímãs e guias
+  de alinhamento, seleção múltipla, alinhar, distribuir, reempilhar, X/Y e setas do teclado. No
+  Figma, cada seção vai na mesma posição.
+
 ### Adicionado — Referências em vídeo, lote 5
 - **Voo que sai pela janela em arco** (`arch-window-reveal`): voo de câmera preso ao scroll com
   legendas por cômodo, que termina encolhendo para uma janela em arco (ou círculo, ou retângulo)

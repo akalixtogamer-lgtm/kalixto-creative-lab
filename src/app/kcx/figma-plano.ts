@@ -144,7 +144,18 @@ export type PlanoEfeito =
       x: number;
       y: number;
     }
-  | { tipo: 'LAYER_BLUR' | 'BACKGROUND_BLUR'; raio: PlanoProp<number> };
+  | {
+      tipo: 'LAYER_BLUR' | 'BACKGROUND_BLUR';
+      raio: PlanoProp<number>;
+      /** Efeito Glass do Figma (valores da variante; o Figma não vincula variáveis ao Glass). */
+      vidro?: {
+        luz: number;
+        angulo: number;
+        refracao: number;
+        profundidade: number;
+        dispersao: number;
+      };
+    };
 
 export interface PlanoNo {
   id: string;
@@ -739,10 +750,24 @@ function planejarNo(no: KcxNo, ctx: Contexto, caminho: string): PlanoNo {
         y: ef.y ?? 0,
       });
     } else {
-      p.efeitos.push({
+      const e: PlanoEfeito = {
         tipo: ef.tipo === 'desfoque-camada' ? 'LAYER_BLUR' : 'BACKGROUND_BLUR',
         raio: resolverRef(ef.raio, CAMPOS['raioEfeito'], onde(`desfoque ${i + 1}`), ctx)!,
-      });
+      };
+      if (ef.tipo === 'desfoque-fundo' && ef.vidro) {
+        const n = (r: KcxRef<number>, padrao: number) => {
+          const x = literal(r, ctx);
+          return typeof x === 'number' && Number.isFinite(x) ? x : padrao;
+        };
+        e.vidro = {
+          luz: n(ef.vidro.luz, 0),
+          angulo: n(ef.vidro.angulo, -45),
+          refracao: n(ef.vidro.refracao, 0),
+          profundidade: n(ef.vidro.profundidade, 20),
+          dispersao: n(ef.vidro.dispersao, 0),
+        };
+      }
+      p.efeitos.push(e);
     }
   });
   if (no.texto) {

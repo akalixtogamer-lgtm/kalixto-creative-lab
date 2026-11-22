@@ -10,15 +10,7 @@
     >
       {{ ligado() ? 'Desligar vidro' : 'Aplicar efeito vidro' }}
     </button>
-    <p class="kx-muted kcxv__intro">
-      Fundo e borda translúcidos e desfoque do que fica atrás. Mexe nas variáveis
-      <strong>Vidro · …</strong> deste componente: o preview muda na hora, e o código e o Figma
-      (Background blur) acompanham.
-    </p>
-  </div>
-
-  <div class="kcxv__campos">
-    <label
+    <label class="kcxv__camada"
       >Camada
       <select aria-label="Camada com vidro" (change)="trocarCamada($event)">
         @for (k of camadas(); track k.id) {
@@ -28,21 +20,131 @@
         }
       </select>
     </label>
-    @for (c of controles(); track c.id) {
-      <label
-        >{{ c.nome }} · {{ rotulo(c) }}
-        <input
-          type="range"
-          [min]="c.min"
-          [max]="c.max"
-          [step]="c.passo"
-          [attr.aria-label]="'Vidro: ' + c.nome"
-          [value]="valor(c.id)"
-          (input)="mudar(c.id, $event)"
-        />
-      </label>
+  </div>
+
+  <div class="kcxv__grupo" role="group" aria-label="Vidros prontos">
+    <span class="kcxv__rotulo">Prontos</span>
+    @for (p of presets; track p.id) {
+      <button
+        type="button"
+        class="kcxv__chip"
+        [attr.aria-pressed]="escolhido() === p.id"
+        [title]="p.descricao"
+        (click)="usar(p.ajustes)"
+      >
+        {{ p.nome }}
+      </button>
     }
   </div>
+  <div class="kcxv__grupo" role="group" aria-label="Meus vidros">
+    <span class="kcxv__rotulo">Meus vidros</span>
+    @for (s of vidros.salvos(); track s.id) {
+      <span class="kcxv__salvo">
+        <button
+          type="button"
+          class="kcxv__chip"
+          [attr.aria-pressed]="escolhido() === s.id"
+          (click)="usar(s.ajustes)"
+        >
+          {{ s.nome }}
+        </button>
+        <button
+          type="button"
+          class="kcxv__x"
+          [attr.aria-label]="'Apagar o vidro ' + s.nome"
+          (click)="apagar(s.id, s.nome)"
+        >
+          ✕
+        </button>
+      </span>
+    } @empty {
+      <span class="kx-muted kcxv__dica"
+        >Ajuste um vidro e salve com um nome para usar em outros componentes.</span
+      >
+    }
+  </div>
+
+  <div class="kcxv__painel" [class.kcxv__painel--off]="!ligado()">
+    @if (temLuz()) {
+      <div class="kcxv__luz">
+        <span class="kcxv__rotulo">Luz</span>
+        <kx-luz-dial
+          [angulo]="valor(ids.angulo)"
+          [intensidade]="valor(ids.luz)"
+          (mudou)="mudar(ids.angulo, $event)"
+        />
+        <div class="kcxv__luz-campos">
+          <kx-controle-numero
+            rotulo="Ângulo"
+            unidade="°"
+            [barra]="false"
+            [min]="-180"
+            [max]="180"
+            [passo]="1"
+            [valor]="valor(ids.angulo)"
+            (mudou)="mudar(ids.angulo, $event)"
+          />
+          <kx-controle-numero
+            rotulo="Intensidade"
+            unidade="%"
+            [barra]="false"
+            [min]="0"
+            [max]="1"
+            [passo]="0.01"
+            [escala]="100"
+            [valor]="valor(ids.luz)"
+            (mudou)="mudar(ids.luz, $event)"
+          />
+        </div>
+      </div>
+    }
+    @for (c of controlesVidro(); track c.id) {
+      <kx-controle-numero
+        [rotulo]="c.nome"
+        [min]="c.min"
+        [max]="c.max"
+        [passo]="c.passo"
+        [escala]="c.escala"
+        [unidade]="c.unidade"
+        [valor]="valor(c.id)"
+        (mudou)="mudar(c.id, $event)"
+      />
+    }
+    <span class="kcxv__rotulo kcxv__sep">Superfície</span>
+    @for (c of controlesSuperficie(); track c.id) {
+      <kx-controle-numero
+        [rotulo]="c.nome"
+        [min]="c.min"
+        [max]="c.max"
+        [passo]="c.passo"
+        [escala]="c.escala"
+        [unidade]="c.unidade"
+        [valor]="valor(c.id)"
+        (mudou)="mudar(c.id, $event)"
+      />
+    }
+  </div>
+
+  <form class="kcxv__salvar" (submit)="$event.preventDefault(); salvar()">
+    <input
+      type="text"
+      maxlength="40"
+      placeholder="Nome do vidro (ex.: Vidro da marca)"
+      aria-label="Nome para salvar este vidro"
+      [value]="nomeNovo()"
+      (input)="nomeNovo.set(texto($event))"
+    />
+    <button type="submit" class="kx-btn kx-btn--ghost" [disabled]="!nomeNovo().trim() || !ligado()">
+      Salvar este vidro
+    </button>
+  </form>
+  @if (mensagem()) {
+    <p class="kx-muted kcxv__dica" role="status">{{ mensagem() }}</p>
+  }
+  <p class="kx-muted kcxv__dica">
+    No código: desfoque, realce e brilho direcional em CSS. No Figma: o efeito Glass nativo (luz,
+    refração, profundidade, dispersão e gelo); o splay fica só no código.
+  </p>
 
   @for (a of info()?.avisos ?? []; track a) {
     <p class="kcxv__aviso">{{ a }}</p>

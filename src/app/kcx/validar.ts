@@ -221,6 +221,8 @@ export function refsDoNo(no: KcxNo): { campo: string; ref: KcxRef<unknown> }[] {
       add(`efeitos[${i}].cor`, ef.cor);
       add(`efeitos[${i}].espalhar`, ef.espalhar);
     }
+    if (ef.tipo === 'desfoque-fundo' && ef.vidro)
+      for (const [k, r] of Object.entries(ef.vidro)) add(`efeitos[${i}].vidro.${k}`, r);
   });
   if (no.texto) {
     add('texto.conteudo', no.texto.conteudo);

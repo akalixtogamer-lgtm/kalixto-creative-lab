@@ -45,8 +45,16 @@
       <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarCss()">
         Baixar tokens (CSS)
       </button>
-      <button type="button" class="kx-btn kx-btn--primary" (click)="baixarGuia()">
-        <kx-icon name="download" /> Baixar guia (HTML)
+      <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarGuia()">
+        Baixar guia (HTML)
+      </button>
+      <button
+        type="button"
+        class="kx-btn kx-btn--primary"
+        [disabled]="gerandoPdf()"
+        (click)="baixarPdf()"
+      >
+        <kx-icon name="download" /> {{ gerandoPdf() ? 'Gerando PDF…' : 'Baixar PDF' }}
       </button>
     </div>
   </div>
@@ -57,9 +65,13 @@
       "Acessibilidade de contraste" no guia e ajuste na Fundação.
     </p>
   }
+  @if (erroPdf()) {
+    <p class="kcxds__aviso" role="alert">{{ erroPdf() }}</p>
+  }
   <p class="kx-muted kcxds__dica">
-    Para PDF: baixe o guia, abra no navegador e use Imprimir → Salvar como PDF (cada seção começa
-    numa página).
+    O PDF sai organizado em A4: capa com a logo, sumário, cores por função, escalas, contraste,
+    tipografia, espaços, cantos, sombras, movimento, grid, componentes e tokens. As cores em
+    destaque seguem o tema escolhido.
   </p>
   <iframe
     class="kcxds__guia"

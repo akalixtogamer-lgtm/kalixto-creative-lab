@@ -1,34 +1,120 @@
 :host {
   display: grid;
-  gap: var(--kx-space-3, 0.75rem);
+  gap: 0.85rem;
 }
 .kcxv__topo {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: end;
   gap: 0.75rem 1rem;
 }
-.kcxv__intro {
-  flex: 1 1 320px;
-  margin: 0;
-}
-.kcxv__campos {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 0.75rem 1rem;
-}
-.kcxv__campos label {
+.kcxv__camada {
   display: grid;
   gap: 0.3rem;
   font-size: 0.85rem;
+  flex: 1 1 200px;
 }
-.kcxv__campos select {
+.kcxv__camada select,
+.kcxv__salvar input {
   font: inherit;
-  padding: 0.4rem 0.5rem;
+  padding: 0.45rem 0.55rem;
   border-radius: 8px;
   border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
   background: transparent;
   color: inherit;
+}
+.kcxv__grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.kcxv__rotulo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  min-width: 6.5rem;
+}
+.kcxv__chip {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.kcxv__chip[aria-pressed='true'] {
+  background: var(--kx-gradient-btn);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+.kcxv__salvo {
+  display: inline-flex;
+  align-items: center;
+}
+.kcxv__x {
+  font: inherit;
+  font-size: 0.75rem;
+  margin-left: -0.2rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.kcxv__x:hover {
+  opacity: 1;
+}
+/* O painel imita o Glass do Figma: luz em cima, barras com número embaixo */
+.kcxv__painel {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: rgb(127 127 140 / 9%);
+  border: 1px solid var(--kx-border, rgb(255 255 255 / 12%));
+  max-width: 460px;
+}
+.kcxv__painel--off {
+  opacity: 0.75;
+}
+.kcxv__luz {
+  display: grid;
+  grid-template-columns: 6.5rem auto 1fr;
+  align-items: start;
+  gap: 0.6rem;
+  padding-bottom: 0.7rem;
+  margin-bottom: 0.2rem;
+  border-bottom: 1px solid var(--kx-border, rgb(255 255 255 / 12%));
+}
+.kcxv__luz-campos {
+  display: grid;
+  gap: 0.5rem;
+}
+.kcxv__sep {
+  margin-top: 0.5rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--kx-border, rgb(255 255 255 / 12%));
+}
+.kcxv__salvar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.kcxv__salvar input {
+  flex: 1 1 220px;
+}
+.kcxv__dica {
+  margin: 0;
+  font-size: 0.82rem;
 }
 .kcxv__aviso {
   margin: 0;
@@ -37,4 +123,12 @@
   font-size: 0.85rem;
   background: rgb(251 191 36 / 15%);
   border: 1px solid rgb(251 191 36 / 45%);
+}
+@media (max-width: 520px) {
+  .kcxv__luz {
+    grid-template-columns: auto 1fr;
+  }
+  .kcxv__luz > .kcxv__rotulo {
+    grid-column: 1 / -1;
+  }
 }
