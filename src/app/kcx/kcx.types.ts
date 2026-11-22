@@ -194,7 +194,18 @@ export type KcxEfeito =
       y?: number;
     }
   | { tipo: 'desfoque-camada'; raio: KcxRef<number> }
-  | { tipo: 'desfoque-fundo'; raio: KcxRef<number> };
+  | {
+      tipo: 'desfoque-fundo';
+      raio: KcxRef<number>;
+      /** Vidro no modelo Glass do Figma (luz, ângulo, refração, profundidade, dispersão). */
+      vidro?: {
+        luz: KcxRef<number>;
+        angulo: KcxRef<number>;
+        refracao: KcxRef<number>;
+        profundidade: KcxRef<number>;
+        dispersao: KcxRef<number>;
+      };
+    };
 
 export type KcxTipoNo = 'frame' | 'retangulo' | 'elipse' | 'texto' | 'svg' | 'icone' | 'instancia';
 

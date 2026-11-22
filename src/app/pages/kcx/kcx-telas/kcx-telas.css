@@ -42,9 +42,9 @@
   cursor: pointer;
 }
 .kcxt__grupo button[aria-checked='true'] {
-  background: var(--kx-acento, #22d3ee);
+  background: var(--kx-gradient-btn);
   border-color: transparent;
-  color: #06131a;
+  color: #fff;
   font-weight: 600;
 }
 .kcxt__acoes {
@@ -90,10 +90,10 @@
   gap: 0.35rem;
 }
 .kcxt__secoes li {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem 0.5rem;
   padding: 0.4rem 0.6rem;
   border-radius: 8px;
   background: rgb(127 127 127 / 12%);
@@ -231,6 +231,7 @@
 .kcxt__alcas {
   position: absolute;
   inset: 0 auto auto 0;
+  height: 100000px;
   transform-origin: 0 0;
   pointer-events: none;
 }
@@ -239,15 +240,23 @@
   border-radius: 6px;
   outline: 2px dashed transparent;
   outline-offset: -2px;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
   transition:
     outline-color 0.15s,
     background 0.15s;
 }
-.kcxt__tela:hover .kcxt__caixa {
+.kcxt__caixa:active {
+  cursor: grabbing;
+}
+.kcxt__tela:hover .kcxt__caixa,
+.kcxt__caixa:focus-visible {
   outline-color: rgb(34 211 238 / 45%);
 }
-.kcxt__alcas--ativas .kcxt__caixa {
-  pointer-events: auto;
+.kcxt__caixa--sel {
+  outline: 2px solid #22d3ee !important;
+  background: rgb(34 211 238 / 6%);
 }
 .kcxt__caixa--alvo {
   outline-color: #22d3ee !important;
@@ -270,14 +279,92 @@
     600 12px/1.4 system-ui,
     sans-serif;
   white-space: nowrap;
-  cursor: grab;
-  pointer-events: auto;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.15s;
 }
 .kcxt__tela:hover .kcxt__alca,
-.kcxt__alca:focus-visible {
+.kcxt__caixa--sel .kcxt__alca,
+.kcxt__caixa:focus-visible .kcxt__alca {
   opacity: 1;
+}
+/* Guias de alinhamento (como as linhas vermelhas do Figma) */
+.kcxt__guia {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: #ff3d8b;
+  pointer-events: none;
+}
+.kcxt__guia--v {
+  width: 1px;
+  height: 100%;
+}
+.kcxt__ferramentas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.9rem;
+  padding: 0.55rem 0.8rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+.kcxt__ferr-rotulo {
+  min-width: 11rem;
+  opacity: 0.8;
+}
+.kcxt__ferr-grupo {
+  display: flex;
+  gap: 0.25rem;
+}
+.kcxt__ferr-grupo button {
+  font: inherit;
+  min-width: 2.1rem;
+  height: 2.1rem;
+  padding: 0 0.55rem;
+  border-radius: 7px;
+  border: 1px solid var(--kx-borda, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.kcxt__ferr-grupo button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.kcxt__ima {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.kcxt__xy {
+  display: flex;
+  gap: 0.4rem;
+}
+.kcxt__xy input {
+  width: 4.6rem;
+  font: inherit;
+  padding: 0.3rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--kx-borda, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+}
+.kcxt__trocar {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  font: inherit;
+  font-size: 0.8rem;
+  width: 100%;
+  padding: 0.2rem 0.3rem;
+  border-radius: 6px;
+  border: 1px solid var(--kx-borda, rgb(255 255 255 / 18%));
+  background: transparent;
+  color: inherit;
+}
+.kcxt__trocar option,
+.kcxt__trocar optgroup {
+  color: #111;
 }
 .kcxt__secoes li[draggable='true'] {
   cursor: grab;

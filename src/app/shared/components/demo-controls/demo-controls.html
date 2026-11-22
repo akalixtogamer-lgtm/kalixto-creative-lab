@@ -1,9 +1,9 @@
 @for (p of params(); track p.id) {
-  <div class="ctrl">
+  <div class="ctrl" [class.ctrl--linha]="p.tipo === 'range'">
     <label class="ctrl__rotulo" [for]="prefixo() + '-' + p.id">
       <span>{{ p.rotulo }}</span>
       @if (p.tipo === 'range') {
-        <output [for]="prefixo() + '-' + p.id">{{ exibir(p) }}</output>
+        <output class="ctrl__sr" [for]="prefixo() + '-' + p.id">{{ exibir(p) }}</output>
       }
     </label>
     @if (p.tipo === 'range') {
@@ -15,8 +15,24 @@
         [max]="p.max"
         [step]="p.passo"
         [value]="valores()[p.id]"
+        [style.--ctrl-p]="porcentagem(p)"
         (input)="emitir(p, $any($event.target).value)"
       />
+      <span class="ctrl__campo">
+        <input
+          type="number"
+          inputmode="decimal"
+          [attr.aria-label]="p.rotulo + (p.unidade ? ' (' + p.unidade + ')' : '')"
+          [min]="p.min"
+          [max]="p.max"
+          [step]="p.passo"
+          [value]="valores()[p.id]"
+          (change)="digitar(p, $any($event.target))"
+        />
+        @if (p.unidade) {
+          <small aria-hidden="true">{{ p.unidade }}</small>
+        }
+      </span>
     } @else {
       <select
         class="ctrl__select"

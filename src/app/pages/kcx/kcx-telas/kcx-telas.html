@@ -3,9 +3,12 @@
     <p class="kx-eyebrow"><a routerLink="/kcx">KCX Studio</a> · Telas e wireframes</p>
     <h1 class="kx-title">Telas</h1>
     <p class="kx-lead">
-      Empilhe os seus componentes como seções de uma página e veja no mockup de
-      <strong>desktop</strong> ou de <strong>celular</strong>, em wireframe de baixa, média ou alta
-      fidelidade. No Figma, cada seção vira uma instância do componente.
+      Monte as páginas com os seus componentes: empilhados (a página se adapta sozinha) ou em
+      <strong>posição livre</strong>, arrastando com o mouse ou o dedo, com ímãs e guias de
+      alinhamento. Veja no mockup de <strong>desktop</strong> ou de <strong>celular</strong>, em
+      wireframe de baixa, média ou alta fidelidade. No Figma, cada seção vira uma instância do
+      componente, na mesma posição. Sem ideia por onde começar? Use um
+      <a routerLink="/kcx/moldes">molde de página</a>.
     </p>
   </header>
 
@@ -98,6 +101,27 @@
         Colorido
       </button>
     </div>
+    <div class="kcxt__grupo" role="radiogroup" aria-label="Arrumação das seções">
+      <span class="kcxt__rotulo">Arrumação</span>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="!livre()"
+        title="Uma seção embaixo da outra: a página se adapta sozinha à largura"
+        (click)="definirLivre(false)"
+      >
+        Empilhada
+      </button>
+      <button
+        type="button"
+        role="radio"
+        [attr.aria-checked]="livre()"
+        title="Arraste cada seção para qualquer lugar, com ímãs e guias de alinhamento"
+        (click)="definirLivre(true)"
+      >
+        Livre (como no Figma)
+      </button>
+    </div>
     <p class="kx-muted kcxt__dica">{{ fidelidade().nome }}: {{ fidelidade().descricao }}</p>
     <div class="kcxt__acoes">
       <button
@@ -136,6 +160,27 @@
             (dragend)="terminarArrastar()"
           >
             <span>{{ s.nome }}</span>
+            <select
+              class="kcxt__trocar"
+              [attr.aria-label]="'Trocar ' + s.nome"
+              (change)="trocar(i, valor($event)); $any($event.target).value = ''"
+            >
+              <option value="">Trocar…</option>
+              @if (sugestoes(s.id).length) {
+                <optgroup label="Mesmo conteúdo, outro tipo">
+                  @for (t of sugestoes(s.id); track t.id) {
+                    <option [value]="'tipo:' + t.id">{{ t.nome }}</option>
+                  }
+                </optgroup>
+              }
+              <optgroup label="Outro componente">
+                @for (c of disponiveis(); track c.id) {
+                  @if (c.id !== s.id) {
+                    <option [value]="'comp:' + c.id">{{ c.nome }}</option>
+                  }
+                }
+              </optgroup>
+            </select>
             <span class="kcxt__ops">
               <button type="button" (click)="mover(i, -1)" [attr.aria-label]="'Subir ' + s.nome">
                 ↑
@@ -150,6 +195,9 @@
           </li>
         }
       </ol>
+      @if (erroTroca()) {
+        <p class="kcxt__aviso" role="alert">{{ erroTroca() }}</p>
+      }
       @for (a of avisos(); track a) {
         <p class="kcxt__aviso">Não cabe no {{ dispositivo().nome.toLowerCase() }}: {{ a }}.</p>
       }
@@ -170,6 +218,101 @@
     <section class="kcxt__palco" aria-label="Mockup">
       @if (resultado().erro; as e) {
         <p class="kcxt__aviso" role="alert">{{ e }}</p>
+      }
+      @if (livre()) {
+        <div class="kcxt__ferramentas kx-glass" role="toolbar" aria-label="Alinhar seções">
+          <span class="kcxt__ferr-rotulo">
+            {{
+              selecionadas().length
+                ? selecionadas().length + ' selecionada(s)'
+                : 'Clique numa seção (Shift para várias)'
+            }}
+          </span>
+          <span class="kcxt__ferr-grupo">
+            <button
+              type="button"
+              title="Alinhar à esquerda"
+              [disabled]="!selecionadas().length"
+              (click)="alinharSel('esquerda')"
+            >
+              ⇤
+            </button>
+            <button
+              type="button"
+              title="Centralizar na horizontal"
+              [disabled]="!selecionadas().length"
+              (click)="alinharSel('centro')"
+            >
+              ⇹
+            </button>
+            <button
+              type="button"
+              title="Alinhar à direita"
+              [disabled]="!selecionadas().length"
+              (click)="alinharSel('direita')"
+            >
+              ⇥
+            </button>
+            <button
+              type="button"
+              title="Alinhar pelo topo"
+              [disabled]="!selecionadas().length"
+              (click)="alinharSel('topo')"
+            >
+              ⤒
+            </button>
+            <button
+              type="button"
+              title="Centralizar na vertical (2 ou mais)"
+              [disabled]="selecionadas().length < 2"
+              (click)="alinharSel('meio')"
+            >
+              ↕
+            </button>
+            <button
+              type="button"
+              title="Alinhar pela base (2 ou mais)"
+              [disabled]="selecionadas().length < 2"
+              (click)="alinharSel('base')"
+            >
+              ⤓
+            </button>
+          </span>
+          <span class="kcxt__ferr-grupo">
+            <button
+              type="button"
+              title="Mesmo espaço entre as seções (selecionadas ou todas)"
+              (click)="distribuir()"
+            >
+              Distribuir
+            </button>
+            <button
+              type="button"
+              title="Empilhar todas de novo, centralizadas"
+              (click)="reempilhar()"
+            >
+              Reempilhar
+            </button>
+          </span>
+          <label class="kcxt__ima">
+            <input
+              type="checkbox"
+              [checked]="ima()"
+              (change)="ima.set($any($event.target).checked)"
+            />
+            Ímã e guias
+          </label>
+          @if (selecionadas().length === 1 && caixasVisiveis()[selecionadas()[0]]; as b) {
+            <span class="kcxt__xy">
+              <label
+                >X <input type="number" [value]="b.x" (change)="definirXY('x', valor($event))"
+              /></label>
+              <label
+                >Y <input type="number" [value]="b.y" (change)="definirXY('y', valor($event))"
+              /></label>
+            </span>
+          }
+        </div>
       }
       <div
         class="kcxt__aparelho"
@@ -201,38 +344,57 @@
               [style.height.px]="dispositivo().altura"
               [style.transform]="'scale(' + zoom() + ')'"
             ></iframe>
-            <!-- Alças para arrastar cada seção (as posições vêm do próprio mockup). -->
+            <!-- Caixas por cima de cada seção (as medidas vêm do próprio mockup):
+                 arraste com mouse, caneta ou dedo. -->
             <div
               class="kcxt__alcas"
+              [class.kcxt__alcas--livre]="livre()"
               [class.kcxt__alcas--ativas]="arrastando() !== null"
               [style.width.px]="dispositivo().largura"
               [style.transform]="'scale(' + zoom() + ') translateY(' + -rolagem() + 'px)'"
             >
-              @for (cx of caixas(); track $index; let i = $index) {
+              @for (cx of caixasVisiveis(); track $index; let i = $index) {
                 @if (secoes()[i]; as s) {
                   <div
                     class="kcxt__caixa"
+                    tabindex="0"
+                    role="button"
+                    [attr.aria-label]="
+                      s.nome +
+                      (livre()
+                        ? ': arraste para mover; setas ajustam 1 px'
+                        : ': arraste para mudar a ordem')
+                    "
+                    [attr.aria-pressed]="selecionadas().includes(i)"
+                    [class.kcxt__caixa--sel]="selecionadas().includes(i)"
                     [class.kcxt__caixa--alvo]="alvo() === i && arrastando() !== i"
                     [class.kcxt__caixa--origem]="arrastando() === i"
                     [style.left.px]="cx.x"
                     [style.top.px]="cx.y"
                     [style.width.px]="cx.w"
                     [style.height.px]="cx.h"
-                    (dragover)="sobre(i, $event)"
-                    (drop)="soltar(i, $event)"
+                    (pointerdown)="tocar(i, $event)"
+                    (pointermove)="arrastarPonteiro($event)"
+                    (pointerup)="soltarPonteiro($event)"
+                    (pointercancel)="soltarPonteiro($event)"
+                    (keydown)="tecla(i, $event)"
                   >
-                    <span
-                      class="kcxt__alca"
-                      draggable="true"
-                      [style.transform]="'scale(' + 1 / zoom() + ')'"
-                      [attr.aria-label]="'Arrastar ' + s.nome"
-                      [title]="'Arraste para mudar a ordem: ' + s.nome"
-                      (dragstart)="comecarArrastar(i, $event)"
-                      (dragend)="terminarArrastar()"
-                      >⠿ {{ s.nome }}</span
-                    >
+                    <span class="kcxt__alca" [style.transform]="'scale(' + 1 / zoom() + ')'"
+                      >⠿ {{ s.nome }}
+                      @if (livre()) {
+                        · {{ cx.x }}, {{ cx.y }}
+                      }
+                    </span>
                   </div>
                 }
+              }
+              @for (g of guias(); track $index) {
+                <div
+                  class="kcxt__guia"
+                  [class.kcxt__guia--v]="g.tipo === 'v'"
+                  [style.left.px]="g.tipo === 'v' ? g.pos : 0"
+                  [style.top.px]="g.tipo === 'h' ? g.pos : 0"
+                ></div>
               }
             </div>
           } @else {

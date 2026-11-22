@@ -1,9 +1,14 @@
-/* ===== Controles das demos ===== */
-/* ---------- Controles ---------- */
+/* ===== Controles das demos (no estilo dos painéis do Figma: rótulo, barra e número) ===== */
 .ctrl {
   display: flex;
   flex-direction: column;
   gap: var(--kx-space-2);
+}
+.ctrl--linha {
+  display: grid;
+  grid-template-columns: minmax(7rem, 36%) 1fr 5rem;
+  align-items: center;
+  gap: 0.6rem;
 }
 .ctrl__rotulo {
   display: flex;
@@ -12,15 +17,101 @@
   font-size: var(--kx-fs-sm);
   color: var(--kx-text-soft);
 }
-.ctrl__rotulo output {
-  color: var(--kx-ciano);
-  font-family: var(--kx-font-mono);
+.ctrl__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .ctrl__range {
   width: 100%;
-  height: 32px;
-  accent-color: var(--kx-magenta);
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
+}
+.ctrl__range::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 99px;
+  background: linear-gradient(
+    90deg,
+    var(--kx-magenta) var(--ctrl-p),
+    var(--kx-border-strong) var(--ctrl-p)
+  );
+}
+.ctrl__range::-moz-range-track {
+  height: 5px;
+  border-radius: 99px;
+  background: var(--kx-border-strong);
+}
+.ctrl__range::-moz-range-progress {
+  height: 5px;
+  border-radius: 99px;
+  background: var(--kx-magenta);
+}
+.ctrl__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -5.5px;
+  border-radius: 50%;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+}
+.ctrl__range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+}
+.ctrl__range:focus-visible {
+  outline: 2px solid var(--kx-ciano);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.ctrl__campo {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0 0.45rem;
+  border-radius: var(--kx-radius-sm);
+  background: var(--kx-input-bg);
+  border: 1px solid var(--kx-border-strong);
+}
+.ctrl__campo:focus-within {
+  border-color: var(--kx-ciano);
+}
+.ctrl__campo input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.4rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--kx-text);
+  font: inherit;
+  font-size: var(--kx-fs-sm);
+  font-variant-numeric: tabular-nums;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.ctrl__campo input::-webkit-inner-spin-button,
+.ctrl__campo input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.ctrl__campo input:focus {
+  outline: none;
+}
+.ctrl__campo small {
+  color: var(--kx-text-soft);
+  font-size: 0.72rem;
+  white-space: nowrap;
 }
 .ctrl__select {
   min-height: 42px;
@@ -30,4 +121,12 @@
   background: var(--kx-input-bg);
   color: var(--kx-text);
   font: inherit;
+}
+@media (max-width: 420px) {
+  .ctrl--linha {
+    grid-template-columns: 1fr 5rem;
+  }
+  .ctrl--linha .ctrl__rotulo {
+    grid-column: 1 / -1;
+  }
 }

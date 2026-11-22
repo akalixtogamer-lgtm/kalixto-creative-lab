@@ -45,6 +45,36 @@ export interface Tela {
   secoes: string[];
   /** Fundo da página: liso (cor de fundo) ou colorido (gradiente, para ver vidro). */
   fundo?: 'liso' | 'colorido';
+  /**
+   * Posição livre (como no Figma): cada seção fica onde foi arrastada. Ausente =
+   * empilhado (uma seção embaixo da outra, responsivo).
+   */
+  livre?: boolean;
+  /** Posição de cada seção no modo livre (mesma ordem de `secoes`), em px do dispositivo. */
+  posicoes?: { x: number; y: number }[];
+  /** Altura da página no modo livre (px); ausente = calculada pelas seções. */
+  alturaPagina?: number;
+}
+
+/** Posições válidas para todas as seções (as que faltam vão para baixo da última). */
+export function posicoesDaTela(
+  tela: Tela,
+  comps: (KcxComponente | undefined)[],
+): { x: number; y: number }[] {
+  const W = DISPOSITIVOS[tela.dispositivo].largura;
+  const r: { x: number; y: number }[] = [];
+  let fundo = 32;
+  tela.secoes.forEach((_, i) => {
+    const p = tela.posicoes?.[i];
+    const c = comps[i];
+    const h = c?.metadados.altura || 200;
+    if (p && Number.isFinite(p.x) && Number.isFinite(p.y))
+      r.push({ x: Math.round(p.x), y: Math.round(p.y) });
+    else
+      r.push({ x: Math.max(0, Math.round((W - Math.min(W, c ? larguraDe(c) : W)) / 2)), y: fundo });
+    fundo = Math.max(fundo, r[i].y + h + 32);
+  });
+  return r;
 }
 
 /* ============================== Fidelidade ============================== */
@@ -219,8 +249,22 @@ export function montarTela(
       const fundoCss = colorido
         ? `linear-gradient(135deg, ${tons[0]}, ${tons[1]} 50%, ${tons[2]})`
         : b.v('fundo');
+      const livre = !!tela.livre;
+      const pos = livre
+        ? posicoesDaTela(
+            tela,
+            tela.secoes.map((id) => porId.get(id)),
+          )
+        : [];
+      const alturaLivre = Math.max(
+        disp.altura,
+        tela.alturaPagina ?? 0,
+        ...pos.map((p, i) => p.y + (secoes[i]?.metadados.altura || 200) + 32),
+      );
       const css = [
-        `.${C} { display: flex; flex-direction: column; align-items: center; gap: 32px; width: 100%; max-width: ${disp.largura}px; min-height: ${disp.altura}px; margin: 0 auto; padding: 32px 0; background: ${fundoCss}; }`,
+        livre
+          ? `.${C} { position: relative; width: ${disp.largura}px; height: ${alturaLivre}px; margin: 0 auto; background: ${fundoCss}; overflow: hidden; }\n.${C}__secao { position: absolute; }\n${pos.map((p, i) => `.${C}__secao:nth-of-type(${i + 1}) { left: ${p.x}px; top: ${p.y}px; }`).join('\n')}`
+          : `.${C} { display: flex; flex-direction: column; align-items: center; gap: 32px; width: 100%; max-width: ${disp.largura}px; min-height: ${disp.altura}px; margin: 0 auto; padding: 32px 0; background: ${fundoCss}; }`,
         ...subs.map(
           (s) =>
             `/* ${s.nome} */\n${blocoRoot(resolverSaidas(s.variaveis, valoresAtuais(s.variaveis)))}\n${s.codigo.css}`,
@@ -241,24 +285,44 @@ export function montarTela(
         nome: s.nome,
         tipo: 'instancia',
         instancia: { componente: subDe(s.id).id },
+        ...(livre ? { x: pos[i].x, y: pos[i].y } : {}),
       }));
-      const estrutura: KcxNo = {
-        ...b.pilha('tela', cfg.nome, 'vertical', filhos, {
-          espaco: 32,
-          py: 32,
-          alinhar: 'centro',
-          largura: disp.largura,
-          preenchimentos: [
-            colorido
-              ? {
-                  tipo: 'gradiente-linear',
-                  angulo: 135,
-                  paradas: tons.map((cor, i) => ({ posicao: i / 2, cor })),
-                }
-              : { tipo: 'solido', cor: b.cor('fundo') },
-          ],
-        }),
-      };
+      const preenchimentoTela: KcxNo['preenchimentos'] = [
+        colorido
+          ? {
+              tipo: 'gradiente-linear',
+              angulo: 135,
+              paradas: tons.map((cor, i) => ({ posicao: i / 2, cor })),
+            }
+          : { tipo: 'solido', cor: b.cor('fundo') },
+      ];
+      const estrutura: KcxNo = livre
+        ? {
+            id: 'tela',
+            nome: cfg.nome,
+            tipo: 'frame',
+            largura: disp.largura,
+            altura: alturaLivre,
+            preenchimentos: preenchimentoTela,
+            filhos,
+          }
+        : {
+            ...b.pilha('tela', cfg.nome, 'vertical', filhos, {
+              espaco: 32,
+              py: 32,
+              alinhar: 'centro',
+              largura: disp.largura,
+              preenchimentos: [
+                colorido
+                  ? {
+                      tipo: 'gradiente-linear',
+                      angulo: 135,
+                      paradas: tons.map((cor, i) => ({ posicao: i / 2, cor })),
+                    }
+                  : { tipo: 'solido', cor: b.cor('fundo') },
+              ],
+            }),
+          };
       return {
         html,
         css,

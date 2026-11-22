@@ -1186,6 +1186,8 @@
         add(`efeitos[${i}].cor`, ef.cor);
         add(`efeitos[${i}].espalhar`, ef.espalhar);
       }
+      if (ef.tipo === "desfoque-fundo" && ef.vidro)
+        for (const [k, r] of Object.entries(ef.vidro)) add(`efeitos[${i}].vidro.${k}`, r);
     });
     if (no.texto) {
       add("texto.conteudo", no.texto.conteudo);
@@ -2731,10 +2733,24 @@ ${cssAnim}`,
           y: (_c2 = ef.y) != null ? _c2 : 0
         });
       } else {
-        p.efeitos.push({
+        const e = {
           tipo: ef.tipo === "desfoque-camada" ? "LAYER_BLUR" : "BACKGROUND_BLUR",
           raio: resolverRef(ef.raio, CAMPOS["raioEfeito"], onde(`desfoque ${i + 1}`), ctx)
-        });
+        };
+        if (ef.tipo === "desfoque-fundo" && ef.vidro) {
+          const n = (r, padrao) => {
+            const x = literal(r, ctx);
+            return typeof x === "number" && Number.isFinite(x) ? x : padrao;
+          };
+          e.vidro = {
+            luz: n(ef.vidro.luz, 0),
+            angulo: n(ef.vidro.angulo, -45),
+            refracao: n(ef.vidro.refracao, 0),
+            profundidade: n(ef.vidro.profundidade, 20),
+            dispersao: n(ef.vidro.dispersao, 0)
+          };
+        }
+        p.efeitos.push(e);
       }
     });
     if (no.texto) {
@@ -3675,6 +3691,31 @@ ${cssAnim}`,
         }
         return e;
       });
+      const blur = p.efeitos.find((ef) => ef.tipo === "BACKGROUND_BLUR");
+      const vidro = blur && "vidro" in blur ? blur.vidro : void 0;
+      if (blur && vidro && (vidro.luz > 0 || vidro.refracao > 0)) {
+        const atual = no.effects;
+        try {
+          no.effects = [
+            ...atual.filter((x) => x.type !== "BACKGROUND_BLUR"),
+            {
+              type: "GLASS",
+              visible: true,
+              lightIntensity: Math.min(1, Math.max(0, vidro.luz)),
+              lightAngle: vidro.angulo,
+              refraction: Math.min(1, Math.max(0, vidro.refracao)),
+              depth: Math.max(1, vidro.profundidade),
+              dispersion: Math.min(1, Math.max(0, vidro.dispersao)),
+              radius: Math.max(0, Number(blur.raio.valor) / 2)
+            }
+          ];
+        } catch (err) {
+          no.effects = atual;
+          this.rel.avisos.push(
+            `${onde}: este Figma n\xE3o aceitou o efeito Glass (${err.message}); ficou o Background blur.`
+          );
+        }
+      }
     }
     /* ------------------------------ Fontes ------------------------------ */
     async carregarFontes() {

@@ -84,6 +84,61 @@ export class KcxDesignSystemPagina {
   protected baixarGuia(): void {
     baixarArquivo(this.html(), `${this.nomeArquivo()}-design-system.html`, 'text/html');
   }
+  protected readonly gerandoPdf = signal(false);
+  protected readonly erroPdf = signal('');
+
+  /** Logo da Fundação em PNG/JPG (SVG, WebP e GIF passam por um canvas). */
+  private async logoParaPdf(): Promise<{ bytes: Uint8Array; tipo: 'png' | 'jpg' } | undefined> {
+    const logo = this.f().logo;
+    if (!logo?.src) return undefined;
+    const m = logo.src.match(/^data:image\/(png|jpeg|jpg);base64,(.+)$/);
+    const bytes = (b64: string) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    if (m) return { bytes: bytes(m[2]), tipo: m[1] === 'png' ? 'png' : 'jpg' };
+    try {
+      const img = new Image();
+      img.src = logo.src;
+      await img.decode();
+      const k = Math.min(2, 800 / Math.max(img.naturalWidth || logo.largura, 1));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round((img.naturalWidth || logo.largura) * k));
+      c.height = Math.max(1, Math.round((img.naturalHeight || logo.altura) * k));
+      c.getContext('2d')?.drawImage(img, 0, 0, c.width, c.height);
+      return { bytes: bytes(c.toDataURL('image/png').split(',')[1]), tipo: 'png' };
+    } catch {
+      return undefined;
+    }
+  }
+
+  protected async baixarPdf(): Promise<void> {
+    if (this.gerandoPdf()) return;
+    this.gerandoPdf.set(true);
+    this.erroPdf.set('');
+    try {
+      const { pdfDoDesignSystem } = await import('../../../kcx/pdf-design-system');
+      const bytes = await pdfDoDesignSystem(this.f(), {
+        tema: this.tema(),
+        data: new Date().toLocaleDateString('pt-BR', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }),
+        logo: await this.logoParaPdf(),
+        componentes: this.comComponentes()
+          ? this.componentes().map((c) => ({
+              nome: c.nome,
+              categoria: c.categoria,
+              variantes: c.variantes,
+            }))
+          : [],
+      });
+      baixarArquivo(bytes, `${this.nomeArquivo()}-design-system.pdf`, 'application/pdf');
+    } catch (e) {
+      this.erroPdf.set(`Não deu para gerar o PDF: ${(e as Error).message}`);
+    } finally {
+      this.gerandoPdf.set(false);
+    }
+  }
+
   protected baixarCss(): void {
     baixarArquivo(cssDaFundacao(this.f()), `${this.nomeArquivo()}-tokens.css`, 'text/css');
   }
