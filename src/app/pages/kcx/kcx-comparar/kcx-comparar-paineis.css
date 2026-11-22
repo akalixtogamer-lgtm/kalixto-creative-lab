@@ -1,0 +1,282 @@
+/* Abas de baixo: listas, ajustes, fidelidade e aprovação. */
+/* ---------- listas e tabelas ---------- */
+.cmp__lista,
+.cmp__criterios,
+.cmp__versoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0;
+  margin: 0.4rem 0 0.6rem;
+  list-style: none;
+}
+.cmp__item,
+.cmp__criterio,
+.cmp__versao {
+  padding: 0.65rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--cmp-borda);
+  background: rgb(255 255 255 / 2%);
+}
+.cmp__item--ativo {
+  border-color: var(--cmp-b);
+}
+.cmp__versao--aprovada {
+  border-color: var(--cmp-ok);
+}
+.cmp__anotacao {
+  width: 100%;
+  margin-top: 0.3rem;
+}
+.cmp__cor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.cmp__cor input[type='text'] {
+  width: 110px;
+}
+.cmp__frames {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0 0 0.4rem;
+  margin: 0;
+  list-style: none;
+}
+.cmp__frames li {
+  position: relative;
+  flex: none;
+}
+.cmp__frames li > button:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 3px;
+  font: inherit;
+  font-size: 0.7rem;
+  color: inherit;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: rgb(255 255 255 / 4%);
+  cursor: pointer;
+}
+.cmp__frame--atual > button:first-child {
+  border-color: var(--cmp-a) !important;
+}
+.cmp__frames img {
+  display: block;
+  height: 96px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #050505;
+}
+.cmp__frames .cmp__x {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 22px;
+  height: 22px;
+  background: rgb(0 0 0 / 60%);
+}
+.cmp__tabela-rolagem {
+  overflow-x: auto;
+}
+.cmp__tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.cmp__tabela th,
+.cmp__tabela td {
+  padding: 0.35rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--cmp-borda);
+}
+.cmp__tabela th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cmp__tempo-campo {
+  white-space: nowrap;
+}
+.cmp__tempo-campo input {
+  width: 72px;
+}
+
+/* ---------- ajustes ---------- */
+.cmp__ajustes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+.cmp__seletor {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 6%);
+  word-break: break-all;
+}
+.cmp__grupo-aj {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.3rem 0;
+}
+.cmp__grupo-aj > span {
+  width: 110px;
+  font-size: 0.78rem;
+  opacity: 0.75;
+}
+.cmp__fieldset {
+  margin: 0 0 0.75rem;
+  padding: 0.5rem 0.75rem 0.6rem;
+  border-radius: 12px;
+  border: 1px solid var(--cmp-borda);
+}
+.cmp__fieldset legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.cmp__ajuste {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(170px, 2fr) auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  font-size: 0.82rem;
+}
+.cmp__num {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.cmp__num input[type='range'] {
+  flex: 1;
+  min-width: 60px;
+  accent-color: var(--cmp-b);
+}
+.cmp__num input[type='number'] {
+  width: 78px;
+}
+.cmp__escopo {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+.cmp__escopo input {
+  width: 70px;
+}
+
+/* ---------- fidelidade ---------- */
+.cmp__criterios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.cmp__criterio-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+.cmp__regra {
+  font-size: 0.76rem;
+  margin: 0.3rem 0;
+}
+.cmp__como {
+  margin: 0.3rem 0 0;
+  font-size: 0.78rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+.cmp__medidas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0;
+  margin: 0.3rem 0 0;
+  list-style: none;
+  font-size: 0.8rem;
+}
+.cmp__medidas li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.cmp__medidas .cmp__estado:empty {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border-radius: 50%;
+}
+.cmp__dif {
+  font-family: var(--kx-font-mono, monospace);
+  font-size: 0.76rem;
+}
+.cmp__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #050505;
+}
+.cmp__estado--corresponde {
+  background: var(--cmp-ok);
+}
+.cmp__estado--proximo {
+  background: var(--cmp-perto);
+}
+.cmp__estado--difere {
+  background: var(--cmp-ruim);
+}
+.cmp__estado--sem-medicao {
+  background: rgb(255 255 255 / 14%);
+  color: inherit;
+}
+
+/* ---------- aprovação ---------- */
+.cmp__integracao {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+.cmp__acao-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--cmp-borda);
+  background: rgb(255 255 255 / 2%);
+}
+.cmp__acao-card h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.cmp__acao-card p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+.cmp__acao-card .kx-btn {
+  align-self: flex-start;
+}
+
+.cmp__exportar summary {
+  cursor: pointer;
+}

@@ -5,6 +5,30 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Reference vs. Reconstruction (`/kcx/comparar`)
+- **Painel A — Original reference**: site por URL, gravação de vídeo (guardada no navegador),
+  frames extraídos ou imagens enviadas, com sequência temporal (estados, efeitos e interações),
+  elementos marcados no frame (caixa, conta-gotas, fonte, camada) e anotações. O original nunca
+  é modificado.
+- **Painel B — KCX reconstruction**: um componente KCX com inspetor embutido (selecionar
+  elemento, medir caixas, cores, fontes, camadas e animações, registrar interações).
+- **Quatro modos**: Side by side (divisor arrastável, zoom, viewport, reprodução independente),
+  Overlay (opacidade, posição, escala, mistura "diferença", fundo transparente), Motion sync
+  (tempo real do vídeo como base, pontos de sincronia por marco, sem supor tempos iguais) e
+  Interaction test (reproduzido, difere, não implementado, com evidência do registro).
+- **Painel de fidelidade** sem nota arbitrária: 14 critérios em correspondência visual,
+  comportamental e técnica, cada um com a medida (Δpx, ΔE 2000, ms, distância entre curvas) e a
+  regra. Usar a mesma tecnologia da referência não conta.
+- **Sistema de ajuste**: posição, dimensão, espaçamento, cor, opacidade, blur, sombra,
+  transform, duração, delay, easing, velocidade, gatilho e breakpoint por elemento. Cada ajuste
+  vira uma variável KCX e atualiza o Painel B na hora, sem recarregar.
+- **Versões**: salvar, duplicar, comparar, restaurar e definir a aprovada (decisão da pessoa).
+- **Aprovação e integração**: salvar como componente, criar variante, Motion Library (nova seção
+  no KCX Studio), aplicar numa página das Telas, substituir componente e exportar código. O
+  componente aprovado continua ligado às variáveis.
+- Exportar e importar a comparação (`.kcx-comparacao.json`). No editor: "Comparar com uma
+  referência".
+
 ### Melhorado — Importar do Figma e editar no lab
 - **Importar do Figma (.kcx.json)** agora mostra, para cada componente importado, o botão
   **Editar "nome"** (abre o editor) e avisa quando o arquivo substituiu uma versão que já estava
