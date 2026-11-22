@@ -38,6 +38,11 @@
               {{ montado() ? 'Editar no montador' : 'Editar no construtor' }}
             </a>
           }
+          @if (!doConstrutor()) {
+            <button type="button" class="kx-btn kx-btn--ghost" (click)="irParaConversao()">
+              <kx-icon name="layers" /> Editar no construtor
+            </button>
+          }
           <a class="kx-btn kx-btn--ghost" routerLink="/kcx/telas" [queryParams]="{ com: c.id }">
             Ver no mockup
           </a>
@@ -244,7 +249,18 @@
       </section>
 
       <section class="kcxe__converter kx-glass" aria-labelledby="kcxe-converter">
-        <h2 id="kcxe-converter" class="kcxe__h2">Converter em outro tipo</h2>
+        <h2 id="kcxe-converter" class="kcxe__h2">
+          {{ ehMeu() && !doConstrutor() ? 'Editar no construtor' : 'Converter em outro tipo' }}
+        </h2>
+        @if (ehMeu() && !doConstrutor()) {
+          <p class="kx-muted">
+            Este componente veio do Figma. Aqui mesmo, sem converter, você já edita as
+            <strong>variáveis</strong> (cores, cantos, espaços, textos e animação), o
+            <strong>tamanho</strong>, o <strong>vidro</strong>, os <strong>presets</strong> e o
+            <strong>código</strong>. Para mudar a estrutura (itens, links, abas, recursos do Figma),
+            escolha o tipo mais parecido e converta: o original continua salvo.
+          </p>
+        }
         <p class="kx-muted">
           Transforma este desenho (por exemplo, um trilho de cards vindo do Figma) em um tipo do
           construtor: os cards que se repetem viram os itens (slides, links, abas…), os outros

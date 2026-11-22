@@ -12,6 +12,16 @@ import { KCX_JSON_SCHEMA } from '../../../kcx/kcx.schema';
 import { Icon } from '../../../shared/components/icon/icon';
 import { baixarArquivo, lerArquivo } from '../kcx-estado.service';
 
+interface ResultadoImportacao {
+  salvos: string[];
+  /** Ids que já existiam nos "Meus componentes" e foram trocados pela versão do arquivo. */
+  substituidos: string[];
+  erros: string[];
+}
+
+/** Aceita .kcx.json, .json e .kcx (alguns navegadores salvam o download do plugin sem o .json). */
+export const ACEITA_KCX = '.json,.kcx,application/json';
+
 /** KCX Studio (/kcx): componentes, validador de arquivos e explicação do formato. */
 @Component({
   selector: 'kx-kcx-studio',
@@ -21,6 +31,7 @@ import { baixarArquivo, lerArquivo } from '../kcx-estado.service';
 })
 export class KcxStudio {
   protected readonly versao = KCX_SCHEMA_VERSION;
+  protected readonly aceita = ACEITA_KCX;
   private readonly servicoMeus = inject(KcxMeusService);
   protected readonly meus = this.servicoMeus.meus;
   protected readonly recuperaveis = this.servicoMeus.recuperaveis;
@@ -45,7 +56,7 @@ export class KcxStudio {
     return typeof o.nome === 'string' ? o.nome : typeof o.id === 'string' ? o.id : 'Sem nome';
   }
   protected readonly totalTipos = TIPOS_CONSTRUTOR.length;
-  protected readonly importacao = signal<{ salvos: string[]; erros: string[] } | null>(null);
+  protected readonly importacao = signal<ResultadoImportacao | null>(null);
 
   /** Adiciona aos "Meus componentes" um .kcx.json (ex.: enviado pelo Figma Bridge). */
   protected async importarMeus(e: Event): Promise<void> {
@@ -53,10 +64,24 @@ export class KcxStudio {
     if (texto === null) return;
     const r = desserializar(texto);
     if (!r.ok) {
-      this.importacao.set({ salvos: [], erros: [r.erro] });
+      this.importacao.set({ salvos: [], substituidos: [], erros: [r.erro] });
       return;
     }
-    this.importacao.set(this.servicoMeus.importar(r.pacote));
+    this.adicionar(r.pacote);
+  }
+
+  /** Salva o pacote nos "Meus componentes" e diz quais entraram e quais foram substituídos. */
+  adicionar(p: KcxPacote): void {
+    const existiam = new Set(this.meus().map((c) => c.id));
+    const r = this.servicoMeus.importar(p);
+    this.importacao.set({
+      ...r,
+      substituidos: r.salvos.filter((id) => existiam.has(id)),
+    });
+  }
+
+  protected nomeDe(id: string): string {
+    return this.servicoMeus.buscar(id)?.nome ?? id;
   }
   protected readonly cards = KCX_COMPONENTES.map((c) => ({
     comp: c,
@@ -76,6 +101,11 @@ export class KcxStudio {
   protected conhecido(id: string): boolean {
     return !!this.servicoMeus.buscar(id);
   }
+
+  /** Algum componente do pacote validado ainda não está nos "Meus componentes". */
+  protected readonly faltaAdicionar = computed(
+    () => !!this.pacote()?.componentes.some((c) => !this.servicoMeus.ehMeu(c.id)),
+  );
 
   protected async validar(e: Event): Promise<void> {
     const input = e.target as HTMLInputElement;
