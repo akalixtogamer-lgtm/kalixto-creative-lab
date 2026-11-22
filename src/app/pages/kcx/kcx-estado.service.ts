@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { KcxComponente } from '../../kcx/kcx.types';
-import { Valores, normalizarValor, valoresAtuais } from '../../kcx/resolver';
+import {
+  Valores,
+  normalizarValor,
+  valoresAposAtualizacao,
+  valoresAtuais,
+} from '../../kcx/resolver';
 import { RepositorioPresets } from '../../kcx/presets';
 
 const CHAVE_VALORES = 'kalixto-lab:kcx-valores:v1';
@@ -46,7 +51,23 @@ export class KcxEstadoService {
   }
 
   salvar(comp: KcxComponente, valores: Valores): void {
-    const todos = { ...this.lerTodos(), [comp.id]: valores };
+    this.gravar({ ...this.lerTodos(), [comp.id]: valores });
+  }
+
+  /**
+   * A definição do componente mudou (construtor ou Figma): esquece os valores
+   * salvos das variáveis que mudaram, para o editor mostrar a versão nova.
+   */
+  definicaoMudou(antigo: KcxComponente, novo: KcxComponente): void {
+    const todos = this.lerTodos();
+    const salvos = todos[novo.id];
+    if (!salvos) return;
+    const restantes = valoresAposAtualizacao(salvos, antigo.variaveis, novo.variaveis);
+    if (Object.keys(restantes).length === Object.keys(salvos).length) return;
+    this.gravar({ ...todos, [novo.id]: restantes });
+  }
+
+  private gravar(todos: Record<string, Valores>): void {
     if (!this.storage) {
       this.memoria = todos;
       return;

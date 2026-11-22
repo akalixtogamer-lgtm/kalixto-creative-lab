@@ -1,8 +1,9 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { KCX_COMPONENTES } from '../../kcx/componentes';
 import { comTamanhoEditavel, comVidroEditavel } from '../../kcx/construtor';
 import { KcxComponente, KcxPacote } from '../../kcx/kcx.types';
 import { KcxRecuperavel, RepositorioMeusComponentes } from '../../kcx/meus-componentes';
+import { KcxEstadoService } from './kcx-estado.service';
 
 const CHAVE_CAMADAS_VIDRO = 'kalixto-lab:kcx-vidro-camada:v1';
 
@@ -23,6 +24,7 @@ function lerCamadas(): Record<string, string> {
 @Injectable({ providedIn: 'root' })
 export class KcxMeusService {
   private readonly repo = new RepositorioMeusComponentes();
+  private readonly estado = inject(KcxEstadoService);
   readonly meus = signal<KcxComponente[]>(this.repo.listar());
   /** Guardados que não passam mais na validação: nunca somem sem a pessoa decidir. */
   readonly recuperaveis = signal<KcxRecuperavel[]>(this.repo.recuperaveis());
@@ -70,8 +72,12 @@ export class KcxMeusService {
   salvar(comp: KcxComponente): string[] {
     if (KCX_COMPONENTES.some((c) => c.id === comp.id))
       return [`"${comp.id}" é o id de um componente de referência; escolha outro nome.`];
+    const antigo = this.meus().find((c) => c.id === comp.id);
     const erros = this.repo.salvar(comp);
-    if (!erros.length) this.meus.set(this.repo.listar());
+    if (!erros.length) {
+      if (antigo) this.estado.definicaoMudou(antigo, comp);
+      this.meus.set(this.repo.listar());
+    }
     return erros;
   }
 
@@ -92,7 +98,12 @@ export class KcxMeusService {
         salvos: [],
         erros: conflitos.map((c) => `"${c.id}" é um componente de referência.`),
       };
+    const antigos = new Map(this.meus().map((c) => [c.id, c]));
     const r = this.repo.importarPacote(p);
+    for (const c of p.componentes) {
+      const antigo = antigos.get(c.id);
+      if (antigo && r.salvos.includes(c.id)) this.estado.definicaoMudou(antigo, c);
+    }
     this.meus.set(this.repo.listar());
     return r;
   }
