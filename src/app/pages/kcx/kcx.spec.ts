@@ -134,4 +134,35 @@ describe('KCX · páginas', () => {
     expect(el.textContent).toContain('Cor de destaque');
     expect(el.textContent).toContain('Vem da variável compartilhada');
   });
+
+  it('importar do Figma lista o componente com o botão para editar; validar oferece adicionar', async () => {
+    localStorage.clear();
+    const h = await abrir('/kcx');
+    const el = h.routeNativeElement!;
+    const studio = h.fixture.debugElement.query((d) => d.nativeElement?.tagName === 'KX-KCX-STUDIO')
+      .componentInstance as { validarTexto: (t: string) => void; adicionar: (p: unknown) => void };
+    const doFigma = { ...NEON_GLOW, id: 'card-do-figma', nome: 'Card do Figma' };
+    const pacote = criarPacote([doFigma]);
+
+    studio.validarTexto(serializar(pacote));
+    h.detectChanges();
+    expect(el.textContent).toContain('Conferir não adiciona o componente');
+    const botao = [...el.querySelectorAll('button')].find((b) =>
+      b.textContent!.includes('Adicionar aos meus componentes'),
+    )!;
+    expect(botao).toBeTruthy();
+    botao.click();
+    h.detectChanges();
+
+    const link = el.querySelector('.kcxs__importados a') as HTMLAnchorElement;
+    expect(link.textContent).toContain('Editar “Card do Figma”');
+    expect(link.getAttribute('href')).toBe('/kcx/card-do-figma');
+    expect(el.querySelector('#kcxs-meus')).toBeTruthy();
+
+    // De novo: avisa que substituiu.
+    studio.adicionar(pacote);
+    h.detectChanges();
+    expect(el.textContent).toContain('substituiu a versão que já estava no lab');
+    localStorage.clear();
+  });
 });

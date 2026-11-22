@@ -5,6 +5,16 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Melhorado — Importar do Figma e editar no lab
+- **Importar do Figma (.kcx.json)** agora mostra, para cada componente importado, o botão
+  **Editar "nome"** (abre o editor) e avisa quando o arquivo substituiu uma versão que já estava
+  no lab.
+- **Validar um arquivo KCX** deixa claro que conferir não adiciona o componente e oferece
+  **Adicionar aos meus componentes para editar**.
+- Os seletores de arquivo aceitam também **.kcx** (downloads que o navegador salvou sem `.json`).
+- No editor, componentes vindos do Figma ganham **Editar no construtor** no topo: leva à
+  conversão em um tipo do construtor e explica o que já dá para editar sem converter.
+
 ### Corrigido — Construtor e valores do editor
 - **Enviar imagem no construtor** não trava mais o "Revisar tudo": o campo de endereço fica
   vazio (com "Imagem enviada ✓", "Trocar imagem" e "Tirar a imagem") em vez de mostrar um texto

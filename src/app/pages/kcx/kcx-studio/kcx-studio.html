@@ -56,18 +56,33 @@
       <a class="kx-btn kx-btn--ghost" routerLink="/kcx/telas">Telas e wireframes</a>
       <label class="kx-btn kx-btn--ghost kcxs__arquivo">
         <kx-icon name="upload" /> Importar do Figma (.kcx.json)
-        <input type="file" accept=".json,application/json" (change)="importarMeus($event)" />
+        <input type="file" [accept]="aceita" (change)="importarMeus($event)" />
       </label>
     </div>
     @if (importacao(); as r) {
-      <p [class]="r.erros.length ? 'kcxs__erro' : 'kcxs__ok-linha'" role="status">
+      <div class="kcxs__importacao" role="status">
         @if (r.salvos.length) {
-          {{ r.salvos.length }} componente(s) adicionado(s) aos seus.
+          <p class="kcxs__ok-linha">
+            {{ r.salvos.length }} componente(s) em <strong>Meus componentes</strong>, logo abaixo.
+            Abra para editar:
+          </p>
+          <ul class="kcxs__importados">
+            @for (id of r.salvos; track id) {
+              <li>
+                <a class="kx-btn kx-btn--primary" [routerLink]="['/kcx', id]"
+                  >Editar “{{ nomeDe(id) }}” <kx-icon name="arrow-right"
+                /></a>
+                @if (r.substituidos.includes(id)) {
+                  <small class="kx-muted">substituiu a versão que já estava no lab</small>
+                }
+              </li>
+            }
+          </ul>
         }
         @for (e of r.erros; track e) {
-          {{ e }}
+          <p class="kcxs__erro">{{ e }}</p>
         }
-      </p>
+      </div>
     }
   </section>
 
@@ -202,13 +217,15 @@
   <section class="kx-section" aria-labelledby="kcxs-validar">
     <h2 id="kcxs-validar" class="kx-section-title">Validar um arquivo KCX</h2>
     <p class="kx-muted">
-      Escolha um <code>.kcx.json</code> (exportado do lab ou de outra ferramenta). Nada é enviado
-      para fora do navegador.
+      Escolha um <code>.kcx.json</code> (exportado do lab ou de outra ferramenta) para conferir se
+      está correto e ver como fica no Figma. <strong>Conferir não adiciona o componente</strong>:
+      para editar no lab, use <em>Importar do Figma</em> lá em cima ou o botão que aparece depois da
+      conferência. Nada é enviado para fora do navegador.
     </p>
     <div class="kcxs__barra">
       <label class="kx-btn kx-btn--ghost kcxs__arquivo">
         <kx-icon name="upload" /> Escolher arquivo
-        <input type="file" accept=".json,application/json" (change)="validar($event)" />
+        <input type="file" [accept]="aceita" (change)="validar($event)" />
       </label>
       <button type="button" class="kx-btn kx-btn--ghost" (click)="baixarSchema()">
         <kx-icon name="download" /> JSON Schema do KCX
@@ -256,6 +273,11 @@
             </li>
           }
         </ul>
+        @if (faltaAdicionar()) {
+          <button type="button" class="kx-btn kx-btn--primary" (click)="adicionar(p)">
+            Adicionar aos meus componentes para editar
+          </button>
+        }
       </div>
     }
   </section>

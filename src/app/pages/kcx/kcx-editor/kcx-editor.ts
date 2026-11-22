@@ -119,6 +119,17 @@ export class KcxEditor {
     tipos: TIPOS_CONSTRUTOR.filter((t) => t.categoria === c.id),
   })).filter((c) => c.tipos.length);
   protected readonly tipoConversao = signal('carrossel');
+
+  /**
+   * Componentes vindos do Figma não têm configuração do construtor: para editar a
+   * estrutura (itens, textos, animação) eles passam por "Converter em outro tipo".
+   * O botão do topo leva até lá e dá foco no seletor.
+   */
+  protected irParaConversao(): void {
+    const sec = document.getElementById('kcxe-converter')?.closest('section');
+    sec?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    sec?.querySelector<HTMLSelectElement>('select')?.focus({ preventScroll: true });
+  }
   protected readonly msgConversao = signal('');
 
   protected converter(): void {
