@@ -5,6 +5,14 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Corrigido — Construtor e valores do editor
+- **Enviar imagem no construtor** não trava mais o "Revisar tudo": o campo de endereço fica
+  vazio (com "Imagem enviada ✓", "Trocar imagem" e "Tirar a imagem") em vez de mostrar um texto
+  que o navegador recusava como URL.
+- **Editar no construtor** e **reimportar do Figma** (.kcx.json com o mesmo id): os valores que
+  mudaram na nova versão aparecem no editor. Antes, os valores salvos no editor escondiam os
+  textos e cores novos; agora só os ajustes que a nova versão não tocou (ex.: o vidro) continuam.
+
 ### Adicionado — Vidro do Figma, moldes, Telas livres e PDF
 - **Vidro no modelo Glass do Figma** em qualquer componente: luz (ângulo e intensidade, com
   controle de luz), refração, profundidade, dispersão, gelo e splay, além de fundo, véu e borda.

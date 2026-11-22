@@ -214,6 +214,18 @@
   cursor: pointer;
 }
 
+.kcxc__midia-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kx-space-3, 12px);
+}
+
+.kcxc__midia-ok {
+  color: var(--kx-success);
+  font-size: var(--kx-fs-sm);
+}
+
 .kcxc__acoes {
   display: flex;
   flex-wrap: wrap;

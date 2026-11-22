@@ -445,18 +445,26 @@
               }}</span>
               <input
                 type="url"
-                [value]="
-                  cfg().midia?.startsWith('data:') ? '(imagem enviada)' : (cfg().midia ?? '')
+                [value]="midiaEnviada() ? '' : (cfg().midia ?? '')"
+                (change)="trocarEnderecoMidia(valor($event))"
+                [placeholder]="
+                  midiaEnviada() ? 'Imagem enviada · cole um endereço para trocar' : 'https://'
                 "
-                (change)="mudar('midia', valor($event))"
-                placeholder="https://"
               />
             </label>
             @if (tipoMidia === 'imagem') {
-              <label class="kx-btn kx-btn--ghost kcxc__arquivo">
-                <kx-icon name="upload" /> Enviar imagem
-                <input type="file" accept="image/*" (change)="enviarMidia($event)" />
-              </label>
+              <div class="kcxc__midia-acoes">
+                <label class="kx-btn kx-btn--ghost kcxc__arquivo">
+                  <kx-icon name="upload" /> {{ midiaEnviada() ? 'Trocar imagem' : 'Enviar imagem' }}
+                  <input type="file" accept="image/*" (change)="enviarMidia($event)" />
+                </label>
+                @if (midiaEnviada()) {
+                  <span class="kcxc__midia-ok" role="status">Imagem enviada ✓</span>
+                  <button type="button" class="kcxc__link" (click)="mudar('midia', '')">
+                    Tirar a imagem
+                  </button>
+                }
+              </div>
             }
             @if (avisoImagem()) {
               <p class="kcxc__erro" role="alert">{{ avisoImagem() }}</p>

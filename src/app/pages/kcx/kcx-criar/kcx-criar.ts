@@ -435,6 +435,20 @@ export class KcxCriar {
     }
   }
 
+  /** A mídia atual veio de um arquivo enviado (data URL), não de um endereço. */
+  protected readonly midiaEnviada = computed(() => !!this.cfg().midia?.startsWith('data:'));
+
+  /**
+   * O campo de endereço fica vazio quando a imagem foi enviada (um data URL não é
+   * um endereço válido e travava a validação do formulário). Deixar o campo vazio
+   * não apaga a imagem enviada: para isso há "Tirar a imagem".
+   */
+  protected trocarEnderecoMidia(texto: string): void {
+    const t = texto.trim();
+    if (!t && this.midiaEnviada()) return;
+    this.mudar('midia', t);
+  }
+
   protected enviarMidia(e: Event): void {
     const arquivo = (e.target as HTMLInputElement).files?.[0];
     this.avisoImagem.set('');

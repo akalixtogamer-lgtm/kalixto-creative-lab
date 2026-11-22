@@ -279,6 +279,34 @@ export function valoresAtuais(variaveis: KcxVariavel[], valores: Valores = {}): 
   return Object.fromEntries(variaveis.map((v) => [v.id, valores[v.id] ?? v.valor]));
 }
 
+/**
+ * Valores salvos no editor que continuam valendo depois que a definição do
+ * componente muda (salvo de novo no construtor ou reimportado do Figma).
+ *
+ * Um valor salvo só sobrevive se a variável existe nas duas versões com o mesmo
+ * tipo e o mesmo valor de base: assim um texto trocado no construtor (ou uma cor
+ * trocada no Figma) aparece no editor, e ajustes que a nova versão não tocou
+ * (ex.: o vidro) continuam. Variáveis que não estão na nova definição ficam como
+ * estão, porque algumas são injetadas depois (vidro, tamanho).
+ */
+export function valoresAposAtualizacao(
+  salvos: Valores,
+  antigas: readonly KcxVariavel[],
+  novas: readonly KcxVariavel[],
+): Valores {
+  const antes = new Map(antigas.map((v) => [v.id, v]));
+  const depois = new Map(novas.map((v) => [v.id, v]));
+  const out: Valores = {};
+  for (const [id, valor] of Object.entries(salvos)) {
+    const a = antes.get(id);
+    const d = depois.get(id);
+    if (d && (!a || a.tipo !== d.tipo || JSON.stringify(a.valor) !== JSON.stringify(d.valor)))
+      continue;
+    out[id] = valor;
+  }
+  return out;
+}
+
 export function valoresPadrao(variaveis: KcxVariavel[]): Valores {
   return Object.fromEntries(variaveis.map((v) => [v.id, v.padrao]));
 }
