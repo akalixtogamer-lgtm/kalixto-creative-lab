@@ -5,6 +5,11 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Melhorado — Novo componente depois de baixar
+- No editor, botão **Novo componente** no topo e logo abaixo de "Exportar para Figma": leva ao
+  catálogo do construtor para escolher o próximo tipo. Depois de baixar (.kcx.json, código,
+  tokens ou SVG), o aviso confirma o que foi baixado e oferece começar o próximo.
+
 ### Melhorado — Variáveis detectadas recolhíveis
 - No painel de exportação, **Variáveis detectadas** vira um bloco com seta: começa fechado,
   mostrando só o total, as vinculadas e as documentais. Aberto, a tabela tem altura limitada,

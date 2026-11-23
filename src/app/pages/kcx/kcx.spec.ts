@@ -109,6 +109,32 @@ describe('KCX · páginas', () => {
     expect(painel.querySelectorAll('input[name="kcxx-modo"]').length).toBe(5);
   });
 
+  it('o editor leva a um novo componente, também depois de baixar', async () => {
+    const h = await abrir('/kcx/neon-glow');
+    const el = h.routeNativeElement!;
+    const links = [...el.querySelectorAll('a')].filter((a) =>
+      a.textContent!.includes('Novo componente'),
+    );
+    expect(links.length).toBe(2);
+    expect(links.every((a) => a.getAttribute('href')?.endsWith('/kcx/criar'))).toBe(true);
+    // Baixar não depende do navegador real: troca a criação do link de download.
+    const criar = URL.createObjectURL;
+    const revogar = URL.revokeObjectURL;
+    URL.createObjectURL = () => 'blob:teste';
+    URL.revokeObjectURL = () => undefined;
+    try {
+      const botao = [...el.querySelectorAll('kx-kcx-exportar-painel button')].find((b) =>
+        b.textContent!.includes('.kcx.json'),
+      ) as HTMLButtonElement;
+      botao.click();
+      h.detectChanges();
+      expect(el.querySelector('.kcxe__proximo')!.textContent).toContain('foi baixado');
+    } finally {
+      URL.createObjectURL = criar;
+      URL.revokeObjectURL = revogar;
+    }
+  });
+
   it('importar alterações mostra as diferenças antes de aplicar', async () => {
     const h = await abrir('/kcx/neon-glow');
     const dbg = h.routeDebugElement!.query((d) => d.name === 'kx-kcx-importar-painel');

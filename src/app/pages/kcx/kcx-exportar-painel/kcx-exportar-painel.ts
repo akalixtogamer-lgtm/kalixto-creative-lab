@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { KcxFundacaoService } from '../kcx-fundacao.service';
 import { KcxComponente, KcxModoExportacao } from '../../../kcx/kcx.types';
 import { Valores } from '../../../kcx/resolver';
@@ -42,6 +42,8 @@ export class KcxExportarPainel {
   readonly comp = input.required<KcxComponente>();
   readonly valores = input.required<Valores>();
   readonly presetAtivo = input<string | undefined>();
+  /** Avisa o que acabou de ser baixado (o editor oferece começar outro componente). */
+  readonly baixou = output<string>();
 
   protected readonly modos = MODOS_EXPORTACAO;
   protected readonly modo = signal<KcxModoExportacao>('completo');
@@ -111,6 +113,7 @@ export class KcxExportarPainel {
 
   protected baixarKcx(): void {
     baixarArquivo(serializar(this.pacote()), `${this.comp().id}.kcx.json`, 'application/json');
+    this.baixou.emit('o pacote para o Figma (.kcx.json)');
   }
 
   protected baixarCodigo(): void {
@@ -119,6 +122,7 @@ export class KcxExportarPainel {
       `${this.comp().id}-kcx.zip`,
       'application/zip',
     );
+    this.baixou.emit('o código (.zip)');
   }
 
   protected baixarTokens(): void {
@@ -127,10 +131,12 @@ export class KcxExportarPainel {
       `${this.comp().id}.tokens.json`,
       'application/json',
     );
+    this.baixou.emit('os tokens (W3C)');
   }
 
   protected baixarSvg(): void {
     baixarArquivo(this.svg(), `${this.comp().id}.svg`, 'image/svg+xml');
+    this.baixou.emit('o SVG');
   }
 
   /** Baixa o plugin Figma Bridge (arquivos publicados com o lab) como .zip. */

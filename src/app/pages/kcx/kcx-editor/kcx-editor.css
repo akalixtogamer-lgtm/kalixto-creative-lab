@@ -230,6 +230,33 @@
   color: inherit;
 }
 
-.kcxe__comparar {
+.kcxe__acoes-topo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2, 0.5rem);
   margin: 0.75rem 0 0;
+}
+.kcxe__proximo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-top: var(--kx-space-4, 1rem);
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--kx-border-strong, var(--kx-border));
+  border-radius: var(--kx-radius-md, 12px);
+}
+.kcxe__proximo p {
+  margin: 0;
+}
+.kcxe__proximo--feito {
+  border-style: solid;
+  border-color: var(--kx-acento, #00d9ff);
+  background: color-mix(in srgb, var(--kx-acento, #00d9ff) 10%, transparent);
+}
+.kcxe__proximo-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kx-space-2, 0.5rem);
 }
