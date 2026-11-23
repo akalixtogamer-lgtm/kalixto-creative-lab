@@ -53,7 +53,10 @@
           <button type="button" class="kx-btn kx-btn--ghost" (click)="excluir()">Excluir</button>
         </div>
       }
-      <p class="kcxe__comparar">
+      <p class="kcxe__acoes-topo">
+        <a class="kx-btn kx-btn--primary" routerLink="/kcx/criar">
+          <kx-icon name="kcx" /> Novo componente
+        </a>
         <a
           class="kx-btn kx-btn--ghost"
           routerLink="/kcx/comparar"
@@ -301,7 +304,33 @@
 
       <section class="kcxe__exportar kx-glass" aria-labelledby="kcxe-exportar">
         <h2 id="kcxe-exportar" class="kcxe__h2">Exportar para Figma</h2>
-        <kx-kcx-exportar-painel [comp]="c" [valores]="valores()" [presetAtivo]="presetAtivo()" />
+        <kx-kcx-exportar-painel
+          [comp]="c"
+          [valores]="valores()"
+          [presetAtivo]="presetAtivo()"
+          (baixou)="baixado.set($event)"
+        />
+        <div
+          class="kcxe__proximo"
+          [class.kcxe__proximo--feito]="baixado()"
+          role="status"
+          aria-live="polite"
+        >
+          <p>
+            @if (baixado()) {
+              <strong>Pronto: {{ baixado() }} de “{{ c.nome }}” foi baixado.</strong>
+              Quer fazer o próximo?
+            } @else {
+              Terminou este componente? Comece outro escolhendo o tipo no catálogo.
+            }
+          </p>
+          <div class="kcxe__proximo-acoes">
+            <a class="kx-btn kx-btn--primary" routerLink="/kcx/criar">
+              <kx-icon name="kcx" /> Novo componente
+            </a>
+            <a class="kx-btn kx-btn--ghost" routerLink="/kcx">Voltar ao KCX Studio</a>
+          </div>
+        </div>
       </section>
 
       <section class="kcxe__importar kx-glass" aria-labelledby="kcxe-importar">

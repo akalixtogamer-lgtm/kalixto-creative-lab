@@ -165,6 +165,11 @@ export class KcxEditor {
     void this.router.navigateByUrl('/kcx');
   }
   protected readonly nivelRotulo = NIVEL_ROTULO;
+  /** O que acabou de ser baixado no painel de exportação (vazio = nada ainda). */
+  protected readonly baixado = linkedSignal<string>(() => {
+    this.comp();
+    return '';
+  });
 
   /** Valores atuais das variáveis (salvos no navegador). */
   protected readonly valores = linkedSignal<Valores>(() => {
