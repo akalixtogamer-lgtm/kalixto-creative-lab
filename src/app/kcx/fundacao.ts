@@ -378,6 +378,38 @@ export function completarFundacao(f: Partial<KcxFundacao>): KcxFundacao {
   };
 }
 
+/**
+ * Lê um design system importado: o `.kcx-fundacao.json` do plugin Figma Bridge
+ * ("Enviar design system para o lab"), o JSON baixado da Fundação, ou um pacote
+ * KCX que leve a fundação junto. Um arquivo que não traz design system nenhum é
+ * recusado com uma explicação (antes virava a fundação padrão em silêncio).
+ */
+export function lerFundacaoImportada(dado: unknown): { fundacao: KcxFundacao } | { erro: string } {
+  if (!dado || typeof dado !== 'object' || Array.isArray(dado))
+    return { erro: 'O arquivo não é um design system KCX (esperado um objeto JSON).' };
+  const o = dado as Record<string, unknown>;
+  let bruto: Partial<KcxFundacao> | null = null;
+  if (o['fundacao'] && typeof o['fundacao'] === 'object')
+    bruto = o['fundacao'] as Partial<KcxFundacao>;
+  else if (o['formato'] === FORMATO_FUNDACAO) bruto = o as Partial<KcxFundacao>;
+  else if (o['formato'] === 'kcx')
+    return {
+      erro: 'Este .kcx.json traz componentes, não o design system. Importe-o em KCX Studio › “Importar do Figma”; para o design system, use no plugin “Enviar design system para o lab” (.kcx-fundacao.json).',
+    };
+  else if (o['cores'] && typeof o['cores'] === 'object') bruto = o as Partial<KcxFundacao>;
+  if (!bruto)
+    return {
+      erro: 'Não encontrei um design system neste arquivo. Use o .kcx-fundacao.json do plugin Figma Bridge ou o JSON baixado da Fundação.',
+    };
+  try {
+    const f = completarFundacao(bruto);
+    const erros = validarFundacao(f);
+    return erros.length ? { erro: `Design system inválido: ${erros[0]}` } : { fundacao: f };
+  } catch {
+    return { erro: 'Design system com valores ilegíveis.' };
+  }
+}
+
 function textosValidos<K extends string>(o: Partial<Record<K, string>>, chaves: readonly K[]) {
   const r: Partial<Record<K, string>> = {};
   for (const k of chaves) {

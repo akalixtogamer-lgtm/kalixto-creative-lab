@@ -14,6 +14,7 @@ import { Icon } from '../../../shared/components/icon/icon';
 import { baixarArquivo } from '../kcx-estado.service';
 import { KcxFundacaoService } from '../kcx-fundacao.service';
 import { KcxMeusService } from '../kcx-meus.service';
+import { KcxImportarDs } from '../kcx-importar-ds/kcx-importar-ds';
 
 /**
  * Guia do design system (/kcx/design-system): toda a identidade visual a
@@ -21,7 +22,7 @@ import { KcxMeusService } from '../kcx-meus.service';
  */
 @Component({
   selector: 'kx-kcx-design-system',
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, KcxImportarDs],
   templateUrl: './kcx-design-system.html',
   styleUrl: './kcx-design-system.css',
 })

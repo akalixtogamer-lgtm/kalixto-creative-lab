@@ -4,6 +4,7 @@ import {
   KcxFundacao,
   completarFundacao,
   validarFundacao,
+  lerFundacaoImportada,
 } from '../../kcx/fundacao';
 
 export const CHAVE_FUNDACAO = 'kalixto-lab:kcx-fundacao:v1';
@@ -63,6 +64,20 @@ export class KcxFundacaoService {
     const f = structuredClone(this.fundacao());
     mudar(f);
     return this.definir(f);
+  }
+
+  /** Importa o texto de um arquivo de design system (fundação). */
+  importarTexto(texto: string): { ok: true; nome: string } | { ok: false; erro: string } {
+    let dado: unknown;
+    try {
+      dado = JSON.parse(texto);
+    } catch {
+      return { ok: false, erro: 'O arquivo não é um JSON válido.' };
+    }
+    const r = lerFundacaoImportada(dado);
+    if ('erro' in r) return { ok: false, erro: r.erro };
+    const erros = this.definir(r.fundacao);
+    return erros.length ? { ok: false, erro: erros[0] } : { ok: true, nome: r.fundacao.nome };
   }
 
   definirUsoNoFigma(usar: boolean): void {

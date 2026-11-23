@@ -5,6 +5,13 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Melhorado — Importar design system fácil de achar
+- Botão **Importar design system** também no topo do **KCX Studio** e no **guia do Design
+  system** (além da Fundação e dos Moldes). Aceita o `.kcx-fundacao.json` do plugin Figma
+  Bridge, o JSON da Fundação e pacotes KCX que levem a fundação.
+- Um arquivo sem design system (ex.: um `.kcx.json` só de componentes) agora é recusado com
+  explicação, em vez de virar a fundação padrão sem aviso.
+
 ### Adicionado — Reference vs. Reconstruction (`/kcx/comparar`)
 - **Painel A — Original reference**: site por URL, gravação de vídeo (guardada no navegador),
   frames extraídos ou imagens enviadas, com sequência temporal (estados, efeitos e interações),

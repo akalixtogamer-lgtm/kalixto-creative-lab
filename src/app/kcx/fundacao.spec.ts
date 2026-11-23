@@ -11,6 +11,7 @@ import {
   construtorDaFundacao,
   cssDaFundacao,
   validarFundacao,
+  lerFundacaoImportada,
 } from './fundacao';
 import { criarPacote, desserializar, serializar } from './serializar';
 
@@ -128,5 +129,22 @@ describe('Fundação (tokens do design system)', () => {
     const bruto = JSON.parse(serializar(pacote));
     bruto.fundacao.cores.primaria.escuro = 'vermelho';
     expect(desserializar(JSON.stringify(bruto)).ok).toBe(false);
+  });
+});
+
+describe('lerFundacaoImportada (Importar design system)', () => {
+  it('aceita o .kcx-fundacao.json do plugin e o pacote KCX com fundação', () => {
+    const f = { ...structuredClone(FUNDACAO_PADRAO), nome: 'Glass' };
+    const a = lerFundacaoImportada(JSON.parse(JSON.stringify(f)));
+    expect('fundacao' in a && a.fundacao.nome).toBe('Glass');
+    const b = lerFundacaoImportada({ formato: 'kcx', componentes: [], fundacao: f });
+    expect('fundacao' in b && b.fundacao.nome).toBe('Glass');
+  });
+
+  it('recusa com explicação um arquivo de componentes ou um JSON qualquer', () => {
+    const a = lerFundacaoImportada({ formato: 'kcx', componentes: [] });
+    expect('erro' in a && a.erro).toContain('Importar do Figma');
+    expect('erro' in lerFundacaoImportada({ qualquer: 1 })).toBe(true);
+    expect('erro' in lerFundacaoImportada([1, 2])).toBe(true);
   });
 });
