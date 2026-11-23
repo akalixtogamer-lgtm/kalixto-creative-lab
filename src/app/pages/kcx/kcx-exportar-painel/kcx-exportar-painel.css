@@ -156,3 +156,68 @@ button:focus-visible {
   outline: 2px solid var(--kx-ciano);
   outline-offset: 2px;
 }
+
+/* Variáveis detectadas: recolhível (a lista pode passar de 100 linhas). */
+.kcxx__vars {
+  margin: 1rem 0;
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-md, 12px);
+}
+.kcxx__vars-resumo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+.kcxx__vars-resumo::-webkit-details-marker {
+  display: none;
+}
+.kcxx__vars-resumo .kcxx__h3 {
+  margin: 0;
+}
+.kcxx__vars-resumo:focus-visible {
+  outline: 2px solid var(--kx-acento, currentColor);
+  outline-offset: 2px;
+  border-radius: var(--kx-radius-md, 12px);
+}
+.kcxx__seta {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+}
+.kcxx__vars[open] .kcxx__seta {
+  transform: rotate(45deg);
+}
+.kcxx__chips-vars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.kcxx__vars-dica {
+  margin-left: auto;
+}
+.kcxx__vars[open] .kcxx__vars-dica {
+  display: none;
+}
+.kcxx__vars .kcxx__tabela-wrap {
+  max-height: 420px;
+  overflow: auto;
+  margin: 0;
+  border-top: 1px solid var(--kx-border);
+}
+.kcxx__vars .kcxx__tabela th {
+  position: sticky;
+  top: 0;
+  background: var(--kx-bg-elev);
+}
+@media (prefers-reduced-motion: reduce) {
+  .kcxx__seta {
+    transition: none;
+  }
+}

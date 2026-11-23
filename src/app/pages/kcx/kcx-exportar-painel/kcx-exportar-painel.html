@@ -95,53 +95,59 @@
 </div>
 
 @if (plano().colecoes.length) {
-  <h3 class="kcxx__h3">
-    Variáveis detectadas — {{ plano().resumo.variaveis }} ({{
-      plano().resumo.vinculadas
-    }}
-    vinculadas, {{ plano().resumo.documentais }} documentais)
-  </h3>
-  <div class="kcxx__tabela-wrap">
-    <table class="kcxx__tabela">
-      <thead>
-        <tr>
-          <th scope="col">Variável no Figma</th>
-          <th scope="col">Tipo</th>
-          <th scope="col">Coleção</th>
-          <th scope="col">Valor</th>
-          <th scope="col">Situação</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (v of variaveis(); track v.nome) {
-          <tr [class.kcxx__doc]="!v.vinculadaA.length">
-            <td>
-              <code>{{ v.nome }}</code>
-            </td>
-            <td>{{ v.tipo }}</td>
-            <td>{{ v.colecao.replace('KCX · ', '') }}</td>
-            <td>{{ valoresDe(v) }}</td>
-            <td>
-              @if (v.vinculadaA.length) {
-                <span class="kcxx__ok">vinculada</span> a {{ v.vinculadaA.length }} propriedade(s)
-                @if (v.origem === 'derivada') {
-                  <small>· calculada no lab</small>
-                }
-                @if (v.origem === 'estado') {
-                  <small>· valor de variante</small>
-                }
-                @if (v.origem === 'parada') {
-                  <small>· parada de gradiente</small>
-                }
-              } @else {
-                <span class="kcxx__aviso">documental</span> — não controla nada no Figma
-              }
-            </td>
+  <details class="kcxx__vars">
+    <summary class="kcxx__vars-resumo">
+      <span class="kcxx__seta" aria-hidden="true"></span>
+      <span class="kcxx__h3">Variáveis detectadas</span>
+      <span class="kcxx__chips-vars">
+        <span class="kx-chip">{{ plano().resumo.variaveis }} no total</span>
+        <span class="kx-chip">{{ plano().resumo.vinculadas }} vinculadas</span>
+        <span class="kx-chip">{{ plano().resumo.documentais }} documentais</span>
+      </span>
+      <small class="kx-muted kcxx__vars-dica">Clique para ver a lista</small>
+    </summary>
+    <div class="kcxx__tabela-wrap">
+      <table class="kcxx__tabela">
+        <thead>
+          <tr>
+            <th scope="col">Variável no Figma</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Coleção</th>
+            <th scope="col">Valor</th>
+            <th scope="col">Situação</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          @for (v of variaveis(); track v.nome) {
+            <tr [class.kcxx__doc]="!v.vinculadaA.length">
+              <td>
+                <code>{{ v.nome }}</code>
+              </td>
+              <td>{{ v.tipo }}</td>
+              <td>{{ v.colecao.replace('KCX · ', '') }}</td>
+              <td>{{ valoresDe(v) }}</td>
+              <td>
+                @if (v.vinculadaA.length) {
+                  <span class="kcxx__ok">vinculada</span> a {{ v.vinculadaA.length }} propriedade(s)
+                  @if (v.origem === 'derivada') {
+                    <small>· calculada no lab</small>
+                  }
+                  @if (v.origem === 'estado') {
+                    <small>· valor de variante</small>
+                  }
+                  @if (v.origem === 'parada') {
+                    <small>· parada de gradiente</small>
+                  }
+                } @else {
+                  <span class="kcxx__aviso">documental</span> — não controla nada no Figma
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </details>
 }
 
 <div class="kcxx__listas">
