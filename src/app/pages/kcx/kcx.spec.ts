@@ -103,6 +103,9 @@ describe('KCX · páginas', () => {
     expect(painel.textContent).toContain('Variáveis detectadas');
     expect(painel.textContent).toContain('neon-glow/primary-color');
     expect(painel.textContent).toContain('documental');
+    // A lista de variáveis começa recolhida (o resumo fica à vista).
+    expect(painel.querySelector('details.kcxx__vars')!.hasAttribute('open')).toBe(false);
+    expect(painel.querySelector('.kcxx__vars-resumo')!.textContent).toContain('vinculadas');
     expect(painel.querySelectorAll('input[name="kcxx-modo"]').length).toBe(5);
   });
 

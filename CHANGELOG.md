@@ -5,6 +5,11 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Melhorado — Variáveis detectadas recolhíveis
+- No painel de exportação, **Variáveis detectadas** vira um bloco com seta: começa fechado,
+  mostrando só o total, as vinculadas e as documentais. Aberto, a tabela tem altura limitada,
+  rolagem própria e cabeçalho fixo.
+
 ### Melhorado — Importar design system fácil de achar
 - Botão **Importar design system** também no topo do **KCX Studio** e no **guia do Design
   system** (além da Fundação e dos Moldes). Aceita o `.kcx-fundacao.json` do plugin Figma
