@@ -25,9 +25,7 @@ import {
   MOVIMENTO_PADRAO,
   MovimentoFundacao,
   USO_TEXTO,
-  completarFundacao,
   cssDaFundacao,
-  validarFundacao,
 } from '../../../kcx/fundacao';
 import { criarPacote, serializar } from '../../../kcx/serializar';
 import { Icon } from '../../../shared/components/icon/icon';
@@ -229,20 +227,8 @@ export class KcxFundacaoPagina {
   protected async importar(e: Event): Promise<void> {
     const texto = await lerArquivo(e);
     if (texto === null) return;
-    try {
-      const bruto = JSON.parse(texto) as Partial<KcxFundacao> & { fundacao?: KcxFundacao };
-      // Aceita a fundação pura ou um pacote KCX que leve uma.
-      const f = completarFundacao(bruto.fundacao ?? bruto);
-      const erros = validarFundacao(f);
-      if (erros.length) {
-        this.avisar(`Arquivo inválido: ${erros[0]}`);
-        return;
-      }
-      this.servico.definir(f);
-      this.avisar(`Fundação "${f.nome}" importada.`);
-    } catch {
-      this.avisar('O arquivo não é um JSON válido.');
-    }
+    const r = this.servico.importarTexto(texto);
+    this.avisar(r.ok ? `Design system "${r.nome}" importado.` : r.erro);
   }
 
   private avisar(t: string): void {

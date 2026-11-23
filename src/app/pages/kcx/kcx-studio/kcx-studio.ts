@@ -10,6 +10,7 @@ import { ResultadoValidacao } from '../../../kcx/validar';
 import { desserializar } from '../../../kcx/serializar';
 import { KCX_JSON_SCHEMA } from '../../../kcx/kcx.schema';
 import { Icon } from '../../../shared/components/icon/icon';
+import { KcxImportarDs } from '../kcx-importar-ds/kcx-importar-ds';
 import { TAG_MOTION_LIBRARY } from '../../../kcx/comparar';
 import { baixarArquivo, lerArquivo } from '../kcx-estado.service';
 
@@ -26,7 +27,7 @@ export const ACEITA_KCX = '.json,.kcx,application/json';
 /** KCX Studio (/kcx): componentes, validador de arquivos e explicação do formato. */
 @Component({
   selector: 'kx-kcx-studio',
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, KcxImportarDs],
   templateUrl: './kcx-studio.html',
   styleUrl: './kcx-studio.css',
 })

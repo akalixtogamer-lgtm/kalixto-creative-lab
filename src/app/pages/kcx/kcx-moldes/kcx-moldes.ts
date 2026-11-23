@@ -13,7 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 import { montarTela } from '../../../kcx/construtor';
 import { findKit } from '../../../core/efeitos/registry';
 import { planejarFigma } from '../../../kcx/figma-plano';
-import { KcxFundacao, completarFundacao, validarFundacao } from '../../../kcx/fundacao';
+import { KcxFundacao } from '../../../kcx/fundacao';
 import { documentoDaTela } from '../../../kcx/plano-html';
 import {
   MOLDES,
@@ -117,23 +117,16 @@ export class KcxMoldesPagina {
   protected async importarDs(e: Event): Promise<void> {
     const texto = await lerArquivo(e);
     if (texto === null) return;
-    try {
-      const bruto = JSON.parse(texto) as Partial<KcxFundacao> & { fundacao?: KcxFundacao };
-      const f = completarFundacao(bruto.fundacao ?? bruto);
-      const erros = validarFundacao(f);
-      if (erros.length) {
-        this.mensagem.set({ tipo: 'erro', texto: `Design system inválido: ${erros[0]}` });
-        return;
-      }
-      this.fundacaoSrv.definir(f);
-      this.estilo.set('minha');
-      this.mensagem.set({
-        tipo: 'ok',
-        texto: `Design system "${f.nome}" importado: os moldes agora usam as cores e fontes dele.`,
-      });
-    } catch {
-      this.mensagem.set({ tipo: 'erro', texto: 'O arquivo não é um JSON válido.' });
+    const r = this.fundacaoSrv.importarTexto(texto);
+    if (!r.ok) {
+      this.mensagem.set({ tipo: 'erro', texto: r.erro });
+      return;
     }
+    this.estilo.set('minha');
+    this.mensagem.set({
+      tipo: 'ok',
+      texto: `Design system "${r.nome}" importado: os moldes agora usam as cores e fontes dele.`,
+    });
   }
 
   /** Cria as páginas do molde nas Telas (e as ligações no mapa). */
