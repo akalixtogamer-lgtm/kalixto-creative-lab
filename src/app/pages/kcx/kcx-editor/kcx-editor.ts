@@ -39,6 +39,17 @@ import {
 import { idLivre } from '../../../kcx/meus-componentes';
 import { fundoColorido } from '../../../kcx/plano-html';
 import { variantesDoComponente } from '../../../kcx/figma-plano';
+import {
+  ConfigFeedback,
+  ExibicaoFeedback,
+  TipoFeedback,
+  ehBotao,
+  executarComFeedback,
+  exibicao,
+  feedbackPadrao,
+  operacaoSimulada,
+} from '../../../kcx/feedback';
+import { KcxFeedbackPainel, KcxFeedbackToast } from '../kcx-feedback-painel/kcx-feedback-painel';
 
 const NIVEL_ROTULO = {
   1: 'Nível 1 — nativo editável',
@@ -66,6 +77,8 @@ const NIVEL_ROTULO = {
     KcxImportarPainel,
     KcxVariantes,
     KcxVidroPainel,
+    KcxFeedbackPainel,
+    KcxFeedbackToast,
   ],
   templateUrl: './kcx-editor.html',
   styleUrl: './kcx-editor.css',
@@ -238,6 +251,53 @@ export class KcxEditor {
     return fundoColorido([k.primaria.escuro, k.destaque.escuro, k.secundaria.escuro]);
   });
 
+  /* ---------- Mensagens e Feedback (botões) ---------- */
+  protected readonly ehBotao = computed(() => {
+    const c = this.comp();
+    return !!c && ehBotao(c);
+  });
+  /** Configuração das mensagens (salva no navegador, por componente). */
+  protected readonly feedback = linkedSignal<ConfigFeedback>(() => {
+    const c = this.comp();
+    return c ? this.estado.feedback(c.id) : feedbackPadrao();
+  });
+  protected readonly mensagemAtual = linkedSignal<ExibicaoFeedback | null>(() => {
+    this.comp();
+    return null;
+  });
+  protected readonly operando = signal(false);
+
+  /** Mostra uma mensagem como ela está configurada (sem rodar a operação). */
+  protected testarMensagem(tipo: TipoFeedback): void {
+    this.mensagemAtual.set(exibicao(this.feedback(), tipo));
+  }
+
+  /** Roda a operação do botão; a mensagem sai do resultado real dela. */
+  protected async rodarOperacao(): Promise<void> {
+    if (this.operando()) return;
+    const cfg = this.feedback();
+    const id = this.comp()?.id;
+    this.operando.set(true);
+    try {
+      await executarComFeedback(
+        operacaoSimulada(cfg.simulacao.resultado, cfg.simulacao.atrasoMs),
+        cfg,
+        (m) => {
+          // Outro componente aberto no meio: a mensagem não vaza para ele.
+          if (this.comp()?.id === id) this.mensagemAtual.set(m);
+        },
+      );
+    } finally {
+      this.operando.set(false);
+    }
+  }
+
+  /** Mensagens vindas do preview (clique no botão). */
+  protected aoMensagemPreview(dado: unknown): void {
+    if ((dado as { kcx?: string } | null)?.kcx !== 'clique') return;
+    if (this.ehBotao() && this.feedback().ativo) void this.rodarOperacao();
+  }
+
   /* ---------- Comparação antes/depois ---------- */
   protected readonly comparando = signal(false);
   protected readonly referencia = signal<'padrao' | 'snapshot'>('padrao');
@@ -301,6 +361,11 @@ export class KcxEditor {
       const c = this.comp();
       const v = this.valores();
       if (c) untracked(() => this.estado.salvar(c, v));
+    });
+    effect(() => {
+      const f = this.feedback();
+      const c = untracked(this.comp);
+      if (c && untracked(this.ehBotao)) untracked(() => this.estado.salvarFeedback(c.id, f));
     });
   }
 
