@@ -1,0 +1,163 @@
+<div class="kcxf__topo">
+  <label class="kcxf__check">
+    <input
+      type="checkbox"
+      [checked]="config().ativo"
+      (change)="mudarGeral('ativo', marcado($event))"
+    />
+    Mostrar feedback ao clicar no botão do preview
+  </label>
+</div>
+
+<div class="kcxf__tipos" role="tablist" aria-label="Tipo de mensagem">
+  @for (t of tipos; track t) {
+    <button
+      type="button"
+      role="tab"
+      class="kcxf__tipo"
+      [attr.data-tipo]="t"
+      [attr.aria-selected]="tipo() === t"
+      [class.kcxf__tipo--off]="!config().mensagens[t].ativo"
+      (click)="tipo.set(t)"
+    >
+      {{ rotuloTipo[t] }}
+    </button>
+  }
+</div>
+
+@let m = msg();
+<div class="kcxf__campos" role="tabpanel" [attr.aria-label]="'Mensagem de ' + rotuloTipo[tipo()]">
+  <label class="kcxf__check">
+    <input type="checkbox" [checked]="m.ativo" (change)="mudar('ativo', marcado($event))" />
+    Mensagem de {{ rotuloTipo[tipo()] }} ativada
+  </label>
+  <label>
+    Título
+    <input
+      type="text"
+      [attr.maxlength]="limites.titulo"
+      [value]="m.titulo"
+      (input)="mudar('titulo', valor($event))"
+    />
+  </label>
+  <label>
+    Mensagem
+    <textarea
+      rows="2"
+      [attr.maxlength]="limites.mensagem"
+      [value]="m.mensagem"
+      (input)="mudar('mensagem', valor($event))"
+    ></textarea>
+  </label>
+  <div class="kcxf__linha">
+    <label>
+      Cor do texto
+      <input type="color" [value]="m.corTexto" (input)="mudar('corTexto', valor($event))" />
+    </label>
+    <label>
+      Fundo
+      <input type="color" [value]="m.corFundo" (input)="mudar('corFundo', valor($event))" />
+    </label>
+    <label>
+      Ícone
+      <select (change)="mudar('icone', valor($event))">
+        @for (i of icones; track i[0]) {
+          <option [value]="i[0]" [selected]="m.icone === i[0]">{{ i[1] || '—' }} {{ i[0] }}</option>
+        }
+      </select>
+    </label>
+  </div>
+  <div class="kcxf__linha">
+    <label>
+      Duração (ms)
+      <input
+        type="number"
+        step="500"
+        [min]="limites.duracao[0]"
+        [max]="limites.duracao[1]"
+        [value]="m.duracao"
+        [disabled]="tipo() === 'loading'"
+        (change)="mudarNumero('duracao', $event, limites.duracao)"
+      />
+    </label>
+    <label>
+      Posição
+      <select (change)="mudar('posicao', $any(valor($event)))">
+        @for (p of posicoes; track p) {
+          <option [value]="p" [selected]="m.posicao === p">{{ rotuloPosicao[p] }}</option>
+        }
+      </select>
+    </label>
+  </div>
+  <div class="kcxf__linha">
+    <label>
+      Largura (px)
+      <input
+        type="number"
+        [min]="limites.largura[0]"
+        [max]="limites.largura[1]"
+        [value]="m.largura"
+        (change)="mudarNumero('largura', $event, limites.largura)"
+      />
+    </label>
+    <label>
+      Raio (px)
+      <input
+        type="number"
+        [min]="limites.raio[0]"
+        [max]="limites.raio[1]"
+        [value]="m.raio"
+        (change)="mudarNumero('raio', $event, limites.raio)"
+      />
+    </label>
+  </div>
+  <p class="kx-muted kcxf__nota">
+    @if (tipo() === 'loading') {
+      Carregando fica na tela enquanto a operação roda e é trocada pelo resultado.
+    } @else {
+      0 ms = fica até a pessoa fechar.
+    }
+  </p>
+  <button type="button" class="kx-btn kx-btn--ghost" (click)="testar.emit(tipo())">
+    Ver esta mensagem no preview
+  </button>
+</div>
+
+<fieldset class="kcxf__teste">
+  <legend>Testar a operação do botão</legend>
+  <div class="kcxf__linha">
+    <label>
+      Resultado da operação
+      <select (change)="mudarSimulacao('resultado', valor($event))">
+        @for (r of resultados; track r.id) {
+          <option [value]="r.id" [selected]="config().simulacao.resultado === r.id">
+            {{ r.rotulo }}
+          </option>
+        }
+      </select>
+    </label>
+    <label>
+      Tempo de resposta (ms)
+      <input
+        type="number"
+        step="100"
+        [min]="limites.atraso[0]"
+        [max]="limites.atraso[1]"
+        [value]="config().simulacao.atrasoMs"
+        (change)="mudarSimulacao('atrasoMs', valor($event))"
+      />
+    </label>
+  </div>
+  <button
+    type="button"
+    class="kx-btn kx-btn--primary"
+    [disabled]="ocupado()"
+    (click)="simular.emit()"
+  >
+    {{ ocupado() ? 'Operação em andamento…' : 'Rodar operação de teste' }}
+  </button>
+  <p class="kx-muted kcxf__nota">
+    A mensagem sai do resultado real da operação: falha mostra Erro, nunca Sucesso. Clicar no botão
+    dentro do preview roda a mesma operação.
+  </p>
+</fieldset>

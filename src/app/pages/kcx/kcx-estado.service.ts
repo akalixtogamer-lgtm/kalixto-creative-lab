@@ -7,8 +7,10 @@ import {
   valoresAtuais,
 } from '../../kcx/resolver';
 import { RepositorioPresets } from '../../kcx/presets';
+import { ConfigFeedback, normalizarFeedback } from '../../kcx/feedback';
 
 const CHAVE_VALORES = 'kalixto-lab:kcx-valores:v1';
+const CHAVE_FEEDBACK = 'kalixto-lab:kcx-feedback:v1';
 
 function storageSeguro(): Storage | null {
   try {
@@ -65,6 +67,37 @@ export class KcxEstadoService {
     const restantes = valoresAposAtualizacao(salvos, antigo.variaveis, novo.variaveis);
     if (Object.keys(restantes).length === Object.keys(salvos).length) return;
     this.gravar({ ...todos, [novo.id]: restantes });
+  }
+
+  /* ---------- Mensagens e Feedback (por componente, chave própria) ---------- */
+  private memoriaFeedback: Record<string, unknown> = {};
+
+  private lerFeedbacks(): Record<string, unknown> {
+    if (!this.storage) return this.memoriaFeedback;
+    try {
+      const o = JSON.parse(this.storage.getItem(CHAVE_FEEDBACK) ?? '{}') as unknown;
+      return o && typeof o === 'object' ? (o as Record<string, unknown>) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  /** Feedback salvo do componente (ou o padrão), sempre normalizado. */
+  feedback(id: string): ConfigFeedback {
+    return normalizarFeedback(this.lerFeedbacks()[id]);
+  }
+
+  salvarFeedback(id: string, cfg: ConfigFeedback): void {
+    const todos = { ...this.lerFeedbacks(), [id]: cfg };
+    if (!this.storage) {
+      this.memoriaFeedback = todos;
+      return;
+    }
+    try {
+      this.storage.setItem(CHAVE_FEEDBACK, JSON.stringify(todos));
+    } catch {
+      this.memoriaFeedback = todos;
+    }
   }
 
   private gravar(todos: Record<string, Valores>): void {

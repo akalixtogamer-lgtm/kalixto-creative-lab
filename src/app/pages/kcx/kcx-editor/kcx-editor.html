@@ -158,12 +158,18 @@
             }
           </p>
         } @else {
-          <kx-kcx-preview
-            #preview
-            [documento]="documento()"
-            [saidas]="saidas()"
-            [titulo]="'Preview de ' + c.nome"
-          />
+          <div class="kcxe__preview-feedback">
+            <kx-kcx-preview
+              #preview
+              [documento]="documento()"
+              [saidas]="saidas()"
+              [titulo]="'Preview de ' + c.nome"
+              (mensagem)="aoMensagemPreview($event)"
+            />
+            @if (mensagemAtual(); as m) {
+              <kx-kcx-feedback-toast [m]="m" (fechar)="mensagemAtual.set(null)" />
+            }
+          </div>
         }
         @if (temVariantes()) {
           <div class="kcxe__variantes">
@@ -196,6 +202,17 @@
           {{ c.variaveis.length }} variáveis funcionais. Cada uma mostra o que controla.
         </p>
         <kx-kcx-controles [variaveis]="c.variaveis" [valores]="valores()" (mudou)="mudar($event)" />
+        @if (ehBotao()) {
+          <section class="kcxe__feedback" aria-labelledby="kcxe-feedback">
+            <h2 id="kcxe-feedback" class="kcxe__h2">Mensagens e Feedback</h2>
+            <kx-kcx-feedback-painel
+              [(config)]="feedback"
+              [ocupado]="operando()"
+              (testar)="testarMensagem($event)"
+              (simular)="rodarOperacao()"
+            />
+          </section>
+        }
       </section>
 
       @if (tamanho(); as t) {

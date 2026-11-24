@@ -260,3 +260,15 @@
   flex-wrap: wrap;
   gap: var(--kx-space-2, 0.5rem);
 }
+
+/* Mensagens e Feedback: a mensagem fica sobre o preview */
+.kcxe__preview-feedback {
+  position: relative;
+}
+.kcxe__feedback {
+  display: grid;
+  gap: var(--kx-space-3);
+  margin-top: var(--kx-space-4);
+  padding-top: var(--kx-space-4);
+  border-top: 1px solid var(--kx-border);
+}

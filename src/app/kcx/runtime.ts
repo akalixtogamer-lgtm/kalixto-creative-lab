@@ -64,6 +64,11 @@ ${APLICAR}
     if (e.data.kcx === 'set') aplicarSaidas(e.data);
     if (e.data.kcx === 'controle') controlar(e.data.acao, e.data.valor);
   });
+  // Clique num botão do preview: o editor decide se roda a operação com feedback.
+  document.addEventListener('click', function (e) {
+    var alvo = e.target && e.target.closest ? e.target.closest('button, [role="button"], input[type="submit"]') : null;
+    if (alvo) window.parent.postMessage({ kcx: 'clique' }, '*');
+  }, true);
   window.parent.postMessage({ kcx: 'pronto' }, '*');
 })();`;
 

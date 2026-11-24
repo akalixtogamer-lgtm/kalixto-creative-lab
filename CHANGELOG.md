@@ -5,6 +5,16 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+### Adicionado — Mensagens e Feedback nos botões
+- No editor (`/kcx/:id`) de componentes que são botões, o painel de propriedades ganha a seção
+  **Mensagens e Feedback**: Sucesso, Erro, Aviso, Informação e Carregando, cada uma com título,
+  mensagem, cor do texto e do fundo, ícone, duração, posição, largura e raio, e ligar/desligar.
+- A ação do botão fica separada da mensagem: Carregando aparece enquanto a operação roda e a
+  mensagem final sai do resultado real dela (falha mostra Erro, nunca Sucesso).
+- Teste no preview: "Ver esta mensagem", "Rodar operação de teste" (resultado e tempo de
+  resposta escolhidos) ou clique no próprio botão dentro do preview. Configuração salva no
+  navegador por componente.
+
 ### Melhorado — Novo componente depois de baixar
 - No editor, botão **Novo componente** no topo e logo abaixo de "Exportar para Figma": leva ao
   catálogo do construtor para escolher o próximo tipo. Depois de baixar (.kcx.json, código,
