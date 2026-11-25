@@ -54,9 +54,15 @@
         </div>
       }
       <p class="kcxe__acoes-topo">
+        @if (msgDuplicar()) {
+          <span class="kx-muted" role="status">{{ msgDuplicar() }}</span>
+        }
         <a class="kx-btn kx-btn--primary" routerLink="/kcx/criar">
           <kx-icon name="kcx" /> Novo componente
         </a>
+        <button type="button" class="kx-btn kx-btn--ghost" (click)="duplicar()">
+          <kx-icon name="copy" /> Duplicar
+        </button>
         <a
           class="kx-btn kx-btn--ghost"
           routerLink="/kcx/comparar"

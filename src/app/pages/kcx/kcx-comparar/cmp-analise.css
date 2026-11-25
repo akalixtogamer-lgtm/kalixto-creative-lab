@@ -1,0 +1,231 @@
+:host {
+  display: grid;
+  gap: 1rem;
+  --a-borda: var(--kx-border, rgb(255 255 255 / 16%));
+}
+h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+h4 {
+  margin: 0 0 0.3rem;
+  font-size: 0.85rem;
+}
+p {
+  margin: 0.3rem 0;
+}
+select,
+input[type='url'] {
+  font: inherit;
+  font-size: 0.85rem;
+  min-width: 0;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--a-borda);
+  background: rgb(255 255 255 / 4%);
+  color: inherit;
+}
+select option {
+  color: #111;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+}
+.cmpa__fluxo {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+.cmpa__fluxo strong {
+  color: var(--kx-acento, #00d9ff);
+}
+.cmpa__msg {
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--a-borda);
+  background: rgb(0 217 255 / 8%);
+  font-size: 0.88rem;
+}
+.cmpa__msg--erro {
+  background: rgb(255 84 112 / 10%);
+  border-color: rgb(255 84 112 / 40%);
+}
+.cmpa__fontes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+.cmpa__caixa {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--a-borda);
+  background: rgb(255 255 255 / 2%);
+}
+.cmpa__linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.6rem;
+  margin: 0.5rem 0;
+}
+.cmpa__cresce {
+  flex: 1 1 200px;
+}
+.cmpa__mini {
+  padding: 0.28rem 0.65rem;
+  font-size: 0.78rem;
+}
+.cmpa__arquivo {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+.cmpa__arquivo input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.cmpa__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--kx-acento, #00d9ff);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.cmpa__passos {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+  font-size: 0.86rem;
+}
+.cmpa__codigo {
+  width: 100%;
+  font: 0.72rem/1.4 var(--kx-font-mono, monospace);
+  color: inherit;
+  background: rgb(0 0 0 / 25%);
+  border: 1px solid var(--a-borda);
+  border-radius: 8px;
+}
+.cmpa__trechos ol {
+  max-height: 200px;
+  overflow: auto;
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+  font-size: 0.8rem;
+}
+.cmpa__tecs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+.cmpa__tecs ul,
+.cmpa__resumo {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.82rem;
+}
+.cmpa__tecs li {
+  margin-bottom: 0.3rem;
+}
+.cmpa__st {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  color: #050505;
+}
+.cmpa__st--confirmada {
+  background: #2bd98a;
+}
+.cmpa__st--provavel {
+  background: #ffc24b;
+}
+.cmpa__st--nao-identificada {
+  background: rgb(255 255 255 / 16%);
+  color: inherit;
+}
+.cmpa__titulo {
+  margin-bottom: 0.5rem;
+}
+.cmpa__fichas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cmpa__ficha {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--a-borda);
+  background: rgb(255 255 255 / 2%);
+}
+.cmpa__topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.cmpa__chip,
+.cmpa__conf {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  border: 1px solid var(--a-borda);
+}
+.cmpa__chip--video {
+  border-color: #ff2daa;
+}
+.cmpa__conf--alta {
+  background: #2bd98a;
+  color: #050505;
+}
+.cmpa__conf--media {
+  background: #ffc24b;
+  color: #050505;
+}
+.cmpa__info,
+.cmpa__params {
+  font-size: 0.8rem;
+}
+.cmpa__evid {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.8rem;
+}
+.cmpa__dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.6rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.78rem;
+}
+.cmpa__dl dt {
+  font-weight: 600;
+}
+.cmpa__dl dd {
+  margin: 0;
+}
+.cmpa__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+summary {
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+@media (max-width: 560px) {
+  .cmpa__dl {
+    grid-template-columns: 1fr;
+  }
+}

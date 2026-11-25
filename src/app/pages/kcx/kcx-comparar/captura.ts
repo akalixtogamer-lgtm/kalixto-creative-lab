@@ -3,6 +3,7 @@
  * enviadas, já reduzidos para caber no navegador.
  */
 import { FrameReferencia, novoIdCmp } from '../../../kcx/comparar';
+import { LARGURA_ANALISE, QuadroCinza } from '../../../kcx/analise';
 
 /** Lado maior de cada frame guardado. */
 export const LADO_FRAME = 960;
@@ -113,4 +114,88 @@ export function corNoPonto(
   ctx.drawImage(fonte, Math.max(0, x - 1), Math.max(0, y - 1), 3, 3, 0, 0, 1, 1);
   const d = ctx.getImageData(0, 0, 1, 1).data;
   return `#${[d[0], d[1], d[2]].map((n) => n.toString(16).padStart(2, '0')).join('')}`;
+}
+
+/* ------------------------------ Web Intelligence ------------------------------ */
+
+/** Desenha uma fonte em tons de cinza com `largura` px (a altura segue a proporção). */
+function cinza(
+  fonte: CanvasImageSource,
+  w0: number,
+  h0: number,
+  t: number,
+  largura: number,
+): QuadroCinza {
+  const w = largura;
+  const h = Math.max(8, Math.round((h0 / w0) * largura));
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const ctx = c.getContext('2d', { willReadFrequently: true })!;
+  ctx.drawImage(fonte, 0, 0, w, h);
+  const d = ctx.getImageData(0, 0, w, h).data;
+  const px = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++)
+    px[i] = Math.round(0.2126 * d[i * 4] + 0.7152 * d[i * 4 + 1] + 0.0722 * d[i * 4 + 2]);
+  return { t, largura: w, altura: h, px };
+}
+
+/**
+ * Amostra o vídeo em `fps` quadros por segundo (no máximo `limite`), num
+ * elemento separado: o vídeo da tela não se mexe.
+ */
+export async function quadrosDoVideo(
+  url: string,
+  fps: number,
+  limite = 240,
+  progresso?: (feito: number, total: number) => void,
+): Promise<{ quadros: QuadroCinza[]; largura: number }> {
+  const v = document.createElement('video');
+  v.muted = true;
+  v.preload = 'auto';
+  v.playsInline = true;
+  v.src = url;
+  await esperar(v, 'loadeddata');
+  const dur = v.duration;
+  if (!Number.isFinite(dur) || dur <= 0) throw new Error('Vídeo sem duração.');
+  const passo = Math.max(1 / fps, dur / limite);
+  const total = Math.floor(dur / passo) + 1;
+  const quadros: QuadroCinza[] = [];
+  for (let i = 0; i < total; i++) {
+    v.currentTime = Math.min(dur - 0.01, i * passo);
+    await esperar(v, 'seeked');
+    quadros.push(
+      cinza(
+        v,
+        v.videoWidth,
+        v.videoHeight,
+        Math.round(v.currentTime * 1000) / 1000,
+        LARGURA_ANALISE,
+      ),
+    );
+    progresso?.(i + 1, total);
+  }
+  const largura = v.videoWidth;
+  v.removeAttribute('src');
+  v.load();
+  return { quadros, largura };
+}
+
+/** Os frames da referência, na ordem, como sequência (sem tempo: 1 por segundo). */
+export async function quadrosDosFrames(
+  frames: FrameReferencia[],
+): Promise<{ quadros: QuadroCinza[]; largura: number }> {
+  const quadros: QuadroCinza[] = [];
+  let largura = 0;
+  let base: { w: number; h: number } | null = null;
+  for (const [i, f] of frames.entries()) {
+    const img = new Image();
+    img.src = f.src;
+    await img.decode();
+    base ??= { w: img.naturalWidth, h: img.naturalHeight };
+    largura ||= f.largura;
+    // Todos no tamanho do primeiro (a análise compara quadros do mesmo tamanho).
+    quadros.push(cinza(img, base.w, base.h, f.tempo ?? i, LARGURA_ANALISE));
+  }
+  return { quadros, largura };
 }

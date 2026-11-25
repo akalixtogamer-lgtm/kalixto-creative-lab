@@ -19,6 +19,55 @@ const SO_SOMBRA =
   'O hover ganha a sombra colorida, mas não sobe: uma variante não consegue se mover sozinha.';
 
 export const NOTAS_FIGMA: Record<string, NotaFigma> = {
+  // Efeito de movimento (web)
+  'efeito-web:revelar': {
+    nivel: 'codigo',
+    texto:
+      'A entrada ao rolar fica só no código. No Figma: variantes Início e Fim com o mesmo quadro.',
+  },
+  'efeito-web:parallax': {
+    nivel: 'codigo',
+    texto: 'As camadas em velocidades diferentes dependem do scroll: ficam só no código.',
+  },
+  'efeito-web:sticky': {
+    nivel: 'codigo',
+    texto:
+      'Prender ao rolar fica só no código (no protótipo do Figma, use “Fix position when scrolling”).',
+  },
+  'efeito-web:horizontal': {
+    nivel: 'codigo',
+    texto: 'O trilho que anda com o scroll fica só no código.',
+  },
+  'efeito-web:empilhar': {
+    nivel: 'codigo',
+    texto: 'Os cards empilhando com o scroll ficam só no código.',
+  },
+  'efeito-web:morph': { nivel: 'codigo', texto: 'A forma mudando o tempo todo fica só no código.' },
+  'efeito-web:hover': {
+    nivel: 'codigo',
+    texto:
+      'O hover (subir, crescer e brilhar) fica no código; no Figma ficam as variantes Início e Fim.',
+  },
+  'efeito-web:texto': {
+    nivel: 'codigo',
+    texto: 'A entrada palavra por palavra fica só no código.',
+  },
+  'efeito-web:vidro': {
+    nivel: 'codigo',
+    texto:
+      'O desfoque do fundo fica no código; no Figma, aplique Background blur na camada se quiser.',
+  },
+  'efeito-web:profundidade': { nivel: 'codigo', texto: 'O zoom ao rolar fica só no código.' },
+  'efeito-web:cursor': {
+    nivel: 'codigo',
+    texto: 'O cursor que segue e a inclinação dos cards ficam só no código.',
+  },
+  'efeito-web:transicao': {
+    nivel: 'codigo',
+    texto:
+      'A troca de cena com círculo fica no código; no Figma, use Smart Animate entre duas telas.',
+  },
+
   // Botão
   'botao:elevar': { nivel: 'parcial', texto: SO_SOMBRA },
   'botao:preencher': {

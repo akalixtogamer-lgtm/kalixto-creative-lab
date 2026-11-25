@@ -135,6 +135,29 @@ describe('KCX · páginas', () => {
     }
   });
 
+  it('todas as rotas do KCX Studio abrem (incluindo a comparação com a aba Análise)', async () => {
+    const rotas = [
+      '/kcx',
+      '/kcx/compor',
+      '/kcx/design-system',
+      '/kcx/briefing',
+      '/kcx/moodboard',
+      '/kcx/moldes',
+      '/kcx/mapa',
+      '/kcx/fundacao',
+      '/kcx/montar',
+      '/kcx/telas',
+      '/kcx/comparar',
+      '/kcx/criar',
+      '/kcx/neon-glow',
+    ];
+    for (const r of rotas) {
+      const h = await abrir(r);
+      expect(h.routeNativeElement?.querySelector('h1')?.textContent?.trim(), r).toBeTruthy();
+      TestBed.resetTestingModule();
+    }
+  });
+
   it('importar alterações mostra as diferenças antes de aplicar', async () => {
     const h = await abrir('/kcx/neon-glow');
     const dbg = h.routeDebugElement!.query((d) => d.name === 'kx-kcx-importar-painel');

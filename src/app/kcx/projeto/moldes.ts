@@ -890,9 +890,9 @@ export const TROCAS_SUGERIDAS: Record<string, string[]> = {
   navbar: ['menu-sanduiche', 'mega-menu'],
   'menu-sanduiche': ['navbar', 'menu-lateral'],
   'mega-menu': ['navbar'],
-  hero: ['card-foto', 'card-video', 'banner'],
-  carrossel: ['galeria', 'abas', 'card-foto'],
-  galeria: ['carrossel', 'abas'],
+  hero: ['card-foto', 'card-video', 'banner', 'efeito-web'],
+  carrossel: ['galeria', 'abas', 'card-foto', 'efeito-web'],
+  galeria: ['carrossel', 'abas', 'efeito-web'],
   'card-foto': ['card-video', 'carrossel', 'hero'],
   'card-video': ['card-foto', 'hero'],
   'card-preco': ['card-foto', 'acordeao'],
@@ -906,6 +906,8 @@ export const TROCAS_SUGERIDAS: Record<string, string[]> = {
   select: ['radio', 'dropdown'],
   banner: ['toast', 'hero'],
   rodape: ['navbar'],
+  // Efeitos reconstruídos de referências podem entrar no lugar de seções de conteúdo.
+  'efeito-web': ['hero', 'carrossel', 'galeria'],
 };
 
 export interface ResultadoMolde {

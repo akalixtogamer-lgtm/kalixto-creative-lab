@@ -35,6 +35,21 @@ Prompt. O plano completo está em [`AUDITORIA.md`](AUDITORIA.md).
 
 ---
 
+### Terceira etapa: KCX Studio
+
+| Entrega | Situação | Versão |
+|---|---|---|
+| Formato KCX, editor, compositor, Figma Bridge | ✅ Publicado | `v1.9`–`v1.10` |
+| Construtor, montador, vidro, logo, design system, briefing, moodboard, mapa, moldes, Telas | ✅ Publicado | `v1.11`–`v1.21` |
+| Reference vs. Reconstruction (4 modos, fidelidade, ajustes, versões, aprovação, Motion Library) | ✅ Publicado | #20 |
+| Mensagens e Feedback nos botões | ✅ Testado · sai na `v1.22.0-rc.1` | #24 |
+| **KCX Web Intelligence**: investigação de sites, análise de vídeo, fichas, reconstrução (12 efeitos), duplicar | ✅ Testado (1169 testes + Chrome real) · sai na `v1.22.0-rc.1` | `v1.22.0-rc.1` |
+| Análise de vídeo com mais precisão (fluxo óptico denso, separação de camadas) | ⏳ Próxima | — |
+| Coletor como extensão do navegador (sem colar no Console) | ⏳ Próxima | — |
+| Auditoria axe das telas do KCX Studio | ⏳ Próxima | — |
+
+Detalhes: [`kcx/WEB-INTELLIGENCE.md`](kcx/WEB-INTELLIGENCE.md) · auditoria: [`kcx/AUDITORIA-WEB-INTELLIGENCE.md`](kcx/AUDITORIA-WEB-INTELLIGENCE.md).
+
 ## Fase 1 — Fundação Angular ✅
 Angular 22, Design System Kalixto, Dashboard, navegação, estrutura da biblioteca.
 

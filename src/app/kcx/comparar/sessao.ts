@@ -5,6 +5,7 @@
 import type { KcxComponente, KcxValor } from '../kcx.types';
 import { normalizarAjuste, seletorSeguro } from './ajustes';
 import { CRITERIOS, ROTULO_ESTADO, resumir } from './fidelidade';
+import { lerAnalise } from '../analise/ler';
 import type {
   Ajuste,
   Caixa,
@@ -364,6 +365,8 @@ export function lerSessao(x: unknown): SessaoComparacao | null {
   if (med) s.medicoes = med;
   const salvo = txt(x['salvoComo'], 80);
   if (salvo) s.salvoComo = salvo;
+  const analise = lerAnalise(x['analise']);
+  if (analise) s.analise = analise;
   // Só uma versão aprovada.
   let achou = false;
   for (const v of s.versoes) {

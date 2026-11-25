@@ -1402,7 +1402,7 @@
   }
 
   // src/app/kcx/serializar.ts
-  var ORIGEM_LAB = { ferramenta: "Kalixto Creative Lab", versao: "1.10.0-rc.1" };
+  var ORIGEM_LAB = { ferramenta: "Kalixto Creative Lab", versao: "1.22.0-rc.1" };
   function clonar(x) {
     return JSON.parse(JSON.stringify(x));
   }

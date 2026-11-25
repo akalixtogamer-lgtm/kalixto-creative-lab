@@ -6,6 +6,7 @@ import { TIPOS_NAVEGACAO } from './tipos/navegacao';
 import { TIPOS_SECOES } from './tipos/secoes';
 import { TIPOS_CONTROLES } from './tipos/controles';
 import { TIPOS_COMPOSTOS } from './tipos/compostos';
+import { TIPOS_MOVIMENTO } from './tipos/movimento';
 import { MONTADO_ID, definicaoMontada } from './montado';
 
 export * from './montar';
@@ -14,6 +15,8 @@ export * from './figma-animacoes';
 export * from './montado';
 export * from './tela';
 export * from './alinhar';
+export { ANIMACOES_EFEITO_WEB } from './tipos/movimento';
+export type { AnimacaoEfeitoWeb } from './tipos/movimento';
 
 /** Todos os tipos que o construtor sabe montar. */
 export const TIPOS_CONSTRUTOR: DefinicaoTipo[] = [
@@ -22,6 +25,7 @@ export const TIPOS_CONSTRUTOR: DefinicaoTipo[] = [
   ...TIPOS_SECOES,
   ...TIPOS_CONTROLES,
   ...TIPOS_COMPOSTOS,
+  ...TIPOS_MOVIMENTO,
 ];
 
 export function tipoConstrutor(id: string): DefinicaoTipo | undefined {
