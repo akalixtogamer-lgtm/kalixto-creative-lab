@@ -36,7 +36,7 @@ import {
   slug,
   valoresVidro,
 } from '../../../kcx/construtor';
-import { idLivre } from '../../../kcx/meus-componentes';
+import { duplicarComponente, idLivre } from '../../../kcx/meus-componentes';
 import { fundoColorido } from '../../../kcx/plano-html';
 import { variantesDoComponente } from '../../../kcx/figma-plano';
 import {
@@ -168,6 +168,23 @@ export class KcxEditor {
     } catch (e) {
       this.msgConversao.set((e as Error).message);
     }
+  }
+
+  /* ---------- Duplicar ---------- */
+  protected readonly msgDuplicar = signal('');
+
+  /** Cópia independente (id e prefixo novos) nos Meus componentes, já aberta no editor. */
+  protected duplicar(): void {
+    const c = this.comp();
+    if (!c) return;
+    const copia = duplicarComponente(c, this.meus.ids());
+    const erros = this.meus.salvar(copia);
+    if (erros.length) {
+      this.msgDuplicar.set(erros[0]);
+      return;
+    }
+    this.msgDuplicar.set('');
+    void this.router.navigate(['/kcx', copia.id]);
   }
 
   protected excluir(): void {

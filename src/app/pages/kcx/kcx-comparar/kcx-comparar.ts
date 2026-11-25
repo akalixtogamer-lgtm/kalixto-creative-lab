@@ -81,9 +81,10 @@ import { KcxPreview } from '../kcx-preview/kcx-preview';
 import { KcxProjetoService } from '../kcx-projeto.service';
 import { extrairFrames, frameDoVideo, framesDeImagens } from './captura';
 import { CmpReferencia, Ferramenta, VistaReferencia } from './cmp-referencia';
+import { CmpAnalise } from './cmp-analise';
 
 type Modo = 'lado' | 'overlay' | 'sync' | 'interacao';
-type Aba = 'referencia' | 'ajustes' | 'fidelidade' | 'versoes' | 'aprovacao';
+type Aba = 'referencia' | 'analise' | 'ajustes' | 'fidelidade' | 'versoes' | 'aprovacao';
 type Viewport = 'referencia' | 'celular' | 'tablet' | 'desktop';
 /** Para onde vai o próximo elemento escolhido na reconstrução. */
 type Destino = { tipo: 'ajuste' } | { tipo: 'elemento' | 'marco' | 'comportamento'; id: string };
@@ -116,6 +117,7 @@ const VIEWPORTS: Record<
     KcxControles,
     KcxExportarPainel,
     CmpReferencia,
+    CmpAnalise,
   ],
   templateUrl: './kcx-comparar.html',
   styleUrls: ['./kcx-comparar.css', './kcx-comparar-paineis.css'],
@@ -1274,6 +1276,24 @@ export class KcxComparar {
 
   protected continuarEditando(): void {
     this.aba.set('ajustes');
+    document.getElementById('cmp-palco')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ============================== Web Intelligence ============================== */
+
+  /** Uma ficha pediu para ver um momento da referência. */
+  protected verMomento(t: number): void {
+    if (this.videoUrl()) this.vista.set('video');
+    this.tempoRef.set(t);
+    this.refPainel()?.pausar();
+    this.refPainel()?.irPara(t);
+    document.getElementById('cmp-palco')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /** Um efeito virou componente e está no Painel B: vai para a comparação. */
+  protected aoReconstruir(): void {
+    this.selecionado.set(null);
+    this.mudarModo('lado');
     document.getElementById('cmp-palco')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 

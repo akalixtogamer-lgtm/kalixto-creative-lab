@@ -16,7 +16,7 @@ import type { KcxFundacao } from './fundacao';
 import { ResultadoValidacao, validarPacote } from './validar';
 import { Valores, normalizarValor, validarValor } from './resolver';
 
-export const ORIGEM_LAB = { ferramenta: 'Kalixto Creative Lab', versao: '1.10.0-rc.1' };
+export const ORIGEM_LAB = { ferramenta: 'Kalixto Creative Lab', versao: '1.22.0-rc.1' };
 
 /** Cópia profunda (os pacotes são JSON puro). */
 export function clonar<T>(x: T): T {

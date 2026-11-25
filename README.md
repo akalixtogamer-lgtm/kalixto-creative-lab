@@ -11,13 +11,13 @@ Não é portfólio, currículo, site institucional nem vitrine de serviços — 
 
 ## Status
 
-| Item                      | Situação                                                                                                                                 |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Versão                    | `1.10.0-rc.1` (KCX: construtor de componentes no Studio, Figma → Studio, variáveis funcionais, editor, composição e plugin Figma Bridge) |
-| Roadmap                   | **6 de 6 fases implementadas** — aguardando a validação do Wallace                                                                       |
-| Conteúdo                  | 7 laboratórios · 60 demos interativas · 56 kits de efeito com ficha técnica · 27 exercícios · 60 desafios                                |
-| Testes                    | 740 automáticos passando · acessibilidade WCAG 2.1 AA sem violações (axe-core)                                                           |
-| Publicado no GitHub Pages | Sim, a `v1.8.0-rc.1` (a `v1.10.0-rc.1` aguarda teste)                                                                                    |
+| Item                      | Situação                                                                                                                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Versão                    | `1.22.0-rc.1` (KCX Web Intelligence: investigação de sites, análise de vídeo, fichas técnicas e reconstrução de efeitos como componentes KCX)                                                     |
+| Roadmap                   | Labs e biblioteca (fases 1–6) implementados · KCX Studio em evolução — ver [`docs/ROADMAP.md`](docs/ROADMAP.md)                                                                                   |
+| Conteúdo                  | 7 laboratórios · 60 demos · 56 kits de efeito · KCX Studio (construtor, montador, editor, compositor, Figma Bridge, design system, moldes, Telas, Reference vs. Reconstruction, Web Intelligence) |
+| Testes                    | 1169 automáticos passando (`npm run verificar`)                                                                                                                                                   |
+| Publicado no GitHub Pages | https://akalixtogamer-lgtm.github.io/kalixto-creative-lab/ (publicação manual: Actions → “Publicar no GitHub Pages” → `PUBLICAR`)                                                                 |
 
 Roteiro de avaliação, fase por fase: [`docs/AVALIACAO.md`](docs/AVALIACAO.md).
 
@@ -32,6 +32,7 @@ Animated Border, Hover Lift e Gauge Meter. Abra **KCX Studio** (`/kcx`) no menu.
 - Especificação: [`docs/kcx/ESPECIFICACAO.md`](docs/kcx/ESPECIFICACAO.md)
 - Plugin do Figma: [`docs/kcx/FIGMA-BRIDGE.md`](docs/kcx/FIGMA-BRIDGE.md) · instalar: `figma-bridge/dist/manifest.json`
 - Auditoria, arquitetura e como criar componentes: [`docs/kcx/AUDITORIA-E-GUIA.md`](docs/kcx/AUDITORIA-E-GUIA.md)
+- Web Intelligence (investigar sites, analisar vídeos, reconstruir efeitos): [`docs/kcx/WEB-INTELLIGENCE.md`](docs/kcx/WEB-INTELLIGENCE.md)
 
 ```bash
 npm run figma:build   # gera o plugin em figma-bridge/dist (e o download dentro do lab)

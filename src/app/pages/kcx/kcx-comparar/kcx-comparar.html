@@ -750,6 +750,17 @@
       <button
         type="button"
         role="tab"
+        [attr.aria-selected]="aba() === 'analise'"
+        (click)="aba.set('analise')"
+      >
+        Análise
+        @if (s.analise?.fichas?.length) {
+          <span class="cmp__n">{{ s.analise!.fichas.length }}</span>
+        }
+      </button>
+      <button
+        type="button"
+        role="tab"
         [attr.aria-selected]="aba() === 'ajustes'"
         (click)="aba.set('ajustes')"
       >
@@ -859,7 +870,11 @@
                 <div class="cmp__linha">
                   <label class="kx-btn kx-btn--primary cmp__arquivo">
                     <kx-icon name="upload" /> {{ videoUrl() ? 'Trocar vídeo' : 'Enviar gravação' }}
-                    <input type="file" accept="video/*" (change)="enviarVideo($event)" />
+                    <input
+                      type="file"
+                      accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm,video/*"
+                      (change)="enviarVideo($event)"
+                    />
                   </label>
                   @if (r.videoNome) {
                     <span class="kx-muted">
@@ -1236,6 +1251,16 @@
               + Elemento
             </button>
           </section>
+        }
+
+        <!-- ---------------------------- Análise (Web Intelligence) ---------------------------- -->
+        @case ('analise') {
+          <kx-cmp-analise
+            [sessao]="s"
+            [videoUrl]="videoUrl()"
+            (irPara)="verMomento($event)"
+            (reconstruido)="aoReconstruir()"
+          />
         }
 
         <!-- ---------------------------- Ajustes ---------------------------- -->

@@ -5,6 +5,7 @@ import {
   CHAVE_MEUS_V1,
   RepositorioMeusComponentes,
   VERSAO_ARMAZENAMENTO,
+  duplicarComponente,
 } from './meus-componentes';
 
 class Memoria {
@@ -77,5 +78,23 @@ describe('RepositorioMeusComponentes', () => {
   it('recusa salvar um componente inválido', () => {
     const repo = new RepositorioMeusComponentes(new Memoria());
     expect(repo.salvar(quebrado as never).length).toBeGreaterThan(0);
+  });
+});
+
+describe('duplicarComponente', () => {
+  it('a cópia tem id, nome e prefixo próprios e continua válida', async () => {
+    const { validarComponente } = await import('./validar');
+    const { resolverSaidas } = await import('./resolver');
+    const original = structuredClone(KCX_COMPONENTES[0]);
+    const c = duplicarComponente(original, [original.id, `${original.id}-copia`]);
+    expect(c.id).toBe(`${original.id}-copia-2`);
+    expect(c.nome).toBe(`${original.nome} (cópia)`);
+    expect(validarComponente(c, c.id)).toEqual([]);
+    expect(c.codigo.css).not.toContain(`kcx-${original.id}__`);
+    expect(
+      Object.keys(resolverSaidas(c.variaveis).cssVars).every((k) => k.startsWith(`--kcx-${c.id}`)),
+    ).toBe(true);
+    // O original não muda.
+    expect(original.codigo.css).toContain(`kcx-${original.id}`);
   });
 });

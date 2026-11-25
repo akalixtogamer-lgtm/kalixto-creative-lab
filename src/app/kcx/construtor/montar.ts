@@ -15,8 +15,10 @@ import {
   KcxNo,
   KcxPrototipo,
   KcxRef,
+  KcxValor,
   KcxVariavel,
 } from '../kcx.types';
+import { normalizarValor } from '../resolver';
 import { LICENCA_MIT, MAPA_EASING, EASINGS_KCX, variavel } from '../componentes/_base';
 
 /* ============================== Configuração ============================== */
@@ -74,6 +76,11 @@ export interface ConfigConstrutor {
   logo?: KcxLogo;
   /** Altura da logo em px (padrão 32). */
   alturaLogo?: number;
+  /**
+   * Valores iniciais de variáveis (id → valor), ex.: as medidas de uma ficha
+   * técnica. Viram o padrão do componente e continuam editáveis.
+   */
+  valores?: Record<string, KcxValor>;
 }
 
 /** Tema oposto (para o modo Claro/Escuro). */
@@ -113,7 +120,7 @@ export interface OpcaoAnimacao {
 }
 
 export type CategoriaConstrutor =
-  'acoes' | 'navegacao' | 'sobreposicao' | 'conteudo' | 'formularios' | 'secoes';
+  'acoes' | 'navegacao' | 'sobreposicao' | 'conteudo' | 'formularios' | 'secoes' | 'movimento';
 
 export const CATEGORIAS_CONSTRUTOR: { id: CategoriaConstrutor; nome: string }[] = [
   { id: 'navegacao', nome: 'Navegação' },
@@ -122,6 +129,7 @@ export const CATEGORIAS_CONSTRUTOR: { id: CategoriaConstrutor; nome: string }[] 
   { id: 'conteudo', nome: 'Cards e conteúdo' },
   { id: 'formularios', nome: 'Formulários' },
   { id: 'secoes', nome: 'Seções de página' },
+  { id: 'movimento', nome: 'Efeitos de movimento (web)' },
 ];
 
 export interface Partes {
@@ -958,6 +966,13 @@ export function construirComponente(def: DefinicaoTipo, cfg: ConfigConstrutor): 
   const anim = def.animacoes.find((a) => a.id === cfg.animacao) ?? def.animacoes[0];
   const hoje = new Date().toISOString().slice(0, 10);
   const variaveis = [...variaveisBase(b, def), ...b.extras, ...(partes.variaveis ?? [])];
+  for (const v of variaveis) {
+    const inicial = cfg.valores?.[v.id];
+    if (inicial === undefined) continue;
+    const valor = normalizarValor(v, inicial);
+    v.padrao = valor;
+    v.valor = valor;
+  }
   const nivel = 2 as const;
   return {
     id: b.id,

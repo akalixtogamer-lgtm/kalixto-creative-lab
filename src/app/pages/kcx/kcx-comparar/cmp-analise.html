@@ -1,0 +1,285 @@
+<p class="cmpa__fluxo" aria-label="Fluxo">
+  <span>Referência</span> → <strong>Análise</strong> → <span>Efeitos</span> →
+  <span>Reconstrução</span> → <span>Comparação</span> → <span>Ajustes</span> →
+  <span>Aprovação</span> → <span>Motion Library</span>
+</p>
+
+@if (msg(); as m) {
+  <p class="cmpa__msg" [class.cmpa__msg--erro]="!m.ok" role="status">{{ m.texto }}</p>
+}
+@if (trabalhando()) {
+  <p class="cmpa__msg" role="status" aria-live="polite">{{ trabalhando() }}</p>
+}
+
+<div class="cmpa__fontes">
+  <section class="cmpa__caixa" aria-labelledby="cmpa-video">
+    <h3 id="cmpa-video">Gravação ou imagens</h3>
+    <p class="kx-muted">
+      Compara os quadros em sequência e reconhece rolagem, parallax, sticky, scroll horizontal,
+      reveal, zoom, transições e mudanças locais. <strong>Não inspeciona DOM</strong>: nenhuma
+      tecnologia é afirmada por vídeo.
+    </p>
+    @if (videoUrl()) {
+      <div class="cmpa__linha">
+        <label>
+          Quadros por segundo
+          <select (change)="fps.set(+$any($event.target).value)">
+            @for (f of [4, 6, 8, 12]; track f) {
+              <option [value]="f" [selected]="f === fps()">{{ f }}</option>
+            }
+          </select>
+        </label>
+        <button
+          type="button"
+          class="kx-btn kx-btn--primary"
+          [disabled]="!!trabalhando()"
+          (click)="analisarVideo()"
+        >
+          Analisar vídeo
+        </button>
+      </div>
+    }
+    @if (sessao().referencia.frames.length > 1) {
+      <button
+        type="button"
+        class="kx-btn kx-btn--ghost"
+        [disabled]="!!trabalhando()"
+        (click)="analisarFrames()"
+      >
+        Analisar os {{ sessao().referencia.frames.length }} frames em sequência
+      </button>
+    }
+    @if (!videoUrl() && sessao().referencia.frames.length < 2) {
+      <p class="kx-muted">
+        Envie uma gravação (MP4, MOV ou WEBM) ou duas ou mais imagens na aba Referência.
+      </p>
+    }
+    @if (analise().video; as v) {
+      <details class="cmpa__trechos">
+        <summary>Linha do tempo ({{ v.quadros }} quadros, {{ fmt(v.duracao) }})</summary>
+        <ol>
+          @for (t of v.trechos; track $index) {
+            @if (t.descricao !== 'tela parada') {
+              <li>
+                <button type="button" (click)="irPara.emit(t.inicio)">{{ fmt(t.inicio) }}</button>
+                {{ t.descricao }} até {{ fmt(t.fim) }}
+              </li>
+            }
+          }
+        </ol>
+      </details>
+    }
+  </section>
+
+  <section class="cmpa__caixa" aria-labelledby="cmpa-site">
+    <h3 id="cmpa-site">Site (DOM, CSS e bibliotecas)</h3>
+    <p class="kx-muted">
+      O lab não pode ler outro domínio (CORS). O <strong>coletor</strong> roda no seu navegador, no
+      próprio site: só lê a página e baixa um arquivo. Nada é enviado.
+    </p>
+    <ol class="cmpa__passos">
+      <li>
+        Abra o site, pressione <kbd>F12</kbd> → aba <em>Console</em>.
+        <button type="button" class="kx-btn kx-btn--primary cmpa__mini" (click)="copiarColetor()">
+          {{ coletorCopiado() ? 'Coletor copiado ✓' : 'Copiar o coletor' }}
+        </button>
+      </li>
+      <li>Cole e pressione Enter (o Chrome pode pedir para digitar “allow pasting”).</li>
+      <li>
+        Importe o <code>coleta-kcx.json</code> que foi baixado:
+        <label class="kx-btn kx-btn--ghost cmpa__arquivo cmpa__mini">
+          Importar coleta
+          <input type="file" accept=".json,application/json" (change)="importarColeta($event)" />
+        </label>
+      </li>
+    </ol>
+    <button type="button" class="cmpa__link" (click)="alternar('coletor')">
+      {{ aberta() === 'coletor' ? 'Esconder' : 'Ver' }} o código do coletor
+    </button>
+    @if (aberta() === 'coletor') {
+      <textarea class="cmpa__codigo" readonly rows="6" aria-label="Código do coletor">{{
+        scriptColetor
+      }}</textarea>
+    }
+    <div class="cmpa__linha">
+      <label class="cmpa__cresce">
+        Ou tente ler direto
+        <input
+          type="url"
+          placeholder="https://exemplo.com"
+          [value]="urlSite() || sessao().referencia.url || ''"
+          (input)="urlSite.set($any($event.target).value)"
+        />
+      </label>
+      <button
+        type="button"
+        class="kx-btn kx-btn--ghost"
+        [disabled]="!!trabalhando()"
+        (click)="lerDireto()"
+      >
+        Ler HTML
+      </button>
+      <label class="kx-btn kx-btn--ghost cmpa__arquivo">
+        Importar HTML salvo
+        <input type="file" accept=".html,.htm,text/html" (change)="importarHtml($event)" />
+      </label>
+    </div>
+  </section>
+</div>
+
+@if (investigacao(); as inv) {
+  <section class="cmpa__caixa" aria-labelledby="cmpa-tec">
+    <h3 id="cmpa-tec">
+      Tecnologias — {{ inv.titulo || inv.url }}
+      <small class="kx-muted"
+        >({{ inv.origem === 'dom' ? 'DOM pelo coletor' : 'HTML, sem JavaScript' }})</small
+      >
+    </h3>
+    <div class="cmpa__tecs">
+      @for (g of grupos; track g) {
+        <div>
+          <h4 [class]="'cmpa__st cmpa__st--' + g">{{ rotuloStatus[g] }}</h4>
+          <ul>
+            @for (t of tecnologiasCom(g); track t.id) {
+              <li>
+                <strong>{{ t.nome }}</strong>
+                @if (t.versao) {
+                  <small> {{ t.versao }}</small>
+                }
+                <small class="kx-muted"> — {{ t.evidencias.join(' · ') }}</small>
+              </li>
+            } @empty {
+              <li class="kx-muted">—</li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+    <ul class="cmpa__resumo">
+      @for (r of inv.resumo; track r) {
+        <li>{{ r }}</li>
+      }
+    </ul>
+    <details>
+      <summary>Limites desta investigação</summary>
+      <ul>
+        @for (l of inv.limites; track l) {
+          <li>{{ l }}</li>
+        }
+      </ul>
+    </details>
+  </section>
+}
+
+<section aria-labelledby="cmpa-fichas">
+  <h3 id="cmpa-fichas" class="cmpa__titulo">
+    Efeitos identificados — fichas técnicas ({{ fichas().length }})
+  </h3>
+  <ul class="cmpa__fichas">
+    @for (f of fichas(); track f.id) {
+      @let cat = entrada(f.tipo);
+      <li class="cmpa__ficha">
+        <div class="cmpa__topo">
+          <strong>{{ f.nome }}</strong>
+          <span class="cmpa__chip" [class.cmpa__chip--video]="f.origem === 'video'">{{
+            rotuloOrigem[f.origem]
+          }}</span>
+          <span [class]="'cmpa__conf cmpa__conf--' + f.confianca"
+            >confiança {{ rotuloConfianca[f.confianca] }}</span
+          >
+        </div>
+        <p class="cmpa__info">
+          @if (f.inicio !== null) {
+            <button type="button" class="cmpa__link" (click)="irPara.emit(f.inicio)">
+              {{ fmt(f.inicio) }}
+              @if (f.fim !== null && f.fim > f.inicio) {
+                – {{ fmt(f.fim) }}
+              }
+            </button>
+          }
+          @if (f.ocorrencias?.length) {
+            <small class="kx-muted">
+              e mais {{ f.ocorrencias!.length }}×:
+              @for (o of f.ocorrencias!.slice(0, 6); track $index) {
+                <button type="button" class="cmpa__link" (click)="irPara.emit(o.inicio)">
+                  {{ fmt(o.inicio) }}
+                </button>
+              }
+            </small>
+          }
+          @if (f.regiao; as r) {
+            <small class="kx-muted">
+              · região x {{ r.x }}% y {{ r.y }}% · {{ r.largura }}% × {{ r.altura }}%</small
+            >
+          }
+          @if (f.seletor) {
+            <small class="kx-muted">
+              · <code>{{ f.seletor }}</code></small
+            >
+          }
+        </p>
+        <ul class="cmpa__evid">
+          @for (e of f.evidencias; track e) {
+            <li>{{ e }}</li>
+          }
+        </ul>
+        @if (parametrosDe(f).length) {
+          <p class="cmpa__params">{{ parametrosDe(f).join(' · ') }}</p>
+        }
+        @if (f.tecnologias?.length) {
+          <p class="cmpa__params">Tecnologias ligadas: {{ f.tecnologias!.join(', ') }}</p>
+        }
+        <details>
+          <summary>Ficha técnica</summary>
+          <dl class="cmpa__dl">
+            <dt>O que é</dt>
+            <dd>{{ cat.descricao }}</dd>
+            <dt>No vídeo</dt>
+            <dd>{{ cat.noVideo }}</dd>
+            <dt>No DOM</dt>
+            <dd>{{ cat.noDom }}</dd>
+            <dt>Costuma ser feito com</dt>
+            <dd>{{ cat.tecnologiasComuns.join(', ') }}</dd>
+            <dt>Reconstrução KCX</dt>
+            <dd>{{ cat.reconstrucao }}</dd>
+            <dt>Limitações</dt>
+            <dd>{{ cat.limitacoes.join(' ') }}</dd>
+          </dl>
+        </details>
+        <div class="cmpa__acoes">
+          <button type="button" class="kx-btn kx-btn--primary cmpa__mini" (click)="reconstruir(f)">
+            Reconstruir e comparar
+          </button>
+          @if (f.inicio !== null) {
+            <button type="button" class="kx-btn kx-btn--ghost cmpa__mini" (click)="marcar(f)">
+              Marcar na linha do tempo
+            </button>
+          }
+          @if (componenteDe(f); as id) {
+            <a class="kx-btn kx-btn--ghost cmpa__mini" [routerLink]="['/kcx', id]"
+              >Abrir “{{ id }}” no editor</a
+            >
+          }
+          <button type="button" class="kx-btn kx-btn--ghost cmpa__mini" (click)="remover(f)">
+            Remover
+          </button>
+        </div>
+      </li>
+    } @empty {
+      <li class="kx-muted">
+        Nenhum efeito ainda. Analise a gravação, investigue o site ou marque um à mão.
+      </li>
+    }
+  </ul>
+  <div class="cmpa__linha">
+    <label>
+      Marcar efeito à mão
+      <select (change)="tipoManual.set($any($event.target).value)">
+        @for (c of catalogo; track c.tipo) {
+          <option [value]="c.tipo" [selected]="c.tipo === tipoManual()">{{ c.nome }}</option>
+        }
+      </select>
+    </label>
+    <button type="button" class="kx-btn kx-btn--ghost" (click)="adicionarManual()">+ Ficha</button>
+  </div>
+</section>

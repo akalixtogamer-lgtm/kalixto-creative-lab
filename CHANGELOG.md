@@ -5,6 +5,38 @@ Cada versão corresponde a uma etapa funcional do roadmap.
 
 ## [Não publicado]
 
+## [1.22.0-rc.1] — 2026-11-25 · KCX Web Intelligence
+
+> Versão de consolidação. Os PRs #13–#17 foram publicados com os números `v1.11`–`v1.21`, mas o
+> `package.json` continuou em `1.10.0-rc.1`; esta versão alinha os dois. Tudo o que estava em
+> “Não publicado” abaixo já estava no ar, exceto “Mensagens e Feedback” (#24), que sai agora.
+
+### Adicionado — KCX Web Intelligence (aba Análise em `/kcx/comparar`)
+- **Investigação de sites** respeitando CORS: coletor que a pessoa roda no Console do próprio site
+  (só lê e baixa `coleta-kcx.json`), leitura de HTML salvo e tentativa de leitura direta. Examina
+  scripts, CSS, `@keyframes`, scroll-driven animations, sticky, View Transitions, animações em
+  andamento, recursos carregados, globais e marcadores de DOM.
+- **Tecnologias** em confirmada / provável / não identificada, com a evidência: GSAP, ScrollTrigger,
+  Framer Motion, Motion, Three.js, WebGL, Lottie, Lenis, Swiper, CSS Scroll-driven Animations e
+  vizinhas (Locomotive, AOS, Barba, Swup, View Transitions, PixiJS, SplitText).
+- **Análise temporal de vídeo e de sequências de imagens** (sem DOM): rolagem, parallax, sticky,
+  card stacking, horizontal scroll, scroll reveal, profundidade (zoom), transições, texto animado,
+  morphing, hover e glassmorphism, com confiança, região, tempo, ocorrências e curva estimada.
+- **Ficha técnica** por efeito e catálogo dos 12 efeitos.
+- **Reconstrução**: novo tipo do construtor **Efeito de movimento (web)** (12 animações, só CSS e um
+  JS pequeno, sem dependências). “Reconstruir e comparar” cria o componente com as medidas da
+  referência como valor inicial, põe no Painel B e marca a linha do tempo.
+- Construtor: `ConfigConstrutor.valores` (valores iniciais de variáveis, preservados ao reabrir).
+- Moldes: seções hero, carrossel e galeria podem trocar para o efeito web (e vice-versa).
+
+### Adicionado — Duplicar componente
+- Botão **Duplicar** no editor: cópia independente com id, nome e prefixo `kcx-<id>` novos.
+
+### Qualidade
+- Teste que abre todas as rotas `/kcx/*`; 31 testes novos (1169 no total).
+- Auditoria real em [`docs/kcx/AUDITORIA-WEB-INTELLIGENCE.md`](docs/kcx/AUDITORIA-WEB-INTELLIGENCE.md);
+  documentação técnica em [`docs/kcx/WEB-INTELLIGENCE.md`](docs/kcx/WEB-INTELLIGENCE.md).
+
 ### Adicionado — Mensagens e Feedback nos botões
 - No editor (`/kcx/:id`) de componentes que são botões, o painel de propriedades ganha a seção
   **Mensagens e Feedback**: Sucesso, Erro, Aviso, Informação e Carregando, cada uma com título,

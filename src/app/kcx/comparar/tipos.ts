@@ -12,6 +12,7 @@
  * TypeScript puro: sem Angular, sem DOM.
  */
 import type { KcxValor } from '../kcx.types';
+import type { AnaliseReferencia } from '../analise/tipos';
 
 /* ============================== Referência ============================== */
 
@@ -312,4 +313,6 @@ export interface SessaoComparacao {
   alinhamento: { x: number; y: number; escala: number };
   /** Id do componente salvo a partir da versão aprovada. */
   salvoComo?: string;
+  /** Web Intelligence: fichas de efeitos, investigação do site, resumo do vídeo. */
+  analise?: AnaliseReferencia;
 }

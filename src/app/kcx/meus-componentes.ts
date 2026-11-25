@@ -188,3 +188,33 @@ export function idLivre(id: string, ocupados: string[]): string {
   while (ocupados.includes(`${id}-${n}`)) n++;
   return `${id}-${n}`;
 }
+
+/**
+ * Cópia independente de um componente: id e nome novos, e o prefixo das
+ * classes e custom properties (`kcx-<id>`) trocado em todo lugar — código,
+ * vínculos, estrutura e configuração —, para a cópia não brigar com o
+ * original numa mesma página.
+ */
+export function duplicarComponente(
+  c: KcxComponente,
+  ocupados: string[],
+  agora = new Date(),
+): KcxComponente {
+  const novoId = idLivre(`${c.id}-copia`.slice(0, 60), ocupados);
+  const esc = c.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const texto = JSON.stringify(c).replace(
+    new RegExp(`kcx-${esc}(?![a-z0-9])`, 'g'),
+    `kcx-${novoId}`,
+  );
+  const copia = JSON.parse(texto) as KcxComponente;
+  const hoje = agora.toISOString().slice(0, 10);
+  copia.id = novoId;
+  copia.nome = `${c.nome} (cópia)`.slice(0, 80);
+  copia.metadados = { ...copia.metadados, criadoEm: hoje, atualizadoEm: hoje };
+  const cfg = copia.origemCriacao?.config as { id?: string; nome?: string } | undefined;
+  if (cfg && typeof cfg === 'object') {
+    cfg.id = novoId;
+    cfg.nome = copia.nome;
+  }
+  return copia;
+}
